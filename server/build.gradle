@@ -2,9 +2,11 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.0'
 	id 'io.spring.dependency-management' version '1.1.5'
+	id 'groovy' // Groovy for testing
+	id 'jacoco' // Jacoco for code coverage
 }
 
-group = 'com.mgmtp.cfu'
+group = 'com.mgm'
 version = '0.0.1-SNAPSHOT'
 
 java {
@@ -27,4 +29,59 @@ dependencyManagement {
 dependencies {
 	// Spring implementation dependencies
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'com.h2database:h2'
+
+	// Lombok
+	compileOnly 'org.projectlombok:lombok:1.18.24'
+	annotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+	// Test implementation
+	testImplementation 'junit:junit:4.13.2'
+	testImplementation 'org.spockframework:spock-core:2.4-M1-groovy-4.0'
+	testImplementation 'org.spockframework:spock-spring:2.4-M1-groovy-4.0'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
+
+// Specify source sets
+sourceSets {
+	test {
+		java {
+			srcDirs = [] // Clear any default Java source directories
+		}
+		groovy {
+			srcDirs = ['src/test/groovy']
+		}
+	}
+}
+
+// Specify tasks
+tasks.named('test') {
+	useJUnitPlatform()
+	testLogging {
+		events "started", "passed", "skipped", "failed"
+	}
+	finalizedBy 'jacocoTestReport'
+}
+
+jacocoTestReport {
+	dependsOn 'test'
+	reports {
+		xml.required = true
+		csv.required = false
+		html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+	}
+}
+
+jacocoTestCoverageVerification {
+	dependsOn 'test'
+	violationRules {
+		rule {
+			limit {
+				minimum = 0.0
+			}
+		}
+	}
+}
+
+tasks.check.dependsOn jacocoTestCoverageVerification
