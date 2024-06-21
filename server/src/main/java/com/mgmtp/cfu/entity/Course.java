@@ -1,14 +1,11 @@
 package com.mgmtp.cfu.entity;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import java.util.Date;
 
 @Entity
@@ -16,15 +13,19 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "Course")
 public class Course {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String Name;
-    private String Link;
-    private String Platform;
-    private String ThumbnailUrl;
-    private String TeacherName;
-    private Date CreatedDate;
-    private String Status;
+    private String name;
+    private String link;
+    private String platform;
+    @Column(name = "thumbnailUrl")
+    private String thumbnailUrl;
+    @Column(name = "teacherName")
+    private String teacherName;
+    @Column(name = "createdDate")
+    private Date createdDate;
+    private String status;
 }
