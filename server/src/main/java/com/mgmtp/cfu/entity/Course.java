@@ -21,11 +21,11 @@ public class Course {
     private String name;
     private String link;
     private String platform;
-    @Column(name = "thumbnailUrl")
+    @Column(name = "ThumbnailUrl")
     private String thumbnailUrl;
-    @Column(name = "teacherName")
+    @Column(name = "TeacherName")
     private String teacherName;
-    @Column(name = "createdDate")
+    @Column(name = "CreatedDate")
     private Date createdDate;
     private String status;
 }
