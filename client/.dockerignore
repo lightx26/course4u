@@ -1,0 +1,31 @@
+# Ignore node_modules
+node_modules
+
+# Ignore build output (if exists)
+dist
+
+# Ignore logs
+logs
+*.log
+
+# Ignore temporary files
+tmp
+temp
+*.tmp
+
+# Ignore editor files
+.vscode
+.idea
+*.sublime*
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db
+
+# Ignore environment files (optional, if not needed in the build context)
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+.env.*.local
