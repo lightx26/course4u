@@ -18,8 +18,11 @@ public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "Name")
     private String name;
+    @Column(name = "Link")
     private String link;
+    @Column(name = "Platform")
     private String platform;
     @Column(name = "ThumbnailUrl")
     private String thumbnailUrl;
@@ -27,5 +30,6 @@ public class Course {
     private String teacherName;
     @Column(name = "CreatedDate")
     private Date createdDate;
+    @Column(name = "Status")
     private String status;
 }
