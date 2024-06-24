@@ -1,5 +1,6 @@
 package com.mgmtp.cfu.entity;
 
+import com.mgmtp.cfu.enums.CourseStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +31,7 @@ public class Course {
     private String teacherName;
     @Column(name = "CreatedDate")
     private LocalDate createdDate;
+    @Enumerated(EnumType.STRING)
     @Column(name = "Status")
-    private String status;
+    private CourseStatus status;
 }
