@@ -2,6 +2,8 @@ import Counter from "../src/screens/user.screens/counter.tsx";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import HeaderHomepage from "../src/components/user.components/header.tsx";
 import Login from "./screens/user.screens/Login.tsx";
+import "./assets/css/App.css";
+import Counter from "./components/counter";
 
 const LayoutUser = () => {
   return (
