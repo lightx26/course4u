@@ -1,4 +1,4 @@
-INSERT INTO Course (name, link, platform, thumbnail_url, teacher_name, created_date, status)
+INSERT INTO Course (name, link, platform, thumbnailUrl, teacherName, createdDate, status)
 VALUES ('Java', 'https://www.udemy.com/course/java-the-complete-java-developer-course/', 'Udemy',
         'https://img-a.udemycdn.com/course/240x135/533682_c10c_4.jpg', 'Tim Buchalka', '2021-01-01', 'Active'),
        ('Spring Boot', 'https://www.udemy.com/course/spring-boot-microservices-and-spring-cloud/', 'Udemy',
