@@ -4,6 +4,7 @@ package com.mgmtp.cfu.controller;
 import com.mgmtp.cfu.dto.CourseDTO;
 import com.mgmtp.cfu.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,9 @@ import java.util.List;
 public class CourseController {
     private final CourseService courseService;
 
+    @Value("${course.page.size}")
+    private int COURSE_PAGE_SIZE;
+
     @Autowired
     public CourseController(CourseService courseService) {
         this.courseService = courseService;
@@ -24,6 +28,11 @@ public class CourseController {
 
     @GetMapping
     public ResponseEntity<List<CourseDTO>> getAvailableCourses(@RequestParam(defaultValue = "1") int page) {
-        return ResponseEntity.ok(courseService.getAvailableCourses(page, 8));
+        return ResponseEntity.ok(courseService.getAvailableCoursesPage(page, COURSE_PAGE_SIZE));
+    }
+
+    @GetMapping("/page-count")
+    public ResponseEntity<Integer> getAvailableCoursesPageCount() {
+        return ResponseEntity.ok(courseService.getAvailableCoursesPageCount(COURSE_PAGE_SIZE));
     }
 }

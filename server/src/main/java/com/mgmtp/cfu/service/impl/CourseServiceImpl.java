@@ -24,10 +24,26 @@ public class CourseServiceImpl implements CourseService {
         this.courseRepository = courseRepository;
     }
 
-    @Override
-    public List<CourseDTO> getAvailableCourses(int pageNo, int pageSize) {
+    private Page<Course> getAvailableCourses(int pageNo, int pageSize) {
+        // Make sure pageNo is at least 1
+        pageNo = Math.max(pageNo, 1);
+
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
-        Page<Course> courseDTOList = courseRepository.findByStatus(CourseStatus.AVAILABLE, pageable);
-        return courseDTOList.map(CourseMapper::toDTO).getContent();
+        return courseRepository.findByStatus(CourseStatus.AVAILABLE, pageable);
+    }
+
+    @Override
+    public List<CourseDTO> getAvailableCoursesPage(int pageNo, int pageSize) {
+        // Make sure pageNo is at most the number of pages
+        pageNo = Math.min(pageNo, getAvailableCoursesPageCount(pageSize));
+
+        Page<Course> courseList = getAvailableCourses(pageNo, pageSize);
+        return courseList.map(CourseMapper::toDTO).getContent();
+    }
+
+    @Override
+    public int getAvailableCoursesPageCount(int pageSize) {
+        Page<Course> courseList = getAvailableCourses(1, pageSize);
+        return courseList.getTotalPages();
     }
 }
