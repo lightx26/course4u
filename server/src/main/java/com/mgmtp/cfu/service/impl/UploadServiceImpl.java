@@ -21,9 +21,6 @@ public class UploadServiceImpl implements UploadService {
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
-            String originalFilename = thumbnail.getOriginalFilename();
-            String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
-            uuidFilename = UUID.randomUUID().toString() + fileExtension; // Update UUID filename with correct extension
             Path filePath = uploadPath.resolve(uuidFilename);
             thumbnail.transferTo(filePath.toFile());
             thumbnailUrl = uuidFilename;

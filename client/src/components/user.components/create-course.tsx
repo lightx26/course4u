@@ -5,9 +5,10 @@ import { courseSchema } from "../../schemas/course-schema";
 import { CourseForm } from "../form/course-form";
 import { Form } from "../ui/form";
 import { Button } from "../ui/button";
-import instance from "../../utils/customizeAxios";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { createNewCourse } from "../../apiService/Course.service";
+import { base64ToBlob, blobToFile } from "../../utils/ThumbnailConverter";
 
 const CreateCourse = () => {
   const navigate = useNavigate();
@@ -22,42 +23,28 @@ const CreateCourse = () => {
       platform: "",
       categories: [],
       thumbnailUrl: "",
-      //  In backend side, if thumbnail url can be get from Course link, then request should be thumbnailUrl
-      // Otherwise, if users upload a thumbnail image, request name should be thumbnailFile
     },
   });
-  const base64ToBlob = (base64: string) => {
-    const byteString = atob(base64.split(",")[1]);
-    const mimeString = base64.split(",")[0].split(":")[1].split(";")[0];
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
-    }
-    return new Blob([ab], { type: mimeString });
-  };
-  async function onSubmit(values: z.infer<typeof courseSchema>) {
-    // Helper function to convert blob URL to File object
-    async function blobToFile(blobUrl: string, fileName: string) {
-      const response = await fetch(blobUrl);
-      const blob = await response.blob();
-      return new File([blob], `${fileName}.jpg`, { type: "image/jpeg" });
-    }
+
+  const onSubmit = async (values: z.infer<typeof courseSchema>) => {
     const formData = new FormData();
+
     // Append regular values to FormData
-    for (const [key, value] of Object.entries(values)) {
+    Object.entries(values).forEach(([key, value]) => {
       if (key !== "categories" && key !== "thumbnailUrl") {
         if (typeof value === "string") {
           formData.append(key, value);
         }
       }
-    }
+    });
+
     // Append formatted categories to FormData
     values.categories.forEach((category, index) => {
       formData.append(`categories[${index}].label`, category.label!);
       formData.append(`categories[${index}].value`, category.value);
     });
-    // Handle the thumbnailUrl if it starts with "blob:"
+
+    // Handle the thumbnailUrl if it starts with "blob:" or "data:"
     if (values.thumbnailUrl.startsWith("blob:")) {
       const thumbnailFile = await blobToFile(values.thumbnailUrl, values.name);
       formData.append("thumbnailFile", thumbnailFile);
@@ -73,78 +60,69 @@ const CreateCourse = () => {
       formData.append("thumbnailUrl", values.thumbnailUrl);
     }
 
-    instance
-      .postForm("/courses", formData)
-      .then((res) => {
-        if (res.status === 201) {
-          toast.success("Create a new course successfully", {
-            description:
-              "You will be redirected to the admin page in 3 seconds",
-            style: {
-              color: "green",
-              fontWeight: "bold",
-              textAlign: "center",
-            },
-            onAutoClose: () => {
-              navigate("/admin", {
-                replace: true,
-                state: { refresh: true },
-              });
-            },
+    const status = await createNewCourse(formData);
+    if (status === 201) {
+      toast.success("Create a new course successfully", {
+        description: "You will be redirected to the admin page in 3 seconds!",
+        style: {
+          color: "green",
+          fontWeight: "bold",
+          textAlign: "center",
+        },
+        onAutoClose: () => {
+          navigate("/admin", {
+            replace: true,
+            state: { refresh: true },
           });
-        } else if (res.status === 500) {
-          toast.error("Thumbnail size should be smaller than 10MB!", {
-            description: "Please crop thumbnail before submit again!",
-            style: {
-              color: "red",
-              fontWeight: "bold",
-              textAlign: "center",
-            },
-          });
-        }
-      })
-      .catch((_error) => {
-        if (_error.response.status === 409) {
-          toast.error("Create a new course unsuccessfully", {
-            description:
-              "Your course already exists in the system. Please check again!",
-            style: {
-              color: "red",
-              fontWeight: "bold",
-              textAlign: "center",
-            },
-          });
-        } else {
-          toast.error("Something went wrong!", {
-            description: "Please contact admin to get help!",
-            style: {
-              color: "red",
-              fontWeight: "bold",
-              textAlign: "center",
-            },
-          });
-        }
+        },
       });
-  }
+    } else if (status === 500) {
+      toast.error("Thumbnail size should be smaller than 10MB", {
+        description: "Please crop thumbnail before submit again!",
+        style: {
+          color: "red",
+          fontWeight: "bold",
+          textAlign: "center",
+        },
+      });
+    } else if (status === 409) {
+      toast.error("Create a new course unsuccessfully", {
+        description:
+          "Your course already exists in the system. Please check again!",
+        style: {
+          color: "red",
+          fontWeight: "bold",
+          textAlign: "center",
+        },
+      });
+    } else {
+      toast.error("Oops! Something went wrong. Please try again later", {
+        description: "Contact the admin for further assistance!",
+        style: {
+          color: "red",
+          fontWeight: "bold",
+          textAlign: "center",
+        },
+      });
+    }
+  };
 
   return (
-    <>
-      <div className="w-full px-20 py-10 bg-white border-2 border-gray-200 rounded-3xl">
-        <h2 className="text-[32px] text-center mb-5 font-semibold">
-          Create a new course
-        </h2>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
-            <CourseForm form={form} isEdit={true} />
-            <div className="flex justify-end">
-              <Button variant="success" className="mt-10">
-                SUBMIT
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </div>
-    </>
+    <div className="w-full px-20 py-10 bg-white border-2 border-gray-200 rounded-3xl">
+      <h2 className="text-[32px] text-center mb-5 font-semibold">
+        Create a new course
+      </h2>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
+          <CourseForm form={form} isEdit={true} />
+          <div className="flex justify-end">
+            <Button variant="success" className="mt-10" type="submit">
+              SUBMIT
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
   );
 };
 

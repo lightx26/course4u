@@ -8,10 +8,12 @@ import com.mgmtp.cfu.dto.coursedto.CourseResponse
 import com.mgmtp.cfu.entity.Category
 import com.mgmtp.cfu.entity.Course
 import com.mgmtp.cfu.entity.Registration
+import com.mgmtp.cfu.entity.User
 import com.mgmtp.cfu.enums.CoursePageSortOption
 import com.mgmtp.cfu.enums.CourseLevel
 import com.mgmtp.cfu.enums.CoursePlatform
 import com.mgmtp.cfu.enums.CourseStatus
+import com.mgmtp.cfu.enums.Role
 import com.mgmtp.cfu.exception.BadRequestRunTimeException
 import com.mgmtp.cfu.exception.ServerErrorRuntimeException
 import com.mgmtp.cfu.exception.MapperNotFoundException
@@ -22,8 +24,11 @@ import com.mgmtp.cfu.repository.CourseRepository
 import com.mgmtp.cfu.service.CategoryService
 import com.mgmtp.cfu.service.CourseService
 import com.mgmtp.cfu.service.UploadService
+import com.mgmtp.cfu.util.AuthUtils
 import org.springframework.dao.CannotAcquireLockException
 import org.springframework.data.domain.PageImpl
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.multipart.MultipartFile
 import spock.lang.Specification
 import org.springframework.data.domain.Page
@@ -37,14 +42,20 @@ class CourseServiceImplSpec extends Specification {
     CourseRepository courseRepository = Mock(CourseRepository)
     MapperFactory<Course> courseMapperFactory = Mock(CourseMapperFactory)
     CourseOverviewMapper courseOverviewMapper = Mock(CourseOverviewMapper)
-    CategoryService categorySerivce = Mock()
+    CategoryService categoryService = Mock()
     UploadService uploadService = Mock()
     @Subject
-    CourseService courseService = new CourseServiceImpl(courseRepository, courseMapperFactory, categorySerivce, uploadService)
+    CourseService courseService = new CourseServiceImpl(courseRepository, courseMapperFactory, categoryService, uploadService)
 
-
+    def setup() {
+        AuthUtils.getCurrentUser() >> new User()
+    }
     def "test createCourse with thumbnail file"() {
         given:
+        def authentication = Mock(Authentication) {
+            getCredentials() >> User.builder().id(1).role(Role.USER).build()
+        }
+        SecurityContextHolder.context.authentication = authentication
         MultipartFile thumbnailFile = Mock(MultipartFile)
         thumbnailFile.getOriginalFilename() >> "abc.jpg"
 
@@ -77,9 +88,8 @@ class CourseServiceImplSpec extends Specification {
                 .categories(Set.of(mockCategory))
                 .build()
 
-        categorySerivce.findCategoriesByIds(_) >> List.of(mockCategory)
+        categoryService.findCategoriesByIds(_) >> List.of(mockCategory)
         courseRepository.save(_) >> course
-
         when:
         CourseResponse courseResponse = courseService.createCourse(courseRequest)
 
@@ -97,6 +107,10 @@ class CourseServiceImplSpec extends Specification {
 
     def "test createCourse with thumbnail URL"() {
         given:
+        def authentication = Mock(Authentication) {
+            getCredentials() >> User.builder().id(1).role(Role.USER).build()
+        }
+        SecurityContextHolder.context.authentication = authentication
         CourseRequest.CategoryCourseRequestDTO javaCategory = new CourseRequest.CategoryCourseRequestDTO()
         javaCategory.setLabel("Java")
         javaCategory.setValue("1")
@@ -122,7 +136,7 @@ class CourseServiceImplSpec extends Specification {
                 .level(CourseLevel.INTERMEDIATE)
                 .categories(Set.of(mockCategory))
                 .build()
-        categorySerivce.findCategoriesByIds(_) >> List.of(mockCategory)
+        categoryService.findCategoriesByIds(_) >> List.of(mockCategory)
         courseRepository.save(_) >> course
 
         when:

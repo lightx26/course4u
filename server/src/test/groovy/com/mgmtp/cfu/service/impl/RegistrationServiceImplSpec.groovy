@@ -1,9 +1,11 @@
 package com.mgmtp.cfu.service.impl
 
-
+import com.mgmtp.cfu.dto.coursedto.CourseResponse
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO
 import com.mgmtp.cfu.entity.Course
 import com.mgmtp.cfu.entity.User
+import com.mgmtp.cfu.enums.CourseLevel
+import com.mgmtp.cfu.enums.CoursePlatform
 import com.mgmtp.cfu.exception.MapperNotFoundException
 import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO
 import com.mgmtp.cfu.entity.Registration
@@ -14,16 +16,30 @@ import com.mgmtp.cfu.mapper.RegistrationDetailMapper
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper
 import com.mgmtp.cfu.mapper.factory.MapperFactory
 import com.mgmtp.cfu.mapper.factory.impl.RegistrationMapperFactory
+import com.mgmtp.cfu.dto.coursedto.CourseRequest
+
+import com.mgmtp.cfu.dto.RegistrationRequest
+import com.mgmtp.cfu.entity.Course
+import com.mgmtp.cfu.entity.Registration
+import com.mgmtp.cfu.entity.User
+import com.mgmtp.cfu.enums.CourseStatus
+import com.mgmtp.cfu.enums.DurationUnit
+import com.mgmtp.cfu.enums.RegistrationStatus
 import com.mgmtp.cfu.repository.RegistrationRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
+import com.mgmtp.cfu.service.CourseService
+import com.mgmtp.cfu.util.AuthUtils
+import org.modelmapper.ModelMapper
+import org.springframework.security.core.context.SecurityContext
 import spock.lang.Specification
 import spock.lang.Subject
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 
-import java.time.LocalDate
 
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 class RegistrationServiceImplSpec extends Specification {
     RegistrationRepository registrationRepository = Mock(RegistrationRepository)
@@ -31,8 +47,10 @@ class RegistrationServiceImplSpec extends Specification {
     RegistrationDetailMapper registrationDetailMapper = Mock(RegistrationDetailMapper)
     RegistrationOverviewMapper registrationOverviewMapper= Mock(RegistrationOverviewMapper)
 
+    CourseService courseService = Mock()
+    ModelMapper modelMapper = Mock()
     @Subject
-    RegistrationServiceImpl registrationService = new RegistrationServiceImpl(registrationRepository, registrationOverviewMapper, registrationMapperFactory, registrationDetailMapper)
+    RegistrationServiceImpl registrationService = new RegistrationServiceImpl(registrationRepository, registrationOverviewMapper, registrationMapperFactory, courseService)
 
     def "return registration details successfully"() {
         given:
@@ -143,6 +161,7 @@ class RegistrationServiceImplSpec extends Specification {
         SecurityContextHolder.context.authentication = authentication
         registrationRepository.getByUserId(userId,_) >> List.of(registrations)
         registrationMapperFactory.getDTOMapper(_)>> Optional.of(registrationOverviewMapper)
+
         when:
         def result = registrationService.getMyRegistrationPage(1, status)
         then:
@@ -301,4 +320,61 @@ class RegistrationServiceImplSpec extends Specification {
         def ex = thrown(RegistrationStatusNotFoundException)
         ex.message == "Status not found"
     }
+    User currentUser;
+    def setup() {
+        // Mocking SecurityContext and Authentication
+        SecurityContext securityContext = Mock(SecurityContext)
+        Authentication authentication = Mock(Authentication)
+
+        // Setting up the current user
+        currentUser = new User(id: 1L, username: "testuser")
+
+        // Setting up the SecurityContextHolder
+        SecurityContextHolder.setContext(securityContext)
+        securityContext.getAuthentication() >> authentication
+        authentication.getCredentials() >> currentUser
+
+        // Mocking AuthUtils to return the current user
+        GroovyMock(AuthUtils, global: true)
+        AuthUtils.getCurrentUser() >> currentUser
+    }
+
+    def "createRegistration should create and save a new registration"() {
+        given:
+        def registrationRequest = new RegistrationRequest()
+        registrationRequest.setName("name")
+        registrationRequest.setLink("https://google.com")
+        registrationRequest.setPlatform(CoursePlatform.COURSERA)
+        registrationRequest.setThumbnailFile(null)
+        registrationRequest.setThumbnailUrl("thumbnailUrl")
+        registrationRequest.setTeacherName("teacherName")
+        registrationRequest.setCategories([])
+        registrationRequest.setLevel(CourseLevel.INTERMEDIATE)
+        registrationRequest.setDuration(10)
+        registrationRequest.setDurationUnit(DurationUnit.DAY)
+
+        def courseResponse = new CourseResponse()
+        def course = new Course()
+
+        def registration = new Registration()
+        registration.setCourse(course)
+        registration.setStatus(RegistrationStatus.SUBMITTED)
+        registration.setRegisterDate(LocalDate.now())
+        registration.setDuration(10)
+        registration.setDurationUnit(DurationUnit.DAY)
+        registration.setLastUpdated(LocalDateTime.now())
+        registration.setUser(currentUser)
+
+        and:
+        1 * courseService.createCourse(_) >> courseResponse
+        1 * registrationRepository.save(_) >> registration
+
+        when:
+        def result = registrationService.createRegistration(registrationRequest)
+
+        then:
+        result == true
+    }
+
+
 }

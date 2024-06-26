@@ -50,6 +50,18 @@ const deleteCourseById = async (id: string | undefined) => {
     throw error;
   }
 };
+const createNewCourse = async (data: any): Promise<number> => {
+  try {
+    const res = await instance.postForm("/courses", data);
+    return res.status;
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.status;
+    } else {
+      return 503;
+    }
+  }
+};
 
 const fetchDataRatingsCourseById = async (id: string | undefined) => {
   try {
@@ -192,5 +204,5 @@ export {
   deleteCourseById,
   fetchDataRatingsCourseById,
   fetchDataReviewsCourseById,
-  fetchDataRelatedCourseById,
+  fetchDataRelatedCourseById, createNewCourse
 };

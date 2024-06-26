@@ -1,19 +1,28 @@
 package com.mgmtp.cfu.service.impl;
 
+
 import com.mgmtp.cfu.dto.PageResponse;
+import com.mgmtp.cfu.dto.RegistrationRequest;
+import com.mgmtp.cfu.dto.coursedto.CourseRequest;
+import com.mgmtp.cfu.dto.coursedto.CourseResponse;
+import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO;
+import com.mgmtp.cfu.enums.CourseLevel;
 import com.mgmtp.cfu.enums.RegistrationStatus;
 import com.mgmtp.cfu.exception.MapperNotFoundException;
-import com.mgmtp.cfu.mapper.RegistrationDetailMapper;
+import com.mgmtp.cfu.exception.RegistrationStatusNotFoundException;
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper;
 
-import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO;
+
+import com.mgmtp.cfu.entity.Course;
 import com.mgmtp.cfu.entity.Registration;
+import com.mgmtp.cfu.enums.CourseStatus;
 import com.mgmtp.cfu.exception.RegistrationNotFoundException;
-import com.mgmtp.cfu.exception.RegistrationStatusNotFoundException;
 import com.mgmtp.cfu.mapper.DTOMapper;
 import com.mgmtp.cfu.mapper.factory.MapperFactory;
+
 import com.mgmtp.cfu.repository.RegistrationRepository;
+import com.mgmtp.cfu.service.CourseService;
 import com.mgmtp.cfu.service.RegistrationService;
 import com.mgmtp.cfu.util.AuthUtils;
 import com.mgmtp.cfu.util.RegistrationValidator;
@@ -22,32 +31,35 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+
+import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getRegistrationOverviewDTOS;
 import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getSortedRegistrations;
-
-
 import java.util.ArrayList;
-
-
 @Service
 public class RegistrationServiceImpl implements RegistrationService {
     private final RegistrationRepository registrationRepository;
     private final MapperFactory<Registration> registrationMapperFactory;
-    private final RegistrationDetailMapper registrationDetailMapper;
     private final RegistrationOverviewMapper registrationOverviewMapper;
+    private final CourseService courseService;
 
     @Autowired
-    public RegistrationServiceImpl(RegistrationRepository registrationRepository, RegistrationOverviewMapper registrationOverviewMapper, MapperFactory<Registration> registrationMapperFactory, RegistrationDetailMapper registrationDetailMapper) {
+    public RegistrationServiceImpl(RegistrationRepository registrationRepository, RegistrationOverviewMapper registrationOverviewMapper, MapperFactory<Registration> registrationMapperFactory, CourseService courseService) {
         this.registrationRepository = registrationRepository;
         this.registrationOverviewMapper = registrationOverviewMapper;
         this.registrationMapperFactory = registrationMapperFactory;
-        this.registrationDetailMapper = registrationDetailMapper;
+        this.courseService = courseService;
     }
+
+
 
     @Override
     public RegistrationDetailDTO getDetailRegistration(Long id) {
@@ -95,6 +107,37 @@ public class RegistrationServiceImpl implements RegistrationService {
                 .toList();
 
         return new PageImpl<>(modifiedResponseContent, pageRequest, registrations.getTotalElements());
+    }
+    @Transactional
+    public Boolean createRegistration(RegistrationRequest registrationRequest) {
+        // Create course if needed
+        var modelMapper = new ModelMapper();
+        CourseRequest courseRequest = CourseRequest.builder().name(registrationRequest.getName())
+                .link(registrationRequest.getLink())
+                .platform(registrationRequest.getPlatform())
+                .thumbnailFile(registrationRequest.getThumbnailFile())
+                .thumbnailUrl(registrationRequest.getThumbnailUrl())
+                .teacherName(registrationRequest.getTeacherName())
+                .categories(registrationRequest.getCategories())
+                .level(registrationRequest.getLevel())
+                .build();
+        CourseResponse course = courseService.createCourse(courseRequest);
+        Registration registration = Registration.builder()
+                .course(modelMapper.map(course, Course.class))
+                .status(RegistrationStatus.SUBMITTED)
+                .registerDate(LocalDate.now())
+                .duration(registrationRequest.getDuration())
+                .durationUnit(registrationRequest.getDurationUnit())
+                .lastUpdated(LocalDateTime.now())
+                .user(AuthUtils.getCurrentUser())
+                .build();
+        Registration savedRegistration = registrationRepository.save(registration);
+        if (savedRegistration == null) {
+            throw new RuntimeException("Cannot create registration");
+        }
+        else {
+            return true;
+        }
     }
 
     @Override

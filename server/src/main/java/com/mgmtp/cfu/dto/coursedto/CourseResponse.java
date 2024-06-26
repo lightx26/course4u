@@ -14,6 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 public class CourseResponse {
+    private Long id;
     private String name;
     private String link;
     private String platform;

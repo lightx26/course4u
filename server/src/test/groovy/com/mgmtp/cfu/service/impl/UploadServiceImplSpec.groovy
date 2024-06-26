@@ -27,7 +27,7 @@ class UploadServiceImplSpec extends Specification {
         String result = uploadService.uploadThumbnail(thumbnail, tempDir.toString())
 
         then:
-        result.endsWith(".png")
+        result.endsWith(".jpg")
     }
     def "should return UUID filename with .jpg extension when thumbnail is null"() {
         when:

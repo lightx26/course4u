@@ -4,6 +4,7 @@ import { cn } from "../../utils";
 import { Skeleton } from "../ui/skeleton";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
+import handleThumbnailUrl from "../../utils/handleThumbnailUrl";
 type PropsType = {
   course: CourseType;
 };
@@ -20,9 +21,9 @@ export default function CourseCardComponent({ course }: PropsType) {
         navigate(`/courses/${id}`);
       }
     };
-  const thumbnailUrl = course.thumbnailUrl?.startsWith("http")
-    ? course.thumbnailUrl
-    : `${import.meta.env.VITE_BACKEND_URL}/thumbnail/${course.thumbnailUrl}`;
+
+  const thumbnailUrl = handleThumbnailUrl(course.thumbnailUrl);
+
   const color =
     course.level?.toLowerCase() === "beginner"
       ? "bg-green-200 text-green-600"

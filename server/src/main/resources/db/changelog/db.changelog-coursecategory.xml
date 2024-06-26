@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- Create Course Table -->
+    <changeSet id="3" author="KhanhDuy">
+        <createTable tableName="Course">
+            <column name="Id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="Name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Link" type="VARCHAR(255)"/>
+            <column name="Platform" type="VARCHAR(255)"/>
+            <column name="ThumbnailUrl" type="VARCHAR(255)"/>
+            <column name="TeacherName" type="VARCHAR(255)"/>
+            <column name="CreatedDate" type="DATE"/>
+            <column name="Status" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Level" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Create Category Table -->
+    <changeSet id="4" author="KhanhDuy">
+        <createTable tableName="Category">
+            <column name="Id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="Name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Create Course_Category Join Table -->
+    <changeSet id="5" author="KhanhDuy">
+        <createTable tableName="Course_Category">
+            <column name="course_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_course_category_course"
+                                 baseTableName="Course_Category" baseColumnNames="course_id"
+                                 referencedTableName="Course" referencedColumnNames="Id"/>
+
+        <addForeignKeyConstraint constraintName="fk_course_category_category"
+                                 baseTableName="Course_Category" baseColumnNames="category_id"
+                                 referencedTableName="Category" referencedColumnNames="Id"/>
+    </changeSet>
+
+</databaseChangeLog>

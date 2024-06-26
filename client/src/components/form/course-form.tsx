@@ -99,8 +99,9 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
     (acceptedFiles: File[], rejectedFiles: File[]) => {
       const file = new FileReader();
       if (rejectedFiles.length > 0) {
-        toast.error("Thumbnail size should be smaller than 10MB!", {
-          description: "Please crop thumbnail before submit again!",
+        toast.error("Unable to process your file request", {
+          description:
+            "The thumbnail size is too large or the format is incorrect. Please edit and upload again.",
           style: {
             color: "red",
             fontWeight: "bold",

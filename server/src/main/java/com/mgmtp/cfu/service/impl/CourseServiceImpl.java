@@ -19,6 +19,8 @@ import com.mgmtp.cfu.service.CategoryService;
 import com.mgmtp.cfu.service.CourseService;
 import com.mgmtp.cfu.service.UploadService;
 import com.mgmtp.cfu.specification.CourseSpecifications;
+import com.mgmtp.cfu.util.AuthUtils;
+import com.mgmtp.cfu.util.RegistrationStatusUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -88,7 +90,12 @@ public class CourseServiceImpl implements CourseService {
             course.setThumbnailUrl(thumbnailUrl);
             course.setCategories(Set.copyOf(categories));
             course.setCreatedDate(LocalDate.now());
-            course.setStatus(CourseStatus.AVAILABLE);
+            if (AuthUtils.getCurrentUser().getRole().toString().equals("ADMIN")){
+                course.setStatus(CourseStatus.AVAILABLE);
+            }
+            else if (AuthUtils.getCurrentUser().getRole().toString().equals("USER")){
+                course.setStatus(CourseStatus.PENDING);
+            }
             course = courseRepository.save(course);
             return modelMapper.map(course, CourseResponse.class);
         } catch (IOException e) {

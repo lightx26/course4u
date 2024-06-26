@@ -9,3 +9,15 @@ export async function fetchListOfMyRegistration(page: number = 1, status: String
     }
 
 }
+export async function createNewRegistration(data: any): Promise<number> {
+    try {
+      const res = await instance.postForm("/registrations", data);
+      return res.status;
+    } catch (error: any) {
+      if (error.response) {
+        return error.response.status;
+      } else {
+        return 503;
+      }
+    }
+  };

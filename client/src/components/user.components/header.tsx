@@ -5,6 +5,7 @@ import { AppDispatch, RootState } from "../../redux/store/store";
 import { handleLogout } from "../../redux/slice/user.slice";
 import { useNavigate } from "react-router-dom";
 import { searchCoursesByFilterNameAndSortBy, updateSearch } from "../../redux/slice/course.slice";
+import { RegistrationModal } from "../modal/registration-modal";
 const HeaderHomepage: React.FC = () => {
   const [isDropdownAvatarOpen, setIsDropdownAvatarOpen] =
     useState<boolean>(false);
@@ -114,12 +115,14 @@ const HeaderHomepage: React.FC = () => {
 
         <div className="flex items-center space-x-4">
           <div className="flex items-center justify-center gap-5">
-            <button
-              className="font-semibold text-white border border-gray-300 rounded-lg w-44 h-11 bg-violet-700"
-              style={{ backgroundColor: "purple" }}
-            >
-              Create a registration
-            </button>
+            <RegistrationModal>
+              <button
+                className="font-semibold text-white border border-gray-300 rounded-lg w-44 h-11 bg-violet-700"
+                style={{ backgroundColor: "purple" }}
+              >
+                Create a registration
+              </button>
+            </RegistrationModal>
             <div className="flex items-center gap-6">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
