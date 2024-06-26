@@ -1,6 +1,7 @@
 package com.mgmtp.cfu.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.mgmtp.cfu.enums.CourseLevel;
 import com.mgmtp.cfu.enums.CourseStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,6 +29,9 @@ public class Course {
     private String link;
     @Column(name = "`Platform`")
     private String platform;
+    @Column(name = "`Level`")
+    @Enumerated(EnumType.STRING)
+    private CourseLevel level;
     @Column(name = "`ThumbnailUrl`")
     private String thumbnailUrl;
     @Column(name = "`TeacherName`")
