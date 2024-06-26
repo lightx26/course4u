@@ -81,7 +81,7 @@ const Registrations = ({ className }: Props) => {
     );
 };
 
-const RegistrationSkeleton = () => {
+export const RegistrationSkeleton = () => {
     return (
         <div className='w-[1352px] pt-5 pb-10 px-10 flex flex-col items-center gap-5 rounded-[30px] mx-auto my-8 border-gray-300 border-2'>
             <Skeleton className='skeleton-title w-3/5 h-10 mb-4'></Skeleton>

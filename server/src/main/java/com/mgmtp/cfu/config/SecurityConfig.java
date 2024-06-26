@@ -48,11 +48,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                
+
                 .headers(header -> header.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers("api/admin/**", "api/admin").hasRole("ADMIN");
                     authorize.requestMatchers("api/accountant/**", "api/accountant").hasRole("ACCOUNTANT");
+                    authorize.requestMatchers("api/auth/","api/auth/**").permitAll();
+                    authorize.requestMatchers("img/**").permitAll();
                     authorize.requestMatchers("api/auth/","api/auth/**", "/h2-console", "/h2-console/**").permitAll();
                     authorize.anyRequest().authenticated();
                 });

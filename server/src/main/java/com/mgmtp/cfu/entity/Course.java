@@ -23,7 +23,7 @@ public class Course {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "`Id`")
+    @Column(name="`Id`")
     private Long id;
 
     @Column(name = "`Name`")
@@ -47,6 +47,14 @@ public class Course {
     @Enumerated(EnumType.STRING)
     @Column(name = "`Status`")
     private CourseStatus status;
+
+    @ManyToMany
+    @JoinTable(
+            name = "Course_Category",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private Set<Category> categories;
     @OneToMany(mappedBy = "course",cascade = CascadeType.ALL)
     @JsonManagedReference
     private Set<Registration> registrations;

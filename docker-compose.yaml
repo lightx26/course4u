@@ -1,5 +1,30 @@
 version: "3.9"
 services:
+  server-dev:
+    build: ./server
+    container_name: cfu-server-dev
+    profiles: ['dev']
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./uploads:/app/uploads
+    environment:
+      - spring.web.resources.static-locations=file:/app/uploads/
+      - uploadDir=/app/uploads/img
+    networks:
+      - cfu
+
+  client-dev:
+    build: ./client
+    container_name: cfu-client-dev
+    profiles: ['dev']
+    ports:
+      - "5173:5173"
+    networks:
+      - cfu
+    depends_on:
+      - server-dev
+
   server-staging:
     image: "da-nang-internship-docker-local.dockerregistry.mgm-tp.com/com.mgmtp.da-nang-internship/com.mgmtp.cfu.server:staging"
     container_name: "server-staging"
@@ -7,7 +32,12 @@ services:
       - .env.staging
     profiles: [ 'staging' ]
     ports:
-      - "8080"
+      - "8080:8080"
+    volumes:
+      - ./uploads:/app/uploads
+    environment:
+      - spring.web.resources.static-locations=file:/app/uploads/
+      - uploadDir=/app/uploads/img
     networks:
       - "cfu"
     labels:

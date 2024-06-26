@@ -3,11 +3,18 @@ package com.mgmtp.cfu.controller
 import com.mgmtp.cfu.dto.AvailableCourseRequest
 import com.mgmtp.cfu.dto.CourseDto
 import com.mgmtp.cfu.dto.CoursePageDTO
+import com.mgmtp.cfu.controller.CourseController
 import com.mgmtp.cfu.service.CourseService
 import com.mgmtp.cfu.util.CoursePageUtil
+import com.mgmtp.cfu.util.CoursePageValidator
+import com.mgmtp.cfu.dto.CourseRequest
+import com.mgmtp.cfu.dto.CourseResponse
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.ModelAttribute
 import spock.lang.Specification
 import spock.lang.Subject
+import spock.lang.Unroll
 
 class CourseControllerSpec extends Specification {
     private CourseService courseServiceMock = Mock(CourseService)
@@ -88,4 +95,30 @@ class CourseControllerSpec extends Specification {
         result.getBody() == null
     }
 
+    def "should return created status and course response when service creates course successfully"() {
+        given:
+        def courseRequest = new CourseRequest(/* initialize with required properties */)
+        def courseResponse = new CourseResponse(/* initialize with required properties */)
+        courseServiceMock.createCourse(courseRequest) >> courseResponse
+
+        when:
+        def responseEntity = courseController.createCourse(courseRequest)
+
+        then:
+        responseEntity.statusCode == HttpStatus.CREATED
+        responseEntity.body == courseResponse
+    }
+
+    def "should return internal server error when service throws exception"() {
+        given:
+        def courseRequest = new CourseRequest(/* initialize with required properties */)
+        courseServiceMock.createCourse(courseRequest) >> { throw new RuntimeException("Service exception") }
+
+        when:
+        def responseEntity = courseController.createCourse(courseRequest)
+
+        then:
+        responseEntity.statusCode == HttpStatus.INTERNAL_SERVER_ERROR
+        responseEntity.body == null
+    }
 }

@@ -2,28 +2,136 @@ package com.mgmtp.cfu.service.impl
 
 import com.mgmtp.cfu.dto.CourseOverviewDTO
 import com.mgmtp.cfu.dto.CoursePageDTO
+import com.mgmtp.cfu.dto.CourseRequest
+import com.mgmtp.cfu.dto.CourseResponse
+import com.mgmtp.cfu.entity.Category
 import com.mgmtp.cfu.entity.Course
 import com.mgmtp.cfu.enums.CoursePageSortOption
+import com.mgmtp.cfu.enums.CourseLevel
+import com.mgmtp.cfu.enums.CourseStatus
 import com.mgmtp.cfu.mapper.factory.MapperFactory
 import com.mgmtp.cfu.mapper.factory.impl.CourseMapperFactory
 import com.mgmtp.cfu.mapper.CourseOverviewMapper
+import com.mgmtp.cfu.repository.CategoryRepository
 import com.mgmtp.cfu.repository.CourseRepository
 import com.mgmtp.cfu.service.CourseService
 import org.springframework.data.domain.PageImpl
+import org.modelmapper.ModelMapper
+import org.springframework.web.multipart.MultipartFile
 import spock.lang.Specification
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 
+import java.time.LocalDate
 import spock.lang.Subject
 
 class CourseServiceImplSpec extends Specification {
     CourseRepository courseRepository = Mock(CourseRepository)
     MapperFactory<Course> courseMapperFactory = Mock(CourseMapperFactory)
     CourseOverviewMapper courseOverviewMapper = Mock(CourseOverviewMapper)
-
+    CategoryRepository categoryRepository = Mock()
+    ModelMapper modelMapper = Mock()
     @Subject
-    CourseService courseService = new CourseServiceImpl(courseRepository, courseMapperFactory)
+    CourseService courseService = new CourseServiceImpl(courseRepository, courseMapperFactory, categoryRepository)
+    def setup() {
+        courseService.uploadDir="./uploads"
+    }
+    def "test createCourse with thumbnail file"() {
+        given:
+        MultipartFile thumbnailFile = Mock(MultipartFile)
+        thumbnailFile.getOriginalFilename() >> "abc.jpg"
+
+        CourseRequest.CategoryCourseRequestDTO javaCategory = new CourseRequest.CategoryCourseRequestDTO()
+        javaCategory.setLabel("Java")
+        javaCategory.setValue("java")
+
+        CourseRequest courseRequest = CourseRequest.builder()
+                .name("Java Programming")
+                .link("https://example.com/java-course")
+                .platform("Udemy")
+                .teacherName("John Doe")
+                .thumbnailFile(thumbnailFile)
+                .status(CourseStatus.PENDING)
+                .level(CourseLevel.INTERMEDIATE)
+                .categories([javaCategory] as List)
+                .build()
+
+        Category mockCategory = new Category(id: 1, name: "Java")
+
+        Course course = Course.builder()
+                .name("Java Programming")
+                .link("https://example.com/java-course")
+                .platform("Udemy")
+                .thumbnailUrl("https://example.com/thumbnail.jpg")
+                .teacherName("John Doe")
+                .createdDate(LocalDate.now())
+                .status(CourseStatus.PENDING)
+                .level(CourseLevel.INTERMEDIATE)
+                .categories(Set.of(mockCategory))
+                .build()
+
+        categoryRepository.findByName(_) >> mockCategory
+        courseRepository.save(_) >> course
+
+        when:
+        CourseResponse courseResponse = courseService.createCourse(courseRequest)
+
+        then:
+        courseResponse != null
+        courseResponse.name == courseRequest.name
+        courseResponse.link == courseRequest.link
+        courseResponse.platform == courseRequest.platform
+        courseResponse.teacherName == courseRequest.teacherName
+        courseResponse.status == courseRequest.status
+        courseResponse.level == courseRequest.level
+    }
+
+
+
+    def "test createCourse with thumbnail URL"() {
+        given:
+        CourseRequest.CategoryCourseRequestDTO javaCategory = new CourseRequest.CategoryCourseRequestDTO()
+        javaCategory.setLabel("Java")
+        javaCategory.setValue("java")
+        CourseRequest courseRequest = CourseRequest.builder()
+                .name("Java Programming")
+                .link("https://example.com/java-course")
+                .platform("Udemy")
+                .teacherName("John Doe")
+                .thumbnailUrl("https://example.com/thumbnail.jpg")
+                .status(CourseStatus.PENDING)
+                .level(CourseLevel.INTERMEDIATE)
+                .categories([javaCategory] as List)
+                .build()
+
+        Category javaCategoryEntity = new Category(name: "Java")
+        Course course = Course.builder()
+                .name("Java Programming")
+                .link("https://example.com/java-course")
+                .platform("Udemy")
+                .thumbnailUrl("https://example.com/thumbnail.jpg")
+                .teacherName("John Doe")
+                .createdDate(LocalDate.now())
+                .status(CourseStatus.PENDING)
+                .level(CourseLevel.INTERMEDIATE)
+                .categories(Set.of(javaCategoryEntity))
+                .build()
+        categoryRepository.findByName(_) >> javaCategoryEntity
+        courseRepository.save(_) >> course
+
+        when:
+        CourseResponse courseResponse = courseService.createCourse(courseRequest)
+
+        then:
+        courseResponse != null
+        courseResponse.name == courseRequest.name
+        courseResponse.link == courseRequest.link
+        courseResponse.platform == courseRequest.platform
+        courseResponse.teacherName == courseRequest.teacherName
+        courseResponse.categories.size() > 0
+        // Verify interactions
+    }
 
     def "Should throw an Exception when Mapper not found"() {
         given:

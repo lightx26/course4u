@@ -14,6 +14,7 @@ import { AppDispatch, RootState } from "./redux/store/store.ts";
 import { fetchUserDetails } from "./redux/slice/user.slice.ts";
 import NotPermitted from "./screens/user.screens/NotPermitted.tsx";
 import NotFound from "./screens/user.screens/NotFound.tsx";
+import CreateCourse from "./components/user.components/create-course.tsx";
 
 export type CourseType = {
   id: string;
@@ -133,6 +134,12 @@ const router = createBrowserRouter(
             </ProtectedRoute>
           ),
         },
+          {
+              path: "create-course",
+              element: (<ProtectedRoute>
+                  <CreateCourse />
+              </ProtectedRoute>),
+          },
       ],
     },
     {

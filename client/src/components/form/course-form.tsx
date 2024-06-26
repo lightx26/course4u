@@ -16,36 +16,28 @@ import {
     SelectTrigger,
     SelectValue,
 } from "../ui/select";
-import { Upload } from "lucide-react";
 import { Button } from "../ui/button";
 import { CropThumbnail } from "../user.components/crop-thumbnail";
 import { z } from "zod";
 import { UseFormReturn } from "react-hook-form";
 import { registrationSchema } from "../../schemas/registration-schema";
+import fetchOpenGraphData from "../../utils/CourseDetail";
+import instance from "../../utils/customizeAxios";
+import { ArrowRightToLine, Upload } from "lucide-react";
+import { Skeleton } from "../ui/skeleton";
 
 const courseSchema = registrationSchema.omit({
     duration: true,
     durationUnit: true,
 });
+
 type Props = {
     form: UseFormReturn<z.infer<typeof courseSchema>> | undefined;
     course?: z.infer<typeof courseSchema>;
     isEdit: boolean;
+    registrationStatus?: string;
 };
 
-const categoryOptions: Option[] = [
-    { label: "Java", value: "java", disable: true },
-    { label: "React", value: "react" },
-    { label: "Remix", value: "remix" },
-    { label: "Vite", value: "vite" },
-    { label: "Nuxt", value: "nuxt" },
-    { label: "Vue", value: "vue" },
-    { label: "Svelte", value: "svelte" },
-    { label: "Angular", value: "angular" },
-    { label: "Ember", value: "ember", disable: true },
-    { label: "Gatsby", value: "gatsby", disable: true },
-    { label: "Astro", value: "astro" },
-];
 type Thumbnail = {
     imageUrl: string | null;
     croppedImageUrl: string | null;
@@ -53,13 +45,18 @@ type Thumbnail = {
     zoom?: number;
     aspect?: { value: number; text: string };
 };
+
 const initData: Thumbnail = {
     imageUrl: null,
     croppedImageUrl: null,
 };
+
 export const CourseForm = ({ form, course, isEdit }: Props) => {
     const [thumbnail, setThumbnail] = useState<Thumbnail>(initData);
     const [isOpen, setIsOpen] = useState(false);
+    const [categories, setCategories] = useState<Option[]>([]);
+    const [loading, setLoading] = useState(false);
+
     useEffect(() => {
         if (course) {
             setThumbnail({
@@ -71,17 +68,39 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
             });
         }
     }, [course]);
-    const onDrop = useCallback((acceptedFiles: File[]) => {
-        // Do something with the files
-        const file = new FileReader();
-        file.onload = () => {
-            setThumbnail({ ...thumbnail, imageUrl: file.result as string });
-            form!.setValue("thumbnailUrl", file.result as string);
-            setIsOpen(true);
-        };
 
-        file.readAsDataURL(acceptedFiles[0]);
+    useEffect(() => {
+        setLoading(true);
+        const getCategories = async () => {
+            try {
+                const response = await instance.get("/categories");
+                const categories = response.data.map((category: Option) => ({
+                    label: category,
+                    value: category,
+                }));
+                setCategories(categories);
+            } catch (error) {
+                console.error("Failed to fetch categories:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        getCategories();
     }, []);
+
+    const onDrop = useCallback(
+        (acceptedFiles: File[]) => {
+            const file = new FileReader();
+            file.onload = () => {
+                setThumbnail({ ...thumbnail, imageUrl: file.result as string });
+                form!.setValue("thumbnailUrl", file.result as string);
+                setIsOpen(true);
+            };
+
+            file.readAsDataURL(acceptedFiles[0]);
+        },
+        [form, thumbnail]
+    );
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
@@ -91,10 +110,12 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
         },
         maxSize: 10 * 1024 * 1024,
     });
+
     const onDeleteImage = () => {
         setThumbnail({ ...thumbnail, imageUrl: null });
         form!.setValue("thumbnailUrl", "");
     };
+
     const setCroppedImageFor = (
         crop: { x: number; y: number },
         zoom: number,
@@ -113,6 +134,35 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
         form!.setValue("thumbnailUrl", croppedImageUrl);
         setIsOpen(false);
     };
+
+    const handleCourseLink = async () => {
+        setLoading(true);
+        const courseLink = form?.watch("link");
+        try {
+            const data = await fetchOpenGraphData(courseLink!);
+            if (data) {
+                if (data.title != null) form?.setValue("name", data.title);
+                if (data.url != null) form?.setValue("link", data.url);
+                if (data.site_name != null)
+                    form?.setValue("platform", data.site_name);
+                if (data.image) {
+                    setThumbnail({
+                        ...thumbnail,
+                        imageUrl: data.image,
+                    });
+                    form?.setValue("thumbnailUrl", data.image);
+                }
+            }
+        } catch (error) {
+            console.error("Error fetching Open Graph data:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (loading) {
+        return <CourseSkeleton />;
+    }
     return (
         <>
             <div className='space-y-4'>
@@ -125,12 +175,27 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                                 Link <span className='text-red-500'>*</span>
                             </FormLabel>
                             <FormControl>
-                                <Input
-                                    placeholder='Course Link'
-                                    {...field}
-                                    className='w-full'
-                                    disabled={!isEdit}
-                                />
+                                <div className='w-full relative'>
+                                    <Input
+                                        placeholder='Course Link'
+                                        {...field}
+                                        className='w-full flex-1'
+                                        disabled={!isEdit}
+                                    />
+                                    <Button
+                                        type='button'
+                                        onClick={handleCourseLink}
+                                        size='sm'
+                                        variant='default'
+                                        className='absolute right-0 top-1/2 transform -translate-y-1/2 cursor-pointer text-violet-600 bg-violet-200 hover:bg-violet-600 hover:text-white'
+                                        disabled={!isEdit}
+                                    >
+                                        <ArrowRightToLine
+                                            width={20}
+                                            height={20}
+                                        />
+                                    </Button>
+                                </div>
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -194,8 +259,14 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                                     </FormLabel>
                                     <Select
                                         onValueChange={field.onChange}
-                                        defaultValue={course?.platform}
-                                        value={course?.platform}
+                                        defaultValue={
+                                            course?.platform ||
+                                            form?.watch("platform")
+                                        }
+                                        value={
+                                            course?.platform ||
+                                            form?.watch("platform")
+                                        }
                                         disabled={!isEdit}
                                     >
                                         <FormControl>
@@ -260,7 +331,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                     </div>
                     <FormField
                         control={form!.control}
-                        name='category'
+                        name='categories'
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>
@@ -270,7 +341,8 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                                 <FormControl>
                                     <MultipleSelector
                                         {...field}
-                                        defaultOptions={categoryOptions}
+                                        defaultOptions={categories}
+                                        options={categories}
                                         placeholder='Select category you like...'
                                         creatable={true}
                                         disabled={!isEdit}
@@ -360,6 +432,34 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                         >
                             Delete Image
                         </Button>
+                    </div>
+                </div>
+            </div>
+        </>
+    );
+};
+
+const CourseSkeleton = () => {
+    return (
+        <>
+            <div className='space-y-12 w-full'>
+                <Skeleton className='skeleton-input w-full h-12 mb-4'></Skeleton>
+                <Skeleton className='skeleton-input w-full h-12 mb-4'></Skeleton>
+                <Skeleton className='skeleton-input w-full h-12 mb-4'></Skeleton>
+            </div>
+            <div className='flex w-full gap-6 space-y-2'>
+                <div className='w-[60%] flex justify-between flex-col mt-4'>
+                    <div className='flex gap-4'>
+                        <Skeleton className='skeleton-select w-[50%] h-12 mb-4'></Skeleton>
+                        <Skeleton className='skeleton-select w-[50%] h-12 mb-4'></Skeleton>
+                    </div>
+                    <Skeleton className='skeleton-input w-full h-12'></Skeleton>
+                </div>
+                <div className='w-[40%] flex gap-4 space-y-4'>
+                    <Skeleton className='skeleton-thumbnail w-full h-[192px] rounded-xl'></Skeleton>
+                    <div className='flex flex-col gap-5 w-full'>
+                        <Skeleton className='skeleton-text h-16'></Skeleton>
+                        <Skeleton className='skeleton-button w-28 h-10'></Skeleton>
                     </div>
                 </div>
             </div>

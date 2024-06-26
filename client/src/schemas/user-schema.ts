@@ -1,10 +1,12 @@
 import { z } from "zod";
 
 export const userRegistrationSchema = z.object({
-    avatarUrl: z.string(),
-    email: z.string().email(),
-    role: z.string(),
-    telephone: z.string(),
     username: z.string(),
-    id: z.number(),
+    email: z.string().email(),
+    telephone: z.string(),
+    avatarUrl: z.string(),
+    dateOfBirth: z.string(),
+    role: z.string(),
+    gender: z.string(),
+    id:z.number()
 });

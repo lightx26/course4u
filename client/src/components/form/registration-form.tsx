@@ -47,7 +47,7 @@ export const RegistrationsForm = ({
             link: "",
             level: "BEGINNER",
             platform: "",
-            category: [],
+            categories: [],
             duration: 1,
             durationUnit: "DAY",
             thumbnailUrl: "",
@@ -80,6 +80,7 @@ export const RegistrationsForm = ({
                     form={form}
                     course={course}
                     isEdit={isEdit}
+                    registrationStatus={status}
                 />
                 <div className='flex w-[60%] pr-4 gap-2'>
                     <FormField

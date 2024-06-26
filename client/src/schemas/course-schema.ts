@@ -20,6 +20,6 @@ export const courseSchema = z.object({
             "Level must be one of 'beginner', 'intermediate', or 'advanced'!",
     }),
     platform: z.string({ message: "Platform required!" }),
-    category: z.array(optionSchema).min(1),
+    categories: z.array(optionSchema).min(1),
     thumbnailUrl: z.string(),
 });

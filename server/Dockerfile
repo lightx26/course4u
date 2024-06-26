@@ -1,10 +1,14 @@
-# Stage 1: Build
-# Stage 2: Run
-FROM openjdk:17-jdk-alpine
+FROM openjdk:17-jdk-slim
 
 WORKDIR /app
 
 COPY build/libs/server-0.0.1-SNAPSHOT.jar ./
+
+# Create uploads directory
+RUN mkdir -p ./uploads/img
+
+# Ensure permissions
+RUN chmod -R 777 ./uploads/img
 
 EXPOSE 8080
 
