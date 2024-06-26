@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.domain.Pageable;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
-    public Page<Course> findByStatus(CourseStatus status, Pageable pageable);
+    Page<Course> findByStatus(CourseStatus status, Pageable pageable);
 }
