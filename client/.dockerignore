@@ -1,8 +1,8 @@
 # Ignore node_modules
 node_modules
 
-# Ignore build output (if exists)
-dist
+## Ignore build output (if exists)
+#dist
 
 # Ignore logs
 logs
