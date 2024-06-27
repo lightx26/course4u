@@ -1,0 +1,63 @@
+version: "3.9"
+services:
+  server-dev:
+    build: ./server
+    container_name: cfu-server-dev
+    profiles: ['dev']
+    ports:
+      - "8080"
+    networks:
+      - cfu
+  client-dev:
+    build: ./client
+    container_name: cfu-client-dev
+    profiles: ['dev']
+    ports:
+      - "5173"
+    networks:
+        - cfu
+    depends_on:
+      - server-dev
+
+  server-staging:
+    build: ./server
+    container_name: cfu-server-staging
+    profiles: ['staging']
+    ports:
+      - "8080"
+    networks:
+      - cfu
+  client-staging:
+    build: ./client
+    container_name: cfu-client-staging
+    profiles: ['staging']
+    ports:
+      - "5173"
+    networks:
+        - cfu
+    depends_on:
+      - server-staging
+
+  server-test:
+    build: ./server
+    container_name: cfu-client-testing
+    profiles: [ 'testing' ]
+    ports:
+      - "8080"
+    networks:
+      - cfu
+  client-test:
+    build: ./client
+    container_name: cfu-client-testing
+    profiles: [ 'testing' ]
+    ports:
+      - "5173"
+    networks:
+      - cfu
+    depends_on:
+      - server-test
+
+networks:
+    cfu:
+        external: true
+        name: cfu
