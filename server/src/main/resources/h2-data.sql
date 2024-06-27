@@ -8,6 +8,6 @@ VALUES ('Java', 'https://www.udemy.com/course/java-the-complete-java-developer-c
         'AVAILABLE');
 
 INSERT INTO "Registration" ("CourseId", "RegisterDate", "Status", "StartDate", "EndDate", "Score", "Duration")
-VALUES (1, '2021-01-01', 'CANCELLED', '2021-01-01', '2021-01-31', 20, 15),
+VALUES (1, '2021-01-01', 'DISCARDED', '2021-01-01', '2021-01-31', 20, 15),
        (2, '2021-01-02', 'DONE', '2021-01-01', '2021-01-31', 30, 13),
        (3, '2021-01-04', 'VERIFIED', '2021-01-01', '2021-01-31', 40, 200);
