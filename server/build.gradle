@@ -1,7 +1,9 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot' version '3.3.0'
-    id 'io.spring.dependency-management' version '1.1.5'
+	id 'java'
+	id 'org.springframework.boot' version '3.3.0'
+	id 'io.spring.dependency-management' version '1.1.5'
+	id 'groovy' // Groovy for testing
+	id 'jacoco' // Jacoco for code coverage
 }
 
 group = 'com.mgmtp.cfu'
@@ -30,7 +32,60 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'com.h2database:h2'
 
+	testImplementation(
+			// JUnit
+			'junit:junit:4.13.2',
+
+			// Spock
+			'org.spockframework:spock-core:2.4-M1-groovy-4.0',
+			'org.spockframework:spock-spring:2.4-M1-groovy-4.0',
+
+			// Spring boot test
+			'org.springframework.boot:spring-boot-starter-test'
+	)
     // Lombok
     compileOnly 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
 }
+
+// Specifying source sets to not run .java test files
+sourceSets {
+	test{
+		java{
+			srcDirs = []
+		}
+		groovy{
+			srcDirs = ['src/test/groovy']
+		}
+	}
+}
+
+// Specifying tasks
+tasks.named('test'){
+	useJUnitPlatform()
+	testLogging {
+		events "started", "passed", "skipped", "failed"
+	}
+	finalizedBy 'jacocoTestReport'
+}
+
+
+jacocoTestReport{
+	dependsOn 'test'
+	reports{
+		html.required.set(true)
+	}
+}
+
+jacocoTestCoverageVerification {
+	dependsOn 'test'
+	violationRules {
+		rule {
+			limit {
+				minimum = 0.8
+			}
+		}
+	}
+}
+
+tasks.check.dependsOn jacocoTestCoverageVerification
