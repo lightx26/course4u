@@ -14,7 +14,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class CourseDTO {
-//    private Long id;
     private String name;
     private String link;
     private String platform;
