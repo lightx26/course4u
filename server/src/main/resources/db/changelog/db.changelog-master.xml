@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="1" author="Quang Nguyen">
+        <createTable tableName="Course">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="Name" type="VARCHAR(200)"/>
+            <column name="Link" type="VARCHAR(200)"/>
+            <column name="Platform" type="VARCHAR(30)"/>
+            <column name="ThumbnailUrl" type="VARCHAR(200)"/>
+            <column name="TeacherName" type="VARCHAR(100)"/>
+            <column name="CreatedDate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="Status" type="VARCHAR(30)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="Quang Nguyen">
+        <createTable tableName="User">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="Username" type="VARCHAR(200)"/>
+            <column name="Password" type="VARCHAR(200)"/>
+            <column name="FullName" type="VARCHAR(50)"/>
+            <column name="AvatarUrl" type="VARCHAR(200)"/>
+            <column name="Email" type="VARCHAR(200)"/>
+            <column name="Role" type="VARCHAR(20)"/>
+            <column name="DateOfBirth" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="Gender" type="VARCHAR(20)"/>
+            <column name="Telephone" type="VARCHAR(20)"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

@@ -1,9 +1,10 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.3.0'
-	id 'io.spring.dependency-management' version '1.1.5'
-	id 'groovy' // Groovy for testing
-	id 'jacoco' // Jacoco for code coverage
+    id 'java'
+    id 'org.springframework.boot' version '3.3.0'
+    id 'io.spring.dependency-management' version '1.1.5'
+    id 'org.liquibase.gradle' version '2.2.0'
+    id 'groovy' // Groovy for testing
+    id 'jacoco' // Jacoco for code coverage
 }
 
 group = 'com.mgmtp.cfu'
@@ -31,7 +32,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'com.h2database:h2'
-
+    runtimeOnly 'org.postgresql:postgresql'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.3'
+    liquibaseRuntime 'org.postgresql:postgresql'
+    liquibaseRuntime 'org.liquibase:liquibase-core'
+    liquibaseRuntime 'info.picocli:picocli:4.7.5'
 	testImplementation(
 			// JUnit
 			'junit:junit:4.13.2',
@@ -46,6 +51,23 @@ dependencies {
     // Lombok
     compileOnly 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
+}
+
+def lb_props = new Properties()
+file("./src/main/resources/liquibase.properties").withInputStream { stream ->
+    lb_props.load(stream)
+}
+
+liquibase {
+    activities {
+        main {
+            changelogFile lb_props['changelogFile']
+            url lb_props['db.url']
+            username lb_props['db.username']
+            password lb_props['db.password']
+        }
+    }
+    runList = 'main'
 }
 
 // Specifying source sets to not run .java test files
