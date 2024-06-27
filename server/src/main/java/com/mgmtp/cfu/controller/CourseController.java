@@ -26,12 +26,12 @@ public class CourseController {
         this.courseService = courseService;
     }
 
-    @GetMapping
+    @GetMapping("/available")
     public ResponseEntity<List<CourseDTO>> getAvailableCourses(@RequestParam(defaultValue = "1") int page) {
         return ResponseEntity.ok(courseService.getAvailableCoursesPage(page, COURSE_PAGE_SIZE));
     }
 
-    @GetMapping("/page-count")
+    @GetMapping("/available/page-count")
     public ResponseEntity<Integer> getAvailableCoursesPageCount() {
         return ResponseEntity.ok(courseService.getAvailableCoursesPageCount(COURSE_PAGE_SIZE));
     }
