@@ -6,6 +6,18 @@ import com.mgmtp.cfu.entity.Registration
 import com.mgmtp.cfu.entity.User
 import com.mgmtp.cfu.enums.RegistrationStatus
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper
+import com.mgmtp.cfu.dto.RegistrationOverviewDTO
+import com.mgmtp.cfu.entity.Course
+import com.mgmtp.cfu.entity.Registration
+import com.mgmtp.cfu.entity.User
+import com.mgmtp.cfu.enums.RegistrationStatus
+import com.mgmtp.cfu.mapper.RegistrationOverviewMapper
+import com.mgmtp.cfu.dto.RegistrationOverviewDTO
+import com.mgmtp.cfu.entity.Course
+import com.mgmtp.cfu.entity.Registration
+import com.mgmtp.cfu.entity.User
+import com.mgmtp.cfu.enums.RegistrationStatus
+import com.mgmtp.cfu.mapper.RegistrationOverviewMapper
 import com.mgmtp.cfu.dto.RegistrationDetailDTO
 import com.mgmtp.cfu.entity.Registration
 import com.mgmtp.cfu.exception.RegistrationNotFoundException
@@ -69,6 +81,83 @@ class RegistrationServiceImplSpec extends Specification {
             def ex = thrown(IllegalStateException)
             ex.message == "No mapper found for registrationDtoMapperOpt"
     }
+
+    def "should return number of legit registration in a course"() {
+        given:
+        int courseId = 1
+        int enrollmentCount = 10
+        registrationRepository.countLegitRegistrationInCourse(courseId) >> enrollmentCount
+
+        when:
+        int result = registrationService.countLegitRegistrationInCourse(courseId)
+
+        then:
+        result == enrollmentCount
+    }
+    def "test getMyRegistrationPage with default status"() {
+        given: "a mock user and registration data"
+        def userId = 1
+        def status = "DEFAULT"
+        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).startDate(LocalDate.now()).build()
+        def authentication = Mock(Authentication) {
+            getCredentials() >> User.builder().id(userId).build()
+        }
+        SecurityContextHolder.context.authentication = authentication
+        registrationRepository.getByUserId(userId) >> List.of(registrations)
+        when:
+        def result = registrationService.getMyRegistrationPage(1, status)
+        then:
+        result.list.size() == 1
+        result.totalElements == 1
+    }
+
+    def "test getMyRegistrationPage with specific status"() {
+        given:
+        def userId = 1
+        def status = "APPROVED"
+        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDate.now()).build()
+        def registrayion2= Registration.builder().id(2).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDate.now()).build()
+
+        def authentication = Mock(Authentication) {
+            getCredentials() >> User.builder().id(userId).build()
+        }
+        SecurityContextHolder.context.authentication = authentication
+        registrationRepository.getByUserId(userId) >> List.of(registrations,registrayion2)
+        registrationOverviewMapper.toDTO(_)>> RegistrationOverviewDTO.builder().id(1).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDate.now()).build()
+        when:
+        def result = registrationService.getMyRegistrationPage(1, status)
+
+        then:
+        result.list.size() == 2
+        result.list[0].status == RegistrationStatus.APPROVED
+        result.totalElements == 2
+    }
+
+    def "test getMyRegistrationPage with invalid status"() {
+        given: "a mock user and registration data"
+        def userId = 1
+        def status = "APPROVaaaED"
+        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).startDate(LocalDate.now()).build()
+        def authentication = Mock(Authentication) {
+            getCredentials() >> User.builder().id(userId).build()
+        }
+        SecurityContextHolder.context.authentication = authentication
+        registrationRepository.getByUserId(userId) >> List.of(registrations)
+
+        when:
+        registrationService.getMyRegistrationPage(0, status)
+
+        then:
+        thrown(IllegalArgumentException)
+    }
+
+
+
+    RegistrationRepository registrationRepository = Mock(RegistrationRepository)
+    RegistrationOverviewMapper registrationOverviewMapper=Mock(RegistrationOverviewMapper)
+
+    @Subject
+    RegistrationService registrationService = new RegistrationServiceImpl(registrationRepository,registrationOverviewMapper)
 
     def "should return number of legit registration in a course"() {
         given:

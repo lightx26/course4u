@@ -12,6 +12,9 @@ import com.mgmtp.cfu.exception.RegistrationNotFoundException;
 import com.mgmtp.cfu.mapper.DTOMapper;
 import com.mgmtp.cfu.mapper.factory.MapperFactory;
 import com.mgmtp.cfu.mapper.factory.impl.RegistrationMapperFactory;
+import com.mgmtp.cfu.dto.PageResponse;
+import com.mgmtp.cfu.enums.RegistrationStatus;
+import com.mgmtp.cfu.mapper.RegistrationOverviewMapper;
 import com.mgmtp.cfu.repository.RegistrationRepository;
 import com.mgmtp.cfu.service.RegistrationService;
 import com.mgmtp.cfu.util.AuthUtils;
@@ -21,8 +24,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-
 import java.util.Objects;
+
+import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getRegistrationOverviewDTOS;
+
 
 import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getRegistrationOverviewDTOS;
 
