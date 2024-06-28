@@ -1,7 +1,7 @@
 package com.mgmtp.cfu.controller;
 
 
-import com.mgmtp.cfu.dto.CourseDTO;
+import com.mgmtp.cfu.dto.CourseOverviewDTO;
 import com.mgmtp.cfu.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,7 +27,7 @@ public class CourseController {
     }
 
     @GetMapping("/available")
-    public ResponseEntity<List<CourseDTO>> getAvailableCourses(@RequestParam(defaultValue = "1") int page) {
+    public ResponseEntity<List<CourseOverviewDTO>> getAvailableCourses(@RequestParam(defaultValue = "1") int page) {
         return ResponseEntity.ok(courseService.getAvailableCoursesPage(page, COURSE_PAGE_SIZE));
     }
 
