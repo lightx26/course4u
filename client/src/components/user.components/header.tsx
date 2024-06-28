@@ -34,16 +34,16 @@ const HeaderHomepage: React.FC = () => {
             <path
               d="M10.875 18.75C15.2242 18.75 18.75 15.2242 18.75 10.875C18.75 6.52576 15.2242 3 10.875 3C6.52576 3 3 6.52576 3 10.875C3 15.2242 6.52576 18.75 10.875 18.75Z"
               stroke="#1D2026"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
             <path
               d="M16.4431 16.4434L20.9994 20.9997"
               stroke="#1D2026"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
           </svg>
           <input
@@ -100,72 +100,72 @@ const HeaderHomepage: React.FC = () => {
                   <path
                     d="M19.5089 35.583C19.5089 35.9223 19.444 36.2582 19.3179 36.5716C19.1918 36.885 19.007 37.1698 18.774 37.4097C18.5411 37.6496 18.2645 37.8399 17.9601 37.9697C17.6557 38.0995 17.3295 38.1663 17 38.1663"
                     stroke="black"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                   <path
                     d="M14.4911 35.583C14.4911 35.9223 14.556 36.2582 14.6821 36.5716C14.8082 36.885 14.993 37.1698 15.226 37.4097C15.4589 37.6496 15.7355 37.8399 16.0399 37.9697C16.3443 38.0995 16.6705 38.1663 17 38.1663"
                     stroke="black"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                   <path
                     d="M14.4912 33V35.5833"
                     stroke="black"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                   <path
                     d="M19.5089 33L19.5089 35.5833"
                     stroke="black"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                   <path
                     d="M32.0531 30.417C27.0354 33.0003 19.5089 33.0003 17 33.0003"
                     stroke="black"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                   <path
                     d="M32.0532 30.4171C32.0532 25.2505 27.0355 27.8338 27.0355 14.9171C27.0355 9.14061 22.0178 4.58398 19.5089 4.58398"
                     stroke="black"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                   <path
                     d="M1.9469 30.417C6.9646 33.0003 14.4912 33.0003 17 33.0003"
                     stroke="black"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                   <path
                     d="M1.9469 30.4161C1.9469 25.2495 6.9646 27.8328 6.9646 14.9161C6.9646 9.13964 11.9823 4.58301 14.4912 4.58301"
                     stroke="black"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                   <path
                     d="M14.4911 4.58301C14.4911 3.89787 14.7555 3.24078 15.226 2.75632C15.6965 2.27185 16.3346 1.99967 17 1.99967"
                     stroke="black"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                   <path
                     d="M19.5089 4.58301C19.5089 3.89787 19.2445 3.24078 18.774 2.75632C18.3035 2.27185 17.6654 1.99967 17 1.99967"
                     stroke="black"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                 </svg>
                 <div
@@ -191,11 +191,11 @@ const HeaderHomepage: React.FC = () => {
             </div>
           </div>
 
-          <div className="relative">
+          <div className="relative w-[40px] h-[40px] rounded-[50%]">
             <img
               src={imageLogo}
               alt="User Avatar"
-              className="h-10 w-10 rounded-full cursor-pointer"
+              className="absolute left-0 right-0 object-cover object-center w-full h-full cursor-pointer rounded-[50%]"
               onClick={toggleDropdown}
             />
 
@@ -296,9 +296,9 @@ const HeaderHomepage: React.FC = () => {
                       <path
                         d="M23 12H5.4M23 12L15.96 4.66667M23 12L15.96 19.3333M8.04 23H1V1H8.04"
                         stroke="#141718"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       />
                     </svg>
                     <div className="font-medium w-full">Sign out</div>

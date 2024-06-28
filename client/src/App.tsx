@@ -1,9 +1,29 @@
-import Counter from "../src/screens/user.screens/counter.tsx";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
-import HeaderHomepage from "../src/components/user.components/header.tsx";
+import HeaderHomepage from "./components/user.components/header";
+import HomepageScreen from "./screens/user.screens/HomepageScreen";
 import Login from "./screens/user.screens/Login.tsx";
 import "./assets/css/App.css";
-import Counter from "./components/counter";
+
+export type CourseType = {
+  id: string;
+  name: string;
+  thumbnailUrl: string;
+  assignee?: {
+    id: string;
+    name: string;
+    avatarUrl: string;
+    role?: string;
+    status?: string;
+  };
+  platform: string;
+  period: {
+    startDay: Date;
+    endDay: Date;
+  };
+  rating?: number;
+  studentNumber?: number;
+  level?: string;
+}
 
 const LayoutUser = () => {
   return (
@@ -22,8 +42,8 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Counter />,
-      },
+        element: <HomepageScreen />,
+      }
     ],
   },
   {
