@@ -1,6 +1,6 @@
 package com.mgmtp.cfu.controller
 
-
+import com.mgmtp.cfu.dto.CourseDto
 import com.mgmtp.cfu.dto.CoursePageDTO
 import com.mgmtp.cfu.service.CourseService
 import com.mgmtp.cfu.util.CoursePageValidator
@@ -51,4 +51,30 @@ class CourseControllerSpec extends Specification {
         response.getStatusCode().value() == 422
         response.getBody() == "Invalid page size. Page size must be between 1 and ${CoursePageValidator.getMaxPageSize()}"
     }
+
+    def "Get courseDto by Id if course exists"() {
+        given:
+        // courseService.getCourseDtoById(_) >> CourseDto.builder().name("Tim Buchalka").build()
+        def courseId = 1
+        CourseDto courseDto = courseServiceMock.getCourseDtoById(courseId)
+
+        when:
+        ResponseEntity<CourseDto> result = courseController.getCourseDtoById(courseId)
+
+        then:
+        result.getBody() == courseDto
+    }
+
+    def "Get courseDto by Id if course is not exist"() {
+        given:
+        def courseId = 100
+        courseServiceMock.getCourseDtoById(courseId) >> null
+
+        when:
+        ResponseEntity<CourseDto> result = courseController.getCourseDtoById(courseId)
+
+        then:
+        result.getBody() == null
+    }
+
 }

@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -19,14 +20,18 @@ import java.util.Set;
 @Builder
 @Table(name = "`Course`")
 public class Course {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "`Id`")
     private Long id;
+
     @Column(name = "`Name`")
     private String name;
+
     @Column(name = "`Link`")
     private String link;
+
     @Column(name = "`Platform`")
     private String platform;
     @Column(name = "`Level`")
@@ -38,10 +43,19 @@ public class Course {
     private String teacherName;
     @Column(name = "`CreatedDate`")
     private LocalDate createdDate;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "`Status`")
     private CourseStatus status;
     @OneToMany(mappedBy = "course",cascade = CascadeType.ALL)
     @JsonManagedReference
-    Set<Registration> registrations;
+    private Set<Registration> registrations;
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "`Category_Course`",
+               joinColumns = @JoinColumn(name = "`CourseId`"),
+               inverseJoinColumns = @JoinColumn(name = "`CategoryId`"))
+    @JsonManagedReference
+    private List<Category> categories;
+
 }

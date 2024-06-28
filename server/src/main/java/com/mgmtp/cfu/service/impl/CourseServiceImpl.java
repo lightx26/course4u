@@ -1,8 +1,10 @@
 package com.mgmtp.cfu.service.impl;
 
+import com.mgmtp.cfu.dto.CourseDto;
 import com.mgmtp.cfu.dto.CourseOverviewDTO;
 import com.mgmtp.cfu.dto.CoursePageDTO;
 import com.mgmtp.cfu.entity.Course;
+import com.mgmtp.cfu.exception.CourseNotFoundException;
 import com.mgmtp.cfu.enums.CourseStatus;
 import com.mgmtp.cfu.mapper.DTOMapper;
 import com.mgmtp.cfu.mapper.factory.MapperFactory;
@@ -12,14 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CourseServiceImpl implements CourseService {
+
     private final CourseRepository courseRepository;
     private final MapperFactory<Course> courseMapperFactory;
 
@@ -46,6 +49,17 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public CourseDto getCourseDtoById(Long id) {
+        Optional<Course> optCourse = courseRepository.findById(id);
+        if (optCourse.isPresent()) {
+            Course course = optCourse.get();
+            return new CourseDto(course.getId(), course.getName(), course.getLink(), course.getPlatform(), course.getThumbnailUrl(), course.getTeacherName(),
+                                 course.getCreatedDate(), course.getStatus(), course.getLevel(), course.getCategories());
+        }
+        throw new CourseNotFoundException("course with id " + id + " not found");
+    }
+
+    @Override
     public CoursePageDTO getAvailableCoursesPage(int pageNo, int pageSize) {
 
         Optional<DTOMapper<CourseOverviewDTO, Course>> courseMapperOpt = courseMapperFactory.getDTOMapper(CourseOverviewDTO.class);
@@ -64,4 +78,5 @@ public class CourseServiceImpl implements CourseService {
                 .totalElements(coursePage.getTotalElements())
                 .build();
     }
+
 }

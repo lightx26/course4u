@@ -43,5 +43,13 @@ VALUES (1, 1,'2021-01-01', 'DISCARDED', '2021-01-01', '2021-01-31', 20, 15),
        (3, 1,'2021-01-04', 'DRAFT', '2021-01-01', '2021-01-31', 40, 200),
        (3, 1,'2021-01-04', 'DECLINED', '2021-01-01', '2021-01-31', 40, 200),
        (3, 1,'2021-01-04', 'VERIFIED', '2021-01-01', '2021-01-31', 40, 200);
+
+INSERT INTO "Category"("Name")
+VALUES ('IT'), ('Science'), ('Physics');
+
+INSERT INTO "Category_Course"("CourseId", "CategoryId")
+VALUES (1, 1), (1, 2), (1, 3);
+
+
 --user user_password
 --admin admin_password

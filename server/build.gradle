@@ -44,28 +44,28 @@ dependencies {
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
     testImplementation(
-			// JUnit
-			'junit:junit:4.13.2',
+            // JUnit
+            'junit:junit:4.13.2',
 
-			// Spock
-			'org.spockframework:spock-core:2.4-M1-groovy-4.0',
-			'org.spockframework:spock-spring:2.4-M1-groovy-4.0',
+            // Spock
+            'org.spockframework:spock-core:2.4-M1-groovy-4.0',
+            'org.spockframework:spock-spring:2.4-M1-groovy-4.0',
 
-			// Spring boot test
-			'org.springframework.boot:spring-boot-starter-test'
-	)
+            // Spring boot test
+            'org.springframework.boot:spring-boot-starter-test'
+    )
 }
 
 // Specifying source sets to not run .java test files
 sourceSets {
-	test{
-		java{
-			srcDirs = []
-		}
-		groovy{
-			srcDirs = ['src/test/groovy']
-		}
-	}
+    test{
+        java{
+            srcDirs = []
+        }
+        groovy{
+            srcDirs = ['src/test/groovy']
+        }
+    }
 }
 
 // Specifying tasks
@@ -79,7 +79,7 @@ tasks.named('test'){
 
 
 jacocoTestReport{
-	dependsOn 'test'
+    dependsOn 'test'
 
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
@@ -95,13 +95,13 @@ jacocoTestReport{
         }))
     }
 
-	reports{
-		html.required.set(true)
-	}
+    reports{
+        html.required.set(true)
+    }
 }
 
 jacocoTestCoverageVerification {
-	dependsOn 'test'
+    dependsOn 'test'
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
@@ -115,13 +115,13 @@ jacocoTestCoverageVerification {
             ])
         }))
     }
-	violationRules {
-		rule {
-			limit {
-				minimum = 0.8
-			}
-		}
-	}
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.8
+            }
+        }
+    }
 }
 
 tasks.check.dependsOn jacocoTestCoverageVerification

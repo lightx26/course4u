@@ -1,22 +1,27 @@
 package com.mgmtp.cfu.controller;
 
+import com.mgmtp.cfu.dto.CourseDto;
 import com.mgmtp.cfu.service.CourseService;
 import com.mgmtp.cfu.util.CoursePageValidator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/courses")
+@RequestMapping("/api/courses")
 public class CourseController {
     private final CourseService courseService;
 
-    @Autowired
     public CourseController(CourseService courseService) {
         this.courseService = courseService;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CourseDto> getCourseDtoById(@PathVariable Long id) {
+        return ResponseEntity.ok(courseService.getCourseDtoById(id));
     }
 
     @GetMapping("/available")
@@ -31,4 +36,5 @@ public class CourseController {
 
         return ResponseEntity.ok(courseService.getAvailableCoursesPage(page, pageSize));
     }
+
 }

@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
@@ -16,7 +17,12 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler({IllegalArgumentException.class, BadCredentialsException.class})
     public ResponseEntity<?> handleIllegalArgumentException(final Exception e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsePre + e.getMessage() + "\"}");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsePre + e.getMessage() + "\"}"); }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleCourseNotFoundException(CourseNotFoundException cnfe) {
+        ErrorResponse response = new ErrorResponse(HttpStatus.NOT_FOUND.value(), cnfe.getMessage(), ErrorResponse.now("yyyy-MM-dd.'T'HH:mm:ss"));
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
 }
