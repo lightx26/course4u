@@ -1,6 +1,6 @@
 package com.mgmtp.cfu.service.impl;
 
-import com.mgmtp.cfu.dto.CourseDTO;
+import com.mgmtp.cfu.dto.CourseOverviewDTO;
 import com.mgmtp.cfu.entity.Course;
 import com.mgmtp.cfu.enums.CourseStatus;
 import com.mgmtp.cfu.mapper.CourseMapper;
@@ -18,10 +18,12 @@ import java.util.List;
 @Service
 public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
+    private final CourseMapper courseMapper;
 
     @Autowired
-    public CourseServiceImpl(CourseRepository courseRepository) {
+    public CourseServiceImpl(CourseRepository courseRepository, CourseMapper courseMapper) {
         this.courseRepository = courseRepository;
+        this.courseMapper = courseMapper;
     }
 
     private Page<Course> getAvailableCourses(int pageNo, int pageSize) {
@@ -33,12 +35,12 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<CourseDTO> getAvailableCoursesPage(int pageNo, int pageSize) {
+    public List<CourseOverviewDTO> getAvailableCoursesPage(int pageNo, int pageSize) {
         // Make sure pageNo is at most the number of pages
         pageNo = Math.min(pageNo, getAvailableCoursesPageCount(pageSize));
 
         Page<Course> courseList = getAvailableCourses(pageNo, pageSize);
-        return courseList.map(CourseMapper::toDTO).getContent();
+        return courseList.map(courseMapper::toOverviewDTO).getContent();
     }
 
     @Override

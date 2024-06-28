@@ -1,46 +1,38 @@
 package com.mgmtp.cfu.mapper;
 
-import com.mgmtp.cfu.dto.CourseDTO;
+import com.mgmtp.cfu.dto.CourseOverviewDTO;
 import com.mgmtp.cfu.entity.Course;
+import com.mgmtp.cfu.service.RegistrationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.util.List;
-
+@Component
 public class CourseMapper {
-    public static CourseDTO toDTO(Course course) {
+
+    private final RegistrationService registrationService;
+
+    @Autowired
+    public CourseMapper(RegistrationService registrationService) {
+        this.registrationService = registrationService;
+    }
+
+    public CourseOverviewDTO toOverviewDTO(Course course) {
         if (course == null) {
             return null;
         }
 
-        return CourseDTO.builder()
+        CourseOverviewDTO courseOverviewDTO = CourseOverviewDTO.builder()
+                .id(course.getId())
                 .name(course.getName())
-                .link(course.getLink())
                 .platform(course.getPlatform())
                 .level(course.getLevel())
                 .thumbnailUrl(course.getThumbnailUrl())
-                .teacherName(course.getTeacherName())
-                .createdDate(course.getCreatedDate())
                 .status(course.getStatus())
                 .build();
-    }
 
-    public static List<CourseDTO> toDTO(List<Course> courses) {
-        return courses.stream().map(CourseMapper::toDTO).toList();
-    }
+        int enrollmentCount = registrationService.countLegitRegistrationInCourse(course.getId());
+        courseOverviewDTO.setEnrollmentCount(enrollmentCount);
 
-    public static Course toEntity(CourseDTO courseDTO) {
-        return Course.builder()
-                .name(courseDTO.getName())
-                .link(courseDTO.getLink())
-                .platform(courseDTO.getPlatform())
-                .level(courseDTO.getLevel())
-                .thumbnailUrl(courseDTO.getThumbnailUrl())
-                .teacherName(courseDTO.getTeacherName())
-                .createdDate(courseDTO.getCreatedDate())
-                .status(courseDTO.getStatus())
-                .build();
-    }
-
-    public static List<Course> toEntity(List<CourseDTO> courseDTOs) {
-        return courseDTOs.stream().map(CourseMapper::toEntity).toList();
+        return courseOverviewDTO;
     }
 }
