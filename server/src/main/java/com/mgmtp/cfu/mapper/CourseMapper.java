@@ -26,6 +26,7 @@ public class CourseMapper {
                 .name(course.getName())
                 .platform(course.getPlatform())
                 .level(course.getLevel())
+                .createdDate(course.getCreatedDate())
                 .thumbnailUrl(course.getThumbnailUrl())
                 .status(course.getStatus())
                 .build();

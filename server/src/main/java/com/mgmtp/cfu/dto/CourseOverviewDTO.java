@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -16,9 +18,9 @@ public class CourseOverviewDTO {
     private String name;
     private String platform;
     private CourseLevel level;
+    private LocalDate createdDate;
     private String thumbnailUrl;
-    // TODO: Implement these fields when we have the data
-    //    private Double rating;
+    private Double rating;
     private Integer enrollmentCount;
     private CourseStatus status;
 }
