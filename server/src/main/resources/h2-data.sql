@@ -52,4 +52,8 @@ VALUES (1, 1), (1, 2), (1, 3);
 
 
 --user user_password
---admin admin_password
+--admin admim_password
+INSERT INTO "Registration" ("CourseId", "RegisterDate", "Status", "StartDate", "EndDate", "Score", "Duration","UserId","DurationUnit")
+VALUES (1, '2021-01-01', 'DISCARDED', '2021-01-01', '2021-01-31', 20, 15,1,'WEEK'),
+       (2, '2021-01-02', 'DONE', '2021-01-01', '2021-01-31', 30, 13,1,'WEEK'),
+       (3, '2021-01-04', 'VERIFIED', '2021-01-01', '2021-01-31', 40, 200,1,'DAY');

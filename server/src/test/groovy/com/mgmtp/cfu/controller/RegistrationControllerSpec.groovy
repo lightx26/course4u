@@ -1,5 +1,6 @@
 package com.mgmtp.cfu.controller
 
+import com.mgmtp.cfu.dto.RegistrationDTO
 import com.mgmtp.cfu.dto.RegistrationDetailDTO
 import com.mgmtp.cfu.exception.RegistrationNotFoundException
 import com.mgmtp.cfu.mapper.RegistrationDetailMapper
@@ -35,4 +36,21 @@ class RegistrationControllerSpec extends Specification {
             def ex = thrown(RegistrationNotFoundException)
             ex.message == "Registration not found"
     }
+
+    def 'getListOfMyRegistration: return ok response'(){
+        given:
+        registrationService.getMyRegistrationPage(_,_)>>List.of()
+        when:
+        def response=registrationController.getListOfMyRegistration(page,status);
+        then:
+        response.statusCode.value()==200
+        where:
+        page|status
+        1|""
+        2|null
+        0|""
+
+
+    }
+
 }
