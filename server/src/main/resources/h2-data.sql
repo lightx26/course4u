@@ -11,3 +11,8 @@ INSERT INTO "Registration" ("CourseId", "RegisterDate", "Status", "StartDate", "
 VALUES (1, '2021-01-01', 'DISCARDED', '2021-01-01', '2021-01-31', 20, 15),
        (2, '2021-01-02', 'DONE', '2021-01-01', '2021-01-31', 30, 13),
        (3, '2021-01-04', 'VERIFIED', '2021-01-01', '2021-01-31', 40, 200);
+insert into "User"("Username", "Password", "Email", "Role")
+values ('user','$2a$10$8O/b4SGusmdgMuZFIv7JaOQXx1sQ.ISrffmXjGgC2b10S1ML.4ity','user@mgm-tp.com','USER'),
+       ('admin','$2a$10$bhBp0hDRVdW1A6RMKt0k0.m4709.So5X8.3GhmSOwNzcptfJOm0FW','admin@mgm-tp.com','ADMIN');
+--user user_password
+--admin admin_password

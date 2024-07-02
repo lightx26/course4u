@@ -37,6 +37,13 @@ dependencies {
     liquibaseRuntime 'org.postgresql:postgresql'
     liquibaseRuntime 'org.liquibase:liquibase-core'
     liquibaseRuntime 'info.picocli:picocli:4.7.5'
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.12.6'
+    runtimeOnly 'org.postgresql:postgresql'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.3'
+    liquibaseRuntime 'org.postgresql:postgresql'
+    liquibaseRuntime 'org.liquibase:liquibase-core'
+    liquibaseRuntime 'info.picocli:picocli:4.7.5'
 	testImplementation(
 			// JUnit
 			'junit:junit:4.13.2',
@@ -84,11 +91,11 @@ sourceSets {
 
 // Specifying tasks
 tasks.named('test'){
-	useJUnitPlatform()
-	testLogging {
-		events "started", "passed", "skipped", "failed"
-	}
-	finalizedBy 'jacocoTestReport'
+    useJUnitPlatform()
+    testLogging {
+        events "started", "passed", "skipped", "failed"
+    }
+    finalizedBy 'jacocoTestReport'
 }
 
 

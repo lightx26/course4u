@@ -1,0 +1,96 @@
+.btn-login:hover {
+  background-color: #333030 !important;
+}
+
+.lds-roller,
+.lds-roller div,
+.lds-roller div:after {
+  box-sizing: border-box;
+}
+.lds-roller {
+  display: inline-block;
+  position: relative;
+  width: 30px; /* Giảm chiều rộng xuống 3/4 so với kích thước ban đầu */
+  height: 30px; /* Giảm chiều dài xuống 3/4 so với kích thước ban đầu */
+}
+.lds-roller div {
+  animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  transform-origin: 15px 15px; /* Điểm gốc để quay tròn nằm giữa */
+}
+.lds-roller div:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  width: 3px; /* Giảm kích thước xuống 3/4 so với kích thước ban đầu */
+  height: 3px; /* Giảm kích thước xuống 3/4 so với kích thước ban đầu */
+  border-radius: 50%;
+  background: currentColor;
+  margin: -1.5px 0 0 -1.5px; /* Điều chỉnh margin để căn giữa */
+}
+.lds-roller div:nth-child(1) {
+  animation-delay: -0.036s;
+}
+.lds-roller div:nth-child(1):after {
+  top: 23.48528px; /* Điều chỉnh lại vị trí top */
+  left: 23.48528px; /* Điều chỉnh lại vị trí left */
+}
+.lds-roller div:nth-child(2) {
+  animation-delay: -0.072s;
+}
+.lds-roller div:nth-child(2):after {
+  top: 25.3923px; /* Điều chỉnh lại vị trí top */
+  left: 21.33333px; /* Điều chỉnh lại vị trí left */
+}
+.lds-roller div:nth-child(3) {
+  animation-delay: -0.108s;
+}
+.lds-roller div:nth-child(3):after {
+  top: 26.59086px; /* Điều chỉnh lại vị trí top */
+  left: 18.10679px; /* Điều chỉnh lại vị trí left */
+}
+.lds-roller div:nth-child(4) {
+  animation-delay: -0.144s;
+}
+.lds-roller div:nth-child(4):after {
+  top: 27px; /* Điều chỉnh lại vị trí top */
+  left: 15px; /* Điều chỉnh lại vị trí left */
+}
+.lds-roller div:nth-child(5) {
+  animation-delay: -0.18s;
+}
+.lds-roller div:nth-child(5):after {
+  top: 26.59086px; /* Điều chỉnh lại vị trí top */
+  left: 11.89321px; /* Điều chỉnh lại vị trí left */
+}
+.lds-roller div:nth-child(6) {
+  animation-delay: -0.216s;
+}
+.lds-roller div:nth-child(6):after {
+  top: 25.3923px; /* Điều chỉnh lại vị trí top */
+  left: 9px; /* Điều chỉnh lại vị trí left */
+}
+.lds-roller div:nth-child(7) {
+  animation-delay: -0.252s;
+}
+.lds-roller div:nth-child(7):after {
+  top: 23.48528px; /* Điều chỉnh lại vị trí top */
+  left: 6.85879px; /* Điều chỉnh lại vị trí left */
+}
+.lds-roller div:nth-child(8) {
+  animation-delay: -0.288s;
+}
+.lds-roller div:nth-child(8):after {
+  top: 21px; /* Điều chỉnh lại vị trí top */
+  left: 5.35714px; /* Điều chỉnh lại vị trí left */
+}
+@keyframes lds-roller {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+select > option {
+  font-size: 1rem;
+}
