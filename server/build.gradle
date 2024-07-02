@@ -79,6 +79,18 @@ tasks.named('test'){
 
 jacocoTestReport{
 	dependsOn 'test'
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "com/mgmtp/cfu/CourseForYouApplication.class",
+                    "com/mgmtp/cfu/dto/*",
+                    "com/mgmtp/cfu/entity/*",
+                    "com/mgmtp/cfu/enums/*"
+            ])
+        }))
+    }
+
 	reports{
 		html.required.set(true)
 	}
@@ -86,6 +98,16 @@ jacocoTestReport{
 
 jacocoTestCoverageVerification {
 	dependsOn 'test'
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "com/mgmtp/cfu/CourseForYouApplication.class",
+                    "com/mgmtp/cfu/dto/*",
+                    "com/mgmtp/cfu/entity/*",
+                    "com/mgmtp/cfu/enums/*"
+            ])
+        }))
+    }
 	violationRules {
 		rule {
 			limit {
