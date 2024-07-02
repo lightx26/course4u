@@ -5,23 +5,24 @@ import Login from "./screens/user.screens/Login.tsx";
 import "./assets/css/App.css";
 
 export type CourseType = {
-  id: string;
-  name: string;
-  thumbnailUrl: string;
+  id?: string;
+  name?: string;
+  thumbnailUrl?: string;
   assignee?: {
-    id: string;
-    name: string;
-    avatarUrl: string;
+    id?: string;
+    name?: string;
+    avatarUrl?: string;
     role?: string;
     status?: string;
   };
-  platform: string;
-  period: {
-    startDay: Date;
-    endDay: Date;
+  platform?: string;
+  createdDate?: string;
+  period?: {
+    startDay?: Date;
+    endDay?: Date;
   };
   rating?: number;
-  studentNumber?: number;
+  enrollmentCount?: number;
   level?: string;
 }
 

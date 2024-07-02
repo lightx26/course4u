@@ -38,7 +38,7 @@ export default function PaginationSection({ totalItems, itemPerPage, currentPage
                         <PaginationEllipsis className='hover:bg-gray-100' onClick={(event) => handlePageClick(event, Math.max(currentPage - 3, 1))} />
                     </PaginationItem> : currentPage == 4 &&
                         <PaginationItem key={2}>
-                            <PaginationLink className={currentPage == 2 ? 'bg-purple-600 text-white' : ''} onClick={(event) => handlePageClick(event, 2)}>2</PaginationLink>
+                            <PaginationLink onClick={(event) => handlePageClick(event, 2)}>2</PaginationLink>
                         </PaginationItem>
                 }
                 {/* Render các trang từ startPage đến endPage */
@@ -60,7 +60,7 @@ export default function PaginationSection({ totalItems, itemPerPage, currentPage
 
                 }
                 <PaginationItem key={lastPage}>
-                    <PaginationLink className={currentPage == lastPage ? 'bg-purple-600 text-white' : ''} onClick={(event) => handlePageClick(event, lastPage)}>{lastPage}</PaginationLink>
+                    <PaginationLink onClick={(event) => handlePageClick(event, lastPage)}>{lastPage}</PaginationLink>
                 </PaginationItem>
                 <PaginationItem>
                     <PaginationNext onClick={(event) => {

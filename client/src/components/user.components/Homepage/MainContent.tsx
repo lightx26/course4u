@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { fetchCourses, fetchCourses2 } from '../../../API/FakeAPICourse';
 import { CourseType } from '../../../App';
-import ListCourseCardComponent from '../ListCorseCardComponent';
+import ListCourseCardComponent from '../ListCourseCardComponent.tsx';
 import PaginationSection from './PaginationSection';
 import Select from '../Select.tsx';
+import { fetchListAvailableCourse } from '../../../apiService/Course.service.ts';
 
 export type FilterItemType = {
     id?: string;
@@ -37,20 +37,19 @@ export default function MainContent() {
     const [listCourse, setListCourse] = useState<CourseType[]>([]);
     const [sortBy, setSortBy] = useState<string>('');
     const [isLoading, setIsLoading] = useState(false);
-    useEffect(() => {
-        const fetchData = async () => {
-            setIsLoading(true);
-            await fetchCourses2(currentPage - 1, 8).then((res) => {
-                setListCourse(res);
-            });
 
-            await fetchCourses().then((res) => {
-                setTotalItem(res.length)
-                setIsLoading(false);
-            });
+    const fetchData = async (page : number = 1, limit : number = 8) => {
+        setIsLoading(true);
+        const result = await fetchListAvailableCourse(page, limit);
+        if (result && result.data && result.data.courses){
+            setListCourse(result.data.courses);
+            setTotalItem(result.data.totalElements);
             setIsLoading(false);
         }
-        fetchData();
+    }
+
+    useEffect(() => {
+        fetchData(currentPage, 8);
     }, [currentPage]);
 
     const onPageNumberClick = (newPageNumber: number) => {
@@ -66,11 +65,11 @@ export default function MainContent() {
             <div className='flex items-center justify-between'>
                 <Select listOption={sortList} value={sortBy} onSortByChange={onSortByChange} />
                 <div>
-                    Showing {(currentPage - 1) * 8 + 1} - {currentPage * 8} of {totalItem} results
+                    Showing {(currentPage - 1) * 8 + 1} - {Math.min(currentPage * 8, totalItem)} of {totalItem} results
                 </div>
             </div>
             <ListCourseCardComponent ListCourse={listCourse} isLoading={isLoading} />
-            <PaginationSection totalItems={45} currentPage={currentPage} itemPerPage={5} setCurrentPage={onPageNumberClick} />
+            <PaginationSection totalItems={totalItem} currentPage={currentPage} itemPerPage={8} setCurrentPage={onPageNumberClick} />
         </div>
     )
 }
