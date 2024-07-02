@@ -1,25 +1,18 @@
 package com.mgmtp.cfu.controller;
 
-
-import com.mgmtp.cfu.dto.CourseOverviewDTO;
 import com.mgmtp.cfu.service.CourseService;
+import com.mgmtp.cfu.utils.CoursePageValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("api/courses")
 public class CourseController {
     private final CourseService courseService;
-
-    @Value("${course.page.size}")
-    private int COURSE_PAGE_SIZE;
 
     @Autowired
     public CourseController(CourseService courseService) {
@@ -27,12 +20,15 @@ public class CourseController {
     }
 
     @GetMapping("/available")
-    public ResponseEntity<List<CourseOverviewDTO>> getAvailableCourses(@RequestParam(defaultValue = "1") int page) {
-        return ResponseEntity.ok(courseService.getAvailableCoursesPage(page, COURSE_PAGE_SIZE));
-    }
+    public ResponseEntity<?> getAvailableCourses(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "${course.page.default-size}") int pageSize) {
 
-    @GetMapping("/available/page-count")
-    public ResponseEntity<Integer> getAvailableCoursesPageCount() {
-        return ResponseEntity.ok(courseService.getAvailableCoursesPageCount(COURSE_PAGE_SIZE));
+        if (!CoursePageValidator.isValidPageSize(pageSize)) {
+            return ResponseEntity.unprocessableEntity()
+                    .body("Invalid page size. Page size must be between 1" + " and " + CoursePageValidator.getMaxPageSize());
+        }
+
+        return ResponseEntity.ok(courseService.getAvailableCoursesPage(page, pageSize));
     }
 }

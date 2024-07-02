@@ -1,6 +1,7 @@
 package com.mgmtp.cfu.service.impl;
 
 import com.mgmtp.cfu.dto.CourseOverviewDTO;
+import com.mgmtp.cfu.dto.CoursePageDTO;
 import com.mgmtp.cfu.entity.Course;
 import com.mgmtp.cfu.enums.CourseStatus;
 import com.mgmtp.cfu.mapper.CourseMapper;
@@ -31,21 +32,26 @@ public class CourseServiceImpl implements CourseService {
         pageNo = Math.max(pageNo, 1);
 
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
-        return courseRepository.findByStatus(CourseStatus.AVAILABLE, pageable);
+        Page<Course> coursePage = courseRepository.findByStatus(CourseStatus.AVAILABLE, pageable);
+
+        // If the requested page number is out of bounds, return the last available page
+        if (pageNo > coursePage.getTotalPages()) {
+            pageable = PageRequest.of(Math.max(coursePage.getTotalPages() - 1, 0), pageSize);
+            return courseRepository.findByStatus(CourseStatus.AVAILABLE, pageable);
+        }
+
+        return coursePage;
     }
 
     @Override
-    public List<CourseOverviewDTO> getAvailableCoursesPage(int pageNo, int pageSize) {
-        // Make sure pageNo is at most the number of pages
-        pageNo = Math.min(pageNo, getAvailableCoursesPageCount(pageSize));
+    public CoursePageDTO getAvailableCoursesPage(int pageNo, int pageSize) {
 
-        Page<Course> courseList = getAvailableCourses(pageNo, pageSize);
-        return courseList.map(courseMapper::toOverviewDTO).getContent();
-    }
-
-    @Override
-    public int getAvailableCoursesPageCount(int pageSize) {
-        Page<Course> courseList = getAvailableCourses(1, pageSize);
-        return courseList.getTotalPages();
+        Page<Course> coursePage = getAvailableCourses(pageNo, pageSize);
+        List<CourseOverviewDTO> courses = coursePage.map(courseMapper::toOverviewDTO).getContent();
+        return CoursePageDTO.builder()
+                .courses(courses)
+                .totalPages(coursePage.getTotalPages())
+                .totalElements(coursePage.getTotalElements())
+                .build();
     }
 }

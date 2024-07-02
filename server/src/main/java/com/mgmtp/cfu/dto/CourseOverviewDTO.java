@@ -2,16 +2,14 @@ package com.mgmtp.cfu.dto;
 
 import com.mgmtp.cfu.enums.CourseLevel;
 import com.mgmtp.cfu.enums.CourseStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class CourseOverviewDTO {
     private Long id;
