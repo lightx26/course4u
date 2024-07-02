@@ -1,4 +1,4 @@
-package com.mgmtp.cfu
+package com.mgmtp.cfu.controller
 
 import spock.lang.Specification
 import com.mgmtp.cfu.controller.HelloController
