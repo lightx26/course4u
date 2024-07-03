@@ -1,12 +1,14 @@
 package com.mgmtp.cfu.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.mgmtp.cfu.enums.DurationUnit;
 import com.mgmtp.cfu.enums.RegistrationStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -14,7 +16,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@FieldDefaults(level= AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "`Registration`")
 public class Registration {
     @Id
@@ -35,7 +37,17 @@ public class Registration {
     @Column(name = "`Duration`")
     Integer duration;
     @ManyToOne
-    @JoinColumn(name = "`CourseId`",referencedColumnName = "`Id`")
+    @JoinColumn(name = "`CourseId`", referencedColumnName = "`Id`")
     @JsonBackReference
     Course course;
+    @Column(name = "`LastUpdate`")
+    LocalDateTime lastUpdate;
+    @Column(name = "`DurationUnit`")
+    @Enumerated(EnumType.STRING)
+    DurationUnit durationUnit;
+    @ManyToOne
+    @JoinColumn(name = "`UserId`")
+    User user;
+
+
 }
