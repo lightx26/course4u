@@ -24,5 +24,9 @@ public class GlobalExceptionHandler {
         ErrorResponse response = new ErrorResponse(HttpStatus.NOT_FOUND.value(), cnfe.getMessage(), ErrorResponse.now("yyyy-MM-dd.'T'HH:mm:ss"));
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+    @ExceptionHandler({IllegalStateException.class})
+    public ResponseEntity<?> handleIllegalStateException(final Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responsePre + e.getMessage() + "\"}");
+    }
 
 }
