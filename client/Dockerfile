@@ -1,2 +1,3 @@
-FROM devforth/spa-to-http:latest
-COPY dist .
+FROM nginx
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./dist /user/share/nginx/html
