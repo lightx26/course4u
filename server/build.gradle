@@ -34,15 +34,10 @@ dependencies {
     implementation 'com.h2database:h2'
     runtimeOnly 'org.postgresql:postgresql'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.3'
-    liquibaseRuntime 'org.postgresql:postgresql'
-    liquibaseRuntime 'org.liquibase:liquibase-core'
-    liquibaseRuntime 'info.picocli:picocli:4.7.5'
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.12.6'
-    runtimeOnly 'org.postgresql:postgresql'
-    implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.3'
     liquibaseRuntime 'org.postgresql:postgresql'
-    liquibaseRuntime 'org.liquibase:liquibase-core'
+    implementation 'org.liquibase:liquibase-core'
     liquibaseRuntime 'info.picocli:picocli:4.7.5'
 	testImplementation(
 			// JUnit
@@ -58,23 +53,6 @@ dependencies {
     // Lombok
     compileOnly 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
-}
-
-def lb_props = new Properties()
-file("./src/main/resources/liquibase.properties").withInputStream { stream ->
-    lb_props.load(stream)
-}
-
-liquibase {
-    activities {
-        main {
-            changelogFile lb_props['changelogFile']
-            url lb_props['db.url']
-            username lb_props['db.username']
-            password lb_props['db.password']
-        }
-    }
-    runList = 'main'
 }
 
 // Specifying source sets to not run .java test files
