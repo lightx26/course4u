@@ -7,7 +7,7 @@ export default {
     './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
+    "./src/**/*.{js,ts,jsx,tsx}",
   ],
   prefix: "",
   theme: {
@@ -23,9 +23,9 @@ export default {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
-          btnLogin: "#c3c3c3",
-          btnLoginHover: "#111111",
-          purple: "#861fa2",
+        btnLogin: "#c3c3c3",
+        btnLoginHover: "#111111",
+        purple: "#861fa2",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
@@ -79,10 +79,10 @@ export default {
     },
   },
   plugins: [tailwindcssAnimate, function ({ addComponents }) {
-      addComponents({
-          ".custom-option": {
-              "@apply text-gray-700 bg-white hover:bg-gray-200": {},
-          },
-      });
+    addComponents({
+      ".custom-option": {
+        "@apply text-gray-700 bg-white hover:bg-gray-200": {},
+      },
+    });
   },],
 }

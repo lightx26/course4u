@@ -9,7 +9,7 @@ type PropsType = {
 export default function CourseCardComponent({ course }: PropsType) {
     const color = course.level?.toLowerCase() === 'beginner' ? 'bg-green-200 text-green-600' : course.level?.toLowerCase() === 'intermediate' ? 'bg-yellow-100 text-yellow-600' : 'bg-rose-100 text-rose-600';
     return (
-        <a href='' className='border border-solid border-gray-200 w-full overflow-hidden text-sm leading-normal transition-shadow bg-white rounded-md shadow cursor-pointer duration-250 hover:shadow-lg grow'>
+        <a href='' className='w-full overflow-hidden text-sm leading-normal transition-shadow bg-white border border-gray-200 border-solid rounded-md shadow cursor-pointer duration-250 hover:shadow-lg grow'>
             <div>
                 <img className='object-cover w-full h-52' src={course.thumbnailUrl} alt={course.name} />
                 <div className='flex flex-col gap-2 px-2 pt-2 text-left'>
@@ -70,7 +70,8 @@ export const SkeletonLoader = () => {
             <div>
                 <Skeleton className='object-cover w-full bg-gray-300 h-52 animate-pulse'></Skeleton>
                 <div className='flex flex-col gap-2 px-2 pt-2 text-left'>
-                    <Skeleton className='bg-gray-300 h-14 animate-pulse'></Skeleton>
+                    <Skeleton className='h-6 bg-gray-300 animate-pulse'></Skeleton>
+                    <Skeleton className='w-1/2 h-4 bg-gray-300 animate-pulse'></Skeleton>
                     <div className='flex items-center gap-2'>
                         <Skeleton className='object-cover bg-gray-300 rounded-full w-11 h-11 animate-pulse'></Skeleton>
                         <div>
@@ -78,16 +79,13 @@ export const SkeletonLoader = () => {
                             <Skeleton className='w-16 h-3 mt-2 bg-gray-300 animate-pulse'></Skeleton>
                         </div>
                     </div>
-                    <div className='flex flex-col gap-2'>
-                        <Skeleton className='w-20 h-4 bg-gray-300 animate-pulse'></Skeleton>
-                    </div>
-                    <Skeleton className='w-full h-4 bg-gray-300 animate-pulse'></Skeleton>
+
                     <div className='flex justify-between p-2 border-t-2'>
-                        <div className='flex gap-1'>
+                        <div className='flex items-center gap-1'>
                             <Skeleton className='w-5 h-5 bg-gray-300 animate-pulse'></Skeleton>
                             <Skeleton className='w-10 h-4 bg-gray-300 animate-pulse'></Skeleton>
                         </div>
-                        <div className='flex gap-1'>
+                        <div className='flex items-center gap-1'>
                             <Skeleton className='w-5 h-5 bg-gray-300 animate-pulse'></Skeleton>
                             <Skeleton className='w-10 h-4 bg-gray-300 animate-pulse'></Skeleton>
                         </div>

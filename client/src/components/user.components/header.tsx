@@ -63,7 +63,7 @@ const HeaderHomepage: React.FC = () => {
         <div className="flex items-center space-x-4">
           <div className="flex items-center justify-center gap-5">
             <button
-              className="w-44 h-11 border border-gray-300 rounded-lg bg-purple-700 text-white font-semibold"
+              className="w-44 h-11 border border-gray-300 rounded-lg bg-violet-700 text-white font-semibold"
               style={{ backgroundColor: "purple" }}
             >
               Create a registration

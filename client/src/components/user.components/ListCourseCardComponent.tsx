@@ -20,7 +20,7 @@ export default function ListCourseCardComponent(props: PropsType) {
         <div className='grid gap-4 text-black 2xl:grid-cols-4 md:grid-cols-2 xl:grid-cols-3 scree auto-rows-auto'>
             {props.ListCourse.map((course) => {
                 return (
-                        <CourseCardComponent course={course} key={course.id} />
+                    <CourseCardComponent course={course} key={course.id} />
                 )
             })}
         </div>

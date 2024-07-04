@@ -1,6 +1,7 @@
 import { useState } from "react";
 import FilterItemComponent from "./FilterItemComponent";
 import { FilterItemType } from "./MainContent";
+import { v4 } from "uuid";
 
 type PropsType = {
     list: Array<FilterItemType>;
@@ -26,7 +27,7 @@ export default function ListFilterItem(props: PropsType) {
     return (
         <div className="flex flex-col gap-3">
             {props.list.slice(0, displayCount).map((item) => (
-                <FilterItemComponent key={item.id} prop={item} />
+                <FilterItemComponent key={v4()} prop={item} />
             ))}
             {props.list.length > initialDisplayCount && (
                 <button onClick={handleShowMore} className="flex items-center justify-center w-full gap-2 p-2 transition-colors border border-gray-200 border-solid rounded-full cursor-pointer hover:bg-gray-50">

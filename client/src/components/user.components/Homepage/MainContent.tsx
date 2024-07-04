@@ -32,16 +32,16 @@ const sortList = [
 ]
 
 export default function MainContent() {
-    const [totalItem, setTotalItem] = useState(60);
+    const [totalItem, setTotalItem] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
     const [listCourse, setListCourse] = useState<CourseType[]>([]);
     const [sortBy, setSortBy] = useState<string>('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const fetchData = async (page : number = 1, limit : number = 8) => {
+    const fetchData = async (page: number = 1, limit: number = 8) => {
         setIsLoading(true);
         const result = await fetchListAvailableCourse(page, limit);
-        if (result && result.data && result.data.courses){
+        if (result && result.data && result.data.courses) {
             setListCourse(result.data.courses);
             setTotalItem(result.data.totalElements);
             setIsLoading(false);
@@ -50,7 +50,7 @@ export default function MainContent() {
 
     useEffect(() => {
         fetchData(currentPage, 8);
-    }, [currentPage]);
+    }, [currentPage, sortBy]);
 
     const onPageNumberClick = (newPageNumber: number) => {
         setCurrentPage(newPageNumber);
@@ -69,7 +69,7 @@ export default function MainContent() {
                 </div>
             </div>
             <ListCourseCardComponent ListCourse={listCourse} isLoading={isLoading} />
-            <PaginationSection totalItems={totalItem} currentPage={currentPage} itemPerPage={8} setCurrentPage={onPageNumberClick} />
+            {totalItem > 8 && <PaginationSection totalItems={totalItem} currentPage={currentPage} itemPerPage={8} setCurrentPage={onPageNumberClick} />}
         </div>
     )
 }
