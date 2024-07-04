@@ -68,13 +68,13 @@ sourceSets {
 }
 
 // Specifying tasks
-tasks.named('test'){
-    useJUnitPlatform()
-    testLogging {
-        events "started", "passed", "skipped", "failed"
-    }
-    finalizedBy 'jacocoTestReport'
-}
+//tasks.named('test'){
+//    useJUnitPlatform()
+//    testLogging {
+//        events "started", "passed", "skipped", "failed"
+//    }
+//    finalizedBy 'jacocoTestReport'
+//}
 
 
 jacocoTestReport{

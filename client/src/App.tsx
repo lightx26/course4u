@@ -2,7 +2,6 @@ import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import HeaderHomepage from "./components/user.components/header";
 import HomepageScreen from "./screens/user.screens/HomepageScreen";
 import Login from "./screens/user.screens/Login.tsx";
-import "./assets/css/App.css";
 
 export type CourseType = {
   id?: string;
