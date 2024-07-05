@@ -21,7 +21,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const access_token = localStorage.getItem("access_token");
     if (access_token && !isTokenExpired(access_token)) {
-      dispatch(fetchUserDetails(access_token));
+      dispatch(fetchUserDetails());
     } else {
       navigate("/login");
     }

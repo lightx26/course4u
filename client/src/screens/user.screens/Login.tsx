@@ -3,7 +3,7 @@ import logo from "../../assets/images/logo.jpg";
 import logo_c4u from "../../assets/images/logo_c4u.svg";
 import "../../assets/css/login.css";
 import { useSelector } from "react-redux";
-import { userLogin } from "../../redux/slice/user.slice";
+import { userLogin, fetchUserDetails } from "../../redux/slice/user.slice";
 import { useDispatch } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import { AppDispatch } from "../../redux/store/store";
@@ -49,7 +49,15 @@ const Login: React.FC = () => {
       if (userLogin.fulfilled.match(result)) {
         const access_token = result.payload?.access_token;
         if (access_token) {
-          navigate("/");
+          // Store access_token in localStorage
+          localStorage.setItem("access_token", access_token);
+
+          // Fetch user details
+          const userData = await dispatch(fetchUserDetails());
+          fetchUserDetails.fulfilled.match(userData) ? navigate("/") : null;
+        } else {
+          // Handle the case where there is no access token
+          console.error("No access token found in login response");
         }
       } else {
         // Handle the case where login failed

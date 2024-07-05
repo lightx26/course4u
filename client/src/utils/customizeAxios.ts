@@ -5,10 +5,19 @@ const instance = axios.create({
   withCredentials: true,
 });
 
-// Add token to the header
-instance.defaults.headers.common = {
-  Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-};
+// Add a request interceptor to set the Authorization header
+instance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 // Add a request interceptor
 instance.interceptors.request.use();
