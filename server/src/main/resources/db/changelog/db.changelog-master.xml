@@ -19,4 +19,5 @@
             <column name="Telephone" type="VARCHAR(20)"/>
         </createTable>
     </changeSet>
+    <include file="db/changelog/updating-user-table.xml" />
 </databaseChangeLog>
