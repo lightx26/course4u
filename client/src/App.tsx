@@ -1,4 +1,4 @@
-import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import {createBrowserRouter, Outlet, RouterProvider} from "react-router-dom";
 import HeaderHomepage from "./components/user.components/header";
 import HomepageScreen from "./screens/user.screens/HomepageScreen";
 import Login from "./screens/user.screens/Login.tsx";
@@ -35,24 +35,27 @@ const LayoutUser = () => {
 };
 
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <LayoutUser />,
-    errorElement: <div>404 not found</div>,
-    children: [
-      {
-        index: true,
-        element: <HomepageScreen />,
-      }
-    ],
-  },
-  {
-    path: "login",
-    element: <Login />,
-  },
-]);
+    {
+        path: "/",
+        element: <LayoutUser/>,
+        errorElement: <div>404 not found</div>,
+        children: [
+            {
+                index: true,
+                element: <HomepageScreen/>,
+            }
+        ],
+    },
+    {
+        path: "login",
+        element: <Login/>,
+    },
+], {
+    basename: import.meta.env.VITE_BASE_URL,
+});
+
 function App() {
-  return <>{<RouterProvider router={router} />}</>;
+    return <>{<RouterProvider router={router}/>}</>;
 }
 
 export default App

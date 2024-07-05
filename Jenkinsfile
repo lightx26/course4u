@@ -33,7 +33,7 @@ pipeline{
         }
         stage('Build And Publish Images') {
             // condition to trigger this stage is only on staging branch
-//             when {branch 'staging'}
+            when {branch 'staging'}
             steps{
                 script{
                     def HOST_NAME = 'da-nang-internship-docker-local.dockerregistry.mgm-tp.com'
@@ -64,7 +64,7 @@ pipeline{
         }
         stage('Deploy') {
             // condition to trigger this stage is only on staging branch
-//             when {branch 'staging'}
+            when {branch 'staging'}
             steps{
                 script{
                     sshagent(['ci-user-ssh']) {
@@ -75,8 +75,7 @@ pipeline{
                             sh 'ssh -o StrictHostKeyChecking=no cfu@course4u.mgm-edv.de "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD da-nang-internship-docker-local.dockerregistry.mgm-tp.com"'
 
                             // Pulling the latest Docker images and starts the server
-                            sh "ssh -o StrictHostKeyChecking=no cfu@course4u.mgm-edv.de 'docker compose --project-name cfu --profile staging pull'"
-                            sh "ssh -o StrictHostKeyChecking=no cfu@course4u.mgm-edv.de 'docker compose --project-name cfu --profile staging up -d'"
+                            sh "ssh -o StrictHostKeyChecking=no cfu@course4u.mgm-edv.de 'docker compose --project-name cfu --profile staging up -d --pull=always'"
 
                             // Logout from Docker registry
                             sh "ssh -o StrictHostKeyChecking=no cfu@course4u.mgm-edv.de 'docker logout da-nang-internship-docker-local.dockerregistry.mgm-tp.com'"
