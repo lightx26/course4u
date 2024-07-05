@@ -1,63 +1,38 @@
 version: "3.9"
 services:
-  server-dev:
-    build: ./server
-    container_name: cfu-server-dev
-    profiles: ['dev']
-    ports:
-      - "8080"
-    networks:
-      - cfu
-  client-dev:
-    build: ./client
-    container_name: cfu-client-dev
-    profiles: ['dev']
-    ports:
-      - "5173"
-    networks:
-        - cfu
-    depends_on:
-      - server-dev
-
   server-staging:
-    build: ./server
-    container_name: cfu-server-staging
-    profiles: ['staging']
+    image: "da-nang-internship-docker-local.dockerregistry.mgm-tp.com/com.mgmtp.da-nang-internship/com.mgmtp.cfu.server:staging"
+    container_name: "server-staging"
+    env_file:
+      - .env.staging
+    profiles: [ 'staging' ]
     ports:
       - "8080"
     networks:
-      - cfu
-  client-staging:
-    build: ./client
-    container_name: cfu-client-staging
-    profiles: ['staging']
-    ports:
-      - "5173"
-    networks:
-        - cfu
-    depends_on:
-      - server-staging
+      - "cfu"
+    labels:
+      - "traefik.http.routers.cfu-server-staging-cfu.rule=PathPrefix(`/staging/api`)"
+      - "traefik.http.middlewares.cfu-server-staging-middleware.replacepathregex.regex=^/staging/api/(.*)"
+      - "traefik.http.middlewares.cfu-server-staging-middleware.replacepathregex.replacement=/api/$$1"
+      - "traefik.http.routers.cfu-server-staging-cfu.middlewares=cfu-server-staging-middleware"
 
-  server-test:
-    build: ./server
-    container_name: cfu-client-testing
-    profiles: [ 'testing' ]
+  client-staging:
+    image: "da-nang-internship-docker-local.dockerregistry.mgm-tp.com/com.mgmtp.da-nang-internship/com.mgmtp.cfu.client:staging"
+    container_name: "client-staging"
+    profiles: [ 'staging' ]
     ports:
-      - "8080"
+      - "80"
     networks:
-      - cfu
-  client-test:
-    build: ./client
-    container_name: cfu-client-testing
-    profiles: [ 'testing' ]
-    ports:
-      - "5173"
-    networks:
-      - cfu
+      - "cfu"
     depends_on:
-      - server-test
+      - "server-staging"
+    labels:
+      - "traefik.http.routers.cfu-client-staging-cfu.rule=PathPrefix(`/staging`)"
+      - "traefik.http.middlewares.cfu-client-staging-middleware.replacepathregex.regex=^/staging(.*)"
+      - "traefik.http.middlewares.cfu-client-staging-middleware.replacepathregex.replacement=$$1"
+      - "traefik.http.routers.cfu-client-staging-cfu.middlewares=cfu-client-staging-middleware"
 
 networks:
-    cfu:
-        external: true
-        name: cfu
+  cfu:
+    external: true
+    name: cfu
