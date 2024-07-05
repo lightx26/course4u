@@ -4,20 +4,20 @@ import com.mgmtp.cfu.dto.CourseOverviewDTO
 import com.mgmtp.cfu.dto.CoursePageDTO
 import com.mgmtp.cfu.entity.Course
 import com.mgmtp.cfu.enums.CourseStatus
-import com.mgmtp.cfu.mapper.CourseMapper
+import com.mgmtp.cfu.mapper.impl.CourseOverviewMapper
 import com.mgmtp.cfu.repository.CourseRepository
 import com.mgmtp.cfu.service.CourseService
 import org.springframework.data.domain.PageImpl
 import spock.lang.Specification
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 
 import spock.lang.Subject
 
 class CourseServiceImplSpec extends Specification {
     CourseRepository courseRepository = Mock(CourseRepository)
-    CourseMapper courseMapper = Mock(CourseMapper)
+    CourseOverviewMapper courseMapper = Mock(CourseOverviewMapper)
 
     @Subject
     CourseService courseService = new CourseServiceImpl(courseRepository, courseMapper)
@@ -32,10 +32,10 @@ class CourseServiceImplSpec extends Specification {
         courseRepository.findByStatus(CourseStatus.AVAILABLE, _) >> mockCoursePage
 
         courses.subList(0, 5).each { course ->
-            courseMapper.toOverviewDTO(course) >> new CourseOverviewDTO(id: course.id)
+            courseMapper.toDTO(course) >> new CourseOverviewDTO(id: course.id)
         }
 
-        List courseOverviewDTOs = mockCoursePage.map(courseMapper::toOverviewDTO).getContent()
+        List courseOverviewDTOs = mockCoursePage.map(courseMapper::toDTO).getContent()
 
         when:
         CoursePageDTO result = courseService.getAvailableCoursesPage(pageNo, pageSize)
@@ -64,7 +64,7 @@ class CourseServiceImplSpec extends Specification {
             courseMapper.toOverviewDTO(course) >> new CourseOverviewDTO(id: course.id)
         }
 
-        List courseOverviewDTOs = mockCoursePage.map(courseMapper::toOverviewDTO).getContent()
+        List courseOverviewDTOs = mockCoursePage.map(courseMapper::toDTO).getContent()
 
 
         when:
@@ -95,10 +95,10 @@ class CourseServiceImplSpec extends Specification {
         }
 
         courses.subList(5, 7).each { course ->
-            courseMapper.toOverviewDTO(course) >> new CourseOverviewDTO(id: course.id)
+            courseMapper.toDTO(course) >> new CourseOverviewDTO(id: course.id)
         }
 
-        List courseOverviewDTOs = mockCoursePage.map(courseMapper::toOverviewDTO).getContent()
+        List courseOverviewDTOs = mockCoursePage.map(courseMapper::toDTO).getContent()
 
 
         when:

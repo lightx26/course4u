@@ -1,6 +1,6 @@
 package com.mgmtp.cfu.controller;
 
-import com.mgmtp.cfu.DTO.LoginRequest;
+import com.mgmtp.cfu.dto.LoginRequest;
 import com.mgmtp.cfu.service.IAuthService;
 import com.mgmtp.cfu.util.LoginValidator;
 import lombok.RequiredArgsConstructor;

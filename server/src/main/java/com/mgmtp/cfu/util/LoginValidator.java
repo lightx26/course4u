@@ -1,6 +1,6 @@
 package com.mgmtp.cfu.util;
 
-import com.mgmtp.cfu.DTO.LoginRequest;
+import com.mgmtp.cfu.dto.LoginRequest;
 
 public class LoginValidator {
     public static boolean isValid(LoginRequest loginRequest) {

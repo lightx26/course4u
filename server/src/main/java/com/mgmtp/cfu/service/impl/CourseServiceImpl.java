@@ -4,7 +4,7 @@ import com.mgmtp.cfu.dto.CourseOverviewDTO;
 import com.mgmtp.cfu.dto.CoursePageDTO;
 import com.mgmtp.cfu.entity.Course;
 import com.mgmtp.cfu.enums.CourseStatus;
-import com.mgmtp.cfu.mapper.CourseMapper;
+import com.mgmtp.cfu.mapper.impl.CourseOverviewMapper;
 import com.mgmtp.cfu.repository.CourseRepository;
 import com.mgmtp.cfu.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +19,10 @@ import java.util.List;
 @Service
 public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
-    private final CourseMapper courseMapper;
+    private final CourseOverviewMapper courseMapper;
 
     @Autowired
-    public CourseServiceImpl(CourseRepository courseRepository, CourseMapper courseMapper) {
+    public CourseServiceImpl(CourseRepository courseRepository, CourseOverviewMapper courseMapper) {
         this.courseRepository = courseRepository;
         this.courseMapper = courseMapper;
     }
@@ -47,7 +47,7 @@ public class CourseServiceImpl implements CourseService {
     public CoursePageDTO getAvailableCoursesPage(int pageNo, int pageSize) {
 
         Page<Course> coursePage = getAvailableCourses(pageNo, pageSize);
-        List<CourseOverviewDTO> courses = coursePage.map(courseMapper::toOverviewDTO).getContent();
+        List<CourseOverviewDTO> courses = coursePage.map(courseMapper::toDTO).getContent();
         return CoursePageDTO.builder()
                 .courses(courses)
                 .totalPages(coursePage.getTotalPages())

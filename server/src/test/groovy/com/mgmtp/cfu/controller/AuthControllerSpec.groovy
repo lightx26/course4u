@@ -1,7 +1,7 @@
 package com.mgmtp.cfu.controller
 
-import com.mgmtp.cfu.DTO.LoginRequest
-import com.mgmtp.cfu.DTO.LoginResponse
+import com.mgmtp.cfu.dto.LoginRequest
+import com.mgmtp.cfu.dto.LoginResponse
 import com.mgmtp.cfu.service.impl.AuthServiceImpl
 import org.springframework.http.ResponseEntity
 import spock.lang.Specification

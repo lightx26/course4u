@@ -1,4 +1,4 @@
-package com.mgmtp.cfu.DTO;
+package com.mgmtp.cfu.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;

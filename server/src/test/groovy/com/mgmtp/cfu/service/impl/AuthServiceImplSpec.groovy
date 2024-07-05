@@ -1,15 +1,13 @@
 package com.mgmtp.cfu.service.impl
 
-import com.mgmtp.cfu.DTO.LoginRequest
+import com.mgmtp.cfu.dto.LoginRequest
 import com.mgmtp.cfu.entity.User
 import com.mgmtp.cfu.enums.Role
 import com.mgmtp.cfu.repository.UserRepository
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
-import org.springframework.security.authentication.InternalAuthenticationServiceException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.AuthenticationException
 import spock.lang.Specification
 import spock.lang.Subject
 

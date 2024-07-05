@@ -1,22 +1,24 @@
-package com.mgmtp.cfu.mapper;
+package com.mgmtp.cfu.mapper.impl;
 
 import com.mgmtp.cfu.dto.CourseOverviewDTO;
 import com.mgmtp.cfu.entity.Course;
+import com.mgmtp.cfu.mapper.DTOMapper;
 import com.mgmtp.cfu.service.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CourseMapper {
+public class CourseOverviewMapper implements DTOMapper<CourseOverviewDTO, Course> {
 
     private final RegistrationService registrationService;
 
     @Autowired
-    public CourseMapper(RegistrationService registrationService) {
+    public CourseOverviewMapper(RegistrationService registrationService) {
         this.registrationService = registrationService;
     }
 
-    public CourseOverviewDTO toOverviewDTO(Course course) {
+    @Override
+    public CourseOverviewDTO toDTO(Course course) {
         if (course == null) {
             return null;
         }

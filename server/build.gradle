@@ -79,37 +79,41 @@ tasks.named('test'){
 
 jacocoTestReport{
 	dependsOn 'test'
-	reports{
-		html.required.set(true)
-	}
+
     afterEvaluate {
-        classDirectories.setFrom(files(classDirectories.files.collect { dir ->
-            fileTree(dir: dir, exclude: [
-                "com/mgmtp/cfu/CourseForYouApplication.class",
-                "com/mgmtp/cfu/entity/*",
-                "com/mgmtp/cfu/enums/*",
-                "com/mgmtp/cfu/config/*",
-                "com/mgmtp/cfu/DTO/*",
-                "com/mgmtp/cfu/exception/*",
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "com/mgmtp/cfu/CourseForYouApplication.class",
+                    "com/mgmtp/cfu/dto/*",
+                    "com/mgmtp/cfu/entity/*",
+                    "com/mgmtp/cfu/enums/*",
+                    "com/mgmtp/cfu/repository/*",
+                    "com/mgmtp/cfu/config/*",
+                    "com/mgmtp/cfu/exception/*",
             ])
         }))
     }
+
+	reports{
+		html.required.set(true)
+	}
 }
 
 jacocoTestCoverageVerification {
 	dependsOn 'test'
-	afterEvaluate {
-		classDirectories.setFrom(files(classDirectories.files.collect { dir ->
-			fileTree(dir: dir, exclude: [
-                "com/mgmtp/cfu/CourseForYouApplication.class",
-                "com/mgmtp/cfu/entity/*",
-                "com/mgmtp/cfu/enums/*",
-                "com/mgmtp/cfu/config/*",
-                "com/mgmtp/cfu/DTO/*",
-                "com/mgmtp/cfu/exception/*",
-			])
-		}))
-	}
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "com/mgmtp/cfu/CourseForYouApplication.class",
+                    "com/mgmtp/cfu/dto/*",
+                    "com/mgmtp/cfu/entity/*",
+                    "com/mgmtp/cfu/enums/*",
+                    "com/mgmtp/cfu/repository/*",
+                    "com/mgmtp/cfu/config/*",
+                    "com/mgmtp/cfu/exception/*",
+            ])
+        }))
+    }
 	violationRules {
 		rule {
 			limit {

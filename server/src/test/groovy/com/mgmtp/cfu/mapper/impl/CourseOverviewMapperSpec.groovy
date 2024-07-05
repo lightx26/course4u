@@ -1,27 +1,28 @@
-package com.mgmtp.cfu.mapper
+package com.mgmtp.cfu.mapper.impl
 
 import com.mgmtp.cfu.dto.CourseOverviewDTO
 import com.mgmtp.cfu.entity.Course
 import com.mgmtp.cfu.enums.CourseLevel
 import com.mgmtp.cfu.enums.CourseStatus
+import com.mgmtp.cfu.mapper.impl.CourseOverviewMapper
 import com.mgmtp.cfu.service.RegistrationService
 import spock.lang.Specification
 import spock.lang.Subject
 
 import java.time.LocalDate
 
-class CourseMapperSpec extends Specification {
+class CourseOverviewMapperSpec extends Specification {
     RegistrationService registrationServiceMock = Mock(RegistrationService)
 
     @Subject
-    CourseMapper courseMapper = new CourseMapper(registrationServiceMock)
+    CourseOverviewMapper courseMapper = new CourseOverviewMapper(registrationServiceMock)
 
     def "Should return a null object"() {
         given:
         Course courseEntity = null
 
         when:
-        CourseOverviewDTO courseDTO = courseMapper.toOverviewDTO(courseEntity)
+        CourseOverviewDTO courseDTO = courseMapper.toDTO(courseEntity)
 
         then:
         courseDTO == null
@@ -35,7 +36,7 @@ class CourseMapperSpec extends Specification {
         registrationServiceMock.countLegitRegistrationInCourse(courseEntity.id) >> enrollmentCount
 
         when:
-        CourseOverviewDTO courseDTO = courseMapper.toOverviewDTO(courseEntity);
+        CourseOverviewDTO courseDTO = courseMapper.toDTO(courseEntity);
 
         then:
         1 * registrationServiceMock.countLegitRegistrationInCourse(courseEntity.id) >> enrollmentCount
