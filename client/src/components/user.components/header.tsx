@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import imageLogo from "../../assets/images/logo_c4u.svg";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store/store";
 const HeaderHomepage: React.FC = () => {
   const [isDropdownAvatarOpen, setIsDropdownAvatarOpen] = useState(false);
 
@@ -7,6 +9,7 @@ const HeaderHomepage: React.FC = () => {
     setIsDropdownAvatarOpen(!isDropdownAvatarOpen);
   };
 
+  const userData = useSelector((state: RootState) => state.user.user);
   return (
     <header
       className="bg-white p-4"
@@ -193,7 +196,7 @@ const HeaderHomepage: React.FC = () => {
 
           <div className="relative w-[40px] h-[40px] rounded-[50%]">
             <img
-              src={imageLogo}
+              src={userData.AvatarUrl}
               alt="User Avatar"
               className="absolute left-0 right-0 object-cover object-center w-full h-full cursor-pointer rounded-[50%]"
               onClick={toggleDropdown}
@@ -211,16 +214,16 @@ const HeaderHomepage: React.FC = () => {
                 <div className="flex flex-col items-center justify-center py-2">
                   <div className="flex items-center justify-center h-12 w-12">
                     <img
-                      src={imageLogo}
+                      src={userData.AvatarUrl}
                       alt=""
                       className="border border-gray-300 h-full w-full rounded-full object-cover"
                     />
                   </div>
                   <div className="text-black text-lg font-medium">
-                    Kevin Gilbert
+                    {userData.FullName}
                   </div>
                   <div className="text-black text-sm font-normal">
-                    KevinGilbert@mgm-tp.com
+                    {userData.Email}
                   </div>
                 </div>
                 <hr></hr>

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { handleLogin } from "../../apiService/user.service";
+import { handleLogin, getUserDetails } from "../../apiService/user.service";
 
 export interface IUser {
   isAuthenticated: boolean;
@@ -44,6 +44,15 @@ export const userLogin = createAsyncThunk(
   }
 );
 
+// Create async thunk to fetch user details
+export const fetchUserDetails = createAsyncThunk(
+  "users/fetchUserDetails",
+  async (access_token: string) => {
+    const userDetails = await getUserDetails(access_token);
+    return userDetails;
+  }
+);
+
 // Create a slice
 export const userSlice = createSlice({
   name: "users",
@@ -66,6 +75,12 @@ export const userSlice = createSlice({
       })
       .addCase(userLogin.rejected, (state) => {
         state.statusLogin = "failed";
+      })
+      .addCase(fetchUserDetails.fulfilled, (state, action) => {
+        if (action.payload) {
+          state.isAuthenticated = true;
+          state.user = { ...state.user, ...action.payload }; // Simplified spreading of user details
+        }
       });
   },
 });

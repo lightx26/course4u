@@ -7,6 +7,7 @@ import Detail_Of_Course from "./screens/user.screens/DetailOfCourse.tsx";
 import MyRegistrationsScreen from "./screens/user.screens/MyRegistrationScreen.tsx";
 import Navigation from "./components/user.components/personal/NavigationComponent.tsx";
 import { ReactElement } from "react";
+import ProtectedRoute from "./components/user.components/ProtectedRouteAuth.tsx";
 
 export type CourseType = {
   id: string;
@@ -44,7 +45,10 @@ const router = createBrowserRouter(
   [
     {
         path: "/",
-        element: <LayoutUser/>,
+        element: (
+            <ProtectedRoute>
+            <LayoutUser />
+        </ProtectedRoute>),
         errorElement: <div>404 not found</div>,
         children: [
             {
