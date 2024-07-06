@@ -4,10 +4,13 @@ import com.mgmtp.cfu.dto.CourseOverviewDTO;
 import com.mgmtp.cfu.dto.CoursePageDTO;
 import com.mgmtp.cfu.entity.Course;
 import com.mgmtp.cfu.enums.CourseStatus;
-import com.mgmtp.cfu.mapper.impl.CourseOverviewMapper;
+import com.mgmtp.cfu.mapper.DTOMapper;
+import com.mgmtp.cfu.mapper.factory.MapperFactory;
+import com.mgmtp.cfu.mapper.factory.impl.CourseMapperFactory;
 import com.mgmtp.cfu.repository.CourseRepository;
 import com.mgmtp.cfu.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +22,13 @@ import java.util.List;
 @Service
 public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
-    private final CourseOverviewMapper courseMapper;
+    @Qualifier("Course")
+    private final MapperFactory courseMapperFactory;
 
     @Autowired
-    public CourseServiceImpl(CourseRepository courseRepository, CourseOverviewMapper courseMapper) {
+    public CourseServiceImpl(CourseRepository courseRepository, MapperFactory courseMapperFactory) {
         this.courseRepository = courseRepository;
-        this.courseMapper = courseMapper;
+        this.courseMapperFactory = courseMapperFactory;
     }
 
     private Page<Course> getAvailableCourses(int pageNo, int pageSize) {
@@ -45,6 +49,8 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CoursePageDTO getAvailableCoursesPage(int pageNo, int pageSize) {
+
+        DTOMapper<CourseOverviewDTO, Course> courseMapper = (DTOMapper<CourseOverviewDTO, Course>) courseMapperFactory.getDTOMapper(CourseOverviewDTO.class).orElse(null);
 
         Page<Course> coursePage = getAvailableCourses(pageNo, pageSize);
         List<CourseOverviewDTO> courses = coursePage.map(courseMapper::toDTO).getContent();
