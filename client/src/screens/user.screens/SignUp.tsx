@@ -37,6 +37,9 @@ const SignUp: React.FC = () => {
     fullname: "",
     dateOfBirth: "",
   });
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [statusChangeGender, setStatusChangeGender] = useState(false);
   const [statusChangeDateOfBirth, setStatusChangeDateOfBirth] = useState(false);
 
@@ -122,6 +125,7 @@ const SignUp: React.FC = () => {
     return "";
   }
 
+  const handleSubmitForm = (e: React.MouseEvent<HTMLButtonElement>) => {
   function convertDateFormat(dateString: string) {
     // Split the input date string by the hyphen
     const [year, month, day] = dateString.split("-");
@@ -290,6 +294,60 @@ const SignUp: React.FC = () => {
           <div className="flex flex-col gap-1">
             <div className="flex justify-between items-center gap-5">
               <div className="flex flex-col gap-1 w-1/2">
+                <div className="flex justify-between items-center">
+                  <label
+                    htmlFor="password"
+                    className="text-sm font-normal text-gray-600"
+                  >
+                    Your password<span className="text-red-500">*</span>
+                  </label>
+                  {showPassword && (
+                    <div
+                      className="flex justify-center items-center cursor-pointer"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 25 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        style={{ marginTop: "1px" }}
+                      >
+                        <path
+                          d="M20.0189 4.88109L19.283 4.14515C19.075 3.93716 18.691 3.96917 18.451 4.25711L15.8908 6.80108C14.7388 6.30514 13.4749 6.06514 12.1468 6.06514C8.1947 6.08107 4.77092 8.38504 3.1228 11.6973C3.02677 11.9052 3.02677 12.1612 3.1228 12.3372C3.89073 13.9052 5.04281 15.2012 6.48281 16.1772L4.38682 18.3051C4.14682 18.5451 4.11481 18.9291 4.27485 19.1371L5.0108 19.8731C5.21879 20.081 5.60277 20.049 5.84277 19.7611L19.8907 5.71321C20.1947 5.47334 20.2267 5.08938 20.0187 4.88137L20.0189 4.88109ZM12.9948 9.71298C12.7228 9.64896 12.4349 9.56901 12.1628 9.56901C10.8028 9.56901 9.71489 10.657 9.71489 12.0169C9.71489 12.2889 9.77891 12.5769 9.85887 12.8489L8.78675 13.9049C8.4668 13.345 8.29081 12.7209 8.29081 12.017C8.29081 9.88899 10.0028 8.17697 12.1308 8.17697C12.8349 8.17697 13.4588 8.35295 14.0188 8.67291L12.9948 9.71298Z"
+                          fill="#666666"
+                          fill-opacity="0.8"
+                        />
+                        <path
+                          d="M21.1709 11.6974C20.6109 10.5774 19.8749 9.56945 18.963 8.75342L15.9869 11.6974V12.0174C15.9869 14.1454 14.2749 15.8574 12.1469 15.8574H11.8269L9.93896 17.7454C10.643 17.8893 11.379 17.9854 12.099 17.9854C16.0511 17.9854 19.4749 15.6814 21.123 12.3532C21.267 12.1292 21.267 11.9053 21.1709 11.6973L21.1709 11.6974Z"
+                          fill="#666666"
+                          fill-opacity="0.8"
+                        />
+                      </svg>
+                    </div>
+                  )}
+                  {!showPassword && (
+                    <div
+                      className="flex justify-center items-center cursor-pointer"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      <svg
+                        width="21"
+                        height="21"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        style={{ marginTop: "1px" }}
+                      >
+                        <path
+                          d="M12 9C11.2044 9 10.4413 9.31607 9.87868 9.87868C9.31607 10.4413 9 11.2044 9 12C9 12.7956 9.31607 13.5587 9.87868 14.1213C10.4413 14.6839 11.2044 15 12 15C12.7956 15 13.5587 14.6839 14.1213 14.1213C14.6839 13.5587 15 12.7956 15 12C15 11.2044 14.6839 10.4413 14.1213 9.87868C13.5587 9.31607 12.7956 9 12 9ZM12 17C10.6739 17 9.40215 16.4732 8.46447 15.5355C7.52678 14.5979 7 13.3261 7 12C7 10.6739 7.52678 9.40215 8.46447 8.46447C9.40215 7.52678 10.6739 7 12 7C13.3261 7 14.5979 7.52678 15.5355 8.46447C16.4732 9.40215 17 10.6739 17 12C17 13.3261 16.4732 14.5979 15.5355 15.5355C14.5979 16.4732 13.3261 17 12 17ZM12 4.5C7 4.5 2.73 7.61 1 12C2.73 16.39 7 19.5 12 19.5C17 19.5 21.27 16.39 23 12C21.27 7.61 17 4.5 12 4.5Z"
+                          fill="#858585"
+                        />
+                      </svg>
+                    </div>
+                  )}
+                </div>
                 <label
                   htmlFor="password"
                   className="text-sm font-normal text-gray-600"
@@ -298,7 +356,7 @@ const SignUp: React.FC = () => {
                 </label>
 
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   name="password"
                   className="border border-gray-300 h-10 pl-3 rounded-lg text-sm font-normal outline-none"
@@ -313,6 +371,64 @@ at least one uppercase letter, one special character, and one number."
                 />
               </div>
               <div className="flex flex-col gap-1 w-1/2">
+                <div className="flex justify-between items-center">
+                  <label
+                    htmlFor="confirm_password"
+                    className="text-sm font-normal text-gray-600"
+                  >
+                    Confirm password<span className="text-red-500">*</span>
+                  </label>
+                  {showConfirmPassword && (
+                    <div
+                      className="flex justify-center items-center cursor-pointer"
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                    >
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 25 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        style={{ marginTop: "1px" }}
+                      >
+                        <path
+                          d="M20.0189 4.88109L19.283 4.14515C19.075 3.93716 18.691 3.96917 18.451 4.25711L15.8908 6.80108C14.7388 6.30514 13.4749 6.06514 12.1468 6.06514C8.1947 6.08107 4.77092 8.38504 3.1228 11.6973C3.02677 11.9052 3.02677 12.1612 3.1228 12.3372C3.89073 13.9052 5.04281 15.2012 6.48281 16.1772L4.38682 18.3051C4.14682 18.5451 4.11481 18.9291 4.27485 19.1371L5.0108 19.8731C5.21879 20.081 5.60277 20.049 5.84277 19.7611L19.8907 5.71321C20.1947 5.47334 20.2267 5.08938 20.0187 4.88137L20.0189 4.88109ZM12.9948 9.71298C12.7228 9.64896 12.4349 9.56901 12.1628 9.56901C10.8028 9.56901 9.71489 10.657 9.71489 12.0169C9.71489 12.2889 9.77891 12.5769 9.85887 12.8489L8.78675 13.9049C8.4668 13.345 8.29081 12.7209 8.29081 12.017C8.29081 9.88899 10.0028 8.17697 12.1308 8.17697C12.8349 8.17697 13.4588 8.35295 14.0188 8.67291L12.9948 9.71298Z"
+                          fill="#666666"
+                          fill-opacity="0.8"
+                        />
+                        <path
+                          d="M21.1709 11.6974C20.6109 10.5774 19.8749 9.56945 18.963 8.75342L15.9869 11.6974V12.0174C15.9869 14.1454 14.2749 15.8574 12.1469 15.8574H11.8269L9.93896 17.7454C10.643 17.8893 11.379 17.9854 12.099 17.9854C16.0511 17.9854 19.4749 15.6814 21.123 12.3532C21.267 12.1292 21.267 11.9053 21.1709 11.6973L21.1709 11.6974Z"
+                          fill="#666666"
+                          fill-opacity="0.8"
+                        />
+                      </svg>
+                    </div>
+                  )}
+                  {!showConfirmPassword && (
+                    <div
+                      className="flex justify-center items-center cursor-pointer"
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                    >
+                      <svg
+                        width="21"
+                        height="21"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        style={{ marginTop: "1px" }}
+                      >
+                        <path
+                          d="M12 9C11.2044 9 10.4413 9.31607 9.87868 9.87868C9.31607 10.4413 9 11.2044 9 12C9 12.7956 9.31607 13.5587 9.87868 14.1213C10.4413 14.6839 11.2044 15 12 15C12.7956 15 13.5587 14.6839 14.1213 14.1213C14.6839 13.5587 15 12.7956 15 12C15 11.2044 14.6839 10.4413 14.1213 9.87868C13.5587 9.31607 12.7956 9 12 9ZM12 17C10.6739 17 9.40215 16.4732 8.46447 15.5355C7.52678 14.5979 7 13.3261 7 12C7 10.6739 7.52678 9.40215 8.46447 8.46447C9.40215 7.52678 10.6739 7 12 7C13.3261 7 14.5979 7.52678 15.5355 8.46447C16.4732 9.40215 17 10.6739 17 12C17 13.3261 16.4732 14.5979 15.5355 15.5355C14.5979 16.4732 13.3261 17 12 17ZM12 4.5C7 4.5 2.73 7.61 1 12C2.73 16.39 7 19.5 12 19.5C17 19.5 21.27 16.39 23 12C21.27 7.61 17 4.5 12 4.5Z"
+                          fill="#858585"
+                        />
+                      </svg>
+                    </div>
+                  )}
+                </div>
                 <label
                   htmlFor="confirm_password"
                   className="text-sm font-normal text-gray-600"
@@ -321,7 +437,7 @@ at least one uppercase letter, one special character, and one number."
                 </label>
 
                 <input
-                  type="password"
+                  type={showConfirmPassword ? "text" : "password"}
                   id="confirm_password"
                   name="confirm_password"
                   className="border border-gray-300 h-10 pl-3 rounded-lg text-sm font-normal outline-none"
