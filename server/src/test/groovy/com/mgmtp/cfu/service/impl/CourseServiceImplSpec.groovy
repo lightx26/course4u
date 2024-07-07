@@ -4,6 +4,8 @@ import com.mgmtp.cfu.dto.CourseOverviewDTO
 import com.mgmtp.cfu.dto.CoursePageDTO
 import com.mgmtp.cfu.entity.Course
 import com.mgmtp.cfu.enums.CourseStatus
+import com.mgmtp.cfu.mapper.factory.MapperFactory
+import com.mgmtp.cfu.mapper.factory.impl.CourseMapperFactory
 import com.mgmtp.cfu.mapper.impl.CourseOverviewMapper
 import com.mgmtp.cfu.repository.CourseRepository
 import com.mgmtp.cfu.service.CourseService
@@ -17,10 +19,30 @@ import spock.lang.Subject
 
 class CourseServiceImplSpec extends Specification {
     CourseRepository courseRepository = Mock(CourseRepository)
-    CourseOverviewMapper courseMapper = Mock(CourseOverviewMapper)
+    MapperFactory<Course> mapperFactory = Mock(CourseMapperFactory)
+    CourseOverviewMapper courseOverviewMapper = Mock(CourseOverviewMapper)
 
     @Subject
-    CourseService courseService = new CourseServiceImpl(courseRepository, courseMapper)
+    CourseService courseService = new CourseServiceImpl(courseRepository, mapperFactory)
+
+    def "Should throw an Exception when Mapper not found"() {
+        given:
+        int pageNo = 1
+        int pageSize = 5
+        List<Course> courses = createCourses(5)
+
+        Page mockCoursePage = new PageImpl<>(courses, PageRequest.of(0, pageSize), courses.size())
+
+        courseRepository.findByStatus(CourseStatus.AVAILABLE, _) >> mockCoursePage
+
+        mapperFactory.getDTOMapper(CourseOverviewDTO.class) >> Optional.empty()
+
+        when:
+        CoursePageDTO result = courseService.getAvailableCoursesPage(pageNo, pageSize)
+
+        then:
+        thrown(IllegalStateException)
+    }
 
     def "Should return the first page since pageNo is too low"() {
         given:
@@ -31,11 +53,13 @@ class CourseServiceImplSpec extends Specification {
 
         courseRepository.findByStatus(CourseStatus.AVAILABLE, _) >> mockCoursePage
 
+        mapperFactory.getDTOMapper(CourseOverviewDTO.class) >> Optional.of(courseOverviewMapper)
+
         courses.subList(0, 5).each { course ->
-            courseMapper.toDTO(course) >> new CourseOverviewDTO(id: course.id)
+            courseOverviewMapper.toDTO(course) >> new CourseOverviewDTO(id: course.id)
         }
 
-        List courseOverviewDTOs = mockCoursePage.map(courseMapper::toDTO).getContent()
+        List courseOverviewDTOs = mockCoursePage.map(courseOverviewMapper::toDTO).getContent()
 
         when:
         CoursePageDTO result = courseService.getAvailableCoursesPage(pageNo, pageSize)
@@ -60,11 +84,13 @@ class CourseServiceImplSpec extends Specification {
 
         courseRepository.findByStatus(CourseStatus.AVAILABLE, _) >> mockCoursePage
 
+        mapperFactory.getDTOMapper(CourseOverviewDTO.class) >> Optional.of(courseOverviewMapper)
+
         courses.subList(5, 10).each { course ->
-            courseMapper.toOverviewDTO(course) >> new CourseOverviewDTO(id: course.id)
+            courseOverviewMapper.toDTO(course) >> new CourseOverviewDTO(id: course.id)
         }
 
-        List courseOverviewDTOs = mockCoursePage.map(courseMapper::toDTO).getContent()
+        List courseOverviewDTOs = mockCoursePage.map(courseOverviewMapper::toDTO).getContent()
 
 
         when:
@@ -94,12 +120,13 @@ class CourseServiceImplSpec extends Specification {
             }
         }
 
+        mapperFactory.getDTOMapper(CourseOverviewDTO.class) >> Optional.of(courseOverviewMapper)
+
         courses.subList(5, 7).each { course ->
-            courseMapper.toDTO(course) >> new CourseOverviewDTO(id: course.id)
+            courseOverviewMapper.toDTO(course) >> new CourseOverviewDTO(id: course.id)
         }
 
-        List courseOverviewDTOs = mockCoursePage.map(courseMapper::toDTO).getContent()
-
+        List courseOverviewDTOs = mockCoursePage.map(courseOverviewMapper::toDTO).getContent()
 
         when:
         CoursePageDTO result = courseService.getAvailableCoursesPage(pageNo, pageSize)

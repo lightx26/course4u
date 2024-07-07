@@ -12,7 +12,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
-@Qualifier("CourseMapper")
 public class CourseMapperFactory extends MapperFactoryImpl<Course> {
     @Autowired
     public CourseMapperFactory(Set<DTOMapper<?, Course>> dtoMappers,

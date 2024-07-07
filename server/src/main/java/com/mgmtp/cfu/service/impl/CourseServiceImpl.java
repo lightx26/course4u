@@ -9,7 +9,6 @@ import com.mgmtp.cfu.mapper.factory.MapperFactory;
 import com.mgmtp.cfu.repository.CourseRepository;
 import com.mgmtp.cfu.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -17,15 +16,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
-    @Qualifier("CourseMapper")
-    private final MapperFactory courseMapperFactory;
+    private final MapperFactory<Course> courseMapperFactory;
 
     @Autowired
-    public CourseServiceImpl(CourseRepository courseRepository, MapperFactory courseMapperFactory) {
+    public CourseServiceImpl(CourseRepository courseRepository, MapperFactory<Course> courseMapperFactory) {
         this.courseRepository = courseRepository;
         this.courseMapperFactory = courseMapperFactory;
     }
@@ -49,7 +48,13 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public CoursePageDTO getAvailableCoursesPage(int pageNo, int pageSize) {
 
-        DTOMapper<CourseOverviewDTO, Course> courseMapper = (DTOMapper<CourseOverviewDTO, Course>) courseMapperFactory.getDTOMapper(CourseOverviewDTO.class).orElse(null);
+        Optional<DTOMapper<CourseOverviewDTO, Course>> courseMapperOpt = courseMapperFactory.getDTOMapper(CourseOverviewDTO.class);
+
+        if (courseMapperOpt.isEmpty()) {
+            throw new IllegalStateException("No mapper found for CourseOverviewDTO");
+        }
+
+        DTOMapper<CourseOverviewDTO, Course> courseMapper = courseMapperOpt.get();
 
         Page<Course> coursePage = getAvailableCourses(pageNo, pageSize);
         List<CourseOverviewDTO> courses = coursePage.map(courseMapper::toDTO).getContent();
