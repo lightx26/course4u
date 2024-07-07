@@ -1,4 +1,4 @@
-package com.mgmtp.cfu.util;
+package com.mgmtp.cfu.utils;
 
 import com.mgmtp.cfu.dto.LoginRequest;
 
