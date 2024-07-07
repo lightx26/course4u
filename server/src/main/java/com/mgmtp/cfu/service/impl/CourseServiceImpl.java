@@ -22,7 +22,7 @@ import java.util.List;
 @Service
 public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
-    @Qualifier("Course")
+    @Qualifier("CourseMapper")
     private final MapperFactory courseMapperFactory;
 
     @Autowired

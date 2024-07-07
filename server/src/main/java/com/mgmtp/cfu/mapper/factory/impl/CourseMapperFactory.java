@@ -7,20 +7,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
-@Qualifier("Course")
+@Qualifier("CourseMapper")
 public class CourseMapperFactory extends MapperFactoryImpl<Course> {
     @Autowired
-    public CourseMapperFactory(List<DTOMapper<?, Course>> dtoMappers,
-                               List<EntityMapper<?, Course>> entityMappers) {
+    public CourseMapperFactory(Set<DTOMapper<?, Course>> dtoMappers,
+                               Set<EntityMapper<?, Course>> entityMappers) {
         _dtoMappers = dtoMappers.stream()
-                .collect(Collectors.toMap(mapper -> extractDTOType(mapper), Function.identity()));
+                .collect(Collectors.toMap(MapperFactoryImpl::extractDTOType, Function.identity()));
 
         _entityMappers = entityMappers.stream()
-                .collect(Collectors.toMap(mapper -> extractDTOType(mapper), Function.identity()));
+                .collect(Collectors.toMap(MapperFactoryImpl::extractDTOType, Function.identity()));
     }
 }
