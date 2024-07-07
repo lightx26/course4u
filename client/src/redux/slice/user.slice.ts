@@ -1,4 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { handleLogin } from "../../apiService/user.service";
+import { handleRegister } from "../../apiService/user.service";
 import { handleLogin, getUserDetails } from "../../apiService/user.service";
 
 export interface IUser {
@@ -14,6 +16,16 @@ export interface IUser {
     role: string;
   };
   statusLogin: "idle" | "loading" | "failed";
+  statusRegister: "idle" | "loading" | "failed";
+}
+interface ISignUpRequest {
+  username: string;
+  password: string;
+  confirmPassword: string;
+  email: string;
+  fullname: string;
+  dateofbirth: string | null;
+  gender: string | null;
 }
 
 // Create an initial state
@@ -30,6 +42,7 @@ const initialState: IUser = {
     role: "",
   },
   statusLogin: "idle",
+  statusRegister: "idle",
 };
 
 // Create async thunk for user login
@@ -49,7 +62,13 @@ export const fetchUserDetails = createAsyncThunk(
     return userDetails;
   }
 );
-
+export const userRegister = createAsyncThunk(
+    "users/userRegister",
+    async (payload: ISignUpRequest) => {
+        const response = await handleRegister(payload);
+        return response;
+    }
+);
 // Create a slice
 export const userSlice = createSlice({
   name: "users",
@@ -93,6 +112,15 @@ export const userSlice = createSlice({
           state.isAuthenticated = true;
           state.user = { ...state.user, ...action.payload };
         }
+      })
+      .addCase(userRegister.pending, (state) => {
+        state.statusRegister = "loading";
+      })
+      .addCase(userRegister.fulfilled, (state) => {
+        state.statusRegister = "idle";
+      })
+      .addCase(userRegister.rejected, (state) => {
+        state.statusRegister = "failed";
       });
   },
 });

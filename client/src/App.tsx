@@ -16,6 +16,7 @@ import NotPermitted from "./screens/user.screens/NotPermitted.tsx";
 import NotFound from "./screens/user.screens/NotFound.tsx";
 import CreateCourse from "./components/user.components/create-course.tsx";
 
+import SignUp from "./screens/user.screens/SignUp.tsx";
 export type CourseType = {
   id: string;
   name: string;
@@ -202,6 +203,10 @@ const router = createBrowserRouter(
       path: "login",
       element: <Login />,
     },
+      {
+          path: "signup",
+          element: <SignUp />,
+      },
   ],
   {
     basename: import.meta.env.VITE_BASE_URL,

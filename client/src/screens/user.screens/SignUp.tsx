@@ -1,0 +1,500 @@
+import React, { useState } from "react";
+import logo from "../../assets/images/logo.jpg";
+import logo_c4u from "../../assets/images/logo_c4u.svg";
+import "../../assets/css/login.css";
+import { useSelector } from "react-redux";
+import { userRegister } from "../../redux/slice/user.slice";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { RootState } from "../../redux/store/store";
+import "../../assets/css/login.css";
+import { useAppDispatch } from "../../redux/store/hook";
+interface ISignUpRequest {
+  username: string;
+  password: string;
+  confirmPassword: string;
+  email: string;
+  fullname: string;
+  dateofbirth: string | null;
+  gender: string | null;
+}
+
+const SignUp: React.FC = () => {
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    fullname: "",
+    dateOfBirth: "",
+    gender: "",
+  });
+
+  const [errors, setErrors] = useState({
+    username: "",
+    email: "",
+    password: "",
+    fullname: "",
+    dateOfBirth: "",
+  });
+  const [statusChangeGender, setStatusChangeGender] = useState(false);
+  const [statusChangeDateOfBirth, setStatusChangeDateOfBirth] = useState(false);
+
+  const navigate = useNavigate();
+  function hasSpecialChar(str: string) {
+    const specialCharsRegex = /[`~!@#$%^&*()\-_=+{};:'"\\|,.<>\/? ]+/;
+    return specialCharsRegex.test(str);
+  }
+
+  const dispatch = useAppDispatch();
+  const statusRegister: string = useSelector(
+    (state: RootState) => state.user.statusRegister
+  );
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    switch (name) {
+      case "username":
+        if (hasSpecialChar(value)) {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            username: "Username cannot have special characters.",
+          }));
+        } else if (!value) {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            username: "Username is required.",
+          }));
+        } else {
+          setErrors((prevErrors) => ({ ...prevErrors, username: "" }));
+        }
+        break;
+
+      case "email":
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@mgm-tp\.com$/;
+        if (!value) {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            email: "Email is required.",
+          }));
+        } else if (!emailPattern.test(value)) {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            email: "Please enter a valid email address (*@mgm-tp.com).",
+          }));
+        } else {
+          setErrors((prevErrors) => ({ ...prevErrors, email: "" }));
+        }
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  function validatePassword(password: string, confirmPassword: string) {
+    const minLength = /^.{8,}$/;
+    const hasUpperCase = /[A-Z]/;
+    const hasNumber = /\d/;
+    const hasSpecialChar = /[`~!@#$%^&*()\-_=+{};:'"\\|,.<>\/?]+/;
+
+    const errors = [];
+
+    if (!password || !confirmPassword)
+      return "Password and confirm password is required.";
+    if (!minLength.test(password)) errors.push("8 characters long");
+    if (!hasUpperCase.test(password)) errors.push("one uppercase letter");
+    if (!hasNumber.test(password)) errors.push("one number");
+    if (!hasSpecialChar.test(password)) errors.push("one special character");
+
+    if (errors.length > 0) {
+      return `Password requirements: must be at least ${errors.join(", ")}.`;
+    }
+
+    if (password !== confirmPassword) {
+      return "Password and confirm password must be the same.";
+    }
+
+    return "";
+  }
+
+  function convertDateFormat(dateString: string) {
+    // Split the input date string by the hyphen
+    const [year, month, day] = dateString.split("-");
+
+    // Return the date in dd/mm/yyyy format
+    return `${day}/${month}/${year}`;
+  }
+
+  const handleSubmitForm = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const {
+      username,
+      email,
+      password,
+      confirmPassword,
+      fullname,
+      dateOfBirth,
+    } = formData;
+    let formHasError = false;
+
+    // Validate username
+    if (!username) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        username: "Username is required.",
+      }));
+      formHasError = true;
+    } else if (username.length > 50) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        username: "Max length for username is 50 characters.",
+      }));
+      formHasError = true;
+    }
+
+    // Validate email
+    if (!email) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        email: "Email is required.",
+      }));
+      formHasError = true;
+    }
+
+    // Validate password
+    const passwordError = validatePassword(password, confirmPassword);
+    if (passwordError) {
+      setErrors((prevErrors) => ({ ...prevErrors, password: passwordError }));
+      formHasError = true;
+    }
+
+    // Validate fullname
+    if (fullname && fullname.length > 50) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        fullname: "Max length for fullname is 50 characters.",
+      }));
+      formHasError = true;
+    }
+
+    if (dateOfBirth) {
+      const today = new Date();
+      const selectedDate = new Date(dateOfBirth);
+      if (selectedDate > today) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          dateOfBirth: "Date of birth cannot be a future date.",
+        }));
+        formHasError = true;
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          dateOfBirth: "",
+        }));
+      }
+    }
+
+    if (formHasError) {
+      return;
+    } else {
+      const dataToSubmit: ISignUpRequest = {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        confirmPassword: formData.confirmPassword,
+        fullname: formData.fullname,
+        dateofbirth: formData.dateOfBirth
+          ? convertDateFormat(formData.dateOfBirth)
+          : "",
+        gender: formData.gender,
+      };
+      const result = await dispatch(userRegister(dataToSubmit));
+      if (userRegister.fulfilled.match(result)) {
+        const message = result.payload?.message;
+        if (message === "User registered successfully") {
+          toast("User registered successfully", {
+            description:
+              "You have been successfully registered. Welcome to Course4U!",
+          });
+          navigate("/login", {
+            state: {
+              username: result.payload?.username,
+            },
+          });
+        } else if (message === "Email is already in use.") {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            email: "Email is already in use.",
+          }));
+        }
+      }
+    }
+  };
+  return (
+    <div className="w-full h-screen flex">
+      <div className=" w-1/2 flex justify-center items-center direction-column ">
+        <form action="" className="w-3/4 flex flex-col p-5 gap-4">
+          <div className="flex flex-col gap-1">
+            <label
+              htmlFor="username"
+              className="text-sm font-normal text-gray-600"
+            >
+              Username<span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              className={`border h-10 pl-3 rounded-lg text-sm font-normal outline-none ${
+                errors.username ? "border-red-500" : "border-gray-300"
+              }`}
+              placeholder="Enter your username here"
+              value={formData.username}
+              onChange={handleChange}
+              // title="Username cannot have special characters"
+              // required
+              pattern="[a-z0-9]+"
+            />
+            {errors.username && (
+              <div className="text-red-500 text-sm">{errors.username}</div>
+            )}
+          </div>
+          <div className="flex flex-col gap-1">
+            <label
+              htmlFor="email"
+              className="text-sm font-normal text-gray-600"
+            >
+              Email address<span className="text-red-500">*</span>
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              className={`border h-10 pl-3 rounded-lg text-sm font-normal outline-none ${
+                errors.email ? "border-red-500" : "border-gray-300"
+              }`}
+              placeholder="Enter your email here"
+              // required
+              value={formData.email}
+              onChange={handleChange}
+            />
+            {errors.email && (
+              <div className="text-red-500 text-sm">{errors.email}</div>
+            )}
+          </div>
+          <div className="flex flex-col gap-1">
+            <div className="flex justify-between items-center gap-5">
+              <div className="flex flex-col gap-1 w-1/2">
+                <label
+                  htmlFor="password"
+                  className="text-sm font-normal text-gray-600"
+                >
+                  Your password<span className="text-red-500">*</span>
+                </label>
+
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  className="border border-gray-300 h-10 pl-3 rounded-lg text-sm font-normal outline-none"
+                  placeholder="Your password"
+                  title="
+                  Password requirements: must be at least 8 characters long and include 
+at least one uppercase letter, one special character, and one number."
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
+                />
+              </div>
+              <div className="flex flex-col gap-1 w-1/2">
+                <label
+                  htmlFor="confirm_password"
+                  className="text-sm font-normal text-gray-600"
+                >
+                  Confirm password<span className="text-red-500">*</span>
+                </label>
+
+                <input
+                  type="password"
+                  id="confirm_password"
+                  name="confirm_password"
+                  className="border border-gray-300 h-10 pl-3 rounded-lg text-sm font-normal outline-none"
+                  placeholder="Confirm your password"
+                  value={formData.confirmPassword}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      confirmPassword: e.target.value,
+                    })
+                  }
+                />
+              </div>
+            </div>
+            {errors.password && (
+              <div className="text-red-500 text-sm">{errors.password}</div>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label
+              htmlFor="fullname"
+              className="text-sm font-normal text-gray-600"
+            >
+              Fullname
+            </label>
+            <input
+              type="text"
+              id="fullname"
+              name="fullname"
+              className="border border-gray-300 h-10 pl-3 rounded-lg text-sm font-normal outline-none"
+              placeholder="Enter your fullname here"
+              value={formData.fullname}
+              onChange={(e) =>
+                setFormData({ ...formData, fullname: e.target.value })
+              }
+            />
+            {errors.fullname && (
+              <div className="text-red-500 text-sm">{errors.fullname}</div>
+            )}
+          </div>
+          <div className="flex flex-col gap-1">
+            <div className="flex justify-between items-center gap-5">
+              <div className="flex flex-col gap-1 w-1/2">
+                <label
+                  htmlFor="dateofbirth"
+                  className="text-sm font-normal text-gray-600"
+                >
+                  Date Of Birth
+                </label>
+                <input
+                  type="date"
+                  id="dateofbirth"
+                  name="dateofbirth"
+                  className="border border-gray-300 h-10 pl-3 pr-4 rounded-lg text-sm font-normal outline-none"
+                  onChange={(e) => {
+                    setStatusChangeDateOfBirth(true);
+                    setFormData({ ...formData, dateOfBirth: e.target.value });
+                  }}
+                  style={{
+                    color: statusChangeDateOfBirth ? "black" : "#a4abb6",
+                  }}
+                  onKeyDown={(e) => e.preventDefault()}
+                />
+              </div>
+              <div className="flex flex-col gap-1 w-1/2">
+                <label
+                  htmlFor="gender"
+                  className="text-sm font-normal text-gray-600"
+                >
+                  Gender
+                </label>
+                <select
+                  name="gender"
+                  id="gender"
+                  className="border border-gray-300 h-10 pl-3 pr-4 rounded-lg text-sm font-normal outline-none"
+                  onChange={(e) => {
+                    setStatusChangeGender(true);
+                    setFormData({ ...formData, gender: e.target.value });
+                  }}
+                  defaultValue=""
+                  style={{ color: statusChangeGender ? "black" : "#a4abb6" }}
+                >
+                  <option value="" disabled hidden>
+                    Gender
+                  </option>
+                  <option value="MALE" style={{ color: "black" }}>
+                    Male
+                  </option>
+                  <option value="FEMALE" style={{ color: "black" }}>
+                    Female
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            {errors.dateOfBirth && (
+              <div className="text-red-500 text-sm">{errors.dateOfBirth}</div>
+            )}
+          </div>
+
+          {statusRegister === "pending" ? (
+            <div>
+              <button
+                className="border border-gray-300 w-full h-12 text-white bg-black rounded-2xl"
+                type="submit"
+                onClick={(e) => handleSubmitForm(e)}
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: "10px",
+                }}
+              >
+                <div className="lds-roller">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+                Sign up
+              </button>
+            </div>
+          ) : (
+            <div>
+              <button
+                className="border border-gray-300 w-full h-12 text-white bg-black rounded-2xl"
+                type="submit"
+                onClick={(e) => handleSubmitForm(e)}
+              >
+                Sign up
+              </button>
+            </div>
+          )}
+          <div>
+            <span>
+              You have an account?{" "}
+              <a href="/login" className="underline hover:text-purple">
+                Login
+              </a>
+            </span>
+          </div>
+        </form>
+      </div>
+
+      <div className="w-1/2 relative">
+        <img
+          src={logo}
+          alt=""
+          className="w-full h-full absolute left-0 right-0 object-cover object-center"
+        />
+        <div className="absolute top-1/4 left-8">
+          <div className="bg-white w-[120px] h-[120px] rounded-full flex justify-center items-center">
+            <div className="relative w-[65px] h-[72px]">
+              <img
+                src={logo_c4u}
+                alt=""
+                className="absolute left-0 top-0 object-cover object-center w-full h-full"
+              />
+            </div>
+          </div>
+          <div className="text-white font-semibold text-4xl my-1">Course4U</div>
+          <div className="text-white font-normal text-2xl">
+            Learn Efficiently - Earn Your Rewards
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SignUp;

@@ -36,7 +36,16 @@ instance.interceptors.request.use(
 instance.interceptors.request.use();
 
 // Add a response interceptor
-instance.interceptors.response.use();
+instance.interceptors.response.use(
+  function (response) {
+    return response;
+  },
+  async function (error) {
+    return error && error.response && error.response.data
+      ? error.response
+      : Promise.reject(error);
+  }
+);
 
 //export the instance
 export default instance;

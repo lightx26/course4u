@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../../assets/images/logo.jpg";
 import logo_c4u from "../../assets/images/logo_c4u.svg";
 import "../../assets/css/login.css";
@@ -7,7 +7,7 @@ import { userLogin, fetchUserDetails } from "../../redux/slice/user.slice";
 import { useDispatch } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import { AppDispatch } from "../../redux/store/store";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -18,6 +18,7 @@ const Login: React.FC = () => {
   const statusLogin: string = useSelector(
     (state: RootState) => state.user.statusLogin
   );
+  const { state } = useLocation();
 
   const validate = () => {
     const tempErrors = { username: "", password: "" };
@@ -81,6 +82,12 @@ const Login: React.FC = () => {
   const handleFormSubmit = async (e: React.FormEvent) => {
     await handleSubmit(e, dispatch, navigate, username, password);
   };
+
+  useEffect(() => {
+    if (state?.username) {
+      setUsername(state?.username);
+    }
+  }, []);
 
   return (
     <div className="w-full h-screen flex">
@@ -263,7 +270,7 @@ const Login: React.FC = () => {
           <div>
             <span>
               Don't have an account?{" "}
-              <a href="" className="underline hover:text-purple">
+              <a href="/signup" className="underline hover:text-purple">
                 Sign up
               </a>
             </span>
