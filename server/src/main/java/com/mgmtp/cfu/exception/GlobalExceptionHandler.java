@@ -1,5 +1,6 @@
 package com.mgmtp.cfu.exception;
 
+import com.mgmtp.cfu.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -27,6 +28,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({IllegalStateException.class})
     public ResponseEntity<?> handleIllegalStateException(final Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responsePre + e.getMessage() + "\"}");
+    }
+
+    @ExceptionHandler(AccountExistByEmailException.class)
+    public ResponseEntity<?> handleAccountExistByEmailException (AccountExistByEmailException e)
+    {
+        return ResponseEntity.status(409).body(ErrorResponse.builder().message(e.getMessage()).status("409").build());
     }
 
 }
