@@ -1,16 +1,17 @@
 package com.mgmtp.cfu.util
 
+import com.mgmtp.cfu.util.LoginValidator
 import spock.lang.Specification
 import spock.lang.Subject
 
 class CoursePageValidatorSpec extends Specification {
 
     @Subject
-    CoursePageValidator coursePageValidator = new CoursePageValidator()
+    LoginValidator.CoursePageValidator coursePageValidator = new LoginValidator.CoursePageValidator()
 
     def "should return true for valid pageSize"() {
         when:
-        boolean result = CoursePageValidator.isValidPageSize(pageSize)
+        boolean result = LoginValidator.CoursePageValidator.isValidPageSize(pageSize)
 
         then:
         result == true
@@ -21,7 +22,7 @@ class CoursePageValidatorSpec extends Specification {
 
     def "should return false for invalid pageSize"() {
         when:
-        boolean result = CoursePageValidator.isValidPageSize(pageSize)
+        boolean result = LoginValidator.CoursePageValidator.isValidPageSize(pageSize)
 
         then:
         result == false
