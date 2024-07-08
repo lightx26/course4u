@@ -20,6 +20,7 @@ public class RegistrationOverviewMapper implements DTOMapper<RegistrationOvervie
                 .userFullName(entity.getUser().getFullName())
                 .userId(entity.getUser().getId())
                 .username(entity.getUser().getUsername())
+                .thumbnailUrl(entity.getCourse().getThumbnailUrl())
                 .build();
         return registrationDTO;
     }

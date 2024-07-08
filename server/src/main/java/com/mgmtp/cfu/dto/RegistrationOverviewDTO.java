@@ -23,4 +23,6 @@ public class RegistrationOverviewDTO {
     Long userId;
     String username;
     String userFullName;
+    String thumbnailUrl;
+
 }

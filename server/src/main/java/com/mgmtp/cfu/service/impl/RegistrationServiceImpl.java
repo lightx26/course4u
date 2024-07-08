@@ -11,25 +11,26 @@ import com.mgmtp.cfu.exception.RegistrationNotFoundException;
 
 import com.mgmtp.cfu.mapper.DTOMapper;
 import com.mgmtp.cfu.mapper.factory.MapperFactory;
-import com.mgmtp.cfu.mapper.factory.impl.RegistrationMapperFactory;
-import com.mgmtp.cfu.dto.PageResponse;
-import com.mgmtp.cfu.enums.RegistrationStatus;
-import com.mgmtp.cfu.mapper.RegistrationOverviewMapper;
 import com.mgmtp.cfu.repository.RegistrationRepository;
 import com.mgmtp.cfu.service.RegistrationService;
 import com.mgmtp.cfu.util.AuthUtils;
 import com.mgmtp.cfu.util.RegistrationValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+
 
 import java.util.Objects;
 
 import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getRegistrationOverviewDTOS;
+import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getSortedRegistrations;
 
 
-import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getRegistrationOverviewDTOS;
+import java.util.ArrayList;
+
 
 @Service
 @RequiredArgsConstructor
@@ -57,8 +58,10 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     public PageResponse getMyRegistrationPage(int page, String status) {
+        status = status.trim();
         var userId = AuthUtils.getCurrentUser().getId();
-        var myRegistrations = registrationRepository.getByUserId(userId);
+
+        var myRegistrations = getSortedRegistrations(userId, registrationRepository);
 
         if (!RegistrationValidator.isDefaultStatus(status)) {
             try {
@@ -67,6 +70,9 @@ public class RegistrationServiceImpl implements RegistrationService {
             } catch (Exception e) {
                 throw new IllegalArgumentException(e.getMessage());
             }
+        }
+        if (myRegistrations == null || myRegistrations.isEmpty()) {
+            return PageResponse.builder().totalElements(0).list(new ArrayList<>()).build();
         }
         var listOfMyRegistration = getRegistrationOverviewDTOS(page, myRegistrations, registrationOverviewMapper);
         return PageResponse.builder().list(listOfMyRegistration).totalElements(myRegistrations.size()).build();

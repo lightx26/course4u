@@ -2,13 +2,6 @@ package com.mgmtp.cfu.service.impl
 
 import com.mgmtp.cfu.dto.RegistrationOverviewDTO
 import com.mgmtp.cfu.entity.Course
-import com.mgmtp.cfu.entity.Registration
-import com.mgmtp.cfu.entity.User
-import com.mgmtp.cfu.enums.RegistrationStatus
-import com.mgmtp.cfu.mapper.RegistrationOverviewMapper
-import com.mgmtp.cfu.dto.RegistrationOverviewDTO
-import com.mgmtp.cfu.entity.Course
-import com.mgmtp.cfu.entity.Registration
 import com.mgmtp.cfu.entity.User
 import com.mgmtp.cfu.enums.RegistrationStatus
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper
@@ -25,7 +18,6 @@ import com.mgmtp.cfu.mapper.RegistrationDetailMapper
 import com.mgmtp.cfu.mapper.factory.MapperFactory
 import com.mgmtp.cfu.mapper.factory.impl.RegistrationMapperFactory
 import com.mgmtp.cfu.repository.RegistrationRepository
-import com.mgmtp.cfu.service.RegistrationService
 import spock.lang.Specification
 import spock.lang.Subject
 import org.springframework.security.core.Authentication
@@ -103,7 +95,7 @@ class RegistrationServiceImplSpec extends Specification {
             getCredentials() >> User.builder().id(userId).build()
         }
         SecurityContextHolder.context.authentication = authentication
-        registrationRepository.getByUserId(userId) >> List.of(registrations)
+        registrationRepository.getByUserId(userId,_) >> List.of(registrations)
         when:
         def result = registrationService.getMyRegistrationPage(1, status)
         then:
@@ -122,7 +114,7 @@ class RegistrationServiceImplSpec extends Specification {
             getCredentials() >> User.builder().id(userId).build()
         }
         SecurityContextHolder.context.authentication = authentication
-        registrationRepository.getByUserId(userId) >> List.of(registrations,registrayion2)
+        registrationRepository.getByUserId(userId,_) >> List.of(registrations,registrayion2)
         registrationOverviewMapper.toDTO(_)>> RegistrationOverviewDTO.builder().id(1).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDate.now()).build()
         when:
         def result = registrationService.getMyRegistrationPage(1, status)
@@ -142,7 +134,7 @@ class RegistrationServiceImplSpec extends Specification {
             getCredentials() >> User.builder().id(userId).build()
         }
         SecurityContextHolder.context.authentication = authentication
-        registrationRepository.getByUserId(userId) >> List.of(registrations)
+        registrationRepository.getByUserId(userId,_) >> List.of(registrations)
 
         when:
         registrationService.getMyRegistrationPage(0, status)
@@ -152,12 +144,6 @@ class RegistrationServiceImplSpec extends Specification {
     }
 
 
-
-    RegistrationRepository registrationRepository = Mock(RegistrationRepository)
-    RegistrationOverviewMapper registrationOverviewMapper=Mock(RegistrationOverviewMapper)
-
-    @Subject
-    RegistrationService registrationService = new RegistrationServiceImpl(registrationRepository,registrationOverviewMapper)
 
     def "should return number of legit registration in a course"() {
         given:
@@ -180,7 +166,7 @@ class RegistrationServiceImplSpec extends Specification {
             getCredentials() >> User.builder().id(userId).build()
         }
         SecurityContextHolder.context.authentication = authentication
-        registrationRepository.getByUserId(userId) >> List.of(registrations)
+        registrationRepository.getByUserId(userId,_) >> List.of(registrations)
         when:
         def result = registrationService.getMyRegistrationPage(1, status)
         then:
@@ -199,7 +185,7 @@ class RegistrationServiceImplSpec extends Specification {
             getCredentials() >> User.builder().id(userId).build()
         }
         SecurityContextHolder.context.authentication = authentication
-        registrationRepository.getByUserId(userId) >> List.of(registrations,registrayion2)
+        registrationRepository.getByUserId(userId,_) >> List.of(registrations,registrayion2)
         registrationOverviewMapper.toDTO(_)>> RegistrationOverviewDTO.builder().id(1).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDate.now()).build()
         when:
         def result = registrationService.getMyRegistrationPage(1, status)
@@ -219,7 +205,7 @@ class RegistrationServiceImplSpec extends Specification {
             getCredentials() >> User.builder().id(userId).build()
         }
         SecurityContextHolder.context.authentication = authentication
-        registrationRepository.getByUserId(userId) >> List.of(registrations)
+        registrationRepository.getByUserId(userId,_) >> List.of(registrations)
 
         when:
         registrationService.getMyRegistrationPage(0, status)

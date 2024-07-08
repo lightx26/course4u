@@ -245,7 +245,7 @@ const HeaderHomepage: React.FC = () => {
                   </a>
                   <a
                     className="flex items-center gap-4 px-4 py-2 text-gray-800 hover:bg-gray-100"
-                    href="#"
+                    href="/personal/registration"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -263,7 +263,7 @@ const HeaderHomepage: React.FC = () => {
                   </a>
                   <a
                     className="flex items-center gap-4 px-4 py-2 text-gray-800 hover:bg-gray-100"
-                    href="#"
+                    href=""
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

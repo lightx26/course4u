@@ -4,6 +4,9 @@ import HomepageScreen from "./screens/user.screens/HomepageScreen";
 import Registrations from "./components/user.components/registrations";
 import Login from "./screens/user.screens/Login.tsx";
 import Detail_Of_Course from "./screens/user.screens/DetailOfCourse.tsx";
+import MyRegistrationsScreen from "./screens/user.screens/MyRegistrationScreen.tsx";
+import Navigation from "./components/user.components/personal/NavigationComponent.tsx";
+import { ReactElement } from "react";
 
 export type CourseType = {
   id: string;
@@ -27,10 +30,11 @@ export type CourseType = {
   level?: string;
 };
 
-const LayoutUser = () => {
+const LayoutUser = ({ children }: { children?: ReactElement }) => {
   return (
     <div className="app-container">
       <HeaderHomepage />
+      {children}
       <Outlet />
     </div>
   );
@@ -39,23 +43,41 @@ const LayoutUser = () => {
 const router = createBrowserRouter(
   [
     {
-      path: "/",
-      element: <LayoutUser />,
-      errorElement: <div>404 not found</div>,
-      children: [
-        {
-          index: true,
-          element: <HomepageScreen />,
-        },
-        {
-          path: "registrations/:id",
-          element: <Registrations />,
-        },
-        {
-          path: "courses/:id",
-          element: <Detail_Of_Course />,
-        },
-      ],
+        path: "/",
+        element: <LayoutUser/>,
+        errorElement: <div>404 not found</div>,
+        children: [
+            {
+                index: true,
+                element: <HomepageScreen/>,
+            },{
+                path: "registrations/:id",
+                element: <Registrations />,
+            },
+            {
+                path: "courses/:id",
+                element: <Detail_Of_Course />,
+            },
+        ],
+    },{
+        path: "personal",
+        element: <LayoutUser><Navigation/></LayoutUser>,
+        children: [
+
+            {
+              // index: true,
+              // path: "account",
+              // element: <MyRegistrationsScreen />
+            },
+            {
+                path: "registration",
+                element: <MyRegistrationsScreen/>
+            },
+            //  {
+            //   path: "score",
+            //   element: <div> My Score </div>
+            // },
+        ],
     },
     {
       path: "login",
