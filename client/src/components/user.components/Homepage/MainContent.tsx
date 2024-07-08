@@ -4,6 +4,7 @@ import ListCourseCardComponent from '../ListCourseCardComponent.tsx';
 import PaginationSection from './PaginationSection';
 import Select from '../Select.tsx';
 import { fetchListAvailableCourse } from '../../../apiService/Course.service.ts';
+import EmptyPage from '../EmptyPage.tsx';
 
 export type FilterItemType = {
     id?: string;
@@ -62,14 +63,20 @@ export default function MainContent() {
 
     return (
         <div className='flex flex-col gap-5 w-[80%] p-3 grow'>
-            <div className='flex items-center justify-between'>
-                <Select listOption={sortList} value={sortBy} onSortByChange={onSortByChange} />
-                <div>
-                    Showing {(currentPage - 1) * 8 + 1} - {Math.min(currentPage * 8, totalItem)} of {totalItem} results
-                </div>
-            </div>
-            <ListCourseCardComponent ListCourse={listCourse} isLoading={isLoading} />
-            {totalItem > 8 && <PaginationSection totalItems={totalItem} currentPage={currentPage} itemPerPage={8} setCurrentPage={onPageNumberClick} />}
+            {
+                (listCourse.length > 0) ?
+                    <>
+                        <div className='flex items-center justify-between'>
+                            <div>
+                                Showing {(currentPage - 1) * 8 + 1} - {Math.min(currentPage * 8, totalItem)} of {totalItem} results
+                            </div>
+                            <Select listOption={sortList} value={sortBy} onSortByChange={onSortByChange} />
+                        </div>
+                        <ListCourseCardComponent ListCourse={listCourse} isLoading={isLoading} />
+                        {totalItem > 8 && <PaginationSection totalItems={totalItem} currentPage={currentPage} itemPerPage={8} setCurrentPage={onPageNumberClick} />}
+                    </>
+                    : <EmptyPage content={'No courses found. Try changing your search terms, adjusting your filters, or exploring different categories to find what you\'re looking for.'} />
+            }
         </div>
     )
 }

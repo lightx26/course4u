@@ -34,8 +34,8 @@ export default function FilterComponent(prop: Prop) {
                     {
                         prop.isHaveSearch &&
                         <div className='relative w-full py-2'>
-                            <input type='search' className='w-full p-2 bg-white border border-gray-300 rounded-md hover:border-violet-600' />
-                            <svg className='absolute top-1/2 right-1 -translate-y-2/4 hover:stroke-violet-600' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <input type='search' className='box-border w-full py-2 bg-white border border-gray-300 rounded-md px-7 hover:border-violet-600' />
+                            <svg className='absolute left-1 top-1/2 -translate-y-2/4 hover:stroke-violet-600' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                                 <path d="M15.5 15.5L20 20" stroke="#1D2026" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                 <circle cx="10.5" cy="10.5" r="5.75" stroke="#1D2026" strokeWidth="1.5" />
                             </svg>

@@ -12,7 +12,7 @@ type PropsType = {
 
 export default function ListCourseCardComponent(props: PropsType) {
     if (props.isLoading) {
-        return <div className='grid gap-4 text-black 2xl:grid-cols-4 md:grid-cols-2 xl:grid-cols-3 scree auto-rows-auto'>
+        return <div className='grid gap-4 text-black xl:grid-cols-4 md:grid-cols-2 lg:grid-cols-3 scree auto-rows-auto'>
             {Array.from({ length: 8 }).map((_, index) => <SkeletonLoader key={index} />)}
         </div>
     }
