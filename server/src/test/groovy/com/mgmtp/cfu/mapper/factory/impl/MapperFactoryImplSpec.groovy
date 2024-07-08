@@ -10,6 +10,32 @@ class MapperFactoryImplSpec extends Specification {
     @Subject
     MapperFactory<Object> mapperFactory = new MapperFactoryImpl()
 
+    def "Should return DTO type of mapper"() {
+        given:
+        def dtoMapper = new MockDTOMapper()
+        def entityMapper = new MockEntityMapper()
+
+        when:
+        def dtoResult = MapperFactoryImpl.extractDTOType(dtoMapper)
+        def entityResult = MapperFactoryImpl.extractDTOType(entityMapper)
+
+        then:
+        dtoResult == Object.class
+        entityResult == Object.class
+    }
+
+    def "Should throw IllegalArgumentException when DTO type is not found"() {
+        given:
+        def notMapper = new Object()
+
+        when:
+        MapperFactoryImpl.extractDTOType(notMapper)
+
+        then:
+        thrown(IllegalArgumentException)
+    }
+
+
     def "Should return the correct DTOMapper"() {
         given:
         def dtoMapper = Mock(DTOMapper)
@@ -54,5 +80,19 @@ class MapperFactoryImplSpec extends Specification {
 
         then:
         result.isEmpty()
+    }
+}
+
+class MockDTOMapper implements DTOMapper<Object, String> {
+    @Override
+    Object toDTO(String entity) {
+        return null
+    }
+}
+
+class MockEntityMapper implements EntityMapper<Object, String> {
+    @Override
+    String toEntity(Object dto) {
+        return null
     }
 }

@@ -6,7 +6,7 @@ import com.mgmtp.cfu.entity.Course
 import com.mgmtp.cfu.enums.CourseStatus
 import com.mgmtp.cfu.mapper.factory.MapperFactory
 import com.mgmtp.cfu.mapper.factory.impl.CourseMapperFactory
-import com.mgmtp.cfu.mapper.impl.CourseOverviewMapper
+import com.mgmtp.cfu.mapper.CourseOverviewMapper
 import com.mgmtp.cfu.repository.CourseRepository
 import com.mgmtp.cfu.service.CourseService
 import org.springframework.data.domain.PageImpl

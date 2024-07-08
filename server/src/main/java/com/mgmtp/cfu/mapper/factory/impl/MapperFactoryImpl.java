@@ -15,15 +15,19 @@ class MapperFactoryImpl<U> implements MapperFactory<U> {
     protected Map<Class<?>, EntityMapper<?, U>> _entityMappers;
 
     protected static Class<?> extractDTOType(Object mapper) {
-        Type[] genericInterfaces = mapper.getClass().getGenericInterfaces();
-        for (Type type : genericInterfaces) {
-            if (type instanceof ParameterizedType) {
-                ParameterizedType parameterizedType = (ParameterizedType) type;
-                if (parameterizedType.getRawType().equals(DTOMapper.class) ||
-                        parameterizedType.getRawType().equals(EntityMapper.class)) {
-                    return (Class<?>) parameterizedType.getActualTypeArguments()[0];
+        Class<?> mapperClass = mapper.getClass();
+        while (mapperClass != null) {
+            Type[] genericInterfaces = mapperClass.getGenericInterfaces();
+            for (Type type : genericInterfaces) {
+                if (type instanceof ParameterizedType) {
+                    ParameterizedType parameterizedType = (ParameterizedType) type;
+                    if (parameterizedType.getRawType().equals(DTOMapper.class) ||
+                            parameterizedType.getRawType().equals(EntityMapper.class)) {
+                        return (Class<?>) parameterizedType.getActualTypeArguments()[0];
+                    }
                 }
             }
+            mapperClass = mapperClass.getSuperclass();
         }
         throw new IllegalArgumentException("Invalid mapper type: " + mapper.getClass());
     }
