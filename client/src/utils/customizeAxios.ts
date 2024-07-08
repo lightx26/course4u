@@ -14,16 +14,7 @@ instance.defaults.headers.common = {
 instance.interceptors.request.use();
 
 // Add a response interceptor
-instance.interceptors.response.use(
-  function (response) {
-    return response && response.data ? response.data : response;
-  },
-  async function (error) {
-    return error && error.response && error.response.data
-      ? error.response.data
-      : Promise.reject(error);
-  }
-);
+instance.interceptors.response.use();
 
 //export the instance
 export default instance;
