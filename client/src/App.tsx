@@ -3,10 +3,11 @@ import HeaderHomepage from "./components/user.components/header";
 import HomepageScreen from "./screens/user.screens/HomepageScreen";
 import Registrations from "./components/user.components/registrations";
 import Login from "./screens/user.screens/Login.tsx";
+import Detail_Of_Course from "./screens/user.screens/DetailOfCourse.tsx";
 
 export type CourseType = {
-  id?: string;
-  name?: string;
+  id: string;
+  name: string;
   thumbnailUrl?: string;
   assignee?: {
     id?: string;
@@ -24,7 +25,7 @@ export type CourseType = {
   rating?: number;
   enrollmentCount?: number;
   level?: string;
-}
+};
 
 const LayoutUser = () => {
   return (
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
                 path: "registrations/:id",
                 element: <Registrations />,
             },
+            {
+                path: "courses/:slug",
+                element: <Detail_Of_Course />,
+            },
         ],
     },
     {
@@ -59,7 +64,7 @@ const router = createBrowserRouter([
 });
 
 function App() {
-    return <>{<RouterProvider router={router}/>}</>;
+  return <>{<RouterProvider router={router} />}</>;
 }
 
 export default App;

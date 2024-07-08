@@ -1,8 +1,9 @@
-import { CourseType } from '../../App'
-import { SkeletonLoader } from './CourseCardComponent'
+import { CourseType } from "../../App";
+import { SkeletonLoader } from "./CourseCardComponent";
 import React from "react";
+// import CourseCardComponent from './CourseCardComponent'
 
-const CourseCardComponent = React.lazy(() => import('./CourseCardComponent'))
+const CourseCardComponent = React.lazy(() => import("./CourseCardComponent"));
 
 type PropsType = {
     ListCourse: CourseType[]

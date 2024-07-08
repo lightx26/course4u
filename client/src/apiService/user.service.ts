@@ -9,7 +9,7 @@ const handleLogin = async (username: string, password: string) => {
 
     if (response)
       return {
-        access_token: response?.data.access_token,
+        access_token: response?.data?.access_token,
       };
   } catch (error: any) {
     throw new Error(error.message);

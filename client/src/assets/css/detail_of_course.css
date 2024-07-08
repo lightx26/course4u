@@ -1,0 +1,8 @@
+.widget-ratings {
+  display: flex !important;
+  justify-content: center !important;
+  align-self: center !important;
+}
+.Dropdown-root > .Dropdown-control > .Dropdown-arrow-wrapper > .Dropdown-arrow {
+  margin-top: 5px !important;
+}
