@@ -1,6 +1,5 @@
 package com.mgmtp.cfu.mapper.factory.impl;
 
-
 import com.mgmtp.cfu.entity.Registration;
 import com.mgmtp.cfu.mapper.DTOMapper;
 import com.mgmtp.cfu.mapper.EntityMapper;

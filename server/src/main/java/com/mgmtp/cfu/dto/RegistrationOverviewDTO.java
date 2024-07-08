@@ -1,11 +1,6 @@
 package com.mgmtp.cfu.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.mgmtp.cfu.entity.Course;
-import com.mgmtp.cfu.entity.User;
-import com.mgmtp.cfu.enums.DurationUnit;
 import com.mgmtp.cfu.enums.RegistrationStatus;
-import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -16,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
-public class MyRegistrationOverviewDTO {
+public class RegistrationOverviewDTO {
     Long id;
     RegistrationStatus status;
     LocalDate startDate;
@@ -25,4 +20,7 @@ public class MyRegistrationOverviewDTO {
     String courseName;
     LocalDateTime lastUpdate;
     Long courseId;
+    Long userId;
+    String username;
+    String userFullName;
 }

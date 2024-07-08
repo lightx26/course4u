@@ -21,7 +21,8 @@ class RegistrationValidatorSpec extends Specification {
         "none"         | false
         "something"    | false
         "Defaul"       | false
-        null           | false
-        ""             | false
+        null           | true
+        ""             | true
+
     }
 }

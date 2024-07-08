@@ -1,9 +1,7 @@
 package com.mgmtp.cfu.controller
 
-import com.mgmtp.cfu.dto.RegistrationDTO
 import com.mgmtp.cfu.dto.RegistrationDetailDTO
 import com.mgmtp.cfu.exception.RegistrationNotFoundException
-import com.mgmtp.cfu.mapper.RegistrationDetailMapper
 import com.mgmtp.cfu.service.RegistrationService
 import org.springframework.http.ResponseEntity
 import spock.lang.Specification
@@ -19,7 +17,7 @@ class RegistrationControllerSpec extends Specification {
         RegistrationDetailDTO registrationDetailDTO = RegistrationDetailDTO.builder().build()
             registrationService.getDetailRegistration(registrationId) >> registrationDetailDTO
         when:
-            ResponseEntity<RegistrationDetailDTO> response = registrationController.getDetailRegistration(registrationId)
+        ResponseEntity<RegistrationDetailDTO> response = registrationController.getDetailRegistration(registrationId)
         then:
             response.statusCode.value() == 200
             response.body == registrationDetailDTO

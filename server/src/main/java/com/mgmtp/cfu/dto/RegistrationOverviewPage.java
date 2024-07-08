@@ -1,7 +1,7 @@
 package com.mgmtp.cfu.dto;
 
 import com.mgmtp.cfu.entity.Registration;
-import com.mgmtp.cfu.mapper.RegistrationMapper;
+import com.mgmtp.cfu.mapper.RegistrationOverviewMapper;
 import com.mgmtp.cfu.util.Constant;
 
 import java.util.ArrayList;
@@ -14,17 +14,20 @@ public class RegistrationOverviewPage {
     private final int page;
     private final int limit;
     private final List<Registration> registrations;
+    private final RegistrationOverviewMapper mapper;
 
-    public RegistrationOverviewPage(final int page, List<Registration> registrations) {
-        this.limit = Constant.MY_REGISTRATION_PAGE_LIMIT;
+
+    public RegistrationOverviewPage(final int page, List<Registration> registrations, int limit, RegistrationOverviewMapper mapper) {
+        this.limit = limit;
         this.page = (page <= 0) ? 1 : page;
         this.registrations = (registrations == null) ? new ArrayList<>() : registrations;
+        this.mapper = mapper;
 
         int totalRegistrations = this.registrations.size();
         this.pageTotal = (int) Math.ceil((double) totalRegistrations / limit);
     }
 
-    public List<MyRegistrationOverviewDTO> getDtoPage( ) {
+    public List<RegistrationOverviewDTO> getDtoPage( ) {
         if (pageTotal == 0 || page > pageTotal) {
             return Collections.emptyList();
         }
@@ -33,7 +36,7 @@ public class RegistrationOverviewPage {
         int endIndex = Math.min(startIndex + limit, registrations.size());
 
         return registrations.subList(startIndex, endIndex).stream()
-                .map(RegistrationMapper::toMyRegistrationDto)
+                .map(mapper::toDTO)
                 .collect(Collectors.toList());
     }
 }

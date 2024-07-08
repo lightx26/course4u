@@ -7,11 +7,11 @@ import spock.lang.Subject
 class CoursePageValidatorSpec extends Specification {
 
     @Subject
-    LoginValidator.CoursePageValidator coursePageValidator = new LoginValidator.CoursePageValidator()
+    CoursePageValidator coursePageValidator = new CoursePageValidator()
 
     def "should return true for valid pageSize"() {
         when:
-        boolean result = LoginValidator.CoursePageValidator.isValidPageSize(pageSize)
+        boolean result = CoursePageValidator.isValidPageSize(pageSize)
 
         then:
         result == true
@@ -22,7 +22,7 @@ class CoursePageValidatorSpec extends Specification {
 
     def "should return false for invalid pageSize"() {
         when:
-        boolean result = LoginValidator.CoursePageValidator.isValidPageSize(pageSize)
+        boolean result = CoursePageValidator.isValidPageSize(pageSize)
 
         then:
         result == false
