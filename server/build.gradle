@@ -39,6 +39,8 @@ dependencies {
     liquibaseRuntime 'org.postgresql:postgresql'
     implementation 'org.liquibase:liquibase-core'
     liquibaseRuntime 'info.picocli:picocli:4.7.5'
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
     testImplementation(
@@ -52,9 +54,6 @@ dependencies {
 			// Spring boot test
 			'org.springframework.boot:spring-boot-starter-test'
 	)
-    // Lombok
-    compileOnly 'org.projectlombok:lombok:1.18.24'
-    annotationProcessor 'org.projectlombok:lombok:1.18.24'
 }
 
 // Specifying source sets to not run .java test files
