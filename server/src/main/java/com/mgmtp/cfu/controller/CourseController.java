@@ -1,7 +1,7 @@
 package com.mgmtp.cfu.controller;
 
 import com.mgmtp.cfu.service.CourseService;
-import com.mgmtp.cfu.utils.CoursePageValidator;
+import com.mgmtp.cfu.util.CoursePageValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

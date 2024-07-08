@@ -1,4 +1,4 @@
-package com.mgmtp.cfu.utils;
+package com.mgmtp.cfu.util;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;

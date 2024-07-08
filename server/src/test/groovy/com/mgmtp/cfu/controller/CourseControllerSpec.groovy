@@ -3,7 +3,7 @@ package com.mgmtp.cfu.controller
 
 import com.mgmtp.cfu.dto.CoursePageDTO
 import com.mgmtp.cfu.service.CourseService
-import com.mgmtp.cfu.utils.CoursePageValidator
+import com.mgmtp.cfu.util.CoursePageValidator
 import org.springframework.http.ResponseEntity
 import spock.lang.Specification
 import spock.lang.Subject
