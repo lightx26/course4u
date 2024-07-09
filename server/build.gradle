@@ -43,9 +43,9 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
-    testImplementation(
-            // JUnit
-            'junit:junit:4.13.2',
+	testImplementation(
+			// JUnit
+			'junit:junit:4.13.2',
 
             // Spock
             'org.spockframework:spock-core:2.4-M1-groovy-4.0',
