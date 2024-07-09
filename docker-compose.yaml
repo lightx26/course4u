@@ -5,7 +5,7 @@ services:
     container_name: "server-staging"
     env_file:
       - .env.staging
-    profiles: [ 'staging' ]
+    profiles: [ 'staging']
     ports:
       - "8080"
     networks:
@@ -31,6 +31,37 @@ services:
       - "traefik.http.middlewares.cfu-client-staging-middleware.replacepathregex.regex=^/staging(.*)"
       - "traefik.http.middlewares.cfu-client-staging-middleware.replacepathregex.replacement=$$1"
       - "traefik.http.routers.cfu-client-staging-cfu.middlewares=cfu-client-staging-middleware"
+  server-master:
+    image: "da-nang-internship-docker-local.dockerregistry.mgm-tp.com/com.mgmtp.da-nang-internship/com.mgmtp.cfu.server:master"
+    container_name: "server-master"
+    env_file:
+      - .env.master
+    profiles: [ 'master' ]
+    ports:
+      - "8080"
+    networks:
+      - "cfu"
+    labels:
+      - "traefik.http.routers.cfu-server-master-cfu.rule=PathPrefix(`/master/api`)"
+      - "traefik.http.middlewares.cfu-server-master-middleware.replacepathregex.regex=^/master/api/(.*)"
+      - "traefik.http.middlewares.cfu-server-master-middleware.replacepathregex.replacement=/api/$$1"
+      - "traefik.http.routers.cfu-server-master-cfu.middlewares=cfu-server-master-middleware"
+
+  client-master:
+    image: "da-nang-internship-docker-local.dockerregistry.mgm-tp.com/com.mgmtp.da-nang-internship/com.mgmtp.cfu.client:master"
+    container_name: "client-master"
+    profiles: [ 'master' ]
+    ports:
+      - "80"
+    networks:
+      - "cfu"
+    depends_on:
+      - "server-master"
+    labels:
+      - "traefik.http.routers.cfu-client-master-cfu.rule=PathPrefix(`/master`)"
+      - "traefik.http.middlewares.cfu-client-master-middleware.replacepathregex.regex=^/master(.*)"
+      - "traefik.http.middlewares.cfu-client-master-middleware.replacepathregex.replacement=$$1"
+      - "traefik.http.routers.cfu-client-master-cfu.middlewares=cfu-client-master-middleware"
 
 networks:
   cfu:

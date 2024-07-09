@@ -1,17 +1,23 @@
 import { useState } from 'react';
 import { FilterItemType } from './MainContent';
+import { useDispatch } from 'react-redux';
+import { toggleFilterItem } from '../../../redux/slice/filterItemCheckbox.slice';
+
 
 type PropsType = {
     prop: FilterItemType;
+    onClick: (id: string) => void;
 }
 
 export default function FilterItemComponent({ prop }: PropsType) {
     const [checked, setChecked] = useState(false);
+    const dispatch = useDispatch();
 
     const onFilterItemClick = () => {
         setChecked(!checked);
+        dispatch(toggleFilterItem(prop.name));
+        toggleFilterItem(prop.name);
     }
-
     return (
         <div className="flex justify-between text-base cursor-pointer text-[#4E5566] hover:text-[#7E22CE]" onClick={onFilterItemClick}>
             <div className="flex items-center gap-2">

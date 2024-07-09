@@ -14,7 +14,7 @@ export default function FilterComponent(prop: Prop) {
         prop.promise.then((res) => {
             setListFilterItem(res);
         });
-    })
+    });
     const [isListVisible, setIsListVisible] = useState(true);
 
     const toggleListVisibility = () => {

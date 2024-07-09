@@ -61,6 +61,7 @@ pipeline{
                     }
                 }
             }
+            
         }
         stage('Deploy') {
             // condition to trigger this stage is only on staging branch

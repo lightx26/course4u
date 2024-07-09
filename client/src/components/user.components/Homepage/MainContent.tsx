@@ -5,9 +5,12 @@ import PaginationSection from './PaginationSection';
 import Select from '../Select.tsx';
 import { fetchListAvailableCourse } from '../../../apiService/Course.service.ts';
 import EmptyPage from '../EmptyPage.tsx';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store/store.ts';
+import { XIcon } from 'lucide-react';
 
 export type FilterItemType = {
-    id?: string;
+    id: string;
     name: string;
     checked?: boolean;
     countNumber?: number;
@@ -38,6 +41,7 @@ export default function MainContent() {
     const [listCourse, setListCourse] = useState<CourseType[]>([]);
     const [sortBy, setSortBy] = useState<string>('');
     const [isLoading, setIsLoading] = useState(false);
+    const selectedItems = useSelector((state: RootState) => state.filter);
 
     const fetchData = async (page: number = 1, limit: number = 8) => {
         setIsLoading(true);
@@ -66,11 +70,21 @@ export default function MainContent() {
             {
                 (listCourse.length > 0) ?
                     <>
+                        <div className='flex flex-wrap gap-2'>
+                            {selectedItems.map(item => (
+                                <div key={item} className='p-2 text-sm bg-gray-200 rounded-md'>
+                                    <p>{item}</p>
+                                </div>
+                            ))}
+                            {selectedItems && selectedItems.length > 1 && <div key={"DelteAll"} className='p-2 text-sm bg-gray-200 rounded-md'>
+                                <p className='flex items-center'>Delete All <XIcon /></p>
+                            </div>}
+                        </div>
                         <div className='flex items-center justify-between'>
+                            <Select listOption={sortList} value={sortBy} onSortByChange={onSortByChange} />
                             <div>
                                 Showing {(currentPage - 1) * 8 + 1} - {Math.min(currentPage * 8, totalItem)} of {totalItem} results
                             </div>
-                            <Select listOption={sortList} value={sortBy} onSortByChange={onSortByChange} />
                         </div>
                         <ListCourseCardComponent ListCourse={listCourse} isLoading={isLoading} />
                         {totalItem > 8 && <PaginationSection totalItems={totalItem} currentPage={currentPage} itemPerPage={8} setCurrentPage={onPageNumberClick} />}

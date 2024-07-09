@@ -1,7 +1,6 @@
 import { useState } from "react";
 import FilterItemComponent from "./FilterItemComponent";
 import { FilterItemType } from "./MainContent";
-import { v4 } from "uuid";
 
 type PropsType = {
     list: Array<FilterItemType>;
@@ -12,6 +11,7 @@ export default function ListFilterItem(props: PropsType) {
     const additionalDisplayCount = 3;
     const [displayCount, setDisplayCount] = useState(initialDisplayCount);
     const [isExpanded, setIsExpanded] = useState(false);
+    const [listCheckBox, setListCheckBox] = useState<FilterItemType[]>(props.list.map((item) => item));
 
     const handleShowMore = () => {
         if (isExpanded && displayCount >= props.list.length) {
@@ -24,12 +24,22 @@ export default function ListFilterItem(props: PropsType) {
         }
     };
 
+    const toggleItemCheck = (itemId: string) => {
+        const newListCheckBox = listCheckBox.map((item) => {
+            if (item.id === itemId) { // Assuming each item has a unique 'id' property.
+                return { ...item, checked: !item.checked };
+            }
+            return item;
+        });
+        setListCheckBox(newListCheckBox);
+    };
+
     return (
         <div className="flex flex-col gap-3">
-            {props.list.slice(0, displayCount).map((item) => (
-                <FilterItemComponent key={v4()} prop={item} />
+            {listCheckBox.slice(0, displayCount).map((item) => (
+                <FilterItemComponent key={item.id} prop={item} onClick={() => { toggleItemCheck(item.id) }} />
             ))}
-            {props.list.length > initialDisplayCount && (
+            {listCheckBox.length > initialDisplayCount && (
                 <button onClick={handleShowMore} className="flex items-center justify-center w-full gap-2 p-2 transition-colors border border-gray-200 border-solid rounded-full cursor-pointer hover:bg-gray-50">
                     <h3>{isExpanded ? 'Collapse' : 'See more'}</h3>
                     <svg xmlns="http://www.w3.org/2000/svg" width="7" height="8" viewBox="0 0 7 8" fill="none">
