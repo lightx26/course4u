@@ -6,9 +6,9 @@ public enum RegistrationStatus {
     SUBMITTED,
     DECLINED,
     DONE,
+    DOCUMENT_DECLINED,
     APPROVED,
     VERIFYING,
     VERIFIED,
     CLOSED,
-    DOCUMENT_DECLINED
 }

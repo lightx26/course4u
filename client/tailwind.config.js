@@ -84,5 +84,5 @@ export default {
         "@apply text-gray-700 bg-white hover:bg-gray-200": {},
       },
     });
-  },],
+  },require("tailwindcss-animate")],
 }

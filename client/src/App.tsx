@@ -1,6 +1,7 @@
 import {createBrowserRouter, Outlet, RouterProvider} from "react-router-dom";
 import HeaderHomepage from "./components/user.components/header";
 import HomepageScreen from "./screens/user.screens/HomepageScreen";
+import Registrations from "./components/user.components/registrations";
 import Login from "./screens/user.screens/Login.tsx";
 
 export type CourseType = {
@@ -43,7 +44,10 @@ const router = createBrowserRouter([
             {
                 index: true,
                 element: <HomepageScreen/>,
-            }
+            },{
+                path: "registrations/:id",
+                element: <Registrations />,
+            },
         ],
     },
     {
@@ -58,4 +62,4 @@ function App() {
     return <>{<RouterProvider router={router}/>}</>;
 }
 
-export default App
+export default App;
