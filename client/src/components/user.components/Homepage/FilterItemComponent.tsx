@@ -1,22 +1,40 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FilterItemType } from './MainContent';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toggleFilterItem } from '../../../redux/slice/filterItemCheckbox.slice';
+import { RootState } from '../../../redux/store/store';
 
 
 type PropsType = {
     prop: FilterItemType;
-    onClick: (id: string) => void;
+    onClick: () => void;
 }
 
 export default function FilterItemComponent({ prop }: PropsType) {
     const [checked, setChecked] = useState(false);
     const dispatch = useDispatch();
 
+    // Sử dụng useSelector để lấy state từ store
+    const selectedItems = useSelector((state: RootState) => state.filter);
+
+    useEffect(() => {
+        // Kiểm tra xem item hiện tại có được chọn trong store hay không
+        const isItemSelected = selectedItems.some(item =>
+            item.FilterComponentId === prop.parentID &&
+            item.listChoice.some(choice => choice.id === prop.id)
+        );
+        setChecked(isItemSelected);
+    }, [selectedItems, prop.parentID, prop.id]); // Rerun khi filterItems hoặc prop thay đổi
+
     const onFilterItemClick = () => {
-        setChecked(!checked);
-        dispatch(toggleFilterItem(prop.name));
-        toggleFilterItem(prop.name);
+        dispatch(toggleFilterItem({
+            FilterComponentId: prop.parentID,
+            choiceId: prop.id,
+            listChoice: [{
+                id: prop.id,
+                name: prop.name
+            }]
+        }));
     }
     return (
         <div className="flex justify-between text-base cursor-pointer text-[#4E5566] hover:text-[#7E22CE]" onClick={onFilterItemClick}>

@@ -1,20 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react';
 import ListFilterItem from './ListFilterComponent';
 import { FilterItemType } from './MainContent';
 
 type Prop = {
     title: string;
-    promise: Promise<FilterItemType[]>
+    list: FilterItemType[]
     isHaveSearch?: boolean;
 }
 
 export default function FilterComponent(prop: Prop) {
-    const [listFilterItem, setListFilterItem] = useState<FilterItemType[]>([]);
-    useEffect(() => {
-        prop.promise.then((res) => {
-            setListFilterItem(res);
-        });
-    });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [listFilterItem, setListFilterItem] = useState<FilterItemType[]>(prop.list);
+
     const [isListVisible, setIsListVisible] = useState(true);
 
     const toggleListVisibility = () => {
@@ -30,7 +27,7 @@ export default function FilterComponent(prop: Prop) {
                 </svg>
             </div>
             {isListVisible && (
-                <div className='p-3 ease-linear delay-75'>
+                <div className='h-full p-3 ease-linear delay-75'>
                     {
                         prop.isHaveSearch &&
                         <div className='relative w-full py-2'>

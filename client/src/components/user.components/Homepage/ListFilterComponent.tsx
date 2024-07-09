@@ -35,7 +35,7 @@ export default function ListFilterItem(props: PropsType) {
     };
 
     return (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col h-full gap-3">
             {listCheckBox.slice(0, displayCount).map((item) => (
                 <FilterItemComponent key={item.id} prop={item} onClick={() => { toggleItemCheck(item.id) }} />
             ))}

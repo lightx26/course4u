@@ -5,15 +5,18 @@ import PaginationSection from './PaginationSection';
 import Select from '../Select.tsx';
 import { fetchListAvailableCourse } from '../../../apiService/Course.service.ts';
 import EmptyPage from '../EmptyPage.tsx';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store/store.ts';
 import { XIcon } from 'lucide-react';
+import { toggleFilterItem } from '../../../redux/slice/filterItemCheckbox.slice.ts';
+import { deleteAllFilterItem } from '../../../redux/slice/searchFilterItem.slice.ts';
 
 export type FilterItemType = {
     id: string;
     name: string;
     checked?: boolean;
     countNumber?: number;
+    parentID: string;
 }
 
 const sortList = [
@@ -42,7 +45,7 @@ export default function MainContent() {
     const [sortBy, setSortBy] = useState<string>('');
     const [isLoading, setIsLoading] = useState(false);
     const selectedItems = useSelector((state: RootState) => state.filter);
-
+    const dispatch = useDispatch();
     const fetchData = async (page: number = 1, limit: number = 8) => {
         setIsLoading(true);
         const result = await fetchListAvailableCourse(page, limit);
@@ -65,21 +68,32 @@ export default function MainContent() {
         setSortBy(e.target.value);
     }
 
+    const length = Array.from(new Set(selectedItems.flatMap(item => item.listChoice.map(choice => choice.name)))).length;
+
     return (
         <div className='flex flex-col gap-5 w-[80%] p-3 grow'>
+            <div className='flex flex-wrap gap-2'>
+                {selectedItems.map((item) => (
+                    item.listChoice.map((choice) => (
+                        <div onClick={() => dispatch(toggleFilterItem({
+                            FilterComponentId: item.FilterComponentId,
+                            choiceId: choice.id,
+                            listChoice: [{
+                                id: choice.id,
+                                name: choice.name
+                            }]
+                        }))} key={choice.id} className='p-1 text-[12px] cursor-pointer bg-gray-100 rounded-md'>
+                            <p className='flex items-center'>{choice.name} <XIcon className='w-4 ml-1 hover:text-violet-600' /></p>
+                        </div>
+                    ))
+                ))}
+                {length > 1 && <div key={"DelteAll"} onClick={() => dispatch(deleteAllFilterItem())} className='p-1 hover:opacity-70 text-[12px] cursor-pointer text-white bg-purple  rounded-md'>
+                    <p className='flex items-center'>Delete All <XIcon className='w-4 ml-1 text-white' /></p>
+                </div>}
+            </div>
             {
                 (listCourse.length > 0) ?
                     <>
-                        <div className='flex flex-wrap gap-2'>
-                            {selectedItems.map(item => (
-                                <div key={item} className='p-2 text-sm bg-gray-200 rounded-md'>
-                                    <p>{item}</p>
-                                </div>
-                            ))}
-                            {selectedItems && selectedItems.length > 1 && <div key={"DelteAll"} className='p-2 text-sm bg-gray-200 rounded-md'>
-                                <p className='flex items-center'>Delete All <XIcon /></p>
-                            </div>}
-                        </div>
                         <div className='flex items-center justify-between'>
                             <Select listOption={sortList} value={sortBy} onSortByChange={onSortByChange} />
                             <div>

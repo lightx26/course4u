@@ -57,6 +57,6 @@ export const filterItemSlice = createSlice({
     },
 });
 
-export const { addFilterItem, removeFilterItem, toggleFilterItem } = filterItemSlice.actions;
+export const { addFilterItem, removeFilterItem, toggleFilterItem, deleteAllFilterItem } = filterItemSlice.actions;
 
 export default filterItemSlice.reducer;
