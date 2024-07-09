@@ -13,9 +13,4 @@ public class RegistrationServiceImpl implements RegistrationService {
     public RegistrationServiceImpl(RegistrationRepository registrationRepository) {
         this.registrationRepository = registrationRepository;
     }
-
-    @Override
-    public int countLegitRegistrationInCourse(Long courseId) {
-        return registrationRepository.countLegitRegistrationInCourse(courseId);
-    }
 }

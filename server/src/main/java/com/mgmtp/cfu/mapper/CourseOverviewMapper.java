@@ -2,16 +2,20 @@ package com.mgmtp.cfu.mapper;
 
 import com.mgmtp.cfu.dto.CourseOverviewDTO;
 import com.mgmtp.cfu.entity.Course;
-import com.mgmtp.cfu.service.RegistrationService;
+import com.mgmtp.cfu.mapper.dataprovider.CourseDataProvider;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring")
 public abstract class CourseOverviewMapper implements DTOMapper<CourseOverviewDTO, Course> {
-    @Autowired
-    protected RegistrationService registrationService;
+    protected CourseDataProvider courseDataProvider;
 
-    @Mapping(target = "enrollmentCount", expression = "java(registrationService.countLegitRegistrationInCourse(course.getId()))")
+    @Autowired
+    protected void setCourseDataProvider(CourseDataProvider courseDataProvider) {
+        this.courseDataProvider = courseDataProvider;
+    }
+
+    @Mapping(target = "enrollmentCount", expression = "java(courseDataProvider.countLegitRegistrationInCourse(course.getId()))")
     public abstract CourseOverviewDTO toDTO(Course course);
 }
