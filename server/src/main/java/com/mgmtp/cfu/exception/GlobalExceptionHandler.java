@@ -36,4 +36,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(409).body(ErrorResponse.builder().message(e.getMessage()).status("409").build());
     }
 
+    @ExceptionHandler(AccountExistByEmailException.class)
+    public ResponseEntity<?> handleAccountExistByEmailException (AccountExistByEmailException e)
+    {
+        return ResponseEntity.status(409).body(responsePre + e.getMessage() + "\"}");
+    }
+
 }

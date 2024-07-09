@@ -68,17 +68,16 @@ public class AuthServiceImpl implements IAuthService {
         }
 
         // Hash the password
-
         String hashedPassword = passwordEncoder.encode(signUpRequest.getPassword());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         User user = User.builder()
-                .username(signUpRequest.getUsername().toLowerCase())
+                .username(signUpRequest.getUsername())
                 .password(hashedPassword)
                 .fullName(signUpRequest.getFullname())
                 .email(signUpRequest.getEmail())
-                .dateOfBirth(signUpRequest.getDateofbirth() != null && !signUpRequest.getDateofbirth().isEmpty() ? (LocalDate.parse(signUpRequest.getDateofbirth(), formatter)) : null)
+                .dateOfBirth(LocalDate.parse(signUpRequest.getDateofbirth(), formatter))
                 .role(Role.USER)
-                .gender(signUpRequest.getGender() != null && !signUpRequest.getGender().isEmpty() ? Gender.valueOf(signUpRequest.getGender()) : null)
+                .gender(Gender.valueOf(signUpRequest.getGender()))
                 .build();
 
         user = userRepository.save(user);
@@ -89,10 +88,6 @@ public class AuthServiceImpl implements IAuthService {
                 .message("User registered successfully")
                 .build();
     }
-
-
-
-
 
 
 }
