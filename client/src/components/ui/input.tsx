@@ -19,16 +19,15 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                     )}
                     ref={ref}
                     value={
-                        // @ts-ignore
                         maxValue && value?.length >= maxValue!
                             ? // @ts-ignore
-                              value!.slice(0, maxValue - 1)
+                            value!.slice(0, maxValue - 1)
                             : value
                     }
                     {...props}
                 />
                 {maxValue && (
-                    <span className='absolute right-3 bottom-3 text-sm text-muted-foreground'>
+                    <span className='absolute text-sm right-3 bottom-3 text-muted-foreground'>
                         {
                             // @ts-ignore
                             value!.length

@@ -4,6 +4,7 @@ import { FilterItemType } from "./MainContent";
 
 type PropsType = {
     list: Array<FilterItemType>;
+    setList: (list: Array<FilterItemType>) => void;
 }
 
 export default function ListFilterItem(props: PropsType) {
@@ -11,7 +12,6 @@ export default function ListFilterItem(props: PropsType) {
     const additionalDisplayCount = 3;
     const [displayCount, setDisplayCount] = useState(initialDisplayCount);
     const [isExpanded, setIsExpanded] = useState(false);
-    const [listCheckBox, setListCheckBox] = useState<FilterItemType[]>(props.list.map((item) => item));
 
     const handleShowMore = () => {
         if (isExpanded && displayCount >= props.list.length) {
@@ -25,21 +25,21 @@ export default function ListFilterItem(props: PropsType) {
     };
 
     const toggleItemCheck = (itemId: string) => {
-        const newListCheckBox = listCheckBox.map((item) => {
-            if (item.id === itemId) { // Assuming each item has a unique 'id' property.
+        const newListCheckBox = props.list.map((item) => {
+            if (item.id === itemId) {
                 return { ...item, checked: !item.checked };
             }
             return item;
         });
-        setListCheckBox(newListCheckBox);
+        props.setList(newListCheckBox);
     };
 
     return (
         <div className="flex flex-col h-full gap-3">
-            {listCheckBox.slice(0, displayCount).map((item) => (
+            {props.list.slice(0, displayCount).map((item) => (
                 <FilterItemComponent key={item.id} prop={item} onClick={() => { toggleItemCheck(item.id) }} />
             ))}
-            {listCheckBox.length > initialDisplayCount && (
+            {props.list.length > initialDisplayCount && (
                 <button onClick={handleShowMore} className="flex items-center justify-center w-full gap-2 p-2 transition-colors border border-gray-200 border-solid rounded-full cursor-pointer hover:bg-gray-50">
                     <h3>{isExpanded ? 'Collapse' : 'See more'}</h3>
                     <svg xmlns="http://www.w3.org/2000/svg" width="7" height="8" viewBox="0 0 7 8" fill="none">
