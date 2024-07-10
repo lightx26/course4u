@@ -16,7 +16,7 @@ export const RegistrationUser = ({
             <img
                 src={avatarUrl}
                 alt='avatar'
-                className='w-[74px] h-[74px] rounded-full'
+                className='w-[74px] h-[74px] rounded-full object-cover'
             />
             <div className='flex flex-col'>
                 <h4 className='font-semibold text-base text-muted-foreground'>

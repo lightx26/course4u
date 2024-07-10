@@ -9,6 +9,7 @@ import { Status } from "../../utils/index";
 import { RegistrationUser } from "./registration-user";
 import { RegistrationStatus } from "./registration-status";
 import { Skeleton } from "../ui/skeleton";
+import { userRegistrationSchema } from "../../schemas/user-schema";
 
 export type RegistrationsProps = {
     id?: number;
@@ -16,6 +17,7 @@ export type RegistrationsProps = {
     durationUnit?: "DAY" | "WEEK" | "MONTH";
     status?: Status;
     course?: z.infer<typeof courseSchema>;
+    user?: z.infer<typeof userRegistrationSchema>;
 };
 type Props = {
     className?: string;
@@ -59,10 +61,10 @@ const Registrations = ({ className }: Props) => {
             </h2>
             <div className='w-full flex justify-between items-center'>
                 <RegistrationUser
-                    fullName='Truong Vu Linh'
-                    avatarUrl='https://scontent.fdad5-1.fna.fbcdn.net/v/t39.30808-6/448301882_1467767243831000_1670413219658089686_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeE7JGwJ-thfoUH_-v5b0jkJgREZlPqbBe6BERmU-psF7m28XG1m6Z3QjZ1kKfEIFNxnemsUmVcEkQJvopHAbaTv&_nc_ohc=T_zLSaaw7k0Q7kNvgFPmdlD&_nc_ht=scontent.fdad5-1.fna&oh=00_AYDq5rD9daTtrgVLyB43ELfmrFqssMtgCj5UWSWXw2Mvfw&oe=668FDB2E'
-                    email='linhvutruong@gmail.com'
-                    telephone='0123456789'
+                    fullName={registration?.user?.username || ""}
+                    avatarUrl={registration?.user?.avatarUrl || ""}
+                    email={registration?.user?.email || ""}
+                    telephone={registration?.user?.telephone || ""}
                 />
                 <RegistrationStatus status={registration?.status} />
             </div>

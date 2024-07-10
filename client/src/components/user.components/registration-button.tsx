@@ -25,14 +25,20 @@ export const RegistrationButton = ({
             )}
             {(status === Status.SUBMITTED ||
                 status === Status.DECLINED ||
-                status === Status.APPROVED) && (
-                <Button size='lg' variant='outline'>
-                    DISCARD
-                </Button>
-            )}
+                status === Status.APPROVED) &&
+                !isEdit && (
+                    <Button size='lg' variant='outline'>
+                        DISCARD
+                    </Button>
+                )}
             {status === Status.APPROVED && (
                 <Button size='lg' variant='blue'>
                     START LEARNING
+                </Button>
+            )}
+            {status !== Status.DRAFT && status !== Status.NONE && isEdit && (
+                <Button size='lg' variant='outline' type='button'>
+                    CANCEL
                 </Button>
             )}
             {status === Status.APPROVED && (
@@ -53,7 +59,9 @@ export const RegistrationButton = ({
                 )}
             {(status === Status.NONE || status === Status.DRAFT || isEdit) && (
                 <Button type='submit' size='lg' variant='success'>
-                    SUBMIT
+                    {status === Status.DRAFT || status === Status.NONE
+                        ? "SUBMIT"
+                        : "RE-SUBMIT"}
                 </Button>
             )}
             {(status === Status.DONE || status === Status.VERIFIED) && (

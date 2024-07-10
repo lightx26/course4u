@@ -48,6 +48,4 @@ public class Registration {
     @ManyToOne
     @JoinColumn(name = "`UserId`")
     User user;
-
-
 }

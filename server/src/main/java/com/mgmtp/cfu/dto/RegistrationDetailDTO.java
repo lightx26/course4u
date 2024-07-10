@@ -21,4 +21,5 @@ public class RegistrationDetailDTO {
     LocalDate registerDate;
     Integer duration;
     CourseRegistrationDTO course;
+    UserRegistrationDTO user;
 }
