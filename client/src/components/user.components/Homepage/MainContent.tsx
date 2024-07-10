@@ -82,12 +82,12 @@ export default function MainContent() {
                                 id: choice.id,
                                 name: choice.name
                             }]
-                        }))} key={choice.id} className='p-1 text-[12px] cursor-pointer bg-gray-100 rounded-md'>
+                        }))} key={choice.id} className='px-2 py-1 text-[12px] cursor-pointer bg-gray-100 rounded-md'>
                             <p className='flex items-center'>{choice.name} <XIcon className='w-4 ml-1 hover:text-violet-600' /></p>
                         </div>
                     ))
                 ))}
-                {length > 1 && <div key={"DelteAll"} onClick={() => dispatch(deleteAllFilterItem())} className='p-1 hover:opacity-70 text-[12px] cursor-pointer text-white bg-purple  rounded-md'>
+                {length > 1 && <div key={"DelteAll"} onClick={() => dispatch(deleteAllFilterItem())} className='px-2 py-1 hover:opacity-70 text-[12px] cursor-pointer text-white bg-purple  rounded-md'>
                     <p className='flex items-center'>Delete All <XIcon className='w-4 ml-1 text-white' /></p>
                 </div>}
             </div>

@@ -42,7 +42,9 @@ export default function FilterComponent(prop: Prop) {
                             </svg>
                         </div>
                     }
-                    <ListFilterItem list={listFilterItem} setList={setListFilterItem} />
+                    { listFilterItem.length > 0
+                        ? <ListFilterItem list={listFilterItem} setList={setListFilterItem} />
+                        : <>No item found</>}
                 </div>
             )}
         </div>
