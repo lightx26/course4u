@@ -56,4 +56,42 @@
         />
     </changeSet>
 
+    <changeSet id="2" author="Duong Anh">
+        <createTable tableName="Registration">
+            <column name="Id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="Status" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="StartDate" type="DATE"/>
+            <column name="EndDate" type="DATE"/>
+            <column name="Score" type="INTEGER"/>
+            <column name="RegisterDate" type="DATE"/>
+            <column name="Duration" type="INTEGER"/>
+            <column name="CourseId" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LastUpdate" type="TIMESTAMP"/>
+            <column name="DurationUnit" type="VARCHAR(20)"/>
+            <column name="UserId" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="Registration"
+                baseColumnNames="CourseId"
+                constraintName="fk_registration_course"
+                referencedTableName="Course"
+                referencedColumnNames="Id"/>
+
+        <addForeignKeyConstraint
+                baseTableName="Registration"
+                baseColumnNames="UserId"
+                constraintName="fk_registration_user"
+                referencedTableName="User"
+                referencedColumnNames="Id"/>
+    </changeSet>
+
 </databaseChangeLog>
