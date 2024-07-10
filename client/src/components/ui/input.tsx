@@ -19,6 +19,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                     )}
                     ref={ref}
                     value={
+                        // @ts-ignore
                         maxValue && value?.length >= maxValue!
                             ? // @ts-ignore
                             value!.slice(0, maxValue - 1)
