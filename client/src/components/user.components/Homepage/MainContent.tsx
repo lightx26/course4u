@@ -95,10 +95,10 @@ export default function MainContent() {
                 (listCourse.length > 0) ?
                     <>
                         <div className='flex items-center justify-between'>
-                            <Select listOption={sortList} value={sortBy} onSortByChange={onSortByChange} />
                             <div>
                                 Showing {(currentPage - 1) * 8 + 1} - {Math.min(currentPage * 8, totalItem)} of {totalItem} results
                             </div>
+                            <Select listOption={sortList} value={sortBy} onSortByChange={onSortByChange} />
                         </div>
                         <ListCourseCardComponent ListCourse={listCourse} isLoading={isLoading} />
                         {totalItem > 8 && <PaginationSection totalItems={totalItem} currentPage={currentPage} itemPerPage={8} setCurrentPage={onPageNumberClick} />}
