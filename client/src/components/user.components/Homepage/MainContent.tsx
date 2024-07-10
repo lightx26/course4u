@@ -26,14 +26,10 @@ const sortList = [
     },
     {
         value: 2,
-        content: 'Trending'
-    },
-    {
-        value: 3,
         content: 'Rating'
     },
     {
-        value: 4,
+        value: 3,
         content: 'Total register'
     },
 ]
