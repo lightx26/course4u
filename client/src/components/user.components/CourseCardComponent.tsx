@@ -2,18 +2,16 @@ import { useNavigate } from "react-router-dom";
 import { CourseType } from "../../App";
 import { cn } from "../../utils";
 import { Skeleton } from "../ui/skeleton";
-import { convertSlug } from "../../utils/slug";
 type PropsType = {
   course: CourseType;
 };
 
 export default function CourseCardComponent({ course }: PropsType) {
   const navigate = useNavigate();
-  const handleClickCourseDetail =
-    (name: string, id: string) => (e: React.MouseEvent) => {
-      e.preventDefault();
-      navigate(`/courses/${convertSlug(name)}?id=${id}`);
-    };
+  const handleClickCourseDetail = (id: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate(`/courses/${id}`);
+  };
   const color =
     course.level?.toLowerCase() === "beginner"
       ? "bg-green-200 text-green-600"
@@ -24,7 +22,7 @@ export default function CourseCardComponent({ course }: PropsType) {
     <a
       href=""
       className="w-full overflow-hidden text-sm leading-normal transition-shadow bg-white border border-gray-200 border-solid rounded-md shadow cursor-pointer duration-250 hover:shadow-lg grow"
-      onClick={handleClickCourseDetail(course.name, course.id)}
+      onClick={handleClickCourseDetail(course.id)}
     >
       <div>
         <img
