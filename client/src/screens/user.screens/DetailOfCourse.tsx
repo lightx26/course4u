@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Ratings from "react-ratings-declarative";
 import "../../assets/css/detail_of_course.css";
 import Dropdown from "react-dropdown";
 import "react-dropdown/style.css";
@@ -9,6 +8,7 @@ import PaginationSection from "../../components/user.components/Homepage/Paginat
 import CourseCardComponent from "../../components/user.components/CourseCardComponent.tsx";
 import { fetchDataCourseById } from "../../apiService/Course.service.ts";
 import { useLocation } from "react-router-dom";
+import { Rate } from "antd";
 const coursesRelated = [
   {
     id: "course_001",
@@ -138,17 +138,12 @@ const Detail_Of_Course: React.FC = () => {
                   <div className="border border-[#ccc] w-[20%] h-full flex flex-col justify-center items-center p-[10px_15px]">
                     <div className="text-[2rem] font-[600] mb-[15px]">4.8</div>
                     <div className="mb-[5px]">
-                      <Ratings
-                        rating={4.8}
-                        widgetDimensions="15px"
-                        widgetSpacings="3px"
-                      >
-                        <Ratings.Widget widgetRatedColor="purple" />
-                        <Ratings.Widget widgetRatedColor="purple" />
-                        <Ratings.Widget widgetRatedColor="purple" />
-                        <Ratings.Widget widgetRatedColor="purple" />
-                        <Ratings.Widget widgetRatedColor="purple" />
-                      </Ratings>
+                      <Rate
+                        disabled
+                        defaultValue={4.8}
+                        allowHalf
+                        style={{ fontSize: "16px", color: "purple" }}
+                      />
                     </div>
                     <div className="text-[0.8rem] font-[500]">
                       Course Rating
@@ -454,7 +449,7 @@ const Detail_Of_Course: React.FC = () => {
               </div>
               <div className="itemCourseRelated flex justify-around items-center gap-[5px] flex-row py-[10px] w-[90%]">
                 {coursesRelated &&
-                  coursesRelated.map((item, index) => {
+                  coursesRelated.map((item) => {
                     return <CourseCardComponent course={item} />;
                   })}
               </div>

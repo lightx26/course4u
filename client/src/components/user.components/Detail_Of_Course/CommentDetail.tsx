@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import Ratings from "react-ratings-declarative";
-
+import { Rate } from "antd";
 interface IComment {
   avaUrl: string;
   username: string;
@@ -73,18 +72,12 @@ const CommentDetail: React.FC<IComment> = (props) => {
             </div>
           </div>
           <div className="flex justify-start">
-            <Ratings
-              rating={rating}
-              widgetDimensions="15px"
-              widgetSpacings="1px"
-              className="rating"
-            >
-              <Ratings.Widget widgetRatedColor="black" />
-              <Ratings.Widget widgetRatedColor="black" />
-              <Ratings.Widget widgetRatedColor="black" />
-              <Ratings.Widget widgetRatedColor="black" />
-              <Ratings.Widget widgetRatedColor="black" />
-            </Ratings>
+            <Rate
+              disabled
+              defaultValue={rating}
+              allowHalf
+              style={{ fontSize: "12px", color: "black" }}
+            />
           </div>
         </div>
         <div className="relative">

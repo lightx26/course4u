@@ -1,8 +1,6 @@
-.widget-ratings {
-  display: flex !important;
-  justify-content: center !important;
-  align-self: center !important;
-}
 .Dropdown-root > .Dropdown-control > .Dropdown-arrow-wrapper > .Dropdown-arrow {
   margin-top: 5px !important;
+}
+.ant-rate > .ant-rate-star {
+  margin-inline-end: 5px !important;
 }
