@@ -12,11 +12,12 @@ async function fetchListAvailableCourse(offset: number = 0, limit: number = 8) {
   }
 }
 const fetchDataCourseById = async (id: string | null) => {
+  // eslint-disable-next-line no-useless-catch
   try {
     const response = await instance.get(`/courses/${id}`);
     return response;
   } catch (error) {
-    throw new Error(error.message);
+    throw error;
   }
 };
 
