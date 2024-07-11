@@ -46,5 +46,8 @@ public class RegistrationController {
             page = 1;
         }
         return ResponseEntity.ok(registrationService.getMyRegistrationPage(page, status));
+    @GetMapping("/{id}")
+    public ResponseEntity<RegistrationDetailDTO> getDetailRegistration(@PathVariable Long id) {
+        return ResponseEntity.ok(registrationService.getDetailRegistration(id));
     }
 }
