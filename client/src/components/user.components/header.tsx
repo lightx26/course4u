@@ -339,7 +339,7 @@ const HeaderHomepage: React.FC = () => {
                       className="w-full font-medium"
                       onClick={(e) => {
                         e.preventDefault();
-                        navigate(`${import.meta.env.VITE_BASE_URL}/login`);
+                        navigate("/login");
                         dispatch(handleLogout());
                       }}
                     >

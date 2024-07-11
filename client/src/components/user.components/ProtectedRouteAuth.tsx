@@ -11,7 +11,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const access_token: string | null = localStorage.getItem("access_token");
     if (access_token == null || isTokenExpired(access_token)) {
-      navigate(`${import.meta.env.VITE_BASE_URL}/login`);
+      navigate("/login");
     }
   }, [dispatch, navigate]);
 

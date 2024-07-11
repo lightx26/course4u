@@ -14,3 +14,4 @@ public class LoginValidator {
                 && !password.trim().isEmpty();
     }
 }
+2
