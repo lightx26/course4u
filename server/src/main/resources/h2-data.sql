@@ -175,5 +175,5 @@ values ('1', '1', '5', 'Good course', '2021-01-01'),
 INSERT INTO "Category"("Name")
 VALUES ('IT'), ('Science'), ('Physics');
 
-INSERT INTO "Category_Course"("CourseId", "CategoryId")
+INSERT INTO "Course_Category"("CourseId", "CategoryId")
 VALUES (1, 1), (1, 2), (1, 3);
