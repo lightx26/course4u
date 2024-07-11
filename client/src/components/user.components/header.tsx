@@ -225,7 +225,8 @@ const HeaderHomepage: React.FC = () => {
 
             {isDropdownAvatarOpen && (
               <div
-                className="absolute right-0 z-50 pt-2 mt-2 bg-white border border-gray-200 rounded-md shadow-lg top-12 w-60"
+                className="absolute right-2 top-10 pt-2 mt-2 bg-white border border-gray-200 rounded-md shadow-xl w-60"
+                style={{ zIndex: "999999" }}
                 onMouseLeave={() => {
                   if (isDropdownAvatarOpen) {
                     toggleDropdown();

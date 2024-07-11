@@ -4,11 +4,16 @@ import HomepageScreen from "./screens/user.screens/HomepageScreen";
 import Registrations from "./components/user.components/registrations";
 import Login from "./screens/user.screens/Login.tsx";
 import Detail_Of_Course from "./screens/user.screens/DetailOfCourse.tsx";
-import { ReactElement } from "react";
-import ProtectedRoute from "./components/user.components/ProtectedRouteAuth.tsx";
+import { ReactElement, useEffect } from "react";
+import { ProtectedRoute } from "./components/user.components/ProtectedRouteAuth.tsx";
 import AccountSettingScreen from "./screens/user.screens/personal/AccountSettingScreen.tsx";
 import Navigation from "./components/user.components/personal/NavigationComponent.tsx";
 import MyRegistrationsScreen from "./screens/user.screens/MyRegistrationScreen.tsx";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "./redux/store/store.ts";
+import { fetchUserDetails } from "./redux/slice/user.slice.ts";
+import NotPermitted from "./screens/user.screens/NotPermitted.tsx";
+import NotFound from "./screens/user.screens/NotFound.tsx";
 
 export type CourseType = {
   id: string;
@@ -33,12 +38,65 @@ export type CourseType = {
 };
 
 const LayoutUser = ({ children }: { children?: ReactElement }) => {
+  const isUserRoute = window.location.pathname.startsWith("/");
+  const user = useSelector((state: RootState) => state.user.user);
+  const userRole = user.role;
   return (
     <div className="app-container">
-      <HeaderHomepage />
-      {children}
-      <Outlet />
+      {isUserRoute && userRole === "USER" && (
+        <>
+          <HeaderHomepage />
+          {children}
+          <Outlet />
+        </>
+      )}
+
+      {isUserRoute && (userRole === "ADMIN" || userRole === "ACCOUNTANT") && (
+        <>not permitted user</>
+      )}
     </div>
+  );
+};
+
+const LayoutAdmin = () => {
+  const isAdminRoute = window.location.pathname.startsWith("/admin");
+  const user = useSelector((state: RootState) => state.user.user);
+  const userRole = user.role;
+  return (
+    <>
+      {isAdminRoute && userRole === "ADMIN" && (
+        <div className="app-container">
+          <div>this is admin header</div>
+          <Outlet />
+        </div>
+      )}
+      {isAdminRoute && (userRole === "USER" || userRole === "ACCOUNTANT") && (
+        <>
+          <NotPermitted />
+        </>
+      )}
+    </>
+  );
+};
+
+const LayoutAccountant = () => {
+  const isAccountRoute = window.location.pathname.startsWith("/accountant");
+  const user = useSelector((state: RootState) => state.user.user);
+  const userRole = user.role;
+  return (
+    <>
+      {isAccountRoute && userRole === "ACCOUNTANT" && (
+        <div className="app-container">
+          <div>this is accountant header</div>
+          <Outlet />
+        </div>
+      )}
+      {isAccountRoute && (userRole === "USER" || userRole === "ADMIN") && (
+        <>
+          <NotPermitted />
+        </>
+      )}
+    </>
   );
 };
 
@@ -50,18 +108,26 @@ const router = createBrowserRouter(
         <ProtectedRoute>
           <LayoutUser />
         </ProtectedRoute>),
-      errorElement: <div>404 not found</div>,
+      errorElement: <NotFound />,
       children: [
         {
           index: true,
           element: <HomepageScreen />,
         }, {
           path: "registrations/:id",
-          element: <Registrations />,
+              element: (
+                  <ProtectedRoute>
+                      <Registrations />
+                  </ProtectedRoute>
+              ),
         },
         {
           path: "courses/:id",
-          element: <Detail_Of_Course />,
+            element: (
+                <ProtectedRoute>
+                    <Detail_Of_Course />
+                </ProtectedRoute>
+            ),
         },
       ],
     }, {
@@ -73,7 +139,7 @@ const router = createBrowserRouter(
           </LayoutUser>
         </ProtectedRoute>
       ),
-      errorElement: <div>404 not found</div>,
+      errorElement: <NotFound />,
       children: [
         {
           index: true,
@@ -90,6 +156,36 @@ const router = createBrowserRouter(
         },
       ],
     },
+      {
+          path: "/admin",
+          element: (
+              <ProtectedRoute>
+                  <LayoutAdmin />
+              </ProtectedRoute>
+          ),
+          errorElement: <NotFound />,
+          children: [
+              {
+                  index: true,
+                  element: <>this is admin homepage</>,
+              },
+          ],
+      },
+      {
+          path: "/accountant",
+          element: (
+              <ProtectedRoute>
+                  <LayoutAccountant />
+              </ProtectedRoute>
+          ),
+          errorElement: <NotFound />,
+          children: [
+              {
+                  index: true,
+                  element: <>this is accountant homepage</>,
+              },
+          ],
+      },
     {
       path: "login",
       element: <Login />,
@@ -101,6 +197,18 @@ const router = createBrowserRouter(
 );
 
 function App() {
+  const dispatch = useDispatch<AppDispatch>();
+  const getAccount = async () => {
+    if (
+      window.location.pathname === "/login" ||
+      window.location.pathname === "/signup"
+    )
+      return;
+    await dispatch(fetchUserDetails());
+  };
+  useEffect(() => {
+    getAccount();
+  }, []);
   return <>{<RouterProvider router={router} />}</>;
 }
 

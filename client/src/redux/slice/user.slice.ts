@@ -11,6 +11,7 @@ export interface IUser {
     telephone: string;
     avatarUrl: string;
     dateOfBirth: string;
+    role: string;
   };
   statusLogin: "idle" | "loading" | "failed";
 }
@@ -26,6 +27,7 @@ const initialState: IUser = {
     telephone: "",
     avatarUrl: "",
     dateOfBirth: "",
+    role: "",
   },
   statusLogin: "idle",
 };
@@ -63,6 +65,7 @@ export const userSlice = createSlice({
         telephone: "",
         avatarUrl: "",
         dateOfBirth: "",
+        role: "",
       };
       localStorage.removeItem("access_token");
     },

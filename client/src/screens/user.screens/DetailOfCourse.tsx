@@ -231,7 +231,10 @@ const Detail_Of_Course: React.FC = () => {
                 </div>
               </div>
               <div className="w-[30%]">
-                <div className="relative w-full h-[200px]">
+                <div
+                  className="relative w-full h-[200px]"
+                  style={{ zIndex: "10" }}
+                >
                   <img
                     src={courseData?.thumbnailUrl}
                     alt=""

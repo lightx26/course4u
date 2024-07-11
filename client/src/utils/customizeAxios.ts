@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import { isTokenExpired } from "./validateToken";
 const instance = axios.create({
   baseURL: `${import.meta.env.VITE_BACKEND_URL}`,
   withCredentials: true,
@@ -8,10 +8,21 @@ const instance = axios.create({
 // Add a request interceptor to set the Authorization header
 instance.interceptors.request.use(
   (config) => {
+    const authPaths = ["/auth/login", "/auth/signup"];
     const token = localStorage.getItem("access_token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+
+    if (authPaths.includes(config.url as string)) {
+      return config;
     }
+
+    if (token && !isTokenExpired(token)) {
+      config.headers.Authorization = `Bearer ${token}`;
+    } else if (!token || isTokenExpired(token)) {
+      if (window.location.pathname !== "/login") {
+        window.location.href = "/login";
+      }
+    }
+
     return config;
   },
   (error) => {

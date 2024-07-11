@@ -1,0 +1,22 @@
+.custom-result {
+  font-size: 20px;
+  margin-top: 200px; /* Adjust font size */
+}
+
+.custom-result > .ant-result-title {
+  font-size: 25px; /* Adjust title font size */
+}
+
+.custom-result > .ant-result-subtitle {
+  font-size: 30px; /* Adjust subtitle font size */
+  color: black;
+}
+
+.custom-result > .anticon {
+  font-size: 150px; /* Adjust icon font size */
+}
+.ant-result-extra > button {
+  width: 140px;
+  height: 45px;
+  font-size: 20px;
+}

@@ -54,7 +54,20 @@ const Login: React.FC = () => {
 
           // Fetch user details
           const userData = await dispatch(fetchUserDetails());
-          fetchUserDetails.fulfilled.match(userData) ? navigate("/") : null;
+          if (fetchUserDetails.fulfilled.match(userData)) {
+            const role = userData.payload?.role;
+            switch (role) {
+              case "ADMIN":
+                navigate("/admin");
+                break;
+              case "USER":
+                navigate("/");
+                break;
+              case "ACCOUNTANT":
+                navigate("/accountant");
+                break;
+            }
+          }
         } else {
           // Handle the case where there is no access token
           console.error("No access token found in login response");

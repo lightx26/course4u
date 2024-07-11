@@ -2,27 +2,15 @@ import React from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { fetchUserDetails } from "../../redux/slice/user.slice";
 import { AppDispatch } from "../../redux/store/store";
-const isTokenExpired = (token: string) => {
-  if (!token) return true;
-
-  const payloadBase64 = token.split(".")[1];
-  const decodedPayload = JSON.parse(atob(payloadBase64));
-  const currentTime = Math.floor(Date.now() / 1000);
-
-  return decodedPayload.exp < currentTime;
-};
+import { isTokenExpired } from "../../utils/validateToken";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-
   useEffect(() => {
-    const access_token = localStorage.getItem("access_token");
-    if (access_token && !isTokenExpired(access_token)) {
-      dispatch(fetchUserDetails());
-    } else {
+    const access_token: string | null = localStorage.getItem("access_token");
+    if (access_token == null || isTokenExpired(access_token)) {
       navigate("/login");
     }
   }, [dispatch, navigate]);
@@ -30,4 +18,4 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return children;
 };
 
-export default ProtectedRoute;
+export { ProtectedRoute };
