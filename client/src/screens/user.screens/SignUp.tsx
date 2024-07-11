@@ -125,7 +125,6 @@ const SignUp: React.FC = () => {
     return "";
   }
 
-  const handleSubmitForm = (e: React.MouseEvent<HTMLButtonElement>) => {
   function convertDateFormat(dateString: string) {
     // Split the input date string by the hyphen
     const [year, month, day] = dateString.split("-");
@@ -133,7 +132,6 @@ const SignUp: React.FC = () => {
     // Return the date in dd/mm/yyyy format
     return `${day}/${month}/${year}`;
   }
-
   const handleSubmitForm = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const {

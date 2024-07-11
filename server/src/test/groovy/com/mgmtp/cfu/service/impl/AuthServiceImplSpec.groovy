@@ -6,6 +6,7 @@ import com.mgmtp.cfu.entity.User
 import com.mgmtp.cfu.enums.Gender
 import com.mgmtp.cfu.enums.Role
 import com.mgmtp.cfu.repository.UserRepository
+import com.mgmtp.cfu.service.IEmailService
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -35,9 +36,10 @@ class AuthServiceImplSpec extends Specification {
         findByUsername("failUser") >> Optional.of(User.builder().username("failUser")
                 .email("user@mgm-tp.com").build())
     }
+    IEmailService emailService=Mock(EmailServiceImpl);
 
     @Subject
-    AuthServiceImpl authService = new AuthServiceImpl(authenticationManager, jwtService, userRepository)
+    AuthServiceImpl authService = new AuthServiceImpl(authenticationManager, jwtService, userRepository,emailService)
 
     def "Authenticate: return ok"() {
         given:

@@ -30,11 +30,12 @@ public class AuthController {
         if (!validationError.isEmpty()) {
             return ResponseEntity.badRequest().body(validationError);
         }
-
         var signupResponse = authService.handleSignUpNewUser(signUpRequest);
 
         return ResponseEntity.ok(signupResponse);
     }
+
+
 
 
 }

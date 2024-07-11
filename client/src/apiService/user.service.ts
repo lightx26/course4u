@@ -35,7 +35,6 @@ const handleRegister = async (data: ISignUpRequest) => {
   }
 };
 
-export { handleLogin, handleRegister };
 const getUserDetails = async () => {
   try {
     const response = await instance.get("/users/my-profile");
@@ -44,4 +43,6 @@ const getUserDetails = async () => {
     console.error(error);
   }
 };
+
+export { handleLogin, handleRegister ,getUserDetails};
 

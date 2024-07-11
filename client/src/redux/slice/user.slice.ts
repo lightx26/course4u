@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { handleLogin } from "../../apiService/user.service";
 import { handleRegister } from "../../apiService/user.service";
 import { handleLogin, getUserDetails } from "../../apiService/user.service";
 

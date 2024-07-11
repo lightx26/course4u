@@ -1,18 +1,17 @@
 package com.mgmtp.cfu.service.impl;
 
-import com.mgmtp.cfu.dto.LoginRequest;
-import com.mgmtp.cfu.dto.LoginResponse;
-import com.mgmtp.cfu.dto.SignUpRequest;
-import com.mgmtp.cfu.dto.SignUpResponse;
+import com.mgmtp.cfu.dto.*;
 import com.mgmtp.cfu.entity.User;
 import com.mgmtp.cfu.enums.Gender;
 import com.mgmtp.cfu.enums.Role;
 import com.mgmtp.cfu.exception.AccountExistByEmailException;
 import com.mgmtp.cfu.repository.UserRepository;
 import com.mgmtp.cfu.service.IAuthService;
+import com.mgmtp.cfu.service.IEmailService;
 import com.mgmtp.cfu.service.IJwtService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,14 +25,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class AuthServiceImpl implements IAuthService {
     private final AuthenticationManager authenticationManager;
     private final IJwtService jwtService;
     private final UserRepository userRepository;
-
+    private final IEmailService emailService;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    @Value("${course4u.vite.frontend.url}")
+    private String clientUrl;
 
     @Override
     public LoginResponse authenticate(LoginRequest loginRequest) {
@@ -81,8 +82,12 @@ public class AuthServiceImpl implements IAuthService {
                 .build();
 
         user = userRepository.save(user);
+        List<MailContentUnit> mailContentUnits=List.of(
+                MailContentUnit.builder().id("user_greeting").content("Welcome to "+ user.getUsername()).tag("div").build(),
+                MailContentUnit.builder().id("client_url").href(clientUrl).tag("a").build()
+        );
+        emailService.sendMessage(user.getEmail(), "Welcome to course4U!","successful_account_registration_mail_template.xml", mailContentUnits);
 
-        // Assuming you have a constructor or builder for SignUpResponse
         return SignUpResponse.builder()
                 .username(user.getUsername())
                 .message("User registered successfully")
