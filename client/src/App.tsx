@@ -52,7 +52,9 @@ const LayoutUser = ({ children }: { children?: ReactElement }) => {
       )}
 
       {isUserRoute && (userRole === "ADMIN" || userRole === "ACCOUNTANT") && (
-        <>not permitted user</>
+        <>
+          <NotPermitted />
+        </>
       )}
     </div>
   );
@@ -107,30 +109,33 @@ const router = createBrowserRouter(
       element: (
         <ProtectedRoute>
           <LayoutUser />
-        </ProtectedRoute>),
+        </ProtectedRoute>
+      ),
       errorElement: <NotFound />,
       children: [
         {
           index: true,
           element: <HomepageScreen />,
-        }, {
+        },
+        {
           path: "registrations/:id",
-              element: (
-                  <ProtectedRoute>
-                      <Registrations />
-                  </ProtectedRoute>
-              ),
+          element: (
+            <ProtectedRoute>
+              <Registrations />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "courses/:id",
-            element: (
-                <ProtectedRoute>
-                    <Detail_Of_Course />
-                </ProtectedRoute>
-            ),
+          element: (
+            <ProtectedRoute>
+              <Detail_Of_Course />
+            </ProtectedRoute>
+          ),
         },
       ],
-    }, {
+    },
+    {
       path: "personal",
       element: (
         <ProtectedRoute>
@@ -144,48 +149,48 @@ const router = createBrowserRouter(
         {
           index: true,
           path: "account",
-          element: <AccountSettingScreen />
+          element: <AccountSettingScreen />,
         },
         {
-
           path: "registration",
-          element: <MyRegistrationsScreen />
-        }, {
+          element: <MyRegistrationsScreen />,
+        },
+        {
           path: "score",
-          element: <div> My Score </div>
+          element: <div> My Score </div>,
         },
       ],
     },
-      {
-          path: "/admin",
-          element: (
-              <ProtectedRoute>
-                  <LayoutAdmin />
-              </ProtectedRoute>
-          ),
-          errorElement: <NotFound />,
-          children: [
-              {
-                  index: true,
-                  element: <>this is admin homepage</>,
-              },
-          ],
-      },
-      {
-          path: "/accountant",
-          element: (
-              <ProtectedRoute>
-                  <LayoutAccountant />
-              </ProtectedRoute>
-          ),
-          errorElement: <NotFound />,
-          children: [
-              {
-                  index: true,
-                  element: <>this is accountant homepage</>,
-              },
-          ],
-      },
+    {
+      path: "/admin",
+      element: (
+        <ProtectedRoute>
+          <LayoutAdmin />
+        </ProtectedRoute>
+      ),
+      errorElement: <NotFound />,
+      children: [
+        {
+          index: true,
+          element: <>this is admin homepage</>,
+        },
+      ],
+    },
+    {
+      path: "/accountant",
+      element: (
+        <ProtectedRoute>
+          <LayoutAccountant />
+        </ProtectedRoute>
+      ),
+      errorElement: <NotFound />,
+      children: [
+        {
+          index: true,
+          element: <>this is accountant homepage</>,
+        },
+      ],
+    },
     {
       path: "login",
       element: <Login />,
