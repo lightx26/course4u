@@ -94,6 +94,7 @@ jacocoTestReport{
                     "com/mgmtp/cfu/repository/*",
                     "com/mgmtp/cfu/config/*",
                     "com/mgmtp/cfu/exception/*",
+                    "com/mgmtp/cfu/specification/*",
             ])
         }))
     }
@@ -115,6 +116,7 @@ jacocoTestCoverageVerification {
                     "com/mgmtp/cfu/repository/*",
                     "com/mgmtp/cfu/config/*",
                     "com/mgmtp/cfu/exception/*",
+                    "com/mgmtp/cfu/specification/*",
             ])
         }))
     }

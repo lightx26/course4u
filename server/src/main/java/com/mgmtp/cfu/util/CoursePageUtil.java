@@ -5,14 +5,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CoursePageValidator {
+public class CoursePageUtil {
 
     @Getter
     private static int maxPageSize = 32;
 
     @Value("${course.page.max-size}")
     private void setMaxPageSize(int maxPageSize) {
-        CoursePageValidator.maxPageSize = maxPageSize;
+        CoursePageUtil.maxPageSize = maxPageSize;
     }
 
     public static boolean isValidPageSize(int pageSize) {

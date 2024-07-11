@@ -12,5 +12,5 @@ import java.util.List;
 public class CoursePageDTO {
     private List<CourseOverviewDTO> courses;
     private int totalPages;
-    private long totalElements;
+    private int totalElements;
 }

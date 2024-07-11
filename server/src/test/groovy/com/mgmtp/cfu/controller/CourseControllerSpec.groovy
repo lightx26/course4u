@@ -1,9 +1,10 @@
 package com.mgmtp.cfu.controller
 
+import com.mgmtp.cfu.dto.AvailableCourseRequest
 import com.mgmtp.cfu.dto.CourseDto
 import com.mgmtp.cfu.dto.CoursePageDTO
 import com.mgmtp.cfu.service.CourseService
-import com.mgmtp.cfu.util.CoursePageValidator
+import com.mgmtp.cfu.util.CoursePageUtil
 import org.springframework.http.ResponseEntity
 import spock.lang.Specification
 import spock.lang.Subject
@@ -16,40 +17,50 @@ class CourseControllerSpec extends Specification {
 
     def "Get available courses with valid page size returns OK response"() {
         given:
+        def request = new AvailableCourseRequest(page: page, pageSize: pageSize, sortBy: sortBy)
         CoursePageDTO coursesPage = new CoursePageDTO() // Dữ liệu mẫu trả về từ service
-        courseServiceMock.getAvailableCoursesPage(page, pageSize) >> coursesPage
+        courseServiceMock.getAvailableCoursesPage(request.getPage(), request.getPageSize(), request.getSortBy()) >> coursesPage
 
         when:
-        ResponseEntity<?> response = courseController.getAvailableCourses(page, pageSize)
+        ResponseEntity<?> response = courseController.getAvailableCourses(request)
 
         then:
-        1 * courseServiceMock.getAvailableCoursesPage(page, pageSize) >> coursesPage
+        1 * courseServiceMock.getAvailableCoursesPage(request.getPage(), request.getPageSize(), request.getSortBy()) >> coursesPage
         response.getStatusCode().value() == 200
         response.getBody() == coursesPage
 
         where:
-        page | pageSize
-        0 | 8
-        1 | 8
-        2 | 12
-        -1 | 8
-        999 | 16
+        page | pageSize | sortBy
+        0 | 8 | "CREATED_DATE"
+        1 | 8 | "CREATED_DATE"
+        2 | 12 | "ENROLLMENTS"
+        -1 | 8 | "ENROLLMENTS"
+        999 | 16 | "ENROLLMENTS"
+    }
+
+    def "Throw exception when sort criteria is not in the list"() {
+        given:
+        def page = 1
+        def pageSize = 8
+        def sortBy = "INVALID_SORT_BY"
+
+        when:
+        def request = new AvailableCourseRequest(page: page, pageSize: pageSize, sortBy: sortBy)
+
+        then:
+        thrown(IllegalArgumentException)
     }
 
     def "Get available courses with invalid page size returns BAD_REQUEST response"() {
         given:
-        def page = 1
-        def pageSize = 0
-        CoursePageDTO coursesPage = new CoursePageDTO() // Dữ liệu mẫu trả về từ service
-        courseServiceMock.getAvailableCoursesPage(page, pageSize) >> coursesPage
+        def request = new AvailableCourseRequest(page: 1, pageSize: 0)
 
         when:
-        ResponseEntity<?> response = courseController.getAvailableCourses(page, pageSize)
+        ResponseEntity<?> response = courseController.getAvailableCourses(request)
 
         then:
-        0 * courseServiceMock.getAvailableCoursesPage(page, pageSize) >> coursesPage
         response.getStatusCode().value() == 422
-        response.getBody() == "Invalid page size. Page size must be between 1 and ${CoursePageValidator.getMaxPageSize()}"
+        response.getBody() == "Invalid page size. Page size must be between 1 and ${CoursePageUtil.getMaxPageSize()}"
     }
 
     def "Get courseDto by Id if course exists"() {
