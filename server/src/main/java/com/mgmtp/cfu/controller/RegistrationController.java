@@ -34,7 +34,7 @@ public class RegistrationController {
             return ResponseEntity.badRequest().body("Page number must be greater than 0");
         }
 
-        return (status.equalsIgnoreCase("all") || status.equalsIgnoreCase("")) ?
+        return (status.equalsIgnoreCase("all") || status.isEmpty()) ?
                 ResponseEntity.ok(registrationService.getAllRegistrations(page)):
                 ResponseEntity.ok(registrationService.getRegistrationByStatus(page, status));
     }
