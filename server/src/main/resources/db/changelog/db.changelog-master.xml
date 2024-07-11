@@ -22,5 +22,6 @@
 
     <include file="db/changelog/updating-user-table.xml" />
     <include file="db/changelog/db.changelog-10.07.2024.xml" />
+    <include file="db/changelog/db.changelog-11.07.2024.xml" />
 
 </databaseChangeLog>

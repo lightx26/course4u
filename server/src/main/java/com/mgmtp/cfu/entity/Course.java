@@ -51,6 +51,10 @@ public class Course {
     @JsonManagedReference
     private Set<Registration> registrations;
 
+    @OneToMany(mappedBy = "course",cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<CourseReview> courseReviews;
+
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "`Category_Course`",
                joinColumns = @JoinColumn(name = "`CourseId`"),
