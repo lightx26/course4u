@@ -19,8 +19,9 @@ public class RegistrationOverviewDTO {
     private LocalDate endDate;
     private LocalDate registerDate;
     private LocalDateTime lastUpdated;
-    private String courseName;
     private Long courseId;
+    private String courseName;
+    private String courseThumbnailUrl;
     private Long userId;
     private String userName;
     private String userFullname;

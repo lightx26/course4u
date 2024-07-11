@@ -1,6 +1,5 @@
 package com.mgmtp.cfu.controller
 
-import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO
 import com.mgmtp.cfu.dto.RegistrationDetailDTO
 import com.mgmtp.cfu.dto.RegistrationOverviewDTO
 import com.mgmtp.cfu.exception.RegistrationNotFoundException
