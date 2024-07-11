@@ -19,9 +19,12 @@ pipeline{
             steps {
                 script{
                     // Set default to staging for ticket purpose
-                    def BUILD_MODE = ':staging'
+                    def BUILD_MODE = ':develop'
                     if (env.BRANCH_NAME == 'staging'){
-                        BUILD_MODE = ":${env.BRANCH_NAME}"
+                        BUILD_MODE = ':staging'
+                    }
+                    else if (env.BRANCH_NAME == 'master'){
+                        BUILD_MODE = ':master'
                     }
                     dir ('client') {
                         nodejs('Node18'){
@@ -33,13 +36,19 @@ pipeline{
         }
         stage('Build And Publish Images') {
             // condition to trigger this stage is only on staging branch
-            when {branch 'staging'}
+            when {
+                anyOf {
+                    branch 'staging'
+                    branch 'develop'
+                    branch 'master'
+                }
+            }
             steps{
                 script{
                     def HOST_NAME = 'da-nang-internship-docker-local.dockerregistry.mgm-tp.com'
                     def NAMESPACE = 'com.mgmtp.da-nang-internship'
                     def GROUP_ID = 'com.mgmtp.cfu'
-                    def VERSION = 'staging'
+                    def VERSION = env.BRANCH_NAME
 
                     // Building Docker image
                     withDockerRegistry(credentialsId: 'ci-user-artifactory-token', url: 'https://docker-repos.dockerregistry.mgm-tp.com') {
@@ -65,9 +74,22 @@ pipeline{
         }
         stage('Deploy') {
             // condition to trigger this stage is only on staging branch
-            when {branch 'staging'}
+            when {
+                anyOf {
+                    branch 'staging'
+                    branch 'develop'
+                    branch 'master'
+                }
+            }
             steps{
                 script{
+                    def PROFILE = 'develop'
+                    if (env.BRANCH_NAME == 'staging') {
+                        PROFILE = 'staging'
+                    }
+                    else if (env.BRANCH_NAME == 'master') {
+                        PROFILE = 'production'
+                    }
                     sshagent(['ci-user-ssh']) {
                         // Copy docker-compose.yaml to remote server
                         sh 'scp -o StrictHostKeyChecking=no ./docker-compose.yaml cfu@course4u.mgm-edv.de:/home/cfu'
@@ -76,7 +98,7 @@ pipeline{
                             sh 'ssh -o StrictHostKeyChecking=no cfu@course4u.mgm-edv.de "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD da-nang-internship-docker-local.dockerregistry.mgm-tp.com"'
 
                             // Pulling the latest Docker images and starts the server
-                            sh "ssh -o StrictHostKeyChecking=no cfu@course4u.mgm-edv.de 'docker compose --project-name cfu --profile staging up -d --pull=always'"
+                            sh "ssh -o StrictHostKeyChecking=no cfu@course4u.mgm-edv.de 'docker compose --project-name cfu --profile ${PROFILE} up -d --pull=always'"
 
                             // Logout from Docker registry
                             sh "ssh -o StrictHostKeyChecking=no cfu@course4u.mgm-edv.de 'docker logout da-nang-internship-docker-local.dockerregistry.mgm-tp.com'"
