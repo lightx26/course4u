@@ -4,11 +4,8 @@ import HomepageScreen from "./screens/user.screens/HomepageScreen";
 import Registrations from "./components/user.components/registrations";
 import Login from "./screens/user.screens/Login.tsx";
 import Detail_Of_Course from "./screens/user.screens/DetailOfCourse.tsx";
-import MyRegistrationsScreen from "./screens/user.screens/MyRegistrationScreen.tsx";
-import Navigation from "./components/user.components/personal/NavigationComponent.tsx";
 import { ReactElement } from "react";
 import ProtectedRoute from "./components/user.components/ProtectedRouteAuth.tsx";
-import { ReactElement } from "react";
 import AccountSettingScreen from "./screens/user.screens/personal/AccountSettingScreen.tsx";
 
 export type CourseType = {
