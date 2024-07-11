@@ -122,8 +122,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>
-                                Course Link{" "}
-                                <span className='text-red-500'>*</span>
+                                Link <span className='text-red-500'>*</span>
                             </FormLabel>
                             <FormControl>
                                 <Input
@@ -143,8 +142,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>
-                                Course Name{" "}
-                                <span className='text-red-500'>*</span>
+                                Name <span className='text-red-500'>*</span>
                             </FormLabel>
                             <FormControl>
                                 <Input

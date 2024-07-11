@@ -111,11 +111,7 @@ export const RegistrationsForm = ({
                         control={form.control}
                         name='durationUnit'
                         render={({ field }) => (
-                            <FormItem className='w-[100px]'>
-                                <FormLabel>
-                                    Unit{""}
-                                    <span className='text-red-500'>*</span>
-                                </FormLabel>
+                            <FormItem className='w-[100px] mt-8'>
                                 <Select
                                     onValueChange={field.onChange}
                                     defaultValue={field.value}
