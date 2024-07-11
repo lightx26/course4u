@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -107,6 +108,8 @@ public class CourseServiceImpl implements CourseService {
 
             // Set categories in course entity
             course.setCategories(categories);
+            course.setCreatedDate(LocalDate.now());
+            course.setStatus(CourseStatus.AVAILABLE);
             course = courseRepository.save(course);
             return modelMapper.map(course, CourseResponse.class);
         } catch (Exception e) {

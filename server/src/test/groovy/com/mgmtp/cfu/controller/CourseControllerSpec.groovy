@@ -6,7 +6,7 @@ import com.mgmtp.cfu.dto.CoursePageDTO
 import com.mgmtp.cfu.controller.CourseController
 import com.mgmtp.cfu.service.CourseService
 import com.mgmtp.cfu.util.CoursePageUtil
-import com.mgmtp.cfu.util.CoursePageValidator
+
 import com.mgmtp.cfu.dto.CourseRequest
 import com.mgmtp.cfu.dto.CourseResponse
 import org.springframework.http.HttpStatus

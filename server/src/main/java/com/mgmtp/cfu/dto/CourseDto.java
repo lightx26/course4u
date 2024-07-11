@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -35,6 +36,6 @@ public class CourseDto {
 
     private CourseLevel level;
 
-    private List<Category> categories;
+    private Set<Category> categories;
 
 }

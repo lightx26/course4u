@@ -50,9 +50,9 @@ public class Course {
 
     @ManyToMany
     @JoinTable(
-            name = "Course_Category",
-            joinColumns = @JoinColumn(name = "course_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
+            name = "`Course_Category`",
+            joinColumns = @JoinColumn(name = "`CourseId`"),
+            inverseJoinColumns = @JoinColumn(name = "`CategoryId`")
     )
     private Set<Category> categories;
     @OneToMany(mappedBy = "course",cascade = CascadeType.ALL)
@@ -63,11 +63,6 @@ public class Course {
     @JsonManagedReference
     private Set<CourseReview> courseReviews;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "`Category_Course`",
-               joinColumns = @JoinColumn(name = "`CourseId`"),
-               inverseJoinColumns = @JoinColumn(name = "`CategoryId`"))
-    @JsonManagedReference
-    private List<Category> categories;
+
 
 }
