@@ -5,7 +5,7 @@ services:
     container_name: "server-staging"
     env_file:
       - .env.staging
-    profiles: [ 'staging']
+    profiles: [ 'staging' ]
     ports:
       - "8080"
     networks:
@@ -31,38 +31,73 @@ services:
       - "traefik.http.middlewares.cfu-client-staging-middleware.replacepathregex.regex=^/staging(.*)"
       - "traefik.http.middlewares.cfu-client-staging-middleware.replacepathregex.replacement=$$1"
       - "traefik.http.routers.cfu-client-staging-cfu.middlewares=cfu-client-staging-middleware"
-  server-master:
+
+  # Dev environment
+  server-dev:
+    image: "da-nang-internship-docker-local.dockerregistry.mgm-tp.com/com.mgmtp.da-nang-internship/com.mgmtp.cfu.server:develop"
+    container_name: "server-dev"
+    env_file:
+      - .env.develop
+    profiles: [ 'develop' ]
+    ports:
+      - "8081"
+    networks:
+      - "cfu"
+    labels:
+      - "traefik.http.routers.cfu-server-dev.rule=(PathPrefix(`/dev/api`) || PathPrefix(`/dev/h2-console`))"
+      - "traefik.http.middlewares.cfu-server-dev-h2console-middleware.replacepathregex.regex=^/dev/h2-console(.*)"
+      - "traefik.http.middlewares.cfu-server-dev-h2console-middleware.replacepathregex.replacement=/h2-console$$1"
+      - "traefik.http.middlewares.cfu-server-dev-api-middleware.replacepathregex.regex=^/dev/api/(.*)"
+      - "traefik.http.middlewares.cfu-server-dev-api-middleware.replacepathregex.replacement=/api/$$1"
+      - "traefik.http.routers.cfu-server-dev.middlewares=cfu-server-dev-h2console-middleware,cfu-server-dev-api-middleware"
+
+  client-dev:
+    image: "da-nang-internship-docker-local.dockerregistry.mgm-tp.com/com.mgmtp.da-nang-internship/com.mgmtp.cfu.client:develop"
+    container_name: "client-dev"
+    profiles: [ 'develop' ]
+    ports:
+      - "81"
+    networks:
+      - "cfu"
+    depends_on:
+      - "server-dev"
+    labels:
+      - "traefik.http.routers.cfu-client-dev-cfu.rule=PathPrefix(`/dev`) && !PathPrefix(`/dev/api`) && !PathPrefix(`/dev/h2-console`)"
+      - "traefik.http.middlewares.cfu-client-dev-middleware.replacepathregex.regex=^/dev(.*)"
+      - "traefik.http.middlewares.cfu-client-dev-middleware.replacepathregex.replacement=$$1"
+      - "traefik.http.routers.cfu-client-dev-cfu.middlewares=cfu-client-dev-middleware"
+  
+  # Production environment
+  server-prod:
     image: "da-nang-internship-docker-local.dockerregistry.mgm-tp.com/com.mgmtp.da-nang-internship/com.mgmtp.cfu.server:master"
-    container_name: "server-master"
+    container_name: "server-prod"
     env_file:
       - .env.master
-    profiles: [ 'master' ]
+    profiles: [ 'production' ]
     ports:
       - "8080"
     networks:
       - "cfu"
     labels:
-      - "traefik.http.routers.cfu-server-master-cfu.rule=PathPrefix(`/master/api`)"
-      - "traefik.http.middlewares.cfu-server-master-middleware.replacepathregex.regex=^/master/api/(.*)"
-      - "traefik.http.middlewares.cfu-server-master-middleware.replacepathregex.replacement=/api/$$1"
-      - "traefik.http.routers.cfu-server-master-cfu.middlewares=cfu-server-master-middleware"
-
-  client-master:
+      - "traefik.http.routers.cfu-server-prod.rule=PathPrefix(`/prod/api`)"
+      - "traefik.http.middlewares.cfu-server-prod-api-middleware.replacepathregex.regex=^/prod/api/(.*)"
+      - "traefik.http.middlewares.cfu-server-prod-api-middleware.replacepathregex.replacement=/api/$$1"
+      - "traefik.http.routers.cfu-server-prod-cfu.middlewares=cfu-server-prod-api-middleware"
+  client-prod:
     image: "da-nang-internship-docker-local.dockerregistry.mgm-tp.com/com.mgmtp.da-nang-internship/com.mgmtp.cfu.client:master"
-    container_name: "client-master"
-    profiles: [ 'master' ]
+    container_name: "client-prod"
+    profiles: [ 'production' ]
     ports:
       - "80"
     networks:
       - "cfu"
     depends_on:
-      - "server-master"
+      - "server-prod"
     labels:
-      - "traefik.http.routers.cfu-client-master-cfu.rule=PathPrefix(`/master`)"
-      - "traefik.http.middlewares.cfu-client-master-middleware.replacepathregex.regex=^/master(.*)"
-      - "traefik.http.middlewares.cfu-client-master-middleware.replacepathregex.replacement=$$1"
-      - "traefik.http.routers.cfu-client-master-cfu.middlewares=cfu-client-master-middleware"
-
+      - "traefik.http.routers.cfu-client-prod-cfu.rule=PathPrefix(`/prod`)"
+      - "traefik.http.middlewares.cfu-client-prod-middleware.replacepathregex.regex=^/prod(.*)"
+      - "traefik.http.middlewares.cfu-client-prod-middleware.replacepathregex.replacement=$$1"
+      - "traefik.http.routers.cfu-client-prod-cfu.middlewares=cfu-client-prod-middleware"
 networks:
   cfu:
     external: true
