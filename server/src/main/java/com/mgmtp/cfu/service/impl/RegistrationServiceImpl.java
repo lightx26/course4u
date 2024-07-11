@@ -13,12 +13,21 @@ import com.mgmtp.cfu.exception.RegistrationNotFoundException;
 
 import com.mgmtp.cfu.mapper.DTOMapper;
 import com.mgmtp.cfu.mapper.factory.MapperFactory;
+import com.mgmtp.cfu.mapper.factory.impl.RegistrationMapperFactory;
+import com.mgmtp.cfu.entity.Registration;
+import com.mgmtp.cfu.enums.RegistrationStatus;
 import com.mgmtp.cfu.repository.RegistrationRepository;
 import com.mgmtp.cfu.service.RegistrationService;
 import com.mgmtp.cfu.util.AuthUtils;
 import com.mgmtp.cfu.util.RegistrationValidator;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+
 import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
@@ -46,6 +55,14 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
         Registration registration = registrationRepository.findById(id).orElseThrow(() -> new RegistrationNotFoundException("Registration not found"));
         return registrationDtoMapperOpt.get().toDTO(registration);
+        }
+
+    @Override
+    public Page<Registration> getRegistrationByStatus(int page, String status) {
+        PageRequest pageRequest = PageRequest.of(page - 1, 8);
+        RegistrationStatus registrationStatus = RegistrationStatus.valueOf(status.toUpperCase());
+
+        return registrationRepository.findAllByStatus(registrationStatus, pageRequest);
     }
 
     @Override
@@ -68,5 +85,12 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
         var listOfMyRegistration = getRegistrationOverviewDTOS(page, myRegistrations, registrationMapperFactory.getDTOMapper(RegistrationOverviewDTO.class));
         return PageResponse.builder().list(listOfMyRegistration).totalElements(myRegistrations.size()).build();
+    }
+}
+
+    @Override
+    public Page<Registration> getAllRegistrations(int page) {
+        PageRequest pageRequest = PageRequest.of(page - 1, 8);
+        return registrationRepository.findAll(pageRequest);
     }
 }
