@@ -1,30 +1,5 @@
 version: "3.9"
 services:
-  server-dev:
-    build: ./server
-    container_name: cfu-server-dev
-    profiles: ['dev']
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./uploads:/app/uploads
-    environment:
-      - spring.web.resources.static-locations=file:/app/uploads/
-      - uploadDir=/app/uploads/img
-    networks:
-      - cfu
-
-  client-dev:
-    build: ./client
-    container_name: cfu-client-dev
-    profiles: ['dev']
-    ports:
-      - "5173:5173"
-    networks:
-      - cfu
-    depends_on:
-      - server-dev
-
   server-staging:
     image: "da-nang-internship-docker-local.dockerregistry.mgm-tp.com/com.mgmtp.da-nang-internship/com.mgmtp.cfu.server:staging"
     container_name: "server-staging"
@@ -32,7 +7,7 @@ services:
       - .env.staging
     profiles: [ 'staging' ]
     ports:
-      - "8080:8080"
+      - "8080"
     volumes:
       - ./uploads:/app/uploads
     environment:
@@ -70,7 +45,12 @@ services:
       - .env.develop
     profiles: [ 'develop' ]
     ports:
-      - "8081"
+      - "8080"
+    volumes:
+      - ./uploads:/app/uploads
+    environment:
+      - spring.web.resources.static-locations=file:/app/uploads/
+      - uploadDir=/app/uploads/img
     networks:
       - "cfu"
     labels:
@@ -86,7 +66,7 @@ services:
     container_name: "client-dev"
     profiles: [ 'develop' ]
     ports:
-      - "81"
+      - "80"
     networks:
       - "cfu"
     depends_on:
@@ -96,7 +76,7 @@ services:
       - "traefik.http.middlewares.cfu-client-dev-middleware.replacepathregex.regex=^/dev(.*)"
       - "traefik.http.middlewares.cfu-client-dev-middleware.replacepathregex.replacement=$$1"
       - "traefik.http.routers.cfu-client-dev-cfu.middlewares=cfu-client-dev-middleware"
-  
+
   # Production environment
   server-prod:
     image: "da-nang-internship-docker-local.dockerregistry.mgm-tp.com/com.mgmtp.da-nang-internship/com.mgmtp.cfu.server:master"
@@ -106,6 +86,11 @@ services:
     profiles: [ 'production' ]
     ports:
       - "8080"
+    volumes:
+      - ./uploads:/app/uploads
+    environment:
+      - spring.web.resources.static-locations=file:/app/uploads/
+      - uploadDir=/app/uploads/img
     networks:
       - "cfu"
     labels:
