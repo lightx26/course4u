@@ -107,7 +107,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
             zoom,
             aspect,
             croppedImageUrl,
-            isOval: false
+            isOval: false,
         };
         setThumbnail(newThumbnail);
         form!.setValue("thumbnailUrl", croppedImageUrl);
@@ -190,7 +190,10 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                             name='platform'
                             render={({ field }) => (
                                 <FormItem className='w-[50%]'>
-                                    <FormLabel>Platform</FormLabel>
+                                    <FormLabel>
+                                        Platform{""}
+                                        <span className='text-red-500'>*</span>
+                                    </FormLabel>
                                     <Select
                                         onValueChange={field.onChange}
                                         defaultValue={course?.platform}
@@ -226,7 +229,10 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                             name='level'
                             render={({ field }) => (
                                 <FormItem className='w-[50%]'>
-                                    <FormLabel>Level</FormLabel>
+                                    <FormLabel>
+                                        Level{""}
+                                        <span className='text-red-500'>*</span>
+                                    </FormLabel>
                                     <Select
                                         onValueChange={field.onChange}
                                         defaultValue={field.value}
@@ -259,7 +265,10 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                         name='category'
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Category</FormLabel>
+                                <FormLabel>
+                                    Category{""}
+                                    <span className='text-red-500'>*</span>
+                                </FormLabel>
                                 <FormControl>
                                     <MultipleSelector
                                         {...field}
