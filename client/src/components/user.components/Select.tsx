@@ -1,5 +1,5 @@
 type OptionType = {
-    value: number,
+    value: number | string,
     content: string
 }
 
