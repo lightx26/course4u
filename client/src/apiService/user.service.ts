@@ -12,7 +12,7 @@ const handleLogin = async (username: string, password: string) => {
         access_token: response?.data?.access_token,
       };
   } catch (error) {
-    throw new Error(error.message);
+    console.error(error);
   }
 };
 
@@ -21,7 +21,7 @@ const getUserDetails = async () => {
     const response = await instance.get("/users/my-profile");
     return response.data;
   } catch (error) {
-    throw new Error(error.message);
+    console.error(error);
   }
 };
 

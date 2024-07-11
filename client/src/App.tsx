@@ -8,6 +8,8 @@ import MyRegistrationsScreen from "./screens/user.screens/MyRegistrationScreen.t
 import Navigation from "./components/user.components/personal/NavigationComponent.tsx";
 import { ReactElement } from "react";
 import ProtectedRoute from "./components/user.components/ProtectedRouteAuth.tsx";
+import { ReactElement } from "react";
+import AccountSettingScreen from "./screens/user.screens/personal/AccountSettingScreen.tsx";
 
 export type CourseType = {
   id: string;
@@ -64,23 +66,22 @@ const router = createBrowserRouter(
             },
         ],
     },{
-        path: "personal",
-        element: <LayoutUser><Navigation/></LayoutUser>,
-        children: [
+      path: "personal",
+      element: <ProtectedRoute><LayoutUser><div>Tab</div></LayoutUser></ProtectedRoute>,
+      children: [
+          {
+              index: true,
+              path: "account",
+              element: <AccountSettingScreen />
+          },
+          {
 
-            {
-              // index: true,
-              // path: "account",
-              // element: <MyRegistrationsScreen />
-            },
-            {
-                path: "registration",
-                element: <MyRegistrationsScreen/>
-            },
-            //  {
-            //   path: "score",
-            //   element: <div> My Score </div>
-            // },
+              path: "registration",
+              element: <div> My registration </div>
+          }, {
+              path: "score",
+              element: <div> My Score </div>
+          },
         ],
     },
     {

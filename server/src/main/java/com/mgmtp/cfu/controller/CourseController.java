@@ -3,6 +3,7 @@ package com.mgmtp.cfu.controller;
 import com.mgmtp.cfu.dto.CourseDto;
 import com.mgmtp.cfu.service.CourseService;
 import com.mgmtp.cfu.util.CoursePageValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CourseController {
     private final CourseService courseService;
 
+    @Autowired
     public CourseController(CourseService courseService) {
         this.courseService = courseService;
     }

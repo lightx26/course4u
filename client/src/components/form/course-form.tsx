@@ -107,6 +107,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
             zoom,
             aspect,
             croppedImageUrl,
+            isOval: false
         };
         setThumbnail(newThumbnail);
         form!.setValue("thumbnailUrl", croppedImageUrl);
@@ -284,6 +285,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                             setIsOpen={setIsOpen}
                             setCroppedImageFor={setCroppedImageFor}
                             isEdit={isEdit}
+                            isOval={false}
                         >
                             <div className='w-[228px] h-[192px] cursor-pointer'>
                                 <label className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 h-[19px]'>

@@ -16,16 +16,16 @@ const HeaderHomepage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   return (
     <header
-      className="bg-white p-4"
+      className="p-4 bg-white"
       style={{ boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 4px 0px" }}
     >
-      <div className="container mx-auto max-w-screen-xl flex justify-between items-center">
+      <div className="container flex items-center justify-between max-w-screen-xl mx-auto">
         <div className="flex items-center cursor-pointer">
           <img src={imageLogo} alt="Logo" className="h-10" />
-          <span className="text-black text-2xl font-semibold">ourse4U</span>
+          <span className="text-2xl font-semibold text-black">ourse4U</span>
         </div>
 
-        <div className="flex-grow mx-4 px-16 flex items-center relative">
+        <div className="relative flex items-center flex-grow px-16 mx-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="2rem"
@@ -70,7 +70,7 @@ const HeaderHomepage: React.FC = () => {
         <div className="flex items-center space-x-4">
           <div className="flex items-center justify-center gap-5">
             <button
-              className="w-44 h-11 border border-gray-300 rounded-lg bg-violet-700 text-white font-semibold"
+              className="font-semibold text-white border border-gray-300 rounded-lg w-44 h-11 bg-violet-700"
               style={{ backgroundColor: "purple" }}
             >
               Create a registration
@@ -208,7 +208,7 @@ const HeaderHomepage: React.FC = () => {
 
             {isDropdownAvatarOpen && (
               <div
-                className="absolute right-0 mt-2 w-60 bg-white border border-gray-200 rounded-md shadow-lg pt-2"
+                className="absolute right-0 pt-2 mt-2 bg-white border border-gray-200 rounded-md shadow-lg w-60"
                 onMouseLeave={() => {
                   if (isDropdownAvatarOpen) {
                     toggleDropdown();
@@ -216,17 +216,17 @@ const HeaderHomepage: React.FC = () => {
                 }}
               >
                 <div className="flex flex-col items-center justify-center py-2">
-                  <div className="flex items-center justify-center h-12 w-12">
+                  <div className="flex items-center justify-center w-12 h-12">
                     <img
                       src={userData.avatarUrl}
                       alt=""
-                      className="border border-gray-300 h-full w-full rounded-full object-cover"
+                      className="object-cover w-full h-full border border-gray-300 rounded-full"
                     />
                   </div>
-                  <div className="text-black text-lg font-medium">
+                  <div className="text-lg font-medium text-black">
                     {userData.fullName}
                   </div>
-                  <div className="text-black text-sm font-normal">
+                  <div className="text-sm font-normal text-black">
                     {userData.email}
                   </div>
                 </div>
@@ -248,7 +248,7 @@ const HeaderHomepage: React.FC = () => {
                         fill="#141718"
                       />
                     </svg>
-                    <div className="font-medium w-full">My Profile</div>
+                    <div className="w-full font-medium">My Profile</div>
                   </a>
                   <a
                     className="flex items-center gap-4 px-4 py-2 text-gray-800 hover:bg-gray-100"
@@ -266,7 +266,7 @@ const HeaderHomepage: React.FC = () => {
                         fill="#141718"
                       />
                     </svg>
-                    <div className="font-medium w-full">My Registration</div>
+                    <div className="w-full font-medium">My Registration</div>
                   </a>
                   <a
                     className="flex items-center gap-4 px-4 py-2 text-gray-800 hover:bg-gray-100"
@@ -284,7 +284,7 @@ const HeaderHomepage: React.FC = () => {
                         fill="#141718"
                       />
                     </svg>
-                    <div className="font-medium w-full">Leader Board</div>
+                    <div className="w-full font-medium">Leader Board</div>
                   </a>
                 </div>
                 <hr></hr>
@@ -309,7 +309,7 @@ const HeaderHomepage: React.FC = () => {
                       />
                     </svg>
                     <div
-                      className="font-medium w-full"
+                      className="w-full font-medium"
                       onClick={() => {
                         dispatch(handleLogout());
                       }}

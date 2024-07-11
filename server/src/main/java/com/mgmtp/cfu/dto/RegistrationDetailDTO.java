@@ -11,12 +11,12 @@ import java.time.LocalDate;
 @Setter
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-@FieldDefaults(level= AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class RegistrationDetailDTO {
     Long id;
     RegistrationStatus status;
     LocalDate startDate;
-    LocalDate endDate; 
+    LocalDate endDate;
     Integer score;
     LocalDate registerDate;
     Integer duration;

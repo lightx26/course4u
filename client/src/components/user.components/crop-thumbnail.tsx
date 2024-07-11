@@ -12,9 +12,9 @@ import {
     DialogTrigger,
 } from "../ui/dialog";
 type Props = {
-    children: ReactElement;
+    children?: ReactElement;
     imageUrl: string | null;
-    cropInit: { x: number; y: number } | null;
+    cropInit?: { x: number; y: number } | null;
     zoomInit: number | null;
     aspectInit: { value: number; text: string } | null;
     isOpen: boolean;
@@ -25,6 +25,7 @@ type Props = {
         aspect: { value: number; text: string },
         croppedImageUrl: string
     ) => void;
+    isOval: boolean;
     isEdit: boolean;
 };
 
@@ -37,18 +38,18 @@ export const CropThumbnail = ({
     isOpen,
     setIsOpen,
     setCroppedImageFor,
+    isOval = false,
     isEdit,
 }: Props) => {
     if (zoomInit == null) zoomInit = 1;
     if (cropInit == null) cropInit = { x: 0, y: 0 };
-    if (aspectInit == null) aspectInit = { value: 12 / 8, text: "12/8" };
-    const [zoom, setZoom] = useState(zoomInit);
+    if (aspectInit == null) aspectInit = { value: 1 / 1, text: "1/1" };
+    const [zoom, setZoom] = useState<number>(zoomInit);
     const [crop, setCrop] = useState<Point>(cropInit);
-    // @ts-ignore
-    const [aspect, setAspect] = useState(aspectInit);
+    //@ts-ignore
+    const [aspect, setAspect] = useState<{ value: number; text: string }>(aspectInit);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
-    // @ts-ignore
-    const onCropChange = (crop) => {
+    const onCropChange = (crop: Point) => {
         setCrop(crop);
     };
     const onOpen = () => {
@@ -57,7 +58,7 @@ export const CropThumbnail = ({
     const onZoomChange = (zoom: number) => {
         setZoom(zoom);
     };
-    // @ts-ignore
+    //@ts-ignore
     const onCropComplete = (croppedArea, croppedAreaPixels) => {
         setCroppedAreaPixels(croppedAreaPixels);
     };
@@ -79,7 +80,7 @@ export const CropThumbnail = ({
                     {children}
                 </DialogTrigger>
             ) : (
-                <div className='opacity-60 pointer-events-none'>{children}</div>
+                <div className='pointer-events-none opacity-60'>{children}</div>
             )}
 
             <DialogContent className='md:max-w-[1000px] h-[500px]'>
@@ -99,6 +100,11 @@ export const CropThumbnail = ({
                         onCropChange={onCropChange}
                         onZoomChange={onZoomChange}
                         onCropComplete={onCropComplete}
+                        style={{
+                            cropAreaStyle: {
+                                borderRadius: isOval ? '50%' : ''
+                            }
+                        }}
                     />
                 </div>
                 <DialogFooter className='fixed -bottom-5 right-4 w-full h-[80px]'>
