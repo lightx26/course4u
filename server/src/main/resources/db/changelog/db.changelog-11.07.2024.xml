@@ -37,4 +37,8 @@
         />
 
     </changeSet>
+
+    <changeSet id="3" author="Quang Nguyen">
+        <addUniqueConstraint tableName="CourseReview" columnNames="CourseId, UserId" constraintName="unique_course_user_review"/>
+    </changeSet>
 </databaseChangeLog>

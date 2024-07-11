@@ -4,7 +4,6 @@ import com.mgmtp.cfu.dto.CourseOverviewDTO
 import com.mgmtp.cfu.dto.CoursePageDTO
 import com.mgmtp.cfu.entity.Course
 import com.mgmtp.cfu.enums.CoursePageSortOption
-import com.mgmtp.cfu.enums.CourseStatus
 import com.mgmtp.cfu.mapper.factory.MapperFactory
 import com.mgmtp.cfu.mapper.factory.impl.CourseMapperFactory
 import com.mgmtp.cfu.mapper.CourseOverviewMapper
@@ -17,7 +16,6 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 
 import spock.lang.Subject
-import spock.util.EmbeddedSpecCompiler._closure1
 
 class CourseServiceImplSpec extends Specification {
     CourseRepository courseRepository = Mock(CourseRepository)
@@ -77,7 +75,7 @@ class CourseServiceImplSpec extends Specification {
         given:
         int pageNo = 2
         int pageSize = 5
-        CoursePageSortOption sortOption = CoursePageSortOption.ENROLLMENTS
+        CoursePageSortOption sortOption = CoursePageSortOption.RATING
         List<Course> courses = createCourses(15)
 
         Page mockCoursePage = new PageImpl<>(courses.subList(5, 10), PageRequest.of(1, pageSize), courses.size())

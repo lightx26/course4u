@@ -1,6 +1,7 @@
 package com.mgmtp.cfu.specification;
 
 import com.mgmtp.cfu.entity.Course;
+import com.mgmtp.cfu.entity.CourseReview;
 import com.mgmtp.cfu.entity.Registration;
 import com.mgmtp.cfu.enums.CourseStatus;
 import com.mgmtp.cfu.enums.RegistrationStatus;
@@ -43,12 +44,27 @@ public class CourseSpecifications {
             enrollmentCountSubquery.select(caseExpression)
                     .where(cb.equal(courseSubqueryJoin.get("id"), root.get("id")));
 
-            // Main quẻy
-            Predicate statusPredicate = cb.equal(root.get("status"), CourseStatus.AVAILABLE);
-
+            // Main query
             query.orderBy(cb.desc(enrollmentCountSubquery));
 
-            return statusPredicate;
+            return query.getRestriction();
+        };
+    }
+
+    public static Specification<Course> sortByRatingDesc() {
+        return (root, query, builder) -> {
+            Subquery<Double> ratingSubquery = query.subquery(Double.class);
+            Root<CourseReview> courseReviewRoot = ratingSubquery.from(CourseReview.class);
+            Join<CourseReview, Course> courseJoin = courseReviewRoot.join("course");
+
+            ratingSubquery.correlate(root);
+
+            ratingSubquery.select(builder.avg(courseReviewRoot.get("rating")))
+                    .where(builder.equal(courseJoin.get("id"), root.get("id")));
+
+            query.orderBy(builder.desc(ratingSubquery));
+
+            return query.getRestriction();
         };
     }
 }

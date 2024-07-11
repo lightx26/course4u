@@ -24,7 +24,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -93,6 +92,7 @@ public class CourseServiceImpl implements CourseService {
             case CREATED_DATE -> spec.and(CourseSpecifications.sortByCreatedDateDesc());
             case ENROLLMENTS ->
                     spec.and(CourseSpecifications.sortByEnrollmentCountDesc(RegistrationStatusUtil.ACCEPTED_STATUSES));
+            case RATING -> spec.and(CourseSpecifications.sortByRatingDesc());
             default -> spec.and(CourseSpecifications.sortByCreatedDateDesc());
         };
 

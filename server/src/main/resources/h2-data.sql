@@ -60,6 +60,17 @@ VALUES (1, '2021-01-02', 'DISCARDED', '2021-01-02', '2021-01-31', 20, 15, 1, 'WE
 ;
 
 
+INSERT INTO "CourseReview" ("CourseId", "UserId", "Rating", "Comment", "CreatedDate")
+values ('1', '1', '5', 'Good course', '2021-01-01'),
+       ('1', '2', '5', 'This is peak!', '2021-01-01'),
+       ('2', '1', '4', 'Pretty cool', '2021-01-01'),
+       ('2', '2', '5', 'So clear!', '2021-01-01'),
+       ('3', '1', '3', 'Just average', '2021-01-01'),
+       ('4', '1', '4', 'Noice :)', '2021-01-01'),
+       ('4', '2', '4', 'Humor teacher, good lesson', '2021-01-01'),
+       ('5', '2', '4', 'Make I feed like I am a stupid', '2021-01-01'),
+       ('5', '1', '2', 'Make no sense', '2021-01-01');
+
 INSERT INTO "Category"("Name")
 VALUES ('IT'), ('Science'), ('Physics');
 

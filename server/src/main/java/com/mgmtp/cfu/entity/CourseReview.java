@@ -29,9 +29,12 @@ public class CourseReview {
     @JsonBackReference
     private User user;
 
+    @Column(name = "`Rating`")
     private Integer rating;
 
+    @Column(name = "`Comment`")
     private String comment;
 
+    @Column(name = "`CreatedDate`")
     private LocalDateTime createdDate;
 }
