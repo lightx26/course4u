@@ -16,14 +16,11 @@ import com.mgmtp.cfu.service.RegistrationService;
 import com.mgmtp.cfu.util.AuthUtils;
 import com.mgmtp.cfu.util.RegistrationValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 
-import java.util.Objects;
 
 import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getRegistrationOverviewDTOS;
 import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getSortedRegistrations;
@@ -39,7 +36,6 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final MapperFactory<Registration> registrationMapperFactory;
     private final RegistrationOverviewMapper registrationOverviewMapper;
 
-
     @Override
     public RegistrationDetailDTO getDetailRegistration(Long id) {
         Optional<DTOMapper<RegistrationDetailDTO, Registration>> registrationDtoMapperOpt = registrationMapperFactory.getDTOMapper(RegistrationDetailDTO.class);
@@ -49,11 +45,6 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
         Registration registration = registrationRepository.findById(id).orElseThrow(() -> new RegistrationNotFoundException("Registration not found"));
         return registrationDtoMapperOpt.get().toDTO(registration);
-    }
-
-    @Override
-    public int countLegitRegistrationInCourse(Long courseId) {
-        return registrationRepository.countLegitRegistrationInCourse(courseId);
     }
 
     @Override
@@ -77,6 +68,4 @@ public class RegistrationServiceImpl implements RegistrationService {
         var listOfMyRegistration = getRegistrationOverviewDTOS(page, myRegistrations, registrationOverviewMapper);
         return PageResponse.builder().list(listOfMyRegistration).totalElements(myRegistrations.size()).build();
     }
-
-
 }

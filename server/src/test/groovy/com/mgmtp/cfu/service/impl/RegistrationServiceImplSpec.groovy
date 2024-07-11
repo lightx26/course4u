@@ -74,18 +74,6 @@ class RegistrationServiceImplSpec extends Specification {
             ex.message == "No mapper found for registrationDtoMapperOpt"
     }
 
-    def "should return number of legit registration in a course"() {
-        given:
-        int courseId = 1
-        int enrollmentCount = 10
-        registrationRepository.countLegitRegistrationInCourse(courseId) >> enrollmentCount
-
-        when:
-        int result = registrationService.countLegitRegistrationInCourse(courseId)
-
-        then:
-        result == enrollmentCount
-    }
     def "test getMyRegistrationPage with default status"() {
         given: "a mock user and registration data"
         def userId = 1
@@ -143,20 +131,6 @@ class RegistrationServiceImplSpec extends Specification {
         thrown(IllegalArgumentException)
     }
 
-
-
-    def "should return number of legit registration in a course"() {
-        given:
-        int courseId = 1
-        int enrollmentCount = 10
-        registrationRepository.countLegitRegistrationInCourse(courseId) >> enrollmentCount
-
-        when:
-        int result = registrationService.countLegitRegistrationInCourse(courseId)
-
-        then:
-        result == enrollmentCount
-    }
     def "test getMyRegistrationPage with default status"() {
         given: "a mock user and registration data"
         def userId = 1
