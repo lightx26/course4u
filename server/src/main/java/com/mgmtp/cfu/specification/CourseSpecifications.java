@@ -35,10 +35,9 @@ public class CourseSpecifications {
 
             enrollmentCountSubquery.correlate(root);
 
-            // Case expression for counting accepted registrations
-            Expression<Long> caseExpression = cb.sum(cb.<Long>selectCase()
+            Expression<Long> caseExpression = cb.count(cb.<Long>selectCase()
                     .when(registrationSubqueryRoot.get("status").in(acceptedStatuses), 1L)
-                    .otherwise(0L)
+                    .otherwise((Long) null)
             );
 
             enrollmentCountSubquery.select(caseExpression)
