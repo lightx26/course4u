@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@FieldDefaults(level= AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "`Registration`")
 public class Registration {
     @Id
@@ -40,8 +40,8 @@ public class Registration {
     @JoinColumn(name = "`CourseId`", referencedColumnName = "`Id`")
     @JsonBackReference
     Course course;
-    @Column(name = "`LastUpdate`")
-    LocalDateTime lastUpdate;
+    @Column(name = "`LastUpdated`")
+    LocalDateTime lastUpdated;
     @Column(name = "`DurationUnit`")
     @Enumerated(EnumType.STRING)
     DurationUnit durationUnit;
