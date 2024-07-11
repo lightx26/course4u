@@ -15,20 +15,20 @@ const HeaderHomepage: React.FC = () => {
   const userData = useSelector((state: RootState) => state.user.user);
   const navigate = useNavigate();
   const goToHomePage = () => {
-    navigate('/'); // Sử dụng '/' để chuyển hướng đến trang chủ
+    navigate("/"); // Sử dụng '/' để chuyển hướng đến trang chủ
   };
 
   const goToMyProfilePage = () => {
-    navigate('/personal/account');
-  }
+    navigate("/personal/account");
+  };
 
   const goToMyRegistrationPage = () => {
-    navigate('/personal/registration');
-  }
+    navigate("/personal/registration");
+  };
 
   const goToMyScorePage = () => {
-    navigate('/personal/score');
-  }
+    navigate("/personal/score");
+  };
 
   const dispatch = useDispatch<AppDispatch>();
   return (
@@ -37,7 +37,10 @@ const HeaderHomepage: React.FC = () => {
       style={{ boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 4px 0px" }}
     >
       <div className="container flex items-center justify-between max-w-screen-xl mx-auto">
-        <div onClick={goToHomePage} className="flex items-center cursor-pointer">
+        <div
+          onClick={goToHomePage}
+          className="flex items-center cursor-pointer"
+        >
           <img src={imageLogo} alt="Logo" className="h-10" />
           <span className="text-2xl font-semibold text-black">ourse4U</span>
         </div>
@@ -250,9 +253,7 @@ const HeaderHomepage: React.FC = () => {
                 </div>
                 <hr></hr>
                 <div>
-                  <a
-                    className="flex items-center gap-4 px-4 py-2 text-gray-800 hover:bg-gray-100"
-                  >
+                  <a className="flex items-center gap-4 px-4 py-2 text-gray-800 hover:bg-gray-100">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="1.6rem"
@@ -265,10 +266,16 @@ const HeaderHomepage: React.FC = () => {
                         fill="#141718"
                       />
                     </svg>
-                    <div className="w-full font-medium cursor-pointer" onClick={goToMyProfilePage}>My Profile</div>
+                    <div
+                      className="w-full font-medium cursor-pointer"
+                      onClick={goToMyProfilePage}
+                    >
+                      My Profile
+                    </div>
                   </a>
                   <a
-                    className="flex items-center gap-4 px-4 py-2 text-gray-800 hover:bg-gray-100" onClick={goToMyRegistrationPage}
+                    className="flex items-center gap-4 px-4 py-2 text-gray-800 hover:bg-gray-100"
+                    onClick={goToMyRegistrationPage}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -282,7 +289,9 @@ const HeaderHomepage: React.FC = () => {
                         fill="#141718"
                       />
                     </svg>
-                    <div className="w-full font-medium cursor-pointer">My Registration</div>
+                    <div className="w-full font-medium cursor-pointer">
+                      My Registration
+                    </div>
                   </a>
                   <a
                     className="flex items-center gap-4 px-4 py-2 text-gray-800 hover:bg-gray-100"
@@ -300,15 +309,17 @@ const HeaderHomepage: React.FC = () => {
                         fill="#141718"
                       />
                     </svg>
-                    <div onClick={goToMyScorePage} className="w-full font-medium">My score</div>
+                    <div
+                      onClick={goToMyScorePage}
+                      className="w-full font-medium"
+                    >
+                      My score
+                    </div>
                   </a>
                 </div>
                 <hr></hr>
-                <div>
-                  <a
-                    className="flex items-center gap-4 px-4 py-2 text-gray-800 hover:bg-gray-100"
-                    href="/login"
-                  >
+                <div style={{ cursor: "pointer" }}>
+                  <a className="flex items-center gap-4 px-4 py-2 text-gray-800 hover:bg-gray-100">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="1.6rem"
@@ -326,7 +337,9 @@ const HeaderHomepage: React.FC = () => {
                     </svg>
                     <div
                       className="w-full font-medium"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigate(`${import.meta.env.VITE_BASE_URL}/login`);
                         dispatch(handleLogout());
                       }}
                     >

@@ -18,8 +18,10 @@ instance.interceptors.request.use(
     if (token && !isTokenExpired(token)) {
       config.headers.Authorization = `Bearer ${token}`;
     } else if (!token || isTokenExpired(token)) {
-      if (window.location.pathname !== "/login") {
-        window.location.href = "/login";
+      if (
+        window.location.pathname !== `${import.meta.env.VITE_BASE_URL}/login`
+      ) {
+        window.location.href = `${import.meta.env.VITE_BASE_URL}/login`;
       }
     }
 

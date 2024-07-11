@@ -17,11 +17,11 @@ const NotFound: React.FC = () => {
           type="primary"
           onClick={() => {
             if (userRole === "USER") {
-              navigate("/");
+              navigate(`${import.meta.env.VITE_BASE_URL}/`);
             } else if (userRole === "ADMIN") {
-              navigate("/admin");
+              navigate(`${import.meta.env.VITE_BASE_URL}/admin`);
             } else if (userRole === "ACCOUNTANT") {
-              navigate("/accountant");
+              navigate(`${import.meta.env.VITE_BASE_URL}/accountant`);
             }
           }}
           style={{ backgroundColor: "#861fa2" }}

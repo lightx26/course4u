@@ -38,7 +38,7 @@ export type CourseType = {
 };
 
 const LayoutUser = ({ children }: { children?: ReactElement }) => {
-  const isUserRoute = window.location.pathname.startsWith("/");
+  const isUserRoute = window.location.pathname.startsWith(`${import.meta.env.VITE_BASE_URL}`);
   const user = useSelector((state: RootState) => state.user.user);
   const userRole = user.role;
   return (
@@ -61,7 +61,7 @@ const LayoutUser = ({ children }: { children?: ReactElement }) => {
 };
 
 const LayoutAdmin = () => {
-  const isAdminRoute = window.location.pathname.startsWith("/admin");
+  const isAdminRoute = window.location.pathname.startsWith(`${import.meta.env.VITE_BASE_URL}/admin`);
   const user = useSelector((state: RootState) => state.user.user);
   const userRole = user.role;
   return (
@@ -82,7 +82,7 @@ const LayoutAdmin = () => {
 };
 
 const LayoutAccountant = () => {
-  const isAccountRoute = window.location.pathname.startsWith("/accountant");
+  const isAccountRoute = window.location.pathname.startsWith(`${import.meta.env.VITE_BASE_URL}/accountant`);
   const user = useSelector((state: RootState) => state.user.user);
   const userRole = user.role;
   return (
@@ -205,8 +205,8 @@ function App() {
   const dispatch = useDispatch<AppDispatch>();
   const getAccount = async () => {
     if (
-      window.location.pathname === "/login" ||
-      window.location.pathname === "/signup"
+      window.location.pathname === `${import.meta.env.VITE_BASE_URL}/login` ||
+      window.location.pathname === `${import.meta.env.VITE_BASE_URL}/signup`
     )
       return;
     await dispatch(fetchUserDetails());
@@ -216,5 +216,4 @@ function App() {
   }, []);
   return <>{<RouterProvider router={router} />}</>;
 }
-
 export default App;
