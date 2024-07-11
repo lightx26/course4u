@@ -1,10 +1,22 @@
 import instance from "../utils/customizeAxios";
 
-async function fetchListAvailableCourse(offset: number = 0, limit: number = 8) {
+async function fetchListAvailableCourse(offset: number = 1, limit: number = 8, sortBy: string = "CREATED_DATE") {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await instance.get(
-      `/courses/available?page=${offset}&pageSize=${limit}`
+      `/courses/available`,
+        {
+            headers: {
+                "Content-Type": "application/json",
+                "Accepted": "application/json"
+            },
+
+            params: {
+                page: offset,
+                pageSize: limit,
+                sortBy: sortBy
+            }
+        }
     );
     return response;
   } catch (error) {

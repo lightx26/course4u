@@ -2,6 +2,7 @@ package com.mgmtp.cfu.controller;
 
 import com.mgmtp.cfu.dto.AvailableCourseRequest;
 import com.mgmtp.cfu.dto.CourseDto;
+import com.mgmtp.cfu.enums.CoursePageSortOption;
 import com.mgmtp.cfu.service.CourseService;
 import com.mgmtp.cfu.util.CoursePageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +26,17 @@ public class CourseController {
 
     @GetMapping("/available")
     public ResponseEntity<?> getAvailableCourses(
-            @RequestBody AvailableCourseRequest request) {
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "8") int pageSize,
+            @RequestParam(defaultValue = "CREATED_DATE") String sortBy) {
 
-        if (!CoursePageUtil.isValidPageSize(request.getPageSize())) {
+        if (!CoursePageUtil.isValidPageSize(pageSize)) {
             return ResponseEntity.unprocessableEntity()
                     .body("Invalid page size. Page size must be between 1" + " and " + CoursePageUtil.getMaxPageSize());
         }
 
-        return ResponseEntity.ok(courseService.getAvailableCoursesPage(request.getPage(), request.getPageSize(), request.getSortBy()));
+        CoursePageSortOption sortOption = CoursePageUtil.getSortOption(sortBy);
+
+        return ResponseEntity.ok(courseService.getAvailableCoursesPage(page, pageSize, sortOption));
     }
 }

@@ -21,16 +21,16 @@ export type FilterItemType = {
 
 const sortList = [
     {
-        value: 1,
-        content: 'Created Date'
+        value: 'CREATED_DATE',
+        content: 'Newest'
     },
     {
-        value: 2,
+        value: 'RATING',
         content: 'Rating'
     },
     {
-        value: 3,
-        content: 'Total register'
+        value: 'ENROLLMENTS',
+        content: 'Most Enrolled'
     },
 ]
 
@@ -44,7 +44,7 @@ export default function MainContent() {
     const dispatch = useDispatch();
     const fetchData = async (page: number = 1, limit: number = 8) => {
         setIsLoading(true);
-        const result = await fetchListAvailableCourse(page, limit);
+        const result = await fetchListAvailableCourse(page, limit, sortBy);
         if (result && result.data && result.data.courses) {
             setListCourse(result.data.courses);
             setTotalItem(result.data.totalElements);
@@ -83,7 +83,7 @@ export default function MainContent() {
                         </div>
                     ))
                 ))}
-                {length > 1 && <div key={"DelteAll"} onClick={() => dispatch(deleteAllFilterItem())} className='px-2 py-1 hover:opacity-70 text-[12px] cursor-pointer text-white bg-purple  rounded-md'>
+                {length > 1 && <div key={"DeleteAll"} onClick={() => dispatch(deleteAllFilterItem())} className='px-2 py-1 hover:opacity-70 text-[12px] cursor-pointer text-white bg-purple  rounded-md'>
                     <p className='flex items-center'>Delete All <XIcon className='w-4 ml-1 text-white' /></p>
                 </div>}
             </div>

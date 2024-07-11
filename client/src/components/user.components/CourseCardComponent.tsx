@@ -62,7 +62,7 @@ export default function CourseCardComponent({ course }: PropsType) {
               </p>
             )}
           </div>
-          <div>{course.createdDate}</div>
+          {/*<div>{course.createdDate}</div>*/}
           {course.period && (
             <p>
               {course?.period?.startDay?.toDateString()} -{" "}

@@ -1,5 +1,6 @@
 package com.mgmtp.cfu.util;
 
+import com.mgmtp.cfu.enums.CoursePageSortOption;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -17,5 +18,14 @@ public class CoursePageUtil {
 
     public static boolean isValidPageSize(int pageSize) {
         return pageSize >= 1 && pageSize <= maxPageSize;
+    }
+
+    public static CoursePageSortOption getSortOption(String sortBy) {
+        sortBy = sortBy.toUpperCase();
+        try {
+            return CoursePageSortOption.valueOf(sortBy);
+        } catch (IllegalArgumentException e) {
+            return CoursePageSortOption.CREATED_DATE;
+        }
     }
 }
