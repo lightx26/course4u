@@ -54,6 +54,7 @@ export default function UserProfileForm() {
         setAvatar({ ...avatar, imageUrl: userInfor.avatarUrl })
     }, [userInfor])
     function onSubmit(values: z.infer<typeof editUserSchema>) {
+        values.avatar = values.avatar ?? `/client/public/images/avatar.png`;
         console.log(values);
         setIsEditing(!isEditing)
     }

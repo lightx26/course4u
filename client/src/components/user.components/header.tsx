@@ -3,6 +3,7 @@ import imageLogo from "../../assets/images/logo_c4u.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store/store";
 import { handleLogout } from "../../redux/slice/user.slice";
+import { useNavigate } from "react-router-dom";
 const HeaderHomepage: React.FC = () => {
   const [isDropdownAvatarOpen, setIsDropdownAvatarOpen] =
     useState<boolean>(false);
@@ -12,6 +13,22 @@ const HeaderHomepage: React.FC = () => {
   };
 
   const userData = useSelector((state: RootState) => state.user.user);
+  const navigate = useNavigate();
+  const goToHomePage = () => {
+    navigate('/'); // Sử dụng '/' để chuyển hướng đến trang chủ
+  };
+
+  const goToMyProfilePage = () => {
+    navigate('/personal/account');
+  }
+
+  const goToMyRegistrationPage = () => {
+    navigate('/personal/registration');
+  }
+
+  const goToMyScorePage = () => {
+    navigate('/personal/score');
+  }
 
   const dispatch = useDispatch<AppDispatch>();
   return (
@@ -20,7 +37,7 @@ const HeaderHomepage: React.FC = () => {
       style={{ boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 4px 0px" }}
     >
       <div className="container flex items-center justify-between max-w-screen-xl mx-auto">
-        <div className="flex items-center cursor-pointer">
+        <div onClick={goToHomePage} className="flex items-center cursor-pointer">
           <img src={imageLogo} alt="Logo" className="h-10" />
           <span className="text-2xl font-semibold text-black">ourse4U</span>
         </div>
@@ -54,7 +71,7 @@ const HeaderHomepage: React.FC = () => {
             />
           </svg>
           <input
-            type="text"
+            type="search"
             placeholder="Explore courses..."
             className="w-full p-2 px-10 border border-gray-300 rounded-md hover:border-#cccccc-500 focus:border-blue-500 focus:shadow-lg focus:outline-none"
             style={{
@@ -208,7 +225,7 @@ const HeaderHomepage: React.FC = () => {
 
             {isDropdownAvatarOpen && (
               <div
-                className="absolute right-0 pt-2 mt-2 bg-white border border-gray-200 rounded-md shadow-lg w-60"
+                className="absolute right-0 z-50 pt-2 mt-2 bg-white border border-gray-200 rounded-md shadow-lg top-12 w-60"
                 onMouseLeave={() => {
                   if (isDropdownAvatarOpen) {
                     toggleDropdown();
@@ -234,7 +251,6 @@ const HeaderHomepage: React.FC = () => {
                 <div>
                   <a
                     className="flex items-center gap-4 px-4 py-2 text-gray-800 hover:bg-gray-100"
-                    href="#"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -248,11 +264,10 @@ const HeaderHomepage: React.FC = () => {
                         fill="#141718"
                       />
                     </svg>
-                    <div className="w-full font-medium">My Profile</div>
+                    <div className="w-full font-medium cursor-pointer" onClick={goToMyProfilePage}>My Profile</div>
                   </a>
                   <a
-                    className="flex items-center gap-4 px-4 py-2 text-gray-800 hover:bg-gray-100"
-                    href="/personal/registration"
+                    className="flex items-center gap-4 px-4 py-2 text-gray-800 hover:bg-gray-100" onClick={goToMyRegistrationPage}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -266,7 +281,7 @@ const HeaderHomepage: React.FC = () => {
                         fill="#141718"
                       />
                     </svg>
-                    <div className="w-full font-medium">My Registration</div>
+                    <div className="w-full font-medium cursor-pointer">My Registration</div>
                   </a>
                   <a
                     className="flex items-center gap-4 px-4 py-2 text-gray-800 hover:bg-gray-100"
@@ -284,7 +299,7 @@ const HeaderHomepage: React.FC = () => {
                         fill="#141718"
                       />
                     </svg>
-                    <div className="w-full font-medium">Leader Board</div>
+                    <div onClick={goToMyScorePage} className="w-full font-medium">My score</div>
                   </a>
                 </div>
                 <hr></hr>

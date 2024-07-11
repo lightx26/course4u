@@ -7,6 +7,8 @@ import Detail_Of_Course from "./screens/user.screens/DetailOfCourse.tsx";
 import { ReactElement } from "react";
 import ProtectedRoute from "./components/user.components/ProtectedRouteAuth.tsx";
 import AccountSettingScreen from "./screens/user.screens/personal/AccountSettingScreen.tsx";
+import Navigation from "./components/user.components/personal/NavigationComponent.tsx";
+import MyRegistrationsScreen from "./screens/user.screens/MyRegistrationScreen.tsx";
 
 export type CourseType = {
   id: string;
@@ -43,43 +45,50 @@ const LayoutUser = ({ children }: { children?: ReactElement }) => {
 const router = createBrowserRouter(
   [
     {
-        path: "/",
-        element: (
-            <ProtectedRoute>
-            <LayoutUser />
+      path: "/",
+      element: (
+        <ProtectedRoute>
+          <LayoutUser />
         </ProtectedRoute>),
-        errorElement: <div>404 not found</div>,
-        children: [
-            {
-                index: true,
-                element: <HomepageScreen/>,
-            },{
-                path: "registrations/:id",
-                element: <Registrations />,
-            },
-            {
-                path: "courses/:id",
-                element: <Detail_Of_Course />,
-            },
-        ],
-    },{
-      path: "personal",
-      element: <ProtectedRoute><LayoutUser><div>Tab</div></LayoutUser></ProtectedRoute>,
+      errorElement: <div>404 not found</div>,
       children: [
-          {
-              index: true,
-              path: "account",
-              element: <AccountSettingScreen />
-          },
-          {
+        {
+          index: true,
+          element: <HomepageScreen />,
+        }, {
+          path: "registrations/:id",
+          element: <Registrations />,
+        },
+        {
+          path: "courses/:id",
+          element: <Detail_Of_Course />,
+        },
+      ],
+    }, {
+      path: "personal",
+      element: (
+        <ProtectedRoute>
+          <LayoutUser>
+            <Navigation />
+          </LayoutUser>
+        </ProtectedRoute>
+      ),
+      errorElement: <div>404 not found</div>,
+      children: [
+        {
+          index: true,
+          path: "account",
+          element: <AccountSettingScreen />
+        },
+        {
 
-              path: "registration",
-              element: <div> My registration </div>
-          }, {
-              path: "score",
-              element: <div> My Score </div>
-          },
-        ],
+          path: "registration",
+          element: <MyRegistrationsScreen />
+        }, {
+          path: "score",
+          element: <div> My Score </div>
+        },
+      ],
     },
     {
       path: "login",
