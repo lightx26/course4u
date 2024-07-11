@@ -14,7 +14,9 @@ import com.mgmtp.cfu.mapper.factory.impl.CourseMapperFactory
 import com.mgmtp.cfu.mapper.CourseOverviewMapper
 import com.mgmtp.cfu.repository.CategoryRepository
 import com.mgmtp.cfu.repository.CourseRepository
+import com.mgmtp.cfu.service.CategoryService
 import com.mgmtp.cfu.service.CourseService
+import com.mgmtp.cfu.service.UploadService
 import org.springframework.data.domain.PageImpl
 import org.modelmapper.ModelMapper
 import org.springframework.web.multipart.MultipartFile
@@ -30,13 +32,10 @@ class CourseServiceImplSpec extends Specification {
     CourseRepository courseRepository = Mock(CourseRepository)
     MapperFactory<Course> courseMapperFactory = Mock(CourseMapperFactory)
     CourseOverviewMapper courseOverviewMapper = Mock(CourseOverviewMapper)
-    CategoryRepository categoryRepository = Mock()
-    ModelMapper modelMapper = Mock()
+    CategoryService categorySerivce = Mock()
+    UploadService uploadService = Mock()
     @Subject
-    CourseService courseService = new CourseServiceImpl(courseRepository, courseMapperFactory, categoryRepository)
-    def setup() {
-        courseService.uploadDir="./uploads"
-    }
+    CourseService courseService = new CourseServiceImpl(courseRepository, courseMapperFactory, categorySerivce, uploadService)
     def "test createCourse with thumbnail file"() {
         given:
         MultipartFile thumbnailFile = Mock(MultipartFile)
@@ -71,7 +70,7 @@ class CourseServiceImplSpec extends Specification {
                 .categories(Set.of(mockCategory))
                 .build()
 
-        categoryRepository.findByName(_) >> mockCategory
+        categorySerivce.findCategoriesByNames(_) >> Set.of(mockCategory)
         courseRepository.save(_) >> course
 
         when:
@@ -105,7 +104,7 @@ class CourseServiceImplSpec extends Specification {
                 .categories([javaCategory] as List)
                 .build()
 
-        Category javaCategoryEntity = new Category(name: "Java")
+        Category mockCategory = new Category(name: "Java")
         Course course = Course.builder()
                 .name("Java Programming")
                 .link("https://example.com/java-course")
@@ -115,9 +114,9 @@ class CourseServiceImplSpec extends Specification {
                 .createdDate(LocalDate.now())
                 .status(CourseStatus.PENDING)
                 .level(CourseLevel.INTERMEDIATE)
-                .categories(Set.of(javaCategoryEntity))
+                .categories(Set.of(mockCategory))
                 .build()
-        categoryRepository.findByName(_) >> javaCategoryEntity
+        categorySerivce.findCategoriesByNames(_) >> Set.of(mockCategory)
         courseRepository.save(_) >> course
 
         when:

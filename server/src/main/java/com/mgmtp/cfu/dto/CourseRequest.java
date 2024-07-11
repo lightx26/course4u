@@ -3,10 +3,7 @@ package com.mgmtp.cfu.dto;
 
 import com.mgmtp.cfu.enums.CourseLevel;
 import com.mgmtp.cfu.enums.CourseStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -27,24 +24,10 @@ public class CourseRequest {
     private CourseLevel level;
     private List<CategoryCourseRequestDTO> categories;
 
+    @Getter
+    @Setter
     public static class CategoryCourseRequestDTO {
         private String label;
         private String value;
-
-        public String getLabel() {
-            return label;
-        }
-
-        public void setLabel(String label) {
-            this.label = label;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        public void setValue(String value) {
-            this.value = value;
-        }
     }
 }

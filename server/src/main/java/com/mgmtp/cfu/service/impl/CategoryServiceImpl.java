@@ -7,6 +7,7 @@ import com.mgmtp.cfu.entity.Category;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,4 +23,10 @@ public class CategoryServiceImpl implements CategoryService {
                 .map(Category::getName) // Assuming Category has a getName method
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Set<Category> findCategoriesByNames(List<String> categoryNames) {
+        return categoryRepository.findByNameIn(categoryNames);
+    }
+
 }

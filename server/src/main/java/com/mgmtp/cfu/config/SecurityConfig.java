@@ -53,9 +53,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers("api/admin/**", "api/admin").hasRole("ADMIN");
                     authorize.requestMatchers("api/accountant/**", "api/accountant").hasRole("ACCOUNTANT");
-                    authorize.requestMatchers("api/auth/","api/auth/**").permitAll();
-                    authorize.requestMatchers("img/**","avatar/**","course/**").permitAll();
                     authorize.requestMatchers("api/auth/","api/auth/**", "/h2-console", "/h2-console/**").permitAll();
+                    authorize.requestMatchers("api/server-dev/**","api/server-staging/**","api/server-master/**").permitAll();
                     authorize.anyRequest().authenticated();
                 });
         http.addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class);

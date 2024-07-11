@@ -16,9 +16,13 @@ import com.mgmtp.cfu.mapper.factory.MapperFactory;
 import com.mgmtp.cfu.repository.CategoryRepository;
 import com.mgmtp.cfu.repository.CategoryRepository;
 import com.mgmtp.cfu.repository.CourseRepository;
+import com.mgmtp.cfu.service.CategoryService;
 import com.mgmtp.cfu.service.CourseService;
+import com.mgmtp.cfu.service.UploadService;
 import com.mgmtp.cfu.specification.CourseSpecifications;
 import com.mgmtp.cfu.util.RegistrationStatusUtil;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
@@ -28,6 +32,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Optional;
 import org.springframework.data.domain.PageRequest;
@@ -40,16 +45,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Service
+@Log4j2
 public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final MapperFactory<Course> courseMapperFactory;
-    private final CategoryRepository categoryRepository;
-
+    private final CategoryService categoryService;
+    private final UploadService uploadService;
+    @Value("${course4u.upload.image-directory}")
+    private String uploadThumbnailDir;
     @Autowired
-    public CourseServiceImpl(CourseRepository courseRepository, MapperFactory<Course> courseMapperFactory, CategoryRepository categoryRepository) {
+    public CourseServiceImpl(CourseRepository courseRepository, MapperFactory<Course> courseMapperFactory, CategoryService categoryService, UploadService uploadService) {
         this.courseRepository = courseRepository;
         this.courseMapperFactory = courseMapperFactory;
-        this.categoryRepository = categoryRepository;
+        this.categoryService = categoryService;
+        this.uploadService = uploadService;
     }
 
     @Override
@@ -63,58 +72,29 @@ public class CourseServiceImpl implements CourseService {
         throw new CourseNotFoundException("course with id " + id + " not found");
     }
 
-//    private final ModelMapper modelMapper;
-    @Value("${uploadDir}")
-    private String uploadDir;
     @Override
     public CourseResponse createCourse(CourseRequest courseRequest) {
         var modelMapper = new ModelMapper();
         try {
             Course course = modelMapper.map(courseRequest, Course.class);
-            System.out.println(course.toString());
-            // Generate a UUID for the thumbnail filename
-            String uuidFilename = UUID.randomUUID().toString() + ".jpg"; // Default extension
-            String thumbnailUrl = uuidFilename;
-
-            // Handle thumbnail file upload if present
-            MultipartFile thumbnailFile = courseRequest.getThumbnailFile();
-            if (thumbnailFile != null && !thumbnailFile.isEmpty()) {
-                Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
-                if (!Files.exists(uploadPath)) {
-                    Files.createDirectories(uploadPath);
-                }
-                String originalFilename = thumbnailFile.getOriginalFilename();
-                String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
-                uuidFilename = UUID.randomUUID().toString() + fileExtension; // Update UUID filename with correct extension
-                Path filePath = uploadPath.resolve(uuidFilename);
-                thumbnailFile.transferTo(filePath.toFile());
-                thumbnailUrl = uuidFilename; // Update URL with the actual uploaded file name
-            } else if (thumbnailUrl != null) {
+            String thumbnailUrl = null;
+            if (courseRequest.getThumbnailFile() != null)
+            {
+                thumbnailUrl = uploadService.uploadThumbnail(courseRequest.getThumbnailFile(), uploadThumbnailDir);
+            } else if (courseRequest.getThumbnailUrl() != null) {
                 thumbnailUrl = courseRequest.getThumbnailUrl();
             }
-
+            Set<Category> categories = categoryService.findCategoriesByNames(courseRequest.getCategories()
+                    .stream().map(CourseRequest.CategoryCourseRequestDTO::getValue).toList());
             course.setThumbnailUrl(thumbnailUrl);
-            Set<Category> categories = new HashSet<>();
-            if (courseRequest.getCategories() != null && !courseRequest.getCategories().isEmpty()) {
-                for (CourseRequest.CategoryCourseRequestDTO categoryDTO : courseRequest.getCategories()) {
-                    String categoryName = categoryDTO.getValue();
-                    Category category = categoryRepository.findByName(categoryName);
-                    if (category == null) {
-
-                    }
-                    categories.add(category);
-                }
-            }
-
-            // Set categories in course entity
             course.setCategories(categories);
             course.setCreatedDate(LocalDate.now());
             course.setStatus(CourseStatus.AVAILABLE);
             course = courseRepository.save(course);
             return modelMapper.map(course, CourseResponse.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+        } catch (IOException e) {
+            log.error("Error while uploading thumbnail", e);
+            throw new RuntimeException("Error while uploading thumbnail");
         }
     }
 
