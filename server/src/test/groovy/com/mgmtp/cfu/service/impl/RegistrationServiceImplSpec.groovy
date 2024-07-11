@@ -72,6 +72,78 @@ class RegistrationServiceImplSpec extends Specification {
             ex.message == "No mapper found for registrationDtoMapperOpt"
     }
 
+    def "getAllRegistrations should return registration list"() {
+        given:
+        def page = 1
+        def registration = Registration.builder().id(1).build()
+        def registration2 = Registration.builder().id(2).build()
+        registrationRepository.findAll(_) >> {args -> {
+            def input = args[0] as PageRequest
+            assert input.pageNumber == page - 1
+            assert input.pageSize == 8
+            Page<Registration> registrations = Mock(){
+                getContent() >> [registration, registration2]
+            }
+        }}
+        registrationOverviewMapper.toDTO(registration) >> RegistrationOverviewDTO.builder().id(1).build()
+        registrationOverviewMapper.toDTO(registration2) >> RegistrationOverviewDTO.builder().id(2).build()
+
+        when:
+        Page<RegistrationOverviewDTO> result = registrationService.getAllRegistrations(page)
+
+        then:
+        result.size() == 2
+        result[0].id == 1
+        result[1].id == 2
+    }
+
+    def "getRegistrationByStatus should return the correct registration list"(){
+        given:
+        def page = 1
+        def status = "APPROVED"
+
+        def registration = Registration.builder().id(1).status(RegistrationStatus.APPROVED).build()
+        def registration2 = Registration.builder().id(2).status(RegistrationStatus.APPROVED).build()
+        Page<Registration> registrations = Mock(){
+            getContent() >> [registration, registration2]
+        }
+
+        registrationRepository.findAllByStatus(_, _) >> {
+            args -> {
+                def pageRequest = args[1] as PageRequest
+
+                assert pageRequest.pageNumber == page - 1
+                assert pageRequest.pageSize == 8
+
+                registrations
+            }
+        }
+
+        registrationOverviewMapper.toDTO(registration) >> RegistrationOverviewDTO.builder().id(1).status(RegistrationStatus.APPROVED).build()
+        registrationOverviewMapper.toDTO(registration2) >> RegistrationOverviewDTO.builder().id(2).status(RegistrationStatus.APPROVED).build()
+
+        when:
+        Page<RegistrationOverviewDTO> result = registrationService.getRegistrationByStatus(page, status)
+
+        then:
+        result.size() == 2
+        result[0].id == 1
+        result[1].id == 2
+    }
+
+    def "getRegistrationByStatus with unavailable status should return an error message"(){
+        given:
+        def page = 1
+        def status = "NOT_EXISTING_STATUS"
+
+        when:
+        registrationService.getRegistrationByStatus(page, status)
+
+        then:
+        def ex = thrown(RegistrationStatusNotFoundException)
+        ex.message == "Status not found"
+    }
+
     def "test getMyRegistrationPage with default status"() {
         given: "a mock user and registration data"
         def userId = 1
