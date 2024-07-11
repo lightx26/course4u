@@ -38,11 +38,11 @@ export default function MainContent() {
     const [totalItem, setTotalItem] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
     const [listCourse, setListCourse] = useState<CourseType[]>([]);
-    const [sortBy, setSortBy] = useState<string>('');
+    const [sortBy, setSortBy] = useState<string>('CREATED_DATE');
     const [isLoading, setIsLoading] = useState(false);
     const selectedItems = useSelector((state: RootState) => state.filter);
     const dispatch = useDispatch();
-    const fetchData = async (page: number = 1, limit: number = 8) => {
+    const fetchData = async (page: number = 1, limit: number = 8, sortBy: string = "CREATED_DATE") => {
         setIsLoading(true);
         const result = await fetchListAvailableCourse(page, limit, sortBy);
         if (result && result.data && result.data.courses) {
@@ -53,7 +53,7 @@ export default function MainContent() {
     }
 
     useEffect(() => {
-        fetchData(currentPage, 8);
+        fetchData(currentPage, 8, sortBy);
     }, [currentPage, sortBy]);
 
     const onPageNumberClick = (newPageNumber: number) => {
