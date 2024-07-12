@@ -4,4 +4,5 @@ import com.mgmtp.cfu.dto.userdto.UserDto;
 
 public interface IUserService {
     UserDto getMyProfile();
+    UserDto editUserProfile(UserDto userDto);
 }
