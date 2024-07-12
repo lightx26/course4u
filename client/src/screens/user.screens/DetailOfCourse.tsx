@@ -99,9 +99,9 @@ const Detail_Of_Course: React.FC = () => {
     getDataDetailCourse(id);
   }, [id]);
 
-  function convertDate(dateString : string) {
+  function convertDate(dateString: string) {
     const [year, month, day] = dateString.split("-");
-    return `${day}-${month}-${year}`;
+    return `${day}/${month}/${year}`;
   }
 
   return (
@@ -346,7 +346,17 @@ const Detail_Of_Course: React.FC = () => {
                       </div>
                       Category
                     </div>
-                    <div className="text-right">
+                    <div
+                      className="text-right"
+                      style={{
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "normal",
+                      }}
+                    >
                       {courseData?.categories
                         .map((item) => item.name)
                         .join(", ")}
