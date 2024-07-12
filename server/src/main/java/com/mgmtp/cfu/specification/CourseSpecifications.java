@@ -61,9 +61,26 @@ public class CourseSpecifications {
             ratingSubquery.select(builder.avg(courseReviewRoot.get("rating")))
                     .where(builder.equal(courseJoin.get("id"), root.get("id")));
 
-            query.orderBy(builder.desc(ratingSubquery));
+            query.orderBy(builder.desc(builder.selectCase()
+                    .when(builder.isNull(ratingSubquery.getSelection()), -1.0)
+                    .otherwise(ratingSubquery)));
 
             return query.getRestriction();
         };
     }
+
+//    public static Specification<Course> sortByRatingDesc() {
+//        return (root, query, builder) -> {
+//            Subquery<Double> ratingSubquery = query.subquery(Double.class);
+//            Root<CourseReview> courseReviewRoot = ratingSubquery.from(CourseReview.class);
+//            Join<CourseReview, Course> courseJoin = courseReviewRoot.join("course");
+//
+//            ratingSubquery.select(builder.avg(courseReviewRoot.get("rating")))
+//                    .where(builder.equal(courseJoin.get("id"), root.get("id")));
+//
+//            query.orderBy(builder.desc(ratingSubquery)); // Directly use the subquery
+//
+//            return query.getRestriction();
+//        };
+//    }
 }
