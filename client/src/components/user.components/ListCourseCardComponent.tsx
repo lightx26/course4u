@@ -7,7 +7,7 @@ const CourseCardComponent = React.lazy(() => import("./CourseCardComponent"));
 type PropsType = {
     ListCourse: CourseType[]
     isLoading: boolean
-    length?: number;
+    length: number;
 }
 
 export default function ListCourseCardComponent({ ListCourse, isLoading, length = 8 }: PropsType) {

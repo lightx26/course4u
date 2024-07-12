@@ -8,10 +8,11 @@ import { RootState } from '../../../redux/store/store';
 type PropsType = {
     prop: FilterItemType;
     onClick: () => void;
+    isMultipleChoice?: boolean;
 }
 
-export default function FilterItemComponent({ prop }: PropsType) {
-    const [checked, setChecked] = useState(false);
+export default function FilterItemComponent({ prop, isMultipleChoice }: PropsType) {
+    const [checked, setChecked] = useState(prop.checked);
     const dispatch = useDispatch();
 
     // Sử dụng useSelector để lấy state từ store
@@ -23,10 +24,33 @@ export default function FilterItemComponent({ prop }: PropsType) {
             item.FilterComponentId === prop.parentID &&
             item.listChoice.some(choice => choice.id === prop.id)
         );
-        setChecked(isItemSelected);
-    }, [selectedItems, prop.parentID, prop.id]); // Rerun khi filterItems hoặc prop thay đổi
+        prop.checked = isItemSelected;
+        setChecked(prop.checked);
+    }, [selectedItems, prop.parentID, prop.id, prop.checked]); // Rerun khi filterItems hoặc prop thay đổi
 
     const onFilterItemClick = () => {
+        if (isMultipleChoice === false) {
+            // Duyệt qua tất cả các mục đã chọn có cùng parentID
+            selectedItems.forEach(item => {
+                if (item.FilterComponentId === prop.parentID) {
+                    item.listChoice.forEach(choice => {
+                        // Nếu mục này không phải là mục hiện tại và đang được chọn, hủy chọn nó
+                        if (choice.id !== prop.id) {
+                            dispatch(toggleFilterItem({
+                                FilterComponentId: prop.parentID,
+                                choiceId: choice.id,
+                                listChoice: [{
+                                    id: choice.id,
+                                    name: choice.name
+                                }]
+                            }));
+                        }
+                    });
+                }
+            });
+        }
+
+        // Chọn hoặc hủy chọn mục hiện tại
         dispatch(toggleFilterItem({
             FilterComponentId: prop.parentID,
             choiceId: prop.id,
@@ -36,6 +60,7 @@ export default function FilterItemComponent({ prop }: PropsType) {
             }]
         }));
     }
+
     return (
         <div className="flex justify-between text-base cursor-pointer text-[#4E5566] hover:text-[#7E22CE]" onClick={onFilterItemClick}>
             <div className="flex items-center gap-2">

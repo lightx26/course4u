@@ -39,7 +39,7 @@ export default function MainContent() {
     const [currentPage, setCurrentPage] = useState(1);
     const [listCourse, setListCourse] = useState<CourseType[]>([]);
     const [sortBy, setSortBy] = useState<string>('CREATED_DATE');
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const selectedItems = useSelector((state: RootState) => state.filter);
     const dispatch = useDispatch();
     const fetchData = async (page: number = 1, limit: number = 8, sortBy: string = "CREATED_DATE") => {
@@ -88,18 +88,18 @@ export default function MainContent() {
                 </div>}
             </div>
             {
-                (listCourse.length > 0) ?
-                    <>
+                (!isLoading && listCourse.length == 0)
+                    ? <EmptyPage content={'No courses found. Try changing your search terms, adjusting your filters, or exploring different categories to find what you\'re looking for.'} />
+                    : <>
                         <div className='flex items-center justify-between'>
                             <div>
                                 Showing {(currentPage - 1) * 8 + 1} - {Math.min(currentPage * 8, totalItem)} of {totalItem} results
                             </div>
                             <Select listOption={sortList} value={sortBy} onSortByChange={onSortByChange} />
                         </div>
-                        <ListCourseCardComponent ListCourse={listCourse} isLoading={isLoading} />
+                        <ListCourseCardComponent ListCourse={listCourse} isLoading={isLoading} length={listCourse.length} />
                         {totalItem > 8 && <PaginationSection totalItems={totalItem} currentPage={currentPage} itemPerPage={8} setCurrentPage={onPageNumberClick} />}
                     </>
-                    : <EmptyPage content={'No courses found. Try changing your search terms, adjusting your filters, or exploring different categories to find what you\'re looking for.'} />
             }
         </div>
     )

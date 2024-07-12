@@ -5,6 +5,7 @@ import { FilterItemType } from "./MainContent";
 type PropsType = {
     list: Array<FilterItemType>;
     setList: (list: Array<FilterItemType>) => void;
+    isMultipleChoice?: boolean;
 }
 
 export default function ListFilterItem(props: PropsType) {
@@ -26,10 +27,18 @@ export default function ListFilterItem(props: PropsType) {
 
     const toggleItemCheck = (itemId: string) => {
         const newListCheckBox = props.list.map((item) => {
-            if (item.id === itemId) {
-                return { ...item, checked: !item.checked };
+            if (props.isMultipleChoice === false) {
+                if (item.id === itemId) {
+                    return { ...item, checked: true };
+                } else {
+                    return { ...item, checked: false };
+                }
+            } else {
+                if (item.id === itemId) {
+                    return { ...item, checked: !item.checked };
+                }
+                return item;
             }
-            return item;
         });
         props.setList(newListCheckBox);
     };
@@ -37,7 +46,7 @@ export default function ListFilterItem(props: PropsType) {
     return (
         <div className="flex flex-col h-full gap-3">
             {props.list.slice(0, displayCount).map((item) => (
-                <FilterItemComponent key={item.id} prop={item} onClick={() => { toggleItemCheck(item.id) }} />
+                <FilterItemComponent isMultipleChoice={props.isMultipleChoice} key={item.id} prop={item} onClick={() => { toggleItemCheck(item.id) }} />
             ))}
             {props.list.length > initialDisplayCount && (
                 <button onClick={handleShowMore} className="flex items-center justify-center w-full gap-2 p-2 transition-colors border border-gray-200 border-solid rounded-full cursor-pointer hover:bg-gray-50">

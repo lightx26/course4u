@@ -6,6 +6,7 @@ type Prop = {
     title: string;
     list: FilterItemType[]
     isHaveSearch?: boolean;
+    isMultipleChoice?: boolean;
 }
 
 export default function FilterComponent(prop: Prop) {
@@ -43,7 +44,7 @@ export default function FilterComponent(prop: Prop) {
                         </div>
                     }
                     { listFilterItem.length > 0
-                        ? <ListFilterItem list={listFilterItem} setList={setListFilterItem} />
+                        ? <ListFilterItem list={listFilterItem} setList={setListFilterItem} isMultipleChoice={prop.isMultipleChoice} />
                         : <>No item found</>}
                 </div>
             )}
