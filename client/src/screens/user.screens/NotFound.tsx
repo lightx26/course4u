@@ -17,11 +17,11 @@ const NotFound: React.FC = () => {
           type="primary"
           onClick={() => {
             if (userRole === "USER") {
-              navigate("");
+              navigate("/");
             } else if (userRole === "ADMIN") {
               navigate("/admin");
             } else if (userRole === "ACCOUNTANT") {
-              navigate("accountant");
+              navigate("/accountant");
             }
           }}
           style={{ backgroundColor: "#861fa2" }}

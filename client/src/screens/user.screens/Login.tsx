@@ -270,7 +270,10 @@ const Login: React.FC = () => {
           <div>
             <span>
               Don't have an account?{" "}
-              <a href="/signup" className="underline hover:text-purple">
+              <a
+                href={`${import.meta.env.VITE_BASE_URL}/signup`}
+                className="underline hover:text-purple"
+              >
                 Sign up
               </a>
             </span>

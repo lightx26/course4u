@@ -67,7 +67,8 @@ public class AuthServiceImpl implements IAuthService {
         if (emailInUseWithInvalidRole) {
             throw new AccountExistByEmailException("Email is already in use.");
         }
-
+        if(userRepository.existsByUsername(signUpRequest.getUsername()))
+            throw new AccountExistByEmailException("Username existed on system.");
         // Hash the password
         String hashedPassword = passwordEncoder.encode(signUpRequest.getPassword());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -76,9 +77,9 @@ public class AuthServiceImpl implements IAuthService {
                 .password(hashedPassword)
                 .fullName(signUpRequest.getFullname())
                 .email(signUpRequest.getEmail())
-                .dateOfBirth(LocalDate.parse(signUpRequest.getDateofbirth(), formatter))
+                .dateOfBirth((signUpRequest.getDateofbirth() != null && !signUpRequest.getDateofbirth().isEmpty()) ? LocalDate.parse(signUpRequest.getDateofbirth(), formatter) : null)
                 .role(Role.USER)
-                .gender(Gender.valueOf(signUpRequest.getGender()))
+                .gender((signUpRequest.getGender() != null && !signUpRequest.getGender().isEmpty()) ? Gender.valueOf(signUpRequest.getGender()) : null)
                 .build();
 
         user = userRepository.save(user);

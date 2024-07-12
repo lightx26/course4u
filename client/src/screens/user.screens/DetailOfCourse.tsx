@@ -99,6 +99,11 @@ const Detail_Of_Course: React.FC = () => {
     getDataDetailCourse(id);
   }, [id]);
 
+  function convertDate(dateString : string) {
+    const [year, month, day] = dateString.split("-");
+    return `${day}-${month}-${year}`;
+  }
+
   return (
     <>
       {courseData ? (
@@ -119,6 +124,7 @@ const Detail_Of_Course: React.FC = () => {
                     <a
                       href={courseData?.link}
                       className="text-[#4285f4] underline text-[1.2rem] font-[500]"
+                      target="_blank"
                     >
                       {courseData?.link}
                     </a>
@@ -269,7 +275,7 @@ const Detail_Of_Course: React.FC = () => {
                       </div>
                       Create Date
                     </div>
-                    <div>{courseData?.createdDate}</div>
+                    <div>{convertDate(courseData?.createdDate)}</div>
                   </div>
                   <div className="flex justify-between">
                     <div className="flex justify-center items-center gap-[5px]">
@@ -481,7 +487,7 @@ const Detail_Of_Course: React.FC = () => {
           </div>
         </div>
       ) : (
-        <div>Not found</div>
+        <></>
       )}
     </>
   );
