@@ -8,5 +8,6 @@ export const userRegistrationSchema = z.object({
     dateOfBirth: z.string(),
     role: z.string(),
     gender: z.string(),
-    id:z.number()
+    fullName: z.string(),
+    id: z.number(),
 });

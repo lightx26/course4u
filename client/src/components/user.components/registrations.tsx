@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import instance from "../../utils/customizeAxios";
 import { RegistrationsForm } from "../form/registration-form";
 import { z } from "zod";
@@ -20,11 +19,11 @@ export type RegistrationsProps = {
     user?: z.infer<typeof userRegistrationSchema>;
 };
 type Props = {
+    id?: number;
     className?: string;
 };
-const Registrations = ({ className }: Props) => {
+const Registrations = ({ className, id }: Props) => {
     const [isEdit, setIsEdit] = useState(true);
-    const id = useLocation().pathname.split("/")[2];
     const [registration, setRegistration] = useState<RegistrationsProps | null>(
         null
     );
@@ -52,7 +51,7 @@ const Registrations = ({ className }: Props) => {
     return (
         <div
             className={cn(
-                "w-[1352px] pt-5 pb-10 px-10 flex flex-col items-center gap-5 rounded-[30px] mx-auto my-8 border-gray-300 border-2",
+                "w-[1352px] pt-5 pb-10 px-10 flex flex-col items-center gap-5 rounded-[30px] mx-auto my-8",
                 className
             )}
         >
@@ -61,7 +60,7 @@ const Registrations = ({ className }: Props) => {
             </h2>
             <div className='w-full flex justify-between items-center'>
                 <RegistrationUser
-                    fullName={registration?.user?.username || ""}
+                    fullName={registration?.user?.fullName || ""}
                     avatarUrl={registration?.user?.avatarUrl || ""}
                     email={registration?.user?.email || ""}
                     telephone={registration?.user?.telephone || ""}
@@ -69,7 +68,7 @@ const Registrations = ({ className }: Props) => {
                 <RegistrationStatus status={registration?.status} />
             </div>
             <RegistrationsForm
-                id={+id}
+                id={+id!}
                 duration={id ? registration?.duration : undefined}
                 durationUnit={id ? registration?.durationUnit : undefined}
                 status={id ? registration?.status : undefined}
@@ -83,7 +82,7 @@ const Registrations = ({ className }: Props) => {
 
 export const RegistrationSkeleton = () => {
     return (
-        <div className='w-[1352px] pt-5 pb-10 px-10 flex flex-col items-center gap-5 rounded-[30px] mx-auto my-8 border-gray-300 border-2'>
+        <div className='w-[1352px] pt-5 px-10 pb-10 flex flex-col items-center gap-5 rounded-[30px] mx-auto my-8'>
             <Skeleton className='skeleton-title w-3/5 h-10 mb-4'></Skeleton>
             <div className='w-full flex justify-between items-center mb-5'>
                 <div className='flex gap-3'>

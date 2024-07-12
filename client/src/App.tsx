@@ -1,7 +1,6 @@
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import HeaderHomepage from "./components/user.components/header";
 import HomepageScreen from "./screens/user.screens/HomepageScreen";
-import Registrations from "./components/user.components/registrations";
 import Login from "./screens/user.screens/Login.tsx";
 import Detail_Of_Course from "./screens/user.screens/DetailOfCourse.tsx";
 import { ReactElement, useEffect } from "react";
@@ -18,90 +17,99 @@ import CreateCourse from "./components/user.components/create-course.tsx";
 
 import SignUp from "./screens/user.screens/SignUp.tsx";
 export type CourseType = {
-  id: string;
-  name: string;
-  thumbnailUrl?: string;
-  assignee?: {
-    id?: string;
-    name?: string;
-    avatarUrl?: string;
-    role?: string;
-    status?: string;
-  };
-  platform?: string;
-  createdDate?: string;
-  period?: {
-    startDay?: Date;
-    endDay?: Date;
-  };
-  rating?: number;
-  enrollmentCount?: number;
-  level?: string;
+    id: string;
+    name: string;
+    thumbnailUrl?: string;
+    assignee?: {
+        id?: string;
+        name?: string;
+        avatarUrl?: string;
+        role?: string;
+        status?: string;
+    };
+    platform?: string;
+    createdDate?: string;
+    period?: {
+        startDay?: Date;
+        endDay?: Date;
+    };
+    rating?: number;
+    enrollmentCount?: number;
+    level?: string;
 };
 
 const LayoutUser = ({ children }: { children?: ReactElement }) => {
-  const isUserRoute = window.location.pathname.startsWith(`${import.meta.env.VITE_BASE_URL}`);
-  const user = useSelector((state: RootState) => state.user.user);
-  const userRole = user.role;
-  return (
-    <div className="app-container">
-      {isUserRoute && userRole === "USER" && (
-        <>
-          <HeaderHomepage />
-          {children}
-          <Outlet />
-        </>
-      )}
+    const isUserRoute = window.location.pathname.startsWith(
+        `${import.meta.env.VITE_BASE_URL}`
+    );
+    const user = useSelector((state: RootState) => state.user.user);
+    const userRole = user.role;
+    return (
+        <div className='app-container'>
+            {isUserRoute && userRole === "USER" && (
+                <>
+                    <HeaderHomepage />
+                    {children}
+                    <Outlet />
+                </>
+            )}
 
-      {isUserRoute && (userRole === "ADMIN" || userRole === "ACCOUNTANT") && (
-        <>
-          <NotPermitted />
-        </>
-      )}
-    </div>
-  );
+            {isUserRoute &&
+                (userRole === "ADMIN" || userRole === "ACCOUNTANT") && (
+                    <>
+                        <NotPermitted />
+                    </>
+                )}
+        </div>
+    );
 };
 
 const LayoutAdmin = () => {
-  const isAdminRoute = window.location.pathname.startsWith(`${import.meta.env.VITE_BASE_URL}/admin`);
-  const user = useSelector((state: RootState) => state.user.user);
-  const userRole = user.role;
-  return (
-    <>
-      {isAdminRoute && userRole === "ADMIN" && (
-        <div className="app-container">
-          <div>this is admin header</div>
-          <Outlet />
-        </div>
-      )}
-      {isAdminRoute && (userRole === "USER" || userRole === "ACCOUNTANT") && (
+    const isAdminRoute = window.location.pathname.startsWith(
+        `${import.meta.env.VITE_BASE_URL}/admin`
+    );
+    const user = useSelector((state: RootState) => state.user.user);
+    const userRole = user.role;
+    return (
         <>
-          <NotPermitted />
+            {isAdminRoute && userRole === "ADMIN" && (
+                <div className='app-container'>
+                    <div>this is admin header</div>
+                    <Outlet />
+                </div>
+            )}
+            {isAdminRoute &&
+                (userRole === "USER" || userRole === "ACCOUNTANT") && (
+                    <>
+                        <NotPermitted />
+                    </>
+                )}
         </>
-      )}
-    </>
-  );
+    );
 };
 
 const LayoutAccountant = () => {
-  const isAccountRoute = window.location.pathname.startsWith(`${import.meta.env.VITE_BASE_URL}/accountant`);
-  const user = useSelector((state: RootState) => state.user.user);
-  const userRole = user.role;
-  return (
-    <>
-      {isAccountRoute && userRole === "ACCOUNTANT" && (
-        <div className="app-container">
-          <div>this is accountant header</div>
-          <Outlet />
-        </div>
-      )}
-      {isAccountRoute && (userRole === "USER" || userRole === "ADMIN") && (
+    const isAccountRoute = window.location.pathname.startsWith(
+        `${import.meta.env.VITE_BASE_URL}/accountant`
+    );
+    const user = useSelector((state: RootState) => state.user.user);
+    const userRole = user.role;
+    return (
         <>
-          <NotPermitted />
+            {isAccountRoute && userRole === "ACCOUNTANT" && (
+                <div className='app-container'>
+                    <div>this is accountant header</div>
+                    <Outlet />
+                </div>
+            )}
+            {isAccountRoute &&
+                (userRole === "USER" || userRole === "ADMIN") && (
+                    <>
+                        <NotPermitted />
+                    </>
+                )}
         </>
-      )}
-    </>
-  );
+    );
 };
 
 const router = createBrowserRouter(
@@ -118,14 +126,6 @@ const router = createBrowserRouter(
         {
           index: true,
           element: <HomepageScreen />,
-        },
-        {
-          path: "registrations/:id",
-          element: (
-            <ProtectedRoute>
-              <Registrations />
-            </ProtectedRoute>
-          ),
         },
         {
           path: "courses/:id",
@@ -214,18 +214,20 @@ const router = createBrowserRouter(
 );
 
 function App() {
-  const dispatch = useDispatch<AppDispatch>();
-  const getAccount = async () => {
-    if (
-      window.location.pathname === `${import.meta.env.VITE_BASE_URL}/login` ||
-      window.location.pathname === `${import.meta.env.VITE_BASE_URL}/signup`
-    )
-      return;
-    await dispatch(fetchUserDetails());
-  };
-  useEffect(() => {
-    getAccount();
-  }, []);
-  return <>{<RouterProvider router={router} />}</>;
+    const dispatch = useDispatch<AppDispatch>();
+    const getAccount = async () => {
+        if (
+            window.location.pathname ===
+                `${import.meta.env.VITE_BASE_URL}/login` ||
+            window.location.pathname ===
+                `${import.meta.env.VITE_BASE_URL}/signup`
+        )
+            return;
+        await dispatch(fetchUserDetails());
+    };
+    useEffect(() => {
+        getAccount();
+    }, []);
+    return <>{<RouterProvider router={router} />}</>;
 }
 export default App;

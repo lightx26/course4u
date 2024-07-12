@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 const optionSchema = z.object({
-    label: z.string(),
+    label: z.string().optional(),
     value: z.string(),
-    disable: z.boolean().optional(),
+    name: z.string().optional(),
 });
 
 export const courseSchema = z.object({

@@ -70,7 +70,6 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
     }, [course]);
 
     useEffect(() => {
-        setLoading(true);
         const getCategories = async () => {
             try {
                 const response = await instance.get("/categories");
@@ -81,8 +80,6 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                 setCategories(categories);
             } catch (error) {
                 console.error("Failed to fetch categories:", error);
-            } finally {
-                setLoading(false);
             }
         };
         getCategories();
@@ -305,6 +302,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                                     <Select
                                         onValueChange={field.onChange}
                                         defaultValue={field.value}
+                                        value={field.value}
                                         disabled={!isEdit}
                                     >
                                         <FormControl>
@@ -343,6 +341,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                                         {...field}
                                         defaultOptions={categories}
                                         options={categories}
+                                        value={field.value || []}
                                         placeholder='Select category you like...'
                                         creatable={true}
                                         disabled={!isEdit}

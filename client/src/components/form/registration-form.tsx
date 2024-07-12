@@ -62,6 +62,12 @@ export const RegistrationsForm = ({
             form.setValue("teacherName", course?.teacherName || "");
             form.setValue("link", course?.link || "");
             form.setValue("thumbnailUrl", course?.thumbnailUrl || "");
+            form.setValue("level", course?.level || "BEGINNER");
+            const categoriesData = course?.categories?.map((category) => ({
+                label: category.name,
+                value: category.name!,
+            }));
+            form.setValue("categories", categoriesData || []);
         }
     }, [course, duration, durationUnit, form, id]);
     function onSubmit(values: z.infer<typeof registrationSchema>) {

@@ -8,14 +8,15 @@ import Registrations from "../user.components/registrations";
 
 type Props = {
     children: React.ReactNode;
+    id?: number;
 };
-export const RegistrationModal = ({ children }: Props) => {
+export const RegistrationModal = ({ children, id }: Props) => {
     return (
         <Dialog>
             <DialogTrigger asChild>{children}</DialogTrigger>
-            <DialogContent className='max-w-[1500px] w-full p-0 rounded-xl'>
+            <DialogContent className='max-w-[1352px] w-full p-0 rounded-xl min-h-[783px]'>
                 <DialogTitle></DialogTitle>
-                <Registrations className='border-0 w-full' />
+                <Registrations className='border-0 w-full' id={id} />
             </DialogContent>
         </Dialog>
     );
