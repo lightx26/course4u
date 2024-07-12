@@ -104,6 +104,25 @@ const Detail_Of_Course: React.FC = () => {
     return `${day}/${month}/${year}`;
   }
 
+  function truncateText(text: string, maxLines: number) {
+    if (!text || text.length <= maxLines * 15) {
+      // Text is short enough, no need to truncate
+      return text;
+    }
+
+    const words = text.split(" ");
+    let truncatedText = "";
+    for (let i = 0; i < words.length; i++) {
+      truncatedText += words[i] + " ";
+      if (truncatedText.trim().split(/\r?\n/).length > maxLines) {
+        return truncatedText.trim() + "...";
+      }
+    }
+
+    // If all words fit, truncate at character limit
+    return truncatedText.trim().slice(0, maxLines * 15) + "...";
+  }
+
   return (
     <>
       {courseData ? (
@@ -355,11 +374,15 @@ const Detail_Of_Course: React.FC = () => {
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         whiteSpace: "normal",
+                        maxWidth: "60%",
                       }}
                     >
-                      {courseData?.categories
-                        .map((item) => item.name)
-                        .join(", ")}
+                      {truncateText(
+                        courseData?.categories
+                          ?.map((item) => item.name)
+                          .join(`, `),
+                        3
+                      )}
                     </div>
                   </div>
                   <div className="flex justify-between">
