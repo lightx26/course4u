@@ -6,13 +6,16 @@ import com.mgmtp.cfu.dto.coursedto.CourseRequest;
 import com.mgmtp.cfu.dto.coursedto.CourseResponse;
 import com.mgmtp.cfu.entity.Category;
 import com.mgmtp.cfu.entity.Course;
+import com.mgmtp.cfu.exception.BadRequestRunTimeException;
 import com.mgmtp.cfu.exception.CourseNotFoundException;
 import com.mgmtp.cfu.enums.CoursePageSortOption;
 import com.mgmtp.cfu.enums.CourseStatus;
 import com.mgmtp.cfu.exception.DuplicateCourseException;
 import com.mgmtp.cfu.exception.MapperNotFoundException;
+import com.mgmtp.cfu.exception.ServerErrorRuntimeException;
 import com.mgmtp.cfu.mapper.DTOMapper;
 import com.mgmtp.cfu.mapper.factory.MapperFactory;
+import com.mgmtp.cfu.repository.CategoryRepository;
 import com.mgmtp.cfu.repository.CourseRepository;
 import com.mgmtp.cfu.service.CategoryService;
 import com.mgmtp.cfu.service.CourseService;
@@ -21,6 +24,7 @@ import com.mgmtp.cfu.specification.CourseSpecifications;
 import com.mgmtp.cfu.util.RegistrationStatusUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.modelmapper.ModelMapper;
@@ -30,6 +34,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import java.util.Set;
@@ -57,10 +62,14 @@ public class CourseServiceImpl implements CourseService {
         if (optCourse.isPresent()) {
             Course course = optCourse.get();
             return new CourseDto(course.getId(), course.getName(), course.getLink(), course.getPlatform(), course.getThumbnailUrl(), course.getTeacherName(),
-                                 course.getCreatedDate(), course.getStatus(), course.getLevel(), course.getCategories());
+                    course.getCreatedDate(), course.getStatus(), course.getLevel(), course.getCategories());
         }
         throw new CourseNotFoundException("course with id " + id + " not found");
     }
+
+    //    private final ModelMapper modelMapper;
+    @Value("${uploadDir}")
+    private String uploadDir;
 
     @Override
     public CourseResponse createCourse(CourseRequest courseRequest) {
@@ -95,6 +104,7 @@ public class CourseServiceImpl implements CourseService {
             throw new RuntimeException("Error while uploading thumbnail");
         }
     }
+
 
     @Override
     public Page<CourseOverviewDTO> getAvailableCoursesPage(CoursePageFilter filter, CoursePageSortOption sortBy, int pageNo, int pageSize) {
@@ -171,5 +181,25 @@ public class CourseServiceImpl implements CourseService {
             case RATING -> CourseSpecifications.sortByRatingDesc();
             default -> Specification.where(null);
         };
+    }
+
+    @Override
+    public void deleteCourseById(Long id) {
+        try {
+            if (courseRepository.existsById(id)) {
+                if (isRemovableCourse(id))
+                    courseRepository.deleteById(id);
+                 else
+                    throw new BadRequestRunTimeException("Course can't be removed. It was registered by someone.");
+            } else
+                throw new BadRequestRunTimeException("Course don't exist.");
+        } catch (DataAccessException e) {
+            throw new ServerErrorRuntimeException(e.getMessage());
+        }
+    }
+
+    private boolean isRemovableCourse(Long id) {
+        var course = courseRepository.findById(id).orElseThrow();
+        return course.getRegistrations().isEmpty();
     }
 }

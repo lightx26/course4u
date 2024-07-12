@@ -7,9 +7,12 @@ import com.mgmtp.cfu.dto.coursedto.CourseRequest
 import com.mgmtp.cfu.dto.coursedto.CourseResponse
 import com.mgmtp.cfu.entity.Category
 import com.mgmtp.cfu.entity.Course
+import com.mgmtp.cfu.entity.Registration
 import com.mgmtp.cfu.enums.CoursePageSortOption
 import com.mgmtp.cfu.enums.CourseLevel
 import com.mgmtp.cfu.enums.CourseStatus
+import com.mgmtp.cfu.exception.BadRequestRunTimeException
+import com.mgmtp.cfu.exception.ServerErrorRuntimeException
 import com.mgmtp.cfu.exception.MapperNotFoundException
 import com.mgmtp.cfu.mapper.factory.MapperFactory
 import com.mgmtp.cfu.mapper.factory.impl.CourseMapperFactory
@@ -18,6 +21,8 @@ import com.mgmtp.cfu.repository.CourseRepository
 import com.mgmtp.cfu.service.CategoryService
 import com.mgmtp.cfu.service.CourseService
 import com.mgmtp.cfu.service.UploadService
+import org.springframework.dao.CannotAcquireLockException
+import org.springframework.dao.DataAccessException
 import org.springframework.data.domain.PageImpl
 import org.springframework.web.multipart.MultipartFile
 import spock.lang.Specification
@@ -36,6 +41,11 @@ class CourseServiceImplSpec extends Specification {
     UploadService uploadService = Mock()
     @Subject
     CourseService courseService = new CourseServiceImpl(courseRepository, courseMapperFactory, categorySerivce, uploadService)
+
+    def setup() {
+        courseService.uploadDir = "./uploads"
+    }
+
     def "test createCourse with thumbnail file"() {
         given:
         MultipartFile thumbnailFile = Mock(MultipartFile)
@@ -255,5 +265,50 @@ class CourseServiceImplSpec extends Specification {
 
     List<Course> createCourses(int numCourses) {
         return (1..numCourses).collect { new Course(id: it) }
+    }
+
+
+    // test for removing course:
+    def "deleteCourseById return ok"() {
+        given:
+        courseRepository.existsById(_ as Long) >> true;
+        courseRepository.findById(_) >> Optional.of(Course.builder().id(1).registrations(new HashSet<Registration>()).build())
+        courseRepository.deleteById(_) >> { }
+        when:
+        courseService.deleteCourseById(1)
+        then:
+        1*courseRepository.existsById(_ as Long) >> true;
+    }
+
+    def "deleteCourseById: course don't exist"() {
+        given:
+        courseRepository.existsById(_ as Long) >> false
+        when:
+        courseService.deleteCourseById(1)
+        then:
+        def ex = thrown(BadRequestRunTimeException)
+        ex.getMessage() == "Course don't exist."
+    }
+
+    def "deleteCourseById: course can't be delete"() {
+        given:
+        courseRepository.existsById(_ as Long) >> true;
+        courseRepository.findById(_ as Long) >> Optional.of(Course.builder().id(1).registrations(new HashSet<Registration>(Arrays.asList(Registration.builder().id(1).build()))).build())
+        when:
+        courseService.deleteCourseById(1)
+        then:
+        def ex = thrown(BadRequestRunTimeException)
+
+        ex.getMessage() == "Course can't be removed. It was registered by someone."
+    }
+
+    def "deleteCourseById: database arisen error"() {
+        given:
+        courseRepository.existsById(_ as Long) >> { throw new CannotAcquireLockException("") }
+        when:
+        courseService.deleteCourseById(1)
+        then:
+        def ex = thrown(ServerErrorRuntimeException)
+
     }
 }

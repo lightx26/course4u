@@ -1,6 +1,12 @@
 package com.mgmtp.cfu.controller
 
 import com.mgmtp.cfu.dto.coursedto.CourseSearchRequest
+import com.mgmtp.cfu.dto.AvailableCourseRequest
+import com.mgmtp.cfu.dto.CourseDto
+import com.mgmtp.cfu.dto.CoursePageDTO
+import com.mgmtp.cfu.controller.CourseController
+import com.mgmtp.cfu.exception.BadRequestRunTimeException
+import com.mgmtp.cfu.dto.coursedto.AvailableCourseRequest
 import com.mgmtp.cfu.dto.coursedto.CourseDto
 import com.mgmtp.cfu.dto.coursedto.CourseOverviewDTO
 import com.mgmtp.cfu.dto.coursedto.CoursePageFilter
@@ -135,5 +141,21 @@ class CourseControllerSpec extends Specification {
         then:
         responseEntity.statusCode == HttpStatus.INTERNAL_SERVER_ERROR
         responseEntity.body == null
+    }
+
+    def'deleteCourse: delete success'(){
+        given:
+        courseServiceMock.deleteCourseById(1L)>{}
+        when:
+        courseController.deleteCourse(1L)
+        then:
+        1*courseServiceMock.deleteCourseById(1L)
+    }
+    def'deleteCourse: Course id is null.'(){
+        given:
+        when:
+        courseController.deleteCourse(null)
+        then:
+        def ex=thrown(BadRequestRunTimeException.class)
     }
 }

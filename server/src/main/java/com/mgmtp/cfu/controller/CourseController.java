@@ -1,5 +1,8 @@
 package com.mgmtp.cfu.controller;
 
+import com.mgmtp.cfu.dto.AvailableCourseRequest;
+import com.mgmtp.cfu.dto.CourseDto;
+import com.mgmtp.cfu.exception.BadRequestRunTimeException;
 import com.mgmtp.cfu.dto.coursedto.*;
 import com.mgmtp.cfu.exception.DuplicateCourseException;
 import com.mgmtp.cfu.exception.MapperNotFoundException;
@@ -9,12 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -56,5 +61,12 @@ public class CourseController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
+    }
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void deleteCourse(@PathVariable Long id) {
+        if(Objects.isNull(id))
+            throw new BadRequestRunTimeException("The course id must not null.");
+        courseService.deleteCourseById(id);
     }
 }

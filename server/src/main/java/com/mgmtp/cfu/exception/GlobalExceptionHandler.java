@@ -3,6 +3,7 @@ package com.mgmtp.cfu.exception;
 import com.mgmtp.cfu.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,7 +16,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleException() {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responsePre +"Server encountered an internal error.\"}" );
     }
-    @ExceptionHandler({IllegalArgumentException.class, BadCredentialsException.class,NotExistEmailException.class})
+    @ExceptionHandler({IllegalArgumentException.class, BadCredentialsException.class,NotExistEmailException.class,BadRequestRunTimeException.class})
     public ResponseEntity<?> handleIllegalArgumentException(final Exception e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsePre + e.getMessage() + "\"}"); }
 
@@ -28,6 +29,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleIllegalStateException(final Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responsePre + e.getMessage() + "\"}");
     }
+    @ExceptionHandler({ServerErrorRuntimeException.class})
+    public ResponseEntity<?> handleException(final Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(500, e.getMessage(),null));
+    }
+    @ExceptionHandler({AccessDeniedException.class})
+    public ResponseEntity<?> handleAccessDeniedException(final Exception e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(responsePre+e.getMessage()+"\"}");
+    }
+
 
     @ExceptionHandler(AccountExistByEmailException.class)
     public ResponseEntity<?> handleAccountExistByEmailException (AccountExistByEmailException e)

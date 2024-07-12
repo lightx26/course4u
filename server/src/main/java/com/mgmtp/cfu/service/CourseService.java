@@ -8,4 +8,6 @@ public interface CourseService {
     Page<CourseOverviewDTO> getAvailableCoursesPage(CoursePageFilter filter, CoursePageSortOption sortBy, int pageNo, int pageSize);
     CourseDto getCourseDtoById(Long id);
     CourseResponse createCourse(CourseRequest courseDTO);
+
+    void deleteCourseById(Long id);
 }
