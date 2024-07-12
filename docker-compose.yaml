@@ -11,8 +11,8 @@ services:
     volumes:
       - ./uploads:/app/uploads
     environment:
-      - spring.web.resources.static-locations=file:/app/uploads/
-      - course4u.upload.image-directory=./uploads/api/server-staging/thumbnail
+      - spring.web.resources.static-locations=file:/app/uploads/staging
+      - course4u.upload.image-directory=./uploads/staging/api/thumbnail
     networks:
       - "cfu"
     labels:
@@ -49,8 +49,8 @@ services:
     volumes:
       - ./uploads:/app/uploads
     environment:
-      - spring.web.resources.static-locations=file:/app/uploads/
-      - course4u.upload.image-directory=./uploads/api/server-dev/thumbnail
+      - spring.web.resources.static-locations=file:/app/uploads/dev
+      - course4u.upload.image-directory=./uploads/dev/api/thumbnail
     networks:
       - "cfu"
     labels:
@@ -89,8 +89,8 @@ services:
     volumes:
       - ./uploads:/app/uploads
     environment:
-      - spring.web.resources.static-locations=file:/app/uploads/
-      - course4u.upload.image-directory=./uploads/api/server-master/thumbnail
+      - spring.web.resources.static-locations=file:/app/uploads/prod
+      - course4u.upload.image-directory=./uploads/prod/api/thumbnail
     networks:
       - "cfu"
     labels:

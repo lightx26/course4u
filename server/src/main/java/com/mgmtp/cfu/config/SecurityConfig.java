@@ -56,7 +56,7 @@ public class SecurityConfig {
                     authorize.requestMatchers("api/admin/**", "api/admin").hasRole("ADMIN");
                     authorize.requestMatchers("api/accountant/**", "api/accountant").hasRole("ACCOUNTANT");
                     authorize.requestMatchers("api/auth/","api/auth/**", "/h2-console", "/h2-console/**").permitAll();
-                    authorize.requestMatchers("api/server-dev/**","api/server-staging/**","api/server-master/**").permitAll();
+                    authorize.requestMatchers("api/thumbnail/**").permitAll();
                     authorize.requestMatchers(new AntPathRequestMatcher("/error")).permitAll() ;
                     authorize.anyRequest().authenticated();
                 });
