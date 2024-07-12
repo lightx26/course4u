@@ -12,17 +12,17 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class RegistrationOverviewDTO {
-    Long id;
-    RegistrationStatus status;
-    LocalDate startDate;
-    LocalDate registerDate;
-    LocalDate endDate;
-    String courseName;
-    LocalDateTime lastUpdate;
-    Long courseId;
-    Long userId;
-    String username;
-    String userFullName;
-    String thumbnailUrl;
-
+    private Long id;
+    private RegistrationStatus status;
+    private LocalDate startDate;
+    private LocalDate registerDate;
+    private LocalDate endDate;
+    private String courseName;
+    private LocalDateTime lastUpdate;
+    private Long courseId;
+    private Long userId;
+    private String userName;
+    private String userFullName;
+    private String thumbnailUrl;
+    private String platform;
 }

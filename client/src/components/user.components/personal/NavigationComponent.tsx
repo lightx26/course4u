@@ -16,6 +16,27 @@ const Container = styled.div`
       padding-left: 12rem;
     }
   }
+    
+  @media (min-width: 2100px) {
+    .box {
+      padding-left: 20rem;
+    }
+  }
+     @media (min-width: 2300px) {
+    .box {
+      padding-left: 25rem;
+    }
+  }
+     @media (min-width: 2500px) {
+    .box {
+      padding-left: 30rem;
+    }
+  }
+    @media (min-width: 2750px) {
+    .box {
+      padding-left: 40rem;
+    }
+  }
 
 `;
 const Navigation: React.FC = () => {

@@ -13,6 +13,10 @@ export enum Status {
 }
 export const statusList = [
     {
+        value: "SUBMITTED",
+        content: 'Submitted',
+    },
+    {
         value: "ALL",
         content: 'All',
     },
@@ -23,10 +27,6 @@ export const statusList = [
     {
         value: "DISCARDED",
         content: 'Discarded',
-    },
-    {
-        value: "SUBMITTED",
-        content: 'Submitted',
     },
     {
         value: "DECLINED",
@@ -54,6 +54,6 @@ export const statusList = [
     },
     {
         value: "DOCUMENT_DECLINED",
-        content: 'Document(Declined)',
+        content: 'Declined (Document)',
     }
 ];

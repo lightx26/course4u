@@ -14,7 +14,7 @@ export const RegistrationModal = ({ children, id }: Props) => {
     return (
         <Dialog>
             <DialogTrigger asChild>{children}</DialogTrigger>
-            <DialogContent className='max-w-[1352px] w-full p-0 rounded-xl min-h-[783px]'>
+            <DialogContent className=' lg:max-w-[1352px] w-full p-0 rounded-xl min-h-[783px]'>
                 <DialogTitle></DialogTitle>
                 <Registrations className='border-0 w-full' id={id} />
             </DialogContent>

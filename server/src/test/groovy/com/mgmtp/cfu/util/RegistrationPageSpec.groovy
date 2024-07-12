@@ -20,7 +20,7 @@ class RegistrationOverviewPageSpec extends Specification {
         registrationOverviewMapper.toDTO(_)>> RegistrationOverviewDTO.builder().id(1).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDate.now()).build()
 
         when:
-        def registrationPage = new RegistrationOverviewPage(page, registrations,10,registrationOverviewMapper)
+        def registrationPage = new RegistrationOverviewPage(page, registrations,10,Optional.of(registrationOverviewMapper))
 
         then:
         registrationPage.page == page
@@ -36,7 +36,7 @@ class RegistrationOverviewPageSpec extends Specification {
         registrationOverviewMapper.toDTO(_)>> RegistrationOverviewDTO.builder().id(1).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDate.now()).build()
 
         when:
-        def registrationPage = new RegistrationOverviewPage(page, registrations,10,registrationOverviewMapper)
+        def registrationPage = new RegistrationOverviewPage(page, registrations,10,Optional.of(registrationOverviewMapper))
 
         then:
         registrationPage.page == 1
@@ -51,7 +51,7 @@ class RegistrationOverviewPageSpec extends Specification {
         registrationOverviewMapper.toDTO(_)>> RegistrationOverviewDTO.builder().id(1).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDate.now()).build()
 
         when:
-        def registrationPage = new RegistrationOverviewPage(page, null,10,registrationOverviewMapper)
+        def registrationPage = new RegistrationOverviewPage(page, null,10,Optional.of(registrationOverviewMapper))
 
         then:
         registrationPage.page == page

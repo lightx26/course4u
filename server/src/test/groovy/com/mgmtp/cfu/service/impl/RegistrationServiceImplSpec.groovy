@@ -30,7 +30,7 @@ class RegistrationServiceImplSpec extends Specification {
     RegistrationOverviewMapper registrationOverviewMapper=Mock(RegistrationOverviewMapper)
 
     @Subject
-    RegistrationServiceImpl registrationService = new RegistrationServiceImpl(registrationRepository, registrationMapperFactory,registrationOverviewMapper)
+    RegistrationServiceImpl registrationService = new RegistrationServiceImpl(registrationRepository, registrationMapperFactory)
 
     def "return registration details successfully"() {
         given:
@@ -80,6 +80,7 @@ class RegistrationServiceImplSpec extends Specification {
         }
         SecurityContextHolder.context.authentication = authentication
         registrationRepository.getByUserId(userId,_) >> List.of(registrations)
+        registrationMapperFactory.getDTOMapper(_)>> Optional.of(registrationOverviewMapper)
         when:
         def result = registrationService.getMyRegistrationPage(1, status)
         then:
@@ -99,6 +100,7 @@ class RegistrationServiceImplSpec extends Specification {
         }
         SecurityContextHolder.context.authentication = authentication
         registrationRepository.getByUserId(userId,_) >> List.of(registrations,registrayion2)
+        registrationMapperFactory.getDTOMapper(_)>>Optional.of(registrationOverviewMapper)
         registrationOverviewMapper.toDTO(_)>> RegistrationOverviewDTO.builder().id(1).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDate.now()).build()
         when:
         def result = registrationService.getMyRegistrationPage(1, status)
@@ -119,6 +121,7 @@ class RegistrationServiceImplSpec extends Specification {
         }
         SecurityContextHolder.context.authentication = authentication
         registrationRepository.getByUserId(userId,_) >> List.of(registrations)
+        registrationMapperFactory.getDTOMapper(_)>> Optional.of(registrationOverviewMapper)
 
         when:
         registrationService.getMyRegistrationPage(0, status)
@@ -137,6 +140,8 @@ class RegistrationServiceImplSpec extends Specification {
         }
         SecurityContextHolder.context.authentication = authentication
         registrationRepository.getByUserId(userId,_) >> List.of(registrations)
+        registrationMapperFactory.getDTOMapper(_)>> Optional.of(registrationOverviewMapper)
+
         when:
         def result = registrationService.getMyRegistrationPage(1, status)
         then:
@@ -156,6 +161,7 @@ class RegistrationServiceImplSpec extends Specification {
         }
         SecurityContextHolder.context.authentication = authentication
         registrationRepository.getByUserId(userId,_) >> List.of(registrations,registrayion2)
+        registrationMapperFactory.getDTOMapper(_)>> Optional.of(registrationOverviewMapper)
         registrationOverviewMapper.toDTO(_)>> RegistrationOverviewDTO.builder().id(1).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDate.now()).build()
         when:
         def result = registrationService.getMyRegistrationPage(1, status)
@@ -176,6 +182,7 @@ class RegistrationServiceImplSpec extends Specification {
         }
         SecurityContextHolder.context.authentication = authentication
         registrationRepository.getByUserId(userId,_) >> List.of(registrations)
+        registrationMapperFactory.getDTOMapper(_)>> Optional.of(registrationOverviewMapper)
 
         when:
         registrationService.getMyRegistrationPage(0, status)

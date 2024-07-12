@@ -1,6 +1,7 @@
 package com.mgmtp.cfu.service.impl;
 
 import com.mgmtp.cfu.dto.PageResponse;
+import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO;
 import com.mgmtp.cfu.enums.RegistrationStatus;
 import com.mgmtp.cfu.exception.MapperNotFoundException;
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper;
@@ -35,7 +36,6 @@ import java.util.ArrayList;
 public class RegistrationServiceImpl implements RegistrationService {
     private final RegistrationRepository registrationRepository;
     private final MapperFactory<Registration> registrationMapperFactory;
-    private final RegistrationOverviewMapper registrationOverviewMapper;
 
     @Override
     public RegistrationDetailDTO getDetailRegistration(Long id) {
@@ -66,7 +66,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         if (myRegistrations == null || myRegistrations.isEmpty()) {
             return PageResponse.builder().totalElements(0).list(new ArrayList<>()).build();
         }
-        var listOfMyRegistration = getRegistrationOverviewDTOS(page, myRegistrations, registrationOverviewMapper);
+        var listOfMyRegistration = getRegistrationOverviewDTOS(page, myRegistrations, registrationMapperFactory.getDTOMapper(RegistrationOverviewDTO.class));
         return PageResponse.builder().list(listOfMyRegistration).totalElements(myRegistrations.size()).build();
     }
 }

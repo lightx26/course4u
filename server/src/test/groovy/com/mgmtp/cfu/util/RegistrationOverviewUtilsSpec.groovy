@@ -25,7 +25,7 @@ class RegistrationOverviewUtilsSpec extends Specification {
         registrationOverviewMapper.toDTO(_) >> RegistrationOverviewDTO.builder().id(1).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDate.now()).build()
 
         when:
-        List<RegistrationOverviewDTO> result = RegistrationOverviewUtils.getRegistrationOverviewDTOS(1, myRegistrations, registrationOverviewMapper)
+        List<RegistrationOverviewDTO> result = RegistrationOverviewUtils.getRegistrationOverviewDTOS(1, myRegistrations, Optional.of(registrationOverviewMapper))
 
         then:
         result.size() == 4
