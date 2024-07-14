@@ -1,7 +1,6 @@
 package com.mgmtp.cfu.service.impl;
 
-import com.mgmtp.cfu.dto.coursedto.CourseDto;
-import com.mgmtp.cfu.dto.coursedto.CourseOverviewDTO;
+import com.mgmtp.cfu.dto.coursedto.*;
 
 import com.mgmtp.cfu.dto.coursedto.CourseRequest;
 import com.mgmtp.cfu.dto.coursedto.CourseResponse;
@@ -97,7 +96,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Page<CourseOverviewDTO> getAvailableCoursesPage(CoursePageSortOption sortBy, int pageNo, int pageSize) {
+    public Page<CourseOverviewDTO> getAvailableCoursesPage(CoursePageFilter filter, CoursePageSortOption sortBy, int pageNo, int pageSize) {
         Optional<DTOMapper<CourseOverviewDTO, Course>> courseMapperOpt = courseMapperFactory.getDTOMapper(CourseOverviewDTO.class);
 
         if (courseMapperOpt.isEmpty()) {
@@ -106,39 +105,65 @@ public class CourseServiceImpl implements CourseService {
 
         DTOMapper<CourseOverviewDTO, Course> courseMapper = courseMapperOpt.get();
 
-        Page<Course> coursePage = getAvailableCourses(sortBy, pageNo, pageSize);
+        Page<Course> coursePage = getAvailableCourses(filter, sortBy, pageNo, pageSize);
         return coursePage.map(courseMapper::toDTO);
     }
 
-    private Page<Course> getAvailableCourses(CoursePageSortOption sortBy, int pageNo, int pageSize) {
+    private Page<Course> getAvailableCourses(CoursePageFilter filter, CoursePageSortOption sortBy, int pageNo, int pageSize) {
         // Make sure pageNo is valid: at least 1 and at most maxPageNum
         pageNo = Math.max(pageNo, 1);
 
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
 
-        Specification<Course> spec = CourseSpecifications.hasStatus(CourseStatus.AVAILABLE);
-
-        Page<Course> coursePage = getAvailableCourseBySpec(spec, sortBy, pageable);
+        Page<Course> coursePage = getAvailableCourseBySpec(filter, sortBy, pageable);
 
         // If pageNo is greater than the total number of pages, return the last page
         int totalPages = coursePage.getTotalPages();
-        if (pageNo > totalPages) {
+        if (totalPages > 0 && pageNo > totalPages) {
             pageable = PageRequest.of(totalPages - 1, pageSize);
-            return getAvailableCourseBySpec(spec, sortBy, pageable);
+            return getAvailableCourseBySpec(filter, sortBy, pageable);
         }
 
         return coursePage;
     }
 
-    private Page<Course> getAvailableCourseBySpec(Specification<Course> spec, CoursePageSortOption sortBy, Pageable pageable) {
+    private Page<Course> getAvailableCourseBySpec(CoursePageFilter filter, CoursePageSortOption sortBy, Pageable pageable) {
+        Specification<Course> spec = CourseSpecifications.hasStatus(CourseStatus.AVAILABLE);
 
-        Specification<Course> sortSpec = switch (sortBy) {
-            case NEWEST -> spec.and(CourseSpecifications.sortByCreatedDateDesc());
-            case MOST_ENROLLED ->
-                    spec.and(CourseSpecifications.sortByEnrollmentCountDesc(RegistrationStatusUtil.ACCEPTED_STATUSES));
-            case RATING -> spec.and(CourseSpecifications.sortByRatingDesc());
+        if (filter != null) {
+            spec = spec.and(getFilterSpec(filter));
+        }
+
+        if (sortBy != null) {
+            spec = spec.and(getSortSpec(sortBy));
+        }
+
+        return courseRepository.findAll(spec, pageable);
+    }
+
+    private Specification<Course> getFilterSpec(CoursePageFilter filter) {
+        Specification<Course> spec = Specification.where(null);
+
+        if (!filter.getCategoryFilters().isEmpty()) {
+            spec = spec.and(CourseSpecifications.hasCategories(filter.getCategoryFilters()));
+        }
+
+        if (!filter.getLevelFilters().isEmpty()) {
+            spec = spec.and(CourseSpecifications.hasLevels(filter.getLevelFilters()));
+        }
+
+        if (!filter.getPlatformFilters().isEmpty()) {
+            spec = spec.and(CourseSpecifications.hasPlatforms(filter.getPlatformFilters()));
+        }
+
+        return spec;
+    }
+
+    private Specification<Course> getSortSpec(CoursePageSortOption sortBy) {
+        return switch (sortBy) {
+            case NEWEST -> CourseSpecifications.sortByCreatedDateDesc();
+            case MOST_ENROLLED -> CourseSpecifications.sortByEnrollmentCountDesc(RegistrationStatusUtil.ACCEPTED_STATUSES);
+            case RATING -> CourseSpecifications.sortByRatingDesc();
         };
-
-        return courseRepository.findAll(sortSpec, pageable);
     }
 }

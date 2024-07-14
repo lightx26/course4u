@@ -3,6 +3,7 @@ package com.mgmtp.cfu.specification;
 import com.mgmtp.cfu.entity.Course;
 import com.mgmtp.cfu.entity.CourseReview;
 import com.mgmtp.cfu.entity.Registration;
+import com.mgmtp.cfu.enums.CourseLevel;
 import com.mgmtp.cfu.enums.CourseStatus;
 import com.mgmtp.cfu.enums.RegistrationStatus;
 import jakarta.persistence.criteria.*;
@@ -67,5 +68,23 @@ public class CourseSpecifications {
 
             return query.getRestriction();
         };
+    }
+
+    public static Specification<Course> hasCategories(List<Long> categoryIds) {
+        return (root, query, builder) -> (
+                root.join("categories").get("id").in(categoryIds)
+        );
+    }
+
+    public static Specification<Course> hasLevels(List<CourseLevel> levels) {
+        return (root, query, builder) -> (
+                root.get("level").in(levels)
+        );
+    }
+
+    public static Specification<Course> hasPlatforms(List<String> platforms) {
+        return (root, query, builder) -> (
+                root.get("platform").in(platforms)
+        );
     }
 }

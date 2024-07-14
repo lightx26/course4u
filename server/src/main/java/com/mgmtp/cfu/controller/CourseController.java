@@ -30,15 +30,15 @@ public class CourseController {
         return ResponseEntity.ok(courseService.getCourseDtoById(id));
     }
 
-    @GetMapping("/available")
-    public ResponseEntity<?> getAvailableCourses(@ModelAttribute AvailableCourseRequest request) {
+    @PostMapping("/available")
+    public ResponseEntity<?> getAvailableCourses(@RequestBody AvailableCourseRequest request) {
 
         if (!CoursePageUtil.isValidPageSize(request.getPageSize())) {
             return ResponseEntity.unprocessableEntity()
                     .body("Invalid page size. Page size must be between 1" + " and " + CoursePageUtil.getMaxPageSize());
         }
         try {
-            Page<CourseOverviewDTO> coursePageDTO = courseService.getAvailableCoursesPage(request.getSortBy(), request.getPage(), request.getPageSize());
+            Page<CourseOverviewDTO> coursePageDTO = courseService.getAvailableCoursesPage(request.getFilter(), request.getSortBy(), request.getPage(), request.getPageSize());
             return ResponseEntity.ok(coursePageDTO);
         } catch (MapperNotFoundException e) {
             return ResponseEntity.internalServerError().body(null);

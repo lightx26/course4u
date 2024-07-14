@@ -6,13 +6,15 @@ async function fetchListAvailableCourse(offset: number = 1, limit: number = 8, s
     const request_params = {
         page: offset,
         pageSize: limit,
-        sortBy: sortBy
-    }
-    const response = await instance.get(
-      `/courses/available`,
-        {
-            params: request_params
+        sortBy: sortBy,
+        filter: {
+            categoryFilters: [],
+            levelFilters: [],
+            platformFilters: []
         }
+    }
+    const response = await instance.post(
+      `/courses/available`, request_params
     );
     return response;
   } catch (error) {

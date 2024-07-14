@@ -14,4 +14,5 @@ public class AvailableCourseRequest {
     private int page = 1;
     private int pageSize = 8;
     private CoursePageSortOption sortBy = CoursePageSortOption.NEWEST;
+    private CoursePageFilter filter = new CoursePageFilter();
 }
