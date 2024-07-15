@@ -1,6 +1,8 @@
-package com.mgmtp.cfu.dto;
+package com.mgmtp.cfu.dto.registrationdto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.mgmtp.cfu.dto.coursedto.CourseRegistrationDTO;
+import com.mgmtp.cfu.dto.userdto.UserRegistrationDTO;
 import com.mgmtp.cfu.enums.RegistrationStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;

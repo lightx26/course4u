@@ -1,4 +1,4 @@
-package com.mgmtp.cfu.dto;
+package com.mgmtp.cfu.dto.userdto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mgmtp.cfu.enums.Gender;

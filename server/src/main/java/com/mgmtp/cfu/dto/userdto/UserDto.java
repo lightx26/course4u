@@ -1,10 +1,7 @@
-package com.mgmtp.cfu.dto;
+package com.mgmtp.cfu.dto.userdto;
 
 import com.mgmtp.cfu.enums.Gender;
 import com.mgmtp.cfu.enums.Role;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.*;
 
 import java.time.LocalDate;

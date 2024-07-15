@@ -2,10 +2,11 @@ package com.mgmtp.cfu.service.impl;
 
 import com.mgmtp.cfu.dto.PageResponse;
 import com.mgmtp.cfu.enums.RegistrationStatus;
+import com.mgmtp.cfu.exception.MapperNotFoundException;
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper;
 
 
-import com.mgmtp.cfu.dto.RegistrationDetailDTO;
+import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO;
 import com.mgmtp.cfu.entity.Registration;
 import com.mgmtp.cfu.exception.RegistrationNotFoundException;
 
@@ -41,7 +42,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         Optional<DTOMapper<RegistrationDetailDTO, Registration>> registrationDtoMapperOpt = registrationMapperFactory.getDTOMapper(RegistrationDetailDTO.class);
 
         if (registrationDtoMapperOpt.isEmpty()) {
-            throw new IllegalStateException("No mapper found for registrationDtoMapperOpt");
+            throw new MapperNotFoundException("No mapper found for registrationDtoMapperOpt");
         }
         Registration registration = registrationRepository.findById(id).orElseThrow(() -> new RegistrationNotFoundException("Registration not found"));
         return registrationDtoMapperOpt.get().toDTO(registration);

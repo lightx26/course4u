@@ -1,15 +1,12 @@
 package com.mgmtp.cfu.util
 
-import com.mgmtp.cfu.dto.RegistrationOverviewDTO
+import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO
 import com.mgmtp.cfu.entity.Registration
 import com.mgmtp.cfu.enums.RegistrationStatus
 import com.mgmtp.cfu.repository.RegistrationRepository
-import spock.lang.Specification
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper
 import spock.lang.Specification
-import org.springframework.data.domain.Sort
-import java.time.LocalDateTime
-import java.time.LocalDate
+
 import java.time.LocalDate
 import java.time.LocalDateTime
 

@@ -21,7 +21,7 @@ export type FilterItemType = {
 
 const sortList = [
     {
-        value: 'CREATED_DATE',
+        value: 'NEWEST',
         content: 'Newest'
     },
     {
@@ -29,7 +29,7 @@ const sortList = [
         content: 'Rating'
     },
     {
-        value: 'ENROLLMENTS',
+        value: 'MOST_ENROLLED',
         content: 'Most Enrolled'
     },
 ]
@@ -38,15 +38,15 @@ export default function MainContent() {
     const [totalItem, setTotalItem] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
     const [listCourse, setListCourse] = useState<CourseType[]>([]);
-    const [sortBy, setSortBy] = useState<string>('CREATED_DATE');
+    const [sortBy, setSortBy] = useState<string>('NEWEST');
     const [isLoading, setIsLoading] = useState(true);
     const selectedItems = useSelector((state: RootState) => state.filter);
     const dispatch = useDispatch();
-    const fetchData = async (page: number = 1, limit: number = 8, sortBy: string = "CREATED_DATE") => {
+    const fetchData = async (page: number = 1, limit: number = 8, sortBy: string = "NEWEST") => {
         setIsLoading(true);
         const result = await fetchListAvailableCourse(page, limit, sortBy);
-        if (result && result.data && result.data.courses) {
-            setListCourse(result.data.courses);
+        if (result && result.data && result.data.content) {
+            setListCourse(result.data.content);
             setTotalItem(result.data.totalElements);
             setIsLoading(false);
         }

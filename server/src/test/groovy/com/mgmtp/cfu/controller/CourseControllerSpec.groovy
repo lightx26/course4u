@@ -1,20 +1,21 @@
 package com.mgmtp.cfu.controller
 
-import com.mgmtp.cfu.dto.AvailableCourseRequest
-import com.mgmtp.cfu.dto.CourseDto
-import com.mgmtp.cfu.dto.CoursePageDTO
-import com.mgmtp.cfu.controller.CourseController
+import com.mgmtp.cfu.dto.coursedto.AvailableCourseRequest
+import com.mgmtp.cfu.dto.coursedto.CourseDto
+import com.mgmtp.cfu.dto.coursedto.CourseOverviewDTO
+import com.mgmtp.cfu.dto.coursedto.CoursePageDTO
+import com.mgmtp.cfu.enums.CoursePageSortOption
+import com.mgmtp.cfu.exception.MapperNotFoundException
 import com.mgmtp.cfu.service.CourseService
 import com.mgmtp.cfu.util.CoursePageUtil
 
-import com.mgmtp.cfu.dto.CourseRequest
-import com.mgmtp.cfu.dto.CourseResponse
+import com.mgmtp.cfu.dto.coursedto.CourseRequest
+import com.mgmtp.cfu.dto.coursedto.CourseResponse
+import org.springframework.data.domain.PageImpl
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.ModelAttribute
 import spock.lang.Specification
 import spock.lang.Subject
-import spock.lang.Unroll
 
 class CourseControllerSpec extends Specification {
     private CourseService courseServiceMock = Mock(CourseService)
@@ -25,24 +26,24 @@ class CourseControllerSpec extends Specification {
     def "Get available courses with valid page size returns OK response"() {
         given:
         def request = new AvailableCourseRequest(page: page, pageSize: pageSize, sortBy: sortBy)
-        CoursePageDTO coursesPage = new CoursePageDTO() // Dữ liệu mẫu trả về từ service
-        courseServiceMock.getAvailableCoursesPage(request.getPage(), request.getPageSize(), request.getSortBy()) >> coursesPage
+        def coursesPage = new PageImpl([new CourseOverviewDTO()]) // Dữ liệu mẫu trả về từ service
+        courseServiceMock.getAvailableCoursesPage(request.getSortBy(), request.getPage(), request.getPageSize()) >> coursesPage
 
         when:
         ResponseEntity<?> response = courseController.getAvailableCourses(request)
 
         then:
-        1 * courseServiceMock.getAvailableCoursesPage(request.getPage(), request.getPageSize(), request.getSortBy()) >> coursesPage
+        1 * courseServiceMock.getAvailableCoursesPage(request.getSortBy(), request.getPage(), request.getPageSize()) >> coursesPage
         response.getStatusCode().value() == 200
         response.getBody() == coursesPage
 
         where:
         page | pageSize | sortBy
-        0 | 8 | "CREATED_DATE"
-        1 | 8 | "CREATED_DATE"
-        2 | 12 | "ENROLLMENTS"
-        -1 | 8 | "ENROLLMENTS"
-        999 | 16 | "ENROLLMENTS"
+        0 | 8 | "NEWEST"
+        1 | 8 | "NEWEST"
+        2 | 12 | "MOST_ENROLLED"
+        -1 | 8 | "MOST_ENROLLED"
+        999 | 16 | "RATING"
     }
 
     def "Throw exception when sort criteria is not in the list"() {
@@ -58,7 +59,7 @@ class CourseControllerSpec extends Specification {
         thrown(IllegalArgumentException)
     }
 
-    def "Get available courses with invalid page size returns BAD_REQUEST response"() {
+    def "Get available courses with invalid page size returns UNPROCESSABLE_ENTITY response"() {
         given:
         def request = new AvailableCourseRequest(page: 1, pageSize: 0)
 
@@ -66,8 +67,20 @@ class CourseControllerSpec extends Specification {
         ResponseEntity<?> response = courseController.getAvailableCourses(request)
 
         then:
-        response.getStatusCode().value() == 422
+        response.getStatusCode() == HttpStatus.UNPROCESSABLE_ENTITY
         response.getBody() == "Invalid page size. Page size must be between 1 and ${CoursePageUtil.getMaxPageSize()}"
+    }
+
+    def "Return Internal Server Error when service thrown an exception"() {
+        given:
+        def request = new AvailableCourseRequest(page: 1, pageSize: 8, sortBy: CoursePageSortOption.NEWEST)
+        courseServiceMock.getAvailableCoursesPage(request.getSortBy(), request.getPage(), request.getPageSize()) >> { throw new MapperNotFoundException() }
+
+        when:
+        ResponseEntity<?> response = courseController.getAvailableCourses(request)
+
+        then:
+        response.getStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR
     }
 
     def "Get courseDto by Id if course exists"() {

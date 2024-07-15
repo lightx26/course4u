@@ -45,4 +45,9 @@
     <changeSet id="4" author="Quang Nguyen">
         <dropUniqueConstraint tableName="CourseReview" constraintName="unique_course_user_review"/>
     </changeSet>
+
+    <changeSet id="5" author="Quang Nguyen">
+        <addUniqueConstraint tableName="CourseReview" columnNames="CourseId, UserId" constraintName="unique_course_user_review"/>
+    </changeSet>
+
 </databaseChangeLog>

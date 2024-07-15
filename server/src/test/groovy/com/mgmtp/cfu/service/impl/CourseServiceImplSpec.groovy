@@ -1,14 +1,15 @@
 package com.mgmtp.cfu.service.impl
 
-import com.mgmtp.cfu.dto.CourseOverviewDTO
-import com.mgmtp.cfu.dto.CoursePageDTO
-import com.mgmtp.cfu.dto.CourseRequest
-import com.mgmtp.cfu.dto.CourseResponse
+import com.mgmtp.cfu.dto.coursedto.CourseOverviewDTO
+import com.mgmtp.cfu.dto.coursedto.CoursePageDTO
+import com.mgmtp.cfu.dto.coursedto.CourseRequest
+import com.mgmtp.cfu.dto.coursedto.CourseResponse
 import com.mgmtp.cfu.entity.Category
 import com.mgmtp.cfu.entity.Course
 import com.mgmtp.cfu.enums.CoursePageSortOption
 import com.mgmtp.cfu.enums.CourseLevel
 import com.mgmtp.cfu.enums.CourseStatus
+import com.mgmtp.cfu.exception.MapperNotFoundException
 import com.mgmtp.cfu.mapper.factory.MapperFactory
 import com.mgmtp.cfu.mapper.factory.impl.CourseMapperFactory
 import com.mgmtp.cfu.mapper.CourseOverviewMapper
@@ -136,22 +137,22 @@ class CourseServiceImplSpec extends Specification {
         given:
         int pageNo = 1
         int pageSize = 5
-        CoursePageSortOption sortOption = CoursePageSortOption.CREATED_DATE
+        CoursePageSortOption sortOption = CoursePageSortOption.NEWEST
         List<Course> courses = createCourses(5)
 
         courseMapperFactory.getDTOMapper(CourseOverviewDTO.class) >> Optional.empty()
 
         when:
-        CoursePageDTO result = courseService.getAvailableCoursesPage(pageNo, pageSize, sortOption)
+        CoursePageDTO result = courseService.getAvailableCoursesPage(sortOption, pageNo, pageSize)
 
         then:
-        thrown(IllegalStateException)
+        thrown(MapperNotFoundException)
     }
 
     def "Should return the first page since pageNo is too low"() {
         given:
         int pageSize = 5
-        CoursePageSortOption sortOption = CoursePageSortOption.ENROLLMENTS
+        CoursePageSortOption sortOption = CoursePageSortOption.MOST_ENROLLED
         List<Course> courses = createCourses(10)
 
         Page mockCoursePage = new PageImpl<>(courses.subList(0, 5), PageRequest.of(0, pageSize), courses.size())
@@ -167,10 +168,10 @@ class CourseServiceImplSpec extends Specification {
         List courseOverviewDTOs = mockCoursePage.map(courseOverviewMapper::toDTO).getContent()
 
         when:
-        CoursePageDTO result = courseService.getAvailableCoursesPage(pageNo, pageSize, sortOption)
+        def result = courseService.getAvailableCoursesPage(sortOption, pageNo, pageSize)
 
         then:
-        result.courses == courseOverviewDTOs
+        result.content == courseOverviewDTOs
         result.totalPages == 2
         result.totalElements == 10
 
@@ -200,10 +201,10 @@ class CourseServiceImplSpec extends Specification {
 
 
         when:
-        CoursePageDTO result = courseService.getAvailableCoursesPage(pageNo, pageSize, sortOption)
+        def result = courseService.getAvailableCoursesPage(sortOption, pageNo, pageSize)
 
         then:
-        result.courses == courseOverviewDTOs
+        result.content == courseOverviewDTOs
         result.totalPages == 3
         result.totalElements == 15
     }
@@ -212,7 +213,7 @@ class CourseServiceImplSpec extends Specification {
         given:
         int pageNo = 99
         int pageSize = 5
-        CoursePageSortOption sortOption = CoursePageSortOption.CREATED_DATE
+        CoursePageSortOption sortOption = CoursePageSortOption.NEWEST
         List<Course> courses = createCourses(7)
         int callCount = 0
 
@@ -236,10 +237,10 @@ class CourseServiceImplSpec extends Specification {
         List courseOverviewDTOs = mockCoursePage.map(courseOverviewMapper::toDTO).getContent()
 
         when:
-        CoursePageDTO result = courseService.getAvailableCoursesPage(pageNo, pageSize, sortOption)
+        def result = courseService.getAvailableCoursesPage(sortOption, pageNo, pageSize)
 
         then:
-        result.courses == courseOverviewDTOs
+        result.content == courseOverviewDTOs
         result.totalPages == 2
         result.totalElements == 7
     }

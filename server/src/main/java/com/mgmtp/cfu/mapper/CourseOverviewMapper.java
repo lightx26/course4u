@@ -1,6 +1,6 @@
 package com.mgmtp.cfu.mapper;
 
-import com.mgmtp.cfu.dto.CourseOverviewDTO;
+import com.mgmtp.cfu.dto.coursedto.CourseOverviewDTO;
 import com.mgmtp.cfu.entity.Course;
 import com.mgmtp.cfu.mapper.dataprovider.CourseDataProvider;
 import org.mapstruct.Mapper;

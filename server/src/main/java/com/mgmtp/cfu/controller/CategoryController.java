@@ -1,5 +1,7 @@
 package com.mgmtp.cfu.controller;
 
+import com.mgmtp.cfu.dto.categorydto.CategoryDTO;
+import com.mgmtp.cfu.exception.MapperNotFoundException;
 import com.mgmtp.cfu.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,7 @@ public class CategoryController {
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
+
     @GetMapping
     public ResponseEntity<List<String>> getAllCategories() {
         try {
@@ -27,6 +30,16 @@ public class CategoryController {
             return new ResponseEntity<>(categories, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/available")
+    public ResponseEntity<?> getAvailableCategories() {
+        try {
+            List<CategoryDTO> availableCategories = categoryService.getAvailableCategories();
+            return ResponseEntity.ok(availableCategories);
+        } catch (MapperNotFoundException e) {
+            return ResponseEntity.internalServerError().body(null);
         }
     }
 }

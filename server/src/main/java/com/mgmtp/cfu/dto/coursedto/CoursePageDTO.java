@@ -1,4 +1,4 @@
-package com.mgmtp.cfu.dto;
+package com.mgmtp.cfu.dto.coursedto;
 
 import lombok.*;
 

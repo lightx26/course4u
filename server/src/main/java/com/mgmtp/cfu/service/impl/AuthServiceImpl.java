@@ -1,6 +1,10 @@
 package com.mgmtp.cfu.service.impl;
 
+import com.mgmtp.cfu.dto.authdto.LoginRequest;
+import com.mgmtp.cfu.dto.authdto.LoginResponse;
 import com.mgmtp.cfu.dto.*;
+import com.mgmtp.cfu.dto.authdto.SignUpRequest;
+import com.mgmtp.cfu.dto.authdto.SignUpResponse;
 import com.mgmtp.cfu.entity.User;
 import com.mgmtp.cfu.enums.Gender;
 import com.mgmtp.cfu.enums.Role;

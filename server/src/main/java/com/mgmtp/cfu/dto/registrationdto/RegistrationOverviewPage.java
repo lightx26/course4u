@@ -1,8 +1,7 @@
-package com.mgmtp.cfu.dto;
+package com.mgmtp.cfu.dto.registrationdto;
 
 import com.mgmtp.cfu.entity.Registration;
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper;
-import com.mgmtp.cfu.util.Constant;
 
 import java.util.ArrayList;
 import java.util.Collections;

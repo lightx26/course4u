@@ -1,6 +1,6 @@
 package com.mgmtp.cfu.mapper;
 
-import com.mgmtp.cfu.dto.RegistrationOverviewDTO;
+import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO;
 import com.mgmtp.cfu.entity.Registration;
 import org.springframework.stereotype.Component;
 

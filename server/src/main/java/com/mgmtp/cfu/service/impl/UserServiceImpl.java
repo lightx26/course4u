@@ -1,6 +1,6 @@
 package com.mgmtp.cfu.service.impl;
 
-import com.mgmtp.cfu.dto.UserDto;
+import com.mgmtp.cfu.dto.userdto.UserDto;
 import com.mgmtp.cfu.mapper.UserMapper;
 import com.mgmtp.cfu.service.IUserService;
 import com.mgmtp.cfu.util.AuthUtils;

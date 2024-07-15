@@ -1,16 +1,15 @@
 package com.mgmtp.cfu.util;
 
-import com.mgmtp.cfu.dto.RegistrationOverviewDTO;
-import com.mgmtp.cfu.dto.RegistrationOverviewPage;
+import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO;
+import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewPage;
 import com.mgmtp.cfu.entity.Registration;
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper;
 import com.mgmtp.cfu.repository.RegistrationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
 @Slf4j
 public class RegistrationOverviewUtils {
     public static List<RegistrationOverviewDTO> getRegistrationOverviewDTOS(int page, List<Registration> myRegistrations, RegistrationOverviewMapper registrationOverviewMapper) {

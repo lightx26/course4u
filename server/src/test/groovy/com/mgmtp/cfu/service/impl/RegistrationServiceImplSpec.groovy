@@ -1,17 +1,13 @@
 package com.mgmtp.cfu.service.impl
 
-import com.mgmtp.cfu.dto.RegistrationOverviewDTO
+
+import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO
 import com.mgmtp.cfu.entity.Course
 import com.mgmtp.cfu.entity.User
 import com.mgmtp.cfu.enums.RegistrationStatus
+import com.mgmtp.cfu.exception.MapperNotFoundException
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper
-import com.mgmtp.cfu.dto.RegistrationOverviewDTO
-import com.mgmtp.cfu.entity.Course
-import com.mgmtp.cfu.entity.Registration
-import com.mgmtp.cfu.entity.User
-import com.mgmtp.cfu.enums.RegistrationStatus
-import com.mgmtp.cfu.mapper.RegistrationOverviewMapper
-import com.mgmtp.cfu.dto.RegistrationDetailDTO
+import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO
 import com.mgmtp.cfu.entity.Registration
 import com.mgmtp.cfu.exception.RegistrationNotFoundException
 import com.mgmtp.cfu.mapper.RegistrationDetailMapper
@@ -70,7 +66,7 @@ class RegistrationServiceImplSpec extends Specification {
         when:
             registrationService.getDetailRegistration(1L)
         then:
-            def ex = thrown(IllegalStateException)
+            def ex = thrown(MapperNotFoundException)
             ex.message == "No mapper found for registrationDtoMapperOpt"
     }
 

@@ -1,6 +1,6 @@
 package com.mgmtp.cfu.util
 
-import com.mgmtp.cfu.dto.SignUpRequest
+import com.mgmtp.cfu.dto.authdto.SignUpRequest
 import spock.lang.Specification
 
 class SignUpValidatorSpec extends Specification {

@@ -1,16 +1,16 @@
 package com.mgmtp.cfu.service.impl;
 
-import com.mgmtp.cfu.dto.CourseDto;
-import com.mgmtp.cfu.dto.CourseOverviewDTO;
+import com.mgmtp.cfu.dto.coursedto.CourseDto;
+import com.mgmtp.cfu.dto.coursedto.CourseOverviewDTO;
 
-import com.mgmtp.cfu.dto.CoursePageDTO;
-import com.mgmtp.cfu.dto.CourseRequest;
-import com.mgmtp.cfu.dto.CourseResponse;
+import com.mgmtp.cfu.dto.coursedto.CourseRequest;
+import com.mgmtp.cfu.dto.coursedto.CourseResponse;
 import com.mgmtp.cfu.entity.Category;
 import com.mgmtp.cfu.entity.Course;
 import com.mgmtp.cfu.exception.CourseNotFoundException;
 import com.mgmtp.cfu.enums.CoursePageSortOption;
 import com.mgmtp.cfu.enums.CourseStatus;
+import com.mgmtp.cfu.exception.MapperNotFoundException;
 import com.mgmtp.cfu.mapper.DTOMapper;
 import com.mgmtp.cfu.mapper.factory.MapperFactory;
 import com.mgmtp.cfu.repository.CourseRepository;
@@ -31,7 +31,6 @@ import java.time.LocalDate;
 import java.util.Optional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -89,25 +88,20 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public CoursePageDTO getAvailableCoursesPage(int pageNo, int pageSize, CoursePageSortOption sortBy) {
+    public Page<CourseOverviewDTO> getAvailableCoursesPage(CoursePageSortOption sortBy, int pageNo, int pageSize) {
         Optional<DTOMapper<CourseOverviewDTO, Course>> courseMapperOpt = courseMapperFactory.getDTOMapper(CourseOverviewDTO.class);
 
         if (courseMapperOpt.isEmpty()) {
-            throw new IllegalStateException("No mapper found for CourseOverviewDTO");
+            throw new MapperNotFoundException("No mapper found for CourseOverviewDTO");
         }
 
         DTOMapper<CourseOverviewDTO, Course> courseMapper = courseMapperOpt.get();
 
-        Page<Course> coursePage = getAvailableCourses(pageNo, pageSize, sortBy);
-        List<CourseOverviewDTO> courses = coursePage.map(courseMapper::toDTO).getContent();
-        return CoursePageDTO.builder()
-                .courses(courses)
-                .totalPages(coursePage.getTotalPages())
-                .totalElements((int) coursePage.getTotalElements())
-                .build();
+        Page<Course> coursePage = getAvailableCourses(sortBy, pageNo, pageSize);
+        return coursePage.map(courseMapper::toDTO);
     }
 
-    private Page<Course> getAvailableCourses(int pageNo, int pageSize, CoursePageSortOption sortBy) {
+    private Page<Course> getAvailableCourses(CoursePageSortOption sortBy, int pageNo, int pageSize) {
         // Make sure pageNo is valid: at least 1 and at most maxPageNum
         pageNo = Math.max(pageNo, 1);
 
@@ -115,26 +109,25 @@ public class CourseServiceImpl implements CourseService {
 
         Specification<Course> spec = CourseSpecifications.hasStatus(CourseStatus.AVAILABLE);
 
-        Page<Course> coursePage = getAvailableCourseBySpec(spec, pageable, sortBy);
+        Page<Course> coursePage = getAvailableCourseBySpec(spec, sortBy, pageable);
 
         // If pageNo is greater than the total number of pages, return the last page
         int totalPages = coursePage.getTotalPages();
         if (pageNo > totalPages) {
             pageable = PageRequest.of(totalPages - 1, pageSize);
-            return getAvailableCourseBySpec(spec, pageable, sortBy);
+            return getAvailableCourseBySpec(spec, sortBy, pageable);
         }
 
         return coursePage;
     }
 
-    private Page<Course> getAvailableCourseBySpec(Specification<Course> spec, Pageable pageable, CoursePageSortOption sortBy) {
+    private Page<Course> getAvailableCourseBySpec(Specification<Course> spec, CoursePageSortOption sortBy, Pageable pageable) {
 
         Specification<Course> sortSpec = switch (sortBy) {
-            case CREATED_DATE -> spec.and(CourseSpecifications.sortByCreatedDateDesc());
-            case ENROLLMENTS ->
+            case NEWEST -> spec.and(CourseSpecifications.sortByCreatedDateDesc());
+            case MOST_ENROLLED ->
                     spec.and(CourseSpecifications.sortByEnrollmentCountDesc(RegistrationStatusUtil.ACCEPTED_STATUSES));
             case RATING -> spec.and(CourseSpecifications.sortByRatingDesc());
-            default -> spec.and(CourseSpecifications.sortByCreatedDateDesc());
         };
 
         return courseRepository.findAll(sortSpec, pageable);

@@ -171,8 +171,13 @@ values ('1', '1', '5', 'Good course', '2021-01-01'),
        ('5', '2', '4', 'Make I feed like I am a stupid', '2021-01-01'),
        ('5', '1', '2', 'Make no sense', '2021-01-01');
 
-INSERT INTO "Category"("Name")
-VALUES ('IT'), ('Science'), ('Physics');
+INSERT INTO "Category"("Name", "Status")
+VALUES ('Java', 'AVAILABLE'), ('Networking', 'AVAILABLE'), ('Artificial Intelligent', 'AVAILABLE'),
+       ('Database', 'AVAILABLE'), ('Security', 'PENDING'), ('Web', 'AVAILABLE'),
+       ('Mobile', 'AVAILABLE'), ('Game Development', 'AVAILABLE'), ('Backend', 'AVAILABLE'),
+       ('Frontend', 'AVAILABLE'), ('Data Science', 'AVAILABLE'), ('Deep Learning', 'PENDING'),
+       ('Data Analysis', 'PENDING'), ('Testing', 'AVAILABLE'), ('Embedded', 'AVAILABLE'),
+       ('React', 'PENDING'), ('UX-UI', 'AVAILABLE'), ('Data Structure & Algorithm', 'AVAILABLE');
 
 INSERT INTO "Category_Course"("CourseId", "CategoryId")
 VALUES (1, 1), (1, 2), (1, 3);

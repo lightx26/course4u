@@ -1,20 +1,17 @@
 package com.mgmtp.cfu.controller;
 
-import com.mgmtp.cfu.dto.AvailableCourseRequest;
-import com.mgmtp.cfu.dto.CourseDto;
-import com.mgmtp.cfu.dto.CourseRequest;
-import com.mgmtp.cfu.dto.CourseResponse;
+import com.mgmtp.cfu.dto.coursedto.*;
+import com.mgmtp.cfu.exception.MapperNotFoundException;
 import com.mgmtp.cfu.service.CourseService;
 import com.mgmtp.cfu.util.CoursePageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -38,8 +35,12 @@ public class CourseController {
             return ResponseEntity.unprocessableEntity()
                     .body("Invalid page size. Page size must be between 1" + " and " + CoursePageUtil.getMaxPageSize());
         }
-
-        return ResponseEntity.ok(courseService.getAvailableCoursesPage(request.getPage(), request.getPageSize(), request.getSortBy()));
+        try {
+            Page<CourseOverviewDTO> coursePageDTO = courseService.getAvailableCoursesPage(request.getSortBy(), request.getPage(), request.getPageSize());
+            return ResponseEntity.ok(coursePageDTO);
+        } catch (MapperNotFoundException e) {
+            return ResponseEntity.internalServerError().body(null);
+        }
     }
 
     @PostMapping()

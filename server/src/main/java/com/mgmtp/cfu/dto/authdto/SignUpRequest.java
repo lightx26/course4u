@@ -1,4 +1,4 @@
-package com.mgmtp.cfu.dto;
+package com.mgmtp.cfu.dto.authdto;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -20,6 +20,4 @@ public class SignUpRequest {
     private String fullname;
     private String dateofbirth;
     private String gender;
-
-
 }

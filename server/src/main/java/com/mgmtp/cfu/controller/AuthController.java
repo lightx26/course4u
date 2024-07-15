@@ -1,7 +1,7 @@
 package com.mgmtp.cfu.controller;
 
-import com.mgmtp.cfu.dto.LoginRequest;
-import com.mgmtp.cfu.dto.SignUpRequest;
+import com.mgmtp.cfu.dto.authdto.SignUpRequest;
+import com.mgmtp.cfu.dto.authdto.LoginRequest;
 import com.mgmtp.cfu.service.IAuthService;
 import com.mgmtp.cfu.util.LoginValidator;
 import com.mgmtp.cfu.util.SignUpValidator;

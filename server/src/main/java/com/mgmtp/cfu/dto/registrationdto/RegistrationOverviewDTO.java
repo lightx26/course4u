@@ -1,4 +1,4 @@
-package com.mgmtp.cfu.dto;
+package com.mgmtp.cfu.dto.registrationdto;
 
 import com.mgmtp.cfu.enums.RegistrationStatus;
 import lombok.*;

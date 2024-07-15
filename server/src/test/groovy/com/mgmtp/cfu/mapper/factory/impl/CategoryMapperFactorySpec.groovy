@@ -1,21 +1,22 @@
 package com.mgmtp.cfu.mapper.factory.impl
 
+import com.mgmtp.cfu.dto.categorydto.CategoryDTO
+import com.mgmtp.cfu.entity.Category
 import com.mgmtp.cfu.entity.Course
 import com.mgmtp.cfu.mapper.DTOMapper
 import com.mgmtp.cfu.mapper.EntityMapper
 import spock.lang.Specification
 
-class CourseMapperFactorySpec extends Specification {
+class CategoryMapperFactorySpec extends Specification {
     def "Constructor should create a map for mapper"() {
-        given:
-        def dtoMapper = new MockCourseDTOMapper()
+        def dtoMapper = new MockCategoryMapper()
         def dtoMapperSet = [dtoMapper] as Set<DTOMapper<Object, Course>>
 
-        def entityMapper = new MockCourseEntityMapper()
+        def entityMapper = new MockCategoryMapper()
         def entityMapperSet = [entityMapper] as Set<EntityMapper<Object, Course>>
 
         when:
-        def result = new CourseMapperFactory(dtoMapperSet, entityMapperSet)
+        def result = new CategoryMapperFactory(dtoMapperSet, entityMapperSet)
 
         then:
         result._dtoMappers.size() == 1
@@ -25,16 +26,14 @@ class CourseMapperFactorySpec extends Specification {
     }
 }
 
-class MockCourseDTOMapper implements DTOMapper<Object, Course> {
+class MockCategoryMapper implements DTOMapper<Object, Category>, EntityMapper<Object, Category> {
     @Override
-    Object toDTO(Course entity) {
-        return null
+    Object toDTO(Category entity) {
+        return null;
     }
-}
 
-class MockCourseEntityMapper implements EntityMapper<Object, Course> {
     @Override
-    Course toEntity(Object dto) {
-        return null
+    Category toEntity(Object dto) {
+        return null;
     }
 }

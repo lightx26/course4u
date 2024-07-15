@@ -1,6 +1,6 @@
 package com.mgmtp.cfu.mapper;
 
-import com.mgmtp.cfu.dto.UserDto;
+import com.mgmtp.cfu.dto.userdto.UserDto;
 import com.mgmtp.cfu.entity.User;
 
 public class UserMapper {

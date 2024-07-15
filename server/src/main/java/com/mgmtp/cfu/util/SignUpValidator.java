@@ -1,6 +1,6 @@
 package com.mgmtp.cfu.util;
 
-import com.mgmtp.cfu.dto.SignUpRequest;
+import com.mgmtp.cfu.dto.authdto.SignUpRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 

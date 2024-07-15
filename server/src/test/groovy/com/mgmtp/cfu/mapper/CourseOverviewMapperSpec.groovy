@@ -1,6 +1,6 @@
 package com.mgmtp.cfu.mapper
 
-import com.mgmtp.cfu.dto.CourseOverviewDTO
+import com.mgmtp.cfu.dto.coursedto.CourseOverviewDTO
 import com.mgmtp.cfu.entity.Course
 import com.mgmtp.cfu.mapper.dataprovider.CourseDataProvider
 import org.mapstruct.factory.Mappers
@@ -27,7 +27,7 @@ class CourseOverviewMapperSpec extends Specification {
         courseDTO == null
     }
 
-    def "Should mapping enrollmentCount correctly"() {
+    def "Should mapping all the fields from entity to DTO correctly"() {
         given:
         courseMapper.courseDataProvider = courseDataProvider
         int enrollmentCount = 5
@@ -38,6 +38,9 @@ class CourseOverviewMapperSpec extends Specification {
         CourseOverviewDTO courseDTO = courseMapper.toDTO(courseEntity)
 
         then:
+        courseDTO.id == courseEntity.id
+        courseDTO.name == courseEntity.name
+        courseDTO.platform == courseEntity.platform
         courseDTO.enrollmentCount == enrollmentCount
     }
 }

@@ -1,14 +1,11 @@
 package com.mgmtp.cfu.service;
 
-import com.mgmtp.cfu.dto.CourseDto;
-import com.mgmtp.cfu.dto.CoursePageDTO;
+import com.mgmtp.cfu.dto.coursedto.*;
 import com.mgmtp.cfu.enums.CoursePageSortOption;
-import com.mgmtp.cfu.dto.CourseRequest;
-import com.mgmtp.cfu.dto.CourseResponse;
+import org.springframework.data.domain.Page;
 
 public interface CourseService {
-    CoursePageDTO getAvailableCoursesPage(int pageNo, int pageSize, CoursePageSortOption sortBy);
-
+    Page<CourseOverviewDTO> getAvailableCoursesPage(CoursePageSortOption sortBy, int pageNo, int pageSize);
     CourseDto getCourseDtoById(Long id);
     CourseResponse createCourse(CourseRequest courseDTO);
 }

@@ -1,6 +1,7 @@
 package com.mgmtp.cfu.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.mgmtp.cfu.enums.CategoryStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +27,10 @@ public class Category {
 
     @Column(name = "`Name`")
     private String name;
+
+    @Column(name = "`Status`")
+    @Enumerated(EnumType.STRING)
+    private CategoryStatus status;
 
     @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY)
     @JsonBackReference

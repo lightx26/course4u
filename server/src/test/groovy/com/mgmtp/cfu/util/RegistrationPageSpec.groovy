@@ -1,7 +1,7 @@
 package com.mgmtp.cfu.util
 
-import com.mgmtp.cfu.dto.RegistrationOverviewDTO
-import com.mgmtp.cfu.dto.RegistrationOverviewPage
+import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO
+import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewPage
 import com.mgmtp.cfu.entity.Registration
 import com.mgmtp.cfu.enums.RegistrationStatus
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper

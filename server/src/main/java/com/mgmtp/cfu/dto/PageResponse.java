@@ -10,5 +10,4 @@ import lombok.*;
 public class PageResponse {
     private int totalElements;
     private Object list;
-
 }

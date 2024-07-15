@@ -1,4 +1,4 @@
-package com.mgmtp.cfu.dto;
+package com.mgmtp.cfu.dto.coursedto;
 
 import com.mgmtp.cfu.enums.CourseLevel;
 import com.mgmtp.cfu.enums.CourseStatus;
