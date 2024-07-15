@@ -49,12 +49,16 @@ export default function CourseCardComponent({ course }: PropsType) {
           </div>
         )}
         <div className="flex items-center gap-3">
-          <p className='text-sm font-medium'>{course.platform}</p>
+          <div className="h-[40px] flex items-center">
+            <p className='text-sm font-medium'>{course.platform}</p>
+          </div>
           {course.level && (
-            <p className={cn("px-2 py-1 rounded text-xs font-medium", color)}>
-              {" "}
-              {course.level}
-            </p>
+            <div className="h-[40px] flex items-center">
+              <p className={cn("px-2 py-1 rounded text-xs font-medium", color)}>
+                {" "}
+                {course.level}
+              </p>
+            </div>
           )}
         </div>
         {/*<div>{course.createdDate}</div>*/}

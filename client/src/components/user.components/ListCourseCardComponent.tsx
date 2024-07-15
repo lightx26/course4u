@@ -12,12 +12,12 @@ type PropsType = {
 
 export default function ListCourseCardComponent({ ListCourse, isLoading, length = 8 }: PropsType) {
     if (isLoading) {
-        return <div className='gap-4 text-black xl:gap-1 2xl:grid xl:grid-cols-4 md:grid-cols-2 scree auto-rows-auto'>
+        return <div className='grid gap-4 text-black xl:gap-1 xl:grid-cols-4 md:grid-cols-2 auto-rows-auto'>
             {Array.from({ length: length }).map((_, index) => <SkeletonLoader key={index} />)}
         </div>
     }
     return (
-        <div className='grid gap-4 text-black xl:gap-1 xl:grid-cols-4 md:grid-cols-2 scree auto-rows-auto'>
+        <div className='grid gap-4 text-black xl:gap-1 xl:grid-cols-4 md:grid-cols-2 auto-rows-auto'>
             {ListCourse.map((course) => {
                 return (
                     <CourseCardComponent course={course} key={course.id} />
