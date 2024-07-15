@@ -131,7 +131,17 @@ const Detail_Of_Course: React.FC = () => {
             <div className="max-w-[1536px] mx-auto pl-[10%] pr-[5%] pt-[30px] flex justify-center items-start">
               <div className="w-[70%] p-[10px]">
                 <div className="flex flex-col gap-[10px] h-[260px]">
-                  <h1 className="text-white text-[1.7rem] font-[700] leading-tight">
+                  <h1
+                    className="text-white text-[1.7rem] font-[700] leading-tight"
+                    style={{
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "normal",
+                    }}
+                  >
                     {courseData?.name}
                   </h1>
 
@@ -292,7 +302,7 @@ const Detail_Of_Course: React.FC = () => {
                           />
                         </svg>
                       </div>
-                      Create Date
+                      Created Date
                     </div>
                     <div>{convertDate(courseData?.createdDate)}</div>
                   </div>
