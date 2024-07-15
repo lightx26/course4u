@@ -31,6 +31,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -40,7 +41,7 @@ public class CourseServiceImpl implements CourseService {
     private final MapperFactory<Course> courseMapperFactory;
     private final CategoryService categoryService;
     private final UploadService uploadService;
-    @Value("${course4u.upload.image-directory}")
+    @Value("${course4u.upload.thumbnail-directory}")
     private String uploadThumbnailDir;
     @Autowired
     public CourseServiceImpl(CourseRepository courseRepository, MapperFactory<Course> courseMapperFactory, CategoryService categoryService, UploadService uploadService) {
@@ -65,6 +66,7 @@ public class CourseServiceImpl implements CourseService {
     public CourseResponse createCourse(CourseRequest courseRequest) {
         var modelMapper = new ModelMapper();
         try {
+            System.out.println(courseRequest.toString());
             Course course = modelMapper.map(courseRequest, Course.class);
             String thumbnailUrl = null;
             if (courseRequest.getThumbnailFile() != null)
@@ -73,10 +75,15 @@ public class CourseServiceImpl implements CourseService {
             } else if (courseRequest.getThumbnailUrl() != null) {
                 thumbnailUrl = courseRequest.getThumbnailUrl();
             }
-            Set<Category> categories = categoryService.findCategoriesByNames(courseRequest.getCategories()
-                    .stream().map(CourseRequest.CategoryCourseRequestDTO::getValue).toList());
+//            Value receive from client is category id
+            List<Category> categories = categoryService.findCategoriesByIds(
+                    courseRequest.getCategories()
+                            .stream()
+                            .map(category -> Long.parseLong(category.getValue()))
+                            .toList()
+            );
             course.setThumbnailUrl(thumbnailUrl);
-            course.setCategories(categories);
+            course.setCategories(Set.copyOf(categories));
             course.setCreatedDate(LocalDate.now());
             course.setStatus(CourseStatus.AVAILABLE);
             course = courseRepository.save(course);

@@ -3,7 +3,9 @@ package com.mgmtp.cfu.controller;
 import com.mgmtp.cfu.dto.coursedto.*;
 import com.mgmtp.cfu.exception.MapperNotFoundException;
 import com.mgmtp.cfu.service.CourseService;
+import com.mgmtp.cfu.service.OpenGraphService;
 import com.mgmtp.cfu.util.CoursePageUtil;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -13,16 +15,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/courses")
 public class CourseController {
     private final CourseService courseService;
+    private final OpenGraphService openGraphService;
 
     @Autowired
-    public CourseController(CourseService courseService) {
+    public CourseController(CourseService courseService, OpenGraphService openGraphService) {
         this.courseService = courseService;
+        this.openGraphService = openGraphService;
     }
-
     @GetMapping("/{id}")
     public ResponseEntity<CourseDto> getCourseDtoById(@PathVariable Long id) {
         return ResponseEntity.ok(courseService.getCourseDtoById(id));

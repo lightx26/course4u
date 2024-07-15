@@ -12,4 +12,5 @@ public interface CategoryService {
     List<CategoryDTO> getAvailableCategories();
     List<String> getAllCategories();
     Set<Category> findCategoriesByNames(List<String> categoryNames);
+    List<Category> findCategoriesByIds(List<Long> categoryIds);
 }

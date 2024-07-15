@@ -40,6 +40,8 @@ dependencies {
     implementation 'org.modelmapper:modelmapper:3.1.0' // Replace with the latest version if needed
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.12.6'
+    implementation 'org.jsoup:jsoup:1.14.3'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.1'
     liquibaseRuntime 'org.postgresql:postgresql'
     implementation 'org.liquibase:liquibase-core'
     liquibaseRuntime 'info.picocli:picocli:4.7.5'

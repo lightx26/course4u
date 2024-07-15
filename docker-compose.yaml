@@ -12,7 +12,7 @@ services:
       - ./uploads:/app/uploads
     environment:
       - spring.web.resources.static-locations=file:/app/uploads/staging
-      - course4u.upload.image-directory=./uploads/staging/api/thumbnail
+      - course4u.upload.thumbnail-directory=./uploads/staging/api/thumbnail
     networks:
       - "cfu"
     labels:
@@ -50,7 +50,7 @@ services:
       - ./uploads:/app/uploads
     environment:
       - spring.web.resources.static-locations=file:/app/uploads/dev
-      - course4u.upload.image-directory=./uploads/dev/api/thumbnail
+      - course4u.upload.thumbnail-directory=./uploads/dev/api/thumbnail
     networks:
       - "cfu"
     labels:
@@ -90,7 +90,7 @@ services:
       - ./uploads:/app/uploads
     environment:
       - spring.web.resources.static-locations=file:/app/uploads/prod
-      - course4u.upload.image-directory=./uploads/prod/api/thumbnail
+      - course4u.upload.thumbnail-directory=./uploads/prod/api/thumbnail
     networks:
       - "cfu"
     labels:
