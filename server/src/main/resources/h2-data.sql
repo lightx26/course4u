@@ -51,11 +51,10 @@ INSERT INTO "Course" ("Name", "Link", "Platform", "ThumbnailUrl", "TeacherName",
 INSERT INTO "Course" ("Name", "Link", "Platform", "ThumbnailUrl", "TeacherName", "CreatedDate", "Status", "Level") VALUES ( 'Rowena Twiddell', 'example.com', 'Udemy', 'http://dummyimage.com/111x100.png/ff4444/ffffff', 'Rod Oakshott', '2024-05-29', 'AVAILABLE', 'BEGINNER');
 INSERT INTO "Course" ("Name", "Link", "Platform", "ThumbnailUrl", "TeacherName", "CreatedDate", "Status", "Level") VALUES ( 'Edith Hender', 'netvibes.com', 'Udemy', 'https://tuoitre.vn/lee-min-ho.html', 'Florette Calrow', '2023-12-04', 'AVAILABLE', 'ADVANCED');
 
-
+INSERT INTO "User" ("Username", "Password", "FullName", "AvatarUrl", "Email", "Role", "DateOfBirth", "Gender", "Telephone") VALUES ( 'user', '$2a$10$8O/b4SGusmdgMuZFIv7JaOQXx1sQ.ISrffmXjGgC2b10S1ML.4ity', 'User Phan', 'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/119071457/original/438d9ccddf743c8bc8f23e1b9971be1b8d8613e5/create-super-nice-avatar-from-your-photo.png', 'user@mgm-tp.com', 'USER', '2003-07-08', 'FEMALE', '012345678');
 INSERT INTO "User" ("Username", "Password", "FullName", "AvatarUrl", "Email", "Role", "DateOfBirth", "Gender", "Telephone") VALUES ( 'admin', '$2a$10$bhBp0hDRVdW1A6RMKt0k0.m4709.So5X8.3GhmSOwNzcptfJOm0FW', 'Admin Phan', null, 'admin@mgm-tp.com', 'ADMIN', '1998-07-08', 'FEMALE', null);
 INSERT INTO "User" ("Username", "Password", "FullName", "AvatarUrl", "Email", "Role", "DateOfBirth", "Gender", "Telephone") VALUES ( 'intern', '$2a$10$bhBp0hDRVdW1A6RMKt0k0.m4709.So5X8.3GhmSOwNzcptfJOm0FW', 'New intern', null, 'intern@mgm-tp.com', 'USER', null, null, null);
 INSERT INTO "User" ("Username", "Password", "FullName", "AvatarUrl", "Email", "Role", "DateOfBirth", "Gender", "Telephone") VALUES ('intern1', '$2a$10$bhBp0hDRVdW1A6RMKt0k0.m4709.So5X8.3GhmSOwNzcptfJOm0FW', null, null, 'intern@mgm-tp.com', 'ADMIN', null, null, null);
-INSERT INTO "User" ("Username", "Password", "FullName", "AvatarUrl", "Email", "Role", "DateOfBirth", "Gender", "Telephone") VALUES ( 'user', '$2a$10$8O/b4SGusmdgMuZFIv7JaOQXx1sQ.ISrffmXjGgC2b10S1ML.4ity', 'User Phan', 'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/119071457/original/438d9ccddf743c8bc8f23e1b9971be1b8d8613e5/create-super-nice-avatar-from-your-photo.png', 'user@mgm-tp.com', 'USER', '2003-07-08', 'FEMALE', '012345678');
 INSERT INTO "User" ("Username", "Password", "FullName", "AvatarUrl", "Email", "Role", "DateOfBirth", "Gender", "Telephone") VALUES ('accountant', '$2a$10$8O/b4SGusmdgMuZFIv7JaOQXx1sQ.ISrffmXjGgC2b10S1ML.4ity', 'Accountant', null, 'accountant@mgm-tp.com', 'ACCOUNTANT', null, null, null);
 INSERT INTO "User" ("Username", "Password", "FullName", "AvatarUrl", "Email", "Role", "DateOfBirth", "Gender", "Telephone") VALUES ('triet1', '$2a$10$bhBp0hDRVdW1A6RMKt0k0.m4709.So5X8.3GhmSOwNzcptfJOm0FW', 'Le Huu Triet', 'https://cdnphoto.dantri.com.vn/COm1qksauO2sqAC-gVVI2DdH_1I=/thumb_w/1020/2023/01/24/khoa-hocdocx-1674520013659.png', 'triet@mgm-tpcom', 'USER', null, null, '0912345674');
 
@@ -175,5 +174,5 @@ values ('1', '1', '5', 'Good course', '2021-01-01'),
 INSERT INTO "Category"("Name")
 VALUES ('IT'), ('Science'), ('Physics');
 
-INSERT INTO "Course_Category"("CourseId", "CategoryId")
+INSERT INTO "Category_Course"("CourseId", "CategoryId")
 VALUES (1, 1), (1, 2), (1, 3);

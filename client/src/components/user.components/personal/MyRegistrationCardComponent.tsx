@@ -18,83 +18,85 @@ export default function MyRegistrationComponents({ registration }: PropsType) {
         : null;
 
     return (
-        <RegistrationModal id={+registration.id!}>
-            <div className='pb-5 mb-3 w-full overflow-hidden text-sm leading-normal transition-shadow bg-white rounded-md shadow cursor-pointer duration-250'>
-                <div>
-                    <img
-                        src={registration.thumbnailUrl}
-                        alt=''
-                        className='object-cover w-full bg-gray-300 h-52'
-                    />
-                    <div className='flex flex-col gap-2 px-2 pt-2 text-left'>
-                        <h2 className='text-lg font-normal'>
-                            {registration.courseName}
-                        </h2>
-                        <p
-                            className='text-white text-l text-clip'
-                            style={{
-                                backgroundColor: getStatusColor(
-                                    registration.status
-                                ),
-                                height: "auto",
-                                width: "fit-content",
-                                padding: "4px",
-                                paddingLeft: "12px",
-                                paddingRight: "12px",
-                                borderRadius: "20px",
-                            }}
-                        >
-                            {registration.status !== "DOCUMENT_DECLINED" ? (
-                                <span>{registration.status}</span>
-                            ) : (
-                                <span>DECLINED(DOCUMENT)</span>
-                            )}
-                        </p>
-                        <div className='flex items-center gap-1'>
-                            <i className='fas fa-clock'></i>
-                            <p className='text-gray-600 text-opacity-100 text-neutral-950'>
-                                {registration.platform}
+        <>
+            <RegistrationModal id={+registration.id!}>
+                <div className='pb-5 mb-3 w-full overflow-hidden text-sm leading-normal transition-shadow bg-white rounded-md shadow cursor-pointer duration-250'>
+                    <div>
+                        <img
+                            src={registration.thumbnailUrl}
+                            alt=''
+                            className='object-cover w-full bg-gray-300 h-52'
+                        />
+                        <div className='flex flex-col gap-2 px-2 pt-2 text-left'>
+                            <h2 className='text-lg font-normal'>
+                                {registration.courseName}
+                            </h2>
+                            <p
+                                className='text-white text-l text-clip'
+                                style={{
+                                    backgroundColor: getStatusColor(
+                                        registration.status
+                                    ),
+                                    height: "auto",
+                                    width: "fit-content",
+                                    padding: "4px",
+                                    paddingLeft: "12px",
+                                    paddingRight: "12px",
+                                    borderRadius: "20px",
+                                }}
+                            >
+                                {registration.status !== "DOCUMENT_DECLINED" ? (
+                                    <span>{registration.status}</span>
+                                ) : (
+                                    <span>DECLINED(DOCUMENT)</span>
+                                )}
                             </p>
-                        </div>
-                        <div
-                            className='flex justify-start p-2'
-                            style={{ padding: "0px" }}
-                        >
-                            <div className='flex items-start gap-1'>
-                                <i className='fas fa-calendar-alt'></i>
-                                <p className='text-gray-600' style={{}}>
-                                    <p className='text-gray-600'>
-                                        {startDate === null
-                                            ? "..."
-                                            : `${String(
-                                                  startDate.getDate()
-                                              ).padStart(2, "0")}/${String(
-                                                  startDate.getMonth() + 1
-                                              ).padStart(
-                                                  2,
-                                                  "0"
-                                              )}/${startDate.getFullYear()}`}
-                                        {endDate === null
-                                            ? "..."
-                                            : `${
-                                                  " - " +
-                                                  String(
-                                                      endDate.getDate()
-                                                  ).padStart(2, "0")
-                                              }/${String(
-                                                  endDate.getMonth() + 1
-                                              ).padStart(
-                                                  2,
-                                                  "0"
-                                              )}/${endDate.getFullYear()}`}
-                                    </p>{" "}
+                            <div className='flex items-center gap-1'>
+                                <i className='fas fa-clock'></i>
+                                <p className='text-opacity-100 text-neutral-950'>
+                                    {registration.platform}
                                 </p>
+                            </div>
+                            <div
+                                className='flex justify-start p-2'
+                                style={{ padding: "0px" }}
+                            >
+                                <div className='flex items-start gap-1'>
+                                    <i className='fas fa-calendar-alt'></i>
+                                    <p className='text-gray-600' style={{}}>
+                                        <p className='text-gray-600'>
+                                            {startDate === null
+                                                ? "..."
+                                                : `${String(
+                                                      startDate.getDate()
+                                                  ).padStart(2, "0")}/${String(
+                                                      startDate.getMonth() + 1
+                                                  ).padStart(
+                                                      2,
+                                                      "0"
+                                                  )}/${startDate.getFullYear()}`}
+                                            {endDate === null
+                                                ? "..."
+                                                : `${
+                                                      " - " +
+                                                      String(
+                                                          endDate.getDate()
+                                                      ).padStart(2, "0")
+                                                  }/${String(
+                                                      endDate.getMonth() + 1
+                                                  ).padStart(
+                                                      2,
+                                                      "0"
+                                                  )}/${endDate.getFullYear()}`}
+                                        </p>{" "}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </RegistrationModal>
+            </RegistrationModal>
+        </>
     );
 }
 export const RegistrationSkeletonLoader = () => {

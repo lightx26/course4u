@@ -50,7 +50,7 @@ public class Course {
 
     @ManyToMany
     @JoinTable(
-            name = "`Course_Category`",
+            name = "`Category_Course`",
             joinColumns = @JoinColumn(name = "`CourseId`"),
             inverseJoinColumns = @JoinColumn(name = "`CategoryId`")
     )
