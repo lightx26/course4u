@@ -2,6 +2,7 @@ package com.mgmtp.cfu.service.impl
 
 import com.mgmtp.cfu.dto.coursedto.CourseOverviewDTO
 import com.mgmtp.cfu.dto.coursedto.CoursePageDTO
+import com.mgmtp.cfu.dto.coursedto.CoursePageFilter
 import com.mgmtp.cfu.dto.coursedto.CourseRequest
 import com.mgmtp.cfu.dto.coursedto.CourseResponse
 import com.mgmtp.cfu.entity.Category
@@ -13,13 +14,11 @@ import com.mgmtp.cfu.exception.MapperNotFoundException
 import com.mgmtp.cfu.mapper.factory.MapperFactory
 import com.mgmtp.cfu.mapper.factory.impl.CourseMapperFactory
 import com.mgmtp.cfu.mapper.CourseOverviewMapper
-import com.mgmtp.cfu.repository.CategoryRepository
 import com.mgmtp.cfu.repository.CourseRepository
 import com.mgmtp.cfu.service.CategoryService
 import com.mgmtp.cfu.service.CourseService
 import com.mgmtp.cfu.service.UploadService
 import org.springframework.data.domain.PageImpl
-import org.modelmapper.ModelMapper
 import org.springframework.web.multipart.MultipartFile
 import spock.lang.Specification
 import org.springframework.data.domain.Page
@@ -137,12 +136,13 @@ class CourseServiceImplSpec extends Specification {
         int pageNo = 1
         int pageSize = 5
         CoursePageSortOption sortOption = CoursePageSortOption.NEWEST
+        CoursePageFilter filter = new CoursePageFilter()
         List<Course> courses = createCourses(5)
 
         courseMapperFactory.getDTOMapper(CourseOverviewDTO.class) >> Optional.empty()
 
         when:
-        CoursePageDTO result = courseService.getAvailableCoursesPage(sortOption, pageNo, pageSize)
+        CoursePageDTO result = courseService.getAvailableCoursesPage(filter, sortOption, pageNo, pageSize)
 
         then:
         thrown(MapperNotFoundException)
@@ -152,6 +152,7 @@ class CourseServiceImplSpec extends Specification {
         given:
         int pageSize = 5
         CoursePageSortOption sortOption = CoursePageSortOption.MOST_ENROLLED
+        CoursePageFilter filter = new CoursePageFilter(categoryFilters: [1, 2, 3])
         List<Course> courses = createCourses(10)
 
         Page mockCoursePage = new PageImpl<>(courses.subList(0, 5), PageRequest.of(0, pageSize), courses.size())
@@ -167,7 +168,7 @@ class CourseServiceImplSpec extends Specification {
         List courseOverviewDTOs = mockCoursePage.map(courseOverviewMapper::toDTO).getContent()
 
         when:
-        def result = courseService.getAvailableCoursesPage(sortOption, pageNo, pageSize)
+        def result = courseService.getAvailableCoursesPage(filter, sortOption, pageNo, pageSize)
 
         then:
         result.content == courseOverviewDTOs
@@ -200,18 +201,26 @@ class CourseServiceImplSpec extends Specification {
 
 
         when:
-        def result = courseService.getAvailableCoursesPage(sortOption, pageNo, pageSize)
+        def result = courseService.getAvailableCoursesPage(filter, sortOption, pageNo, pageSize)
 
         then:
         result.content == courseOverviewDTOs
         result.totalPages == 3
         result.totalElements == 15
+
+        where:
+        filter << [new CoursePageFilter(),
+                   new CoursePageFilter(categoryFilters: [1, 2, 3],
+                           levelFilters: [CourseLevel.BEGINNER, CourseLevel.INTERMEDIATE],
+                           minRating: 3.5,
+                           platformFilters: ["Udemy"])]
     }
 
     def "Should return the last page when pageNo is too high"() {
         given:
         int pageNo = 99
         int pageSize = 5
+        CoursePageFilter filter = new CoursePageFilter()
         CoursePageSortOption sortOption = CoursePageSortOption.NEWEST
         List<Course> courses = createCourses(7)
         int callCount = 0
@@ -236,7 +245,7 @@ class CourseServiceImplSpec extends Specification {
         List courseOverviewDTOs = mockCoursePage.map(courseOverviewMapper::toDTO).getContent()
 
         when:
-        def result = courseService.getAvailableCoursesPage(sortOption, pageNo, pageSize)
+        def result = courseService.getAvailableCoursesPage(filter, sortOption, pageNo, pageSize)
 
         then:
         result.content == courseOverviewDTOs

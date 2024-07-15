@@ -168,6 +168,7 @@ public class CourseServiceImpl implements CourseService {
             case NEWEST -> CourseSpecifications.sortByCreatedDateDesc();
             case MOST_ENROLLED -> CourseSpecifications.sortByEnrollmentCountDesc(RegistrationStatusUtil.ACCEPTED_STATUSES);
             case RATING -> CourseSpecifications.sortByRatingDesc();
+            default -> Specification.where(null);
         };
     }
 }

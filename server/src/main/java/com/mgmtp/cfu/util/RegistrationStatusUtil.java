@@ -9,6 +9,7 @@ public class RegistrationStatusUtil {
             RegistrationStatus.DONE,
             RegistrationStatus.VERIFYING,
             RegistrationStatus.VERIFIED,
+            RegistrationStatus.DOCUMENT_DECLINED,
             RegistrationStatus.CLOSED
     );
 
