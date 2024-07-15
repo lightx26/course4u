@@ -14,6 +14,5 @@ import java.util.Set;
 public interface CategoryRepository extends JpaRepository<Category, Long>, JpaSpecificationExecutor<Category> {
     List<Category> findCategoriesByStatus(CategoryStatus status);
     List<Category> findByIdIn(Collection<Long> id);
-
     Set<Category> findByNameIn(List<String> categoryNames);
 }

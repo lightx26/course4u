@@ -66,7 +66,6 @@ public class CourseServiceImpl implements CourseService {
     public CourseResponse createCourse(CourseRequest courseRequest) {
         var modelMapper = new ModelMapper();
         try {
-            System.out.println(courseRequest.toString());
             Course course = modelMapper.map(courseRequest, Course.class);
             String thumbnailUrl = null;
             if (courseRequest.getThumbnailFile() != null)

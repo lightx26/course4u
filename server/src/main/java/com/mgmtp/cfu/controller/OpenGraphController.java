@@ -19,7 +19,6 @@ public class OpenGraphController {
 
     @GetMapping()
     public Map<String, String> getCourseInfo(@RequestParam String url) {
-        log.info("Fetching OpenGraph data for url: {}", url);
         return openGraphService.getCourseInfo(url);
     }
 }

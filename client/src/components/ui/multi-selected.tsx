@@ -10,7 +10,6 @@ import { Command, CommandGroup, CommandItem, CommandList } from "./command";
 import { cn } from "../../utils/utils";
 
 export interface Option {
-  id?: string;
   value?: string;
   label?: string;
   disable?: boolean;

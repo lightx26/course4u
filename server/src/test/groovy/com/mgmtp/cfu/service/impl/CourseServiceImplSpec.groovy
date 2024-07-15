@@ -44,7 +44,7 @@ class CourseServiceImplSpec extends Specification {
 
         CourseRequest.CategoryCourseRequestDTO javaCategory = new CourseRequest.CategoryCourseRequestDTO()
         javaCategory.setLabel("Java")
-        javaCategory.setValue("java")
+        javaCategory.setValue("1")
 
         CourseRequest courseRequest = CourseRequest.builder()
                 .name("Java Programming")
@@ -57,7 +57,7 @@ class CourseServiceImplSpec extends Specification {
                 .categories([javaCategory] as List)
                 .build()
 
-        Category mockCategory = new Category(id: 1, name: "Java")
+        Category mockCategory = new Category(id: 1, name: "Java", status:"AVAILABLE")
 
         Course course = Course.builder()
                 .name("Java Programming")
@@ -71,7 +71,7 @@ class CourseServiceImplSpec extends Specification {
                 .categories(Set.of(mockCategory))
                 .build()
 
-        categorySerivce.findCategoriesByNames(_) >> Set.of(mockCategory)
+        categorySerivce.findCategoriesByIds(_) >> List.of(mockCategory)
         courseRepository.save(_) >> course
 
         when:
@@ -93,7 +93,7 @@ class CourseServiceImplSpec extends Specification {
         given:
         CourseRequest.CategoryCourseRequestDTO javaCategory = new CourseRequest.CategoryCourseRequestDTO()
         javaCategory.setLabel("Java")
-        javaCategory.setValue("java")
+        javaCategory.setValue("1")
         CourseRequest courseRequest = CourseRequest.builder()
                 .name("Java Programming")
                 .link("https://example.com/java-course")
@@ -104,8 +104,7 @@ class CourseServiceImplSpec extends Specification {
                 .level(CourseLevel.INTERMEDIATE)
                 .categories([javaCategory] as List)
                 .build()
-
-        Category mockCategory = new Category(name: "Java")
+        Category mockCategory = new Category(id: 1, name: "Java", status:"AVAILABLE")
         Course course = Course.builder()
                 .name("Java Programming")
                 .link("https://example.com/java-course")
@@ -117,7 +116,7 @@ class CourseServiceImplSpec extends Specification {
                 .level(CourseLevel.INTERMEDIATE)
                 .categories(Set.of(mockCategory))
                 .build()
-        categorySerivce.findCategoriesByNames(_) >> Set.of(mockCategory)
+        categorySerivce.findCategoriesByIds(_) >> List.of(mockCategory)
         courseRepository.save(_) >> course
 
         when:
