@@ -2,7 +2,6 @@ package com.mgmtp.cfu.controller;
 
 import com.mgmtp.cfu.dto.UserDto;
 import com.mgmtp.cfu.service.IUserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +19,7 @@ public class UserController {
     }
 
     @PutMapping("/edit")
-    public ResponseEntity<UserDto> editUserProfile(@Valid @ModelAttribute UserDto userDto) {
+    public ResponseEntity<UserDto> editUserProfile(@ModelAttribute UserDto userDto) {
         return ResponseEntity.ok(userService.editUserProfile(userDto));
     }
 

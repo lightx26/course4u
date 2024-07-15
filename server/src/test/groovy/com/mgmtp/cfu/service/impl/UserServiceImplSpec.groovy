@@ -5,6 +5,7 @@ import com.mgmtp.cfu.entity.User
 import com.mgmtp.cfu.enums.Gender
 import com.mgmtp.cfu.enums.Role
 import com.mgmtp.cfu.repository.UserRepository
+import com.mgmtp.cfu.service.UploadService
 import org.springframework.web.multipart.MultipartFile
 import spock.lang.Specification
 import spock.lang.Subject
@@ -17,9 +18,10 @@ import java.time.LocalDate
 class UserServiceImplSpec extends Specification {
 
     def userRepository = Mock(UserRepository)
+    def uploadService = Mock(UploadService)
 
     @Subject
-    def userService = new UserServiceImpl(userRepository)
+    def userService = new UserServiceImpl(userRepository, uploadService)
 
     def setup() {
         def securityContext = Mock(SecurityContext)
@@ -60,15 +62,13 @@ class UserServiceImplSpec extends Specification {
 
     def "editUserProfile update user info and return UserDto"() {
         given:
-        MultipartFile imageFile = Mock(MultipartFile)
-        imageFile.getOriginalFilename() >> "testImage.jpg"
-        String uniqueFileName = 546565 + ".jpg"
-        UserDto userDto = new UserDto(1, "janedoe", "NTN", "janedoe@example.com", "123",
-                                      "/img/" + uniqueFileName, LocalDate.now(), Role.USER, Gender.MALE, imageFile)
-        imageFile.getInputStream() >> new ByteArrayInputStream(new byte[0])
-        User user = new User()
+        def imageFile = Mock(MultipartFile)
+        def uploadPath = "uploads/img"
+        def userDto = new UserDto(1, "janedoe", "NTN", "janedoe@example.com", "123",
+                                  "/img/", LocalDate.now(), Role.USER, Gender.MALE, imageFile)
 
         when:
+        uploadService.uploadThumbnail(imageFile, uploadPath)
         def result = userService.editUserProfile(userDto)
 
         then:
