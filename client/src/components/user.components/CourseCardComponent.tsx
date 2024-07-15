@@ -12,17 +12,23 @@ export default function CourseCardComponent({ course }: PropsType) {
     e.preventDefault();
     navigate(`/courses/${id}`);
   };
+  const thumbnailUrl = course.thumbnailUrl?.startsWith("http")
+    ? course.thumbnailUrl
+    : `${import.meta.env.VITE_BACKEND_URL}/thumbnail/${course.thumbnailUrl}`;
   const color =
     course.level?.toLowerCase() === "beginner"
       ? "bg-green-200 text-green-600"
       : course.level?.toLowerCase() === "intermediate"
-        ? "bg-yellow-100 text-yellow-600"
-        : "bg-rose-100 text-rose-600";
+      ? "bg-yellow-100 text-yellow-600"
+      : "bg-rose-100 text-rose-600";
   return (
-    <div onClick={handleClickCourseDetail(course.id)} className='w-full overflow-hidden text-sm leading-normal transition-shadow bg-white border border-gray-200 border-solid rounded-md shadow cursor-pointer duration-250 hover:shadow-lg grow'>
+    <div
+      onClick={handleClickCourseDetail(course.id)}
+      className="w-full overflow-hidden text-sm leading-normal transition-shadow bg-white border border-gray-200 border-solid rounded-md shadow cursor-pointer duration-250 hover:shadow-lg grow"
+    >
       <img
         className="object-cover w-full h-52"
-        src={course.thumbnailUrl}
+        src={thumbnailUrl}
         alt={course.name}
       />
       <div className="flex flex-col gap-2 px-2 pt-2 text-left">
@@ -40,25 +46,19 @@ export default function CourseCardComponent({ course }: PropsType) {
             <div>
               <p className="text-base font-medium">{course.assignee?.name}</p>
               {course.assignee?.role && (
-                <p className="text-xs text-gray-500">
-                  {course.assignee?.role}
-                </p>
+                <p className="text-xs text-gray-500">{course.assignee?.role}</p>
               )}
             </div>
             {course.assignee?.status && <div>{course.assignee?.status}</div>}
           </div>
         )}
         <div className="flex items-center gap-3">
-          <div className="h-[40px] flex items-center">
-            <p className='text-sm font-medium'>{course.platform}</p>
-          </div>
+          <p className="text-sm font-medium">{course.platform}</p>
           {course.level && (
-            <div className="h-[40px] flex items-center">
-              <p className={cn("px-2 py-1 rounded text-xs font-medium", color)}>
-                {" "}
-                {course.level}
-              </p>
-            </div>
+            <p className={cn("px-2 py-1 rounded text-xs font-medium", color)}>
+              {" "}
+              {course.level}
+            </p>
           )}
         </div>
         {/*<div>{course.createdDate}</div>*/}
@@ -82,7 +82,9 @@ export default function CourseCardComponent({ course }: PropsType) {
                 fill="#FD8E1F"
               />
             </svg>
-            <p className="text-[12px]">{course.rating ? course.rating.toFixed(1) : "No rating yet"}</p>
+            <p className="text-[12px]">
+              {course.rating ? course.rating.toFixed(1) : "No rating yet"}
+            </p>
           </div>
 
           <div className="flex gap-1">

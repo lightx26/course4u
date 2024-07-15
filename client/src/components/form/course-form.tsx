@@ -49,6 +49,7 @@ type Thumbnail = {
 const initData: Thumbnail = {
   imageUrl: null,
   croppedImageUrl: null,
+  aspect: { value: 4 / 3, text: "4:3" },
 };
 
 export const CourseForm = ({ form, course, isEdit }: Props) => {
@@ -109,7 +110,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
   });
 
   const onDeleteImage = () => {
-    setThumbnail({ ...thumbnail, imageUrl: null });
+    setThumbnail({ ...thumbnail, imageUrl: null, croppedImageUrl: null });
     form!.setValue("thumbnailUrl", "");
   };
 
@@ -145,6 +146,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
           setThumbnail({
             ...thumbnail,
             imageUrl: data.image,
+            croppedImageUrl: data.image,
           });
           form?.setValue("thumbnailUrl", data.image);
         }
@@ -338,7 +340,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
               isOpen={isOpen}
               setIsOpen={setIsOpen}
               setCroppedImageFor={setCroppedImageFor}
-              isEdit={isEdit}
+              isEdit={isEdit && !thumbnail.imageUrl.startsWith("http")}
               isOval={false}
             >
               <div className="w-[228px] h-[192px] cursor-pointer">

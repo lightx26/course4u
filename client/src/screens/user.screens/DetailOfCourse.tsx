@@ -122,6 +122,11 @@ const Detail_Of_Course: React.FC = () => {
     // If all words fit, truncate at character limit
     return truncatedText.trim().slice(0, maxLines * 15) + "...";
   }
+  const thumbnailUrl = courseData?.thumbnailUrl?.startsWith("http")
+    ? courseData.thumbnailUrl
+    : `${import.meta.env.VITE_BACKEND_URL}/thumbnail/${
+        courseData?.thumbnailUrl
+      }`;
 
   return (
     <>
@@ -271,7 +276,7 @@ const Detail_Of_Course: React.FC = () => {
                   style={{ zIndex: "10" }}
                 >
                   <img
-                    src={courseData?.thumbnailUrl}
+                    src={thumbnailUrl}
                     alt=""
                     className="absolute inset-0 w-full h-full object-cover object-center"
                   />
