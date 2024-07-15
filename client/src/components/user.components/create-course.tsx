@@ -15,7 +15,7 @@ const CreateCourse = () => {
       name: "",
       teacherName: "",
       link: "",
-      level: "BEGINNER",
+      level: "",
       platform: "",
       categories: [],
       thumbnailUrl: "",
@@ -53,10 +53,15 @@ const CreateCourse = () => {
       formData.append("thumbnailUrl", values.thumbnailUrl);
     }
 
-    instance.postForm("/courses", formData).then((res) => {
-      console.log(res.data);
-      alert("Create course successfully");
-    });
+    instance.postForm("/courses", formData)
+      .then((res) => {
+        console.log(res.data);
+        alert("Create course successfully");
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("An error occurred while creating the course");
+      });
   }
 
   return (
@@ -67,7 +72,7 @@ const CreateCourse = () => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full space-y-8 "
+          className="w-full"
         >
           <CourseForm form={form} isEdit={true} />
           <div className="flex justify-end">

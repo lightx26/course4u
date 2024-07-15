@@ -9,8 +9,9 @@ const optionSchema = z.object({
 export const courseSchema = z.object({
     name: z
         .string()
+        .min(1, "Name required!")
         .min(3, { message: "Name must be at least 3 characters long!" })
-        .max(80, { message: "Name must be at most 80 characters long!" }),
+        .max(100, { message: "Name must be at most 100 characters long!" }),
     teacherName: z.string().min(3, {
         message: "Teacher name must be at least 3 characters long!",
     }),

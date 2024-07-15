@@ -67,6 +67,9 @@ public class CourseServiceImpl implements CourseService {
         var modelMapper = new ModelMapper();
         try {
             Course course = modelMapper.map(courseRequest, Course.class);
+            if (courseRepository.findCourseByLinkIgnoreCase(course.getLink()) != null) {
+                throw new RuntimeException("Course with link " + course.getLink() + " already exists");
+            }
             String thumbnailUrl = null;
             if (courseRequest.getThumbnailFile() != null)
             {

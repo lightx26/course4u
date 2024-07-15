@@ -18,4 +18,6 @@ public interface CourseRepository extends JpaRepository<Course, Long>, JpaSpecif
 
     @Query("SELECT AVG(cr.rating) FROM CourseReview cr WHERE cr.course.id = ?1")
     Double calculateAvgRating(Long courseId);
+
+    Course findCourseByLinkIgnoreCase(String link);
 }

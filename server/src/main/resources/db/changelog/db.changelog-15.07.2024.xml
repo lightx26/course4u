@@ -8,4 +8,12 @@
         <addAutoIncrement columnName="Id" tableName="Category" />
         <addAutoIncrement columnName="Id" tableName="Category_Course" />
     </changeSet>
+
+    <changeSet id="2" author="Vu Linh">
+        <modifyDataType tableName="Course" columnName="Name" newDataType="VARCHAR(80)" />
+    </changeSet>
+
+    <changeSet id="3" author="Vu Linh">
+        <modifyDataType tableName="Course" columnName="Name" newDataType="VARCHAR(100)" />
+    </changeSet>
 </databaseChangeLog>

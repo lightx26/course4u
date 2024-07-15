@@ -140,7 +140,8 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
       const data = await fetchOpenGraphData(courseLink!);
       if (data) {
         if (data.title != null) form?.setValue("name", data.title);
-        if (data.url != null) form?.setValue("link", data.url);
+        form?.trigger("name");
+        if (data.url != null && data.url != "") form?.setValue("link", data.url);
         if (data.site_name != null) form?.setValue("platform", data.site_name);
         if (data.image) {
           setThumbnail({
@@ -162,7 +163,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
     return <CourseSkeleton />;
   }
   return (
-    <>
+    <div className="flex flex-col gap-6">
       <div className="space-y-4">
         <FormField
           control={form!.control}
@@ -209,7 +210,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                   placeholder="Course Name"
                   {...field}
                   className="w-full"
-                  maxValue={80}
+                  maxValue={100}
                   disabled={!isEdit}
                 />
               </FormControl>
@@ -241,7 +242,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
         />
       </div>
       <div className="flex items-stretch gap-6">
-        <div className="w-[60%] flex justify-between flex-col">
+        <div className="w-[60%] gap-6 flex justify-between flex-col">
           <div className="flex gap-4">
             <FormField
               control={form!.control}
@@ -255,7 +256,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={course?.platform || form?.watch("platform")}
-                    value={course?.platform || form?.watch("platform")}
+                    value={course?.platform.toUpperCase() || form?.watch("platform").toUpperCase()}
                     disabled={!isEdit}
                   >
                     <FormControl>
@@ -264,10 +265,9 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Coursera">Coursera</SelectItem>
-                      <SelectItem value="Udemy">Udemy</SelectItem>
-                      <SelectItem value="Pluralsight">Pluralsight</SelectItem>
-                      <SelectItem value="Edx">Edx</SelectItem>
+                      <SelectItem value="COURSERA">Coursera</SelectItem>
+                      <SelectItem value="UDEMY">Udemy</SelectItem>
+                      <SelectItem value="LINKEDIN">Linkedin</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -283,14 +283,14 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                     Level{""}
                     <span className="text-red-500">*</span>
                   </FormLabel>
-                  <Select className="border-gray-300"
+                  <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    defaultValue={''}
                     value={field.value}
                     disabled={!isEdit}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="border-gray-300">
                         <SelectValue placeholder="Select a level for this course" />
                       </SelectTrigger>
                     </FormControl>
@@ -406,34 +406,43 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
 const CourseSkeleton = () => {
   return (
-    <>
-      <div className="bg-white rounded-3xl w-[1634px] max-[100%]">
+    <div className="max-w-full h-[464px] overflow-hidden bg-white rounded-3xlg">
+      <div className="space-y-3">
+        <div className="h-[20px] bg-gray-200 w-20 rounded"></div>
         <Skeleton className="w-full h-12 mb-4 skeleton-input"></Skeleton>
+        <div className="h-[20px] bg-gray-200 w-20 rounded"></div>
         <Skeleton className="w-full h-12 mb-4 skeleton-input"></Skeleton>
+        <div className="h-[20px] bg-gray-200 w-20 rounded"></div>
         <Skeleton className="w-full h-12 mb-4 skeleton-input"></Skeleton>
       </div>
-      <div className="flex w-full gap-6 space-y-2">
-        <div className="w-[60%] flex justify-between flex-col mt-4">
+      <div className="flex items-stretch gap-6 mt-4">
+        <div className="w-[60%] flex flex-col gap-6">
           <div className="flex gap-4">
-            <Skeleton className="skeleton-select w-[50%] h-12 mb-4"></Skeleton>
-            <Skeleton className="skeleton-select w-[50%] h-12 mb-4"></Skeleton>
+            <div className="flex flex-col w-full gap-4 grow">
+              <div className="h-[20px] bg-gray-200 w-20 rounded"></div>
+              <Skeleton className="w-full h-12 mb-4 skeleton-select"></Skeleton>
+            </div>
+            <div className="flex flex-col w-full gap-4 grow">
+              <div className="h-[20px] bg-gray-200 w-20 rounded"></div>
+              <Skeleton className="w-full h-12 mb-4 skeleton-select"></Skeleton>
+            </div>
           </div>
           <Skeleton className="w-full h-12 skeleton-input"></Skeleton>
         </div>
-        <div className="w-[40%] flex gap-4 space-y-4">
-          <Skeleton className="skeleton-thumbnail w-full h-[192px] rounded-xl"></Skeleton>
+        <div className="w-[40%] flex gap-4 items-center">
+          <Skeleton className="skeleton-thumbnail w-[228px] h-[192px] rounded-xl"></Skeleton>
           <div className="flex flex-col w-full gap-5">
             <Skeleton className="h-16 skeleton-text"></Skeleton>
             <Skeleton className="h-10 skeleton-button w-28"></Skeleton>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
