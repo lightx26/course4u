@@ -14,7 +14,7 @@ async function fetchListAvailableCourse(offset: number = 1, limit: number = 8, s
         }
     }
     const response = await instance.post(
-      `/courses/available`, request_params
+      `/courses/search`, request_params
     );
     return response;
   } catch (error) {
