@@ -23,15 +23,6 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<String>> getAllCategories() {
-        try {
-            List<String> categories = categoryService.getAllCategories();
-            return new ResponseEntity<>(categories, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 
     @GetMapping("/available")
     public ResponseEntity<?> getAvailableCategories() {

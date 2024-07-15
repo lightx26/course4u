@@ -41,18 +41,6 @@ public class CategoryServiceImpl implements CategoryService {
                 .stream().map(mapper::toDTO).collect(Collectors.toList());
     }
 
-    @Override
-    public List<String> getAllCategories() {
-        return categoryRepository.findAll()
-                .stream()
-                .map(Category::getName)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public Set<Category> findCategoriesByNames(List<String> categoryNames) {
-        return categoryRepository.findByNameIn(categoryNames);
-    }
 
     @Override
     public List<Category> findCategoriesByIds(List<Long> categoryIds) {
