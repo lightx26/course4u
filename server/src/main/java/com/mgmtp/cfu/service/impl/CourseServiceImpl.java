@@ -148,6 +148,10 @@ public class CourseServiceImpl implements CourseService {
             spec = spec.and(CourseSpecifications.hasCategories(filter.getCategoryFilters()));
         }
 
+        if (filter.getMinRating() > 0) {
+            spec = spec.and(CourseSpecifications.hasRatingGreaterThan(filter.getMinRating()));
+        }
+
         if (!filter.getLevelFilters().isEmpty()) {
             spec = spec.and(CourseSpecifications.hasLevels(filter.getLevelFilters()));
         }

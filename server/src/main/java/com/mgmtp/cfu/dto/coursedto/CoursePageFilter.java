@@ -17,6 +17,8 @@ import java.util.List;
 public class CoursePageFilter {
     // List of category ids
     private List<Long> categoryFilters = new ArrayList<>();
+    // Minimum rating
+    private Integer minRating = 0;
     // List of levels
     private List<CourseLevel> levelFilters = new ArrayList<>();
     // List of platforms
