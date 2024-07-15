@@ -1,10 +1,10 @@
 import { useForm } from "react-hook-form";
 import { changePasswordSchema } from "../../../schemas/change-password-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form";
-import { Input } from "../../ui/input";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form";
 import { Button } from "../../ui/button";
 import { z } from "zod";
+import PasswordInput from "./InputPassword";
 
 export default function ChangePassword() {
     const form = useForm<z.infer<typeof changePasswordSchema>>({
@@ -21,9 +21,9 @@ export default function ChangePassword() {
     }
 
     return (
-        <div className="flex items-center w-1/2 p-2 grow">
+        <div className="flex items-center h-[500px] justify-center w-1/2 p-[20px] bg-white shadow-sm rounded-3xl grow">
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="p-[20px] bg-white shadow-sm rounded-3xl flex flex-col gap-8 items-end">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col items-end justify-between w-full h-full">
                     <h3 className="w-full text-xl font-semibold text-left">Change password</h3>
                     <div className="w-full">
                         <FormField
@@ -33,7 +33,7 @@ export default function ChangePassword() {
                                 <FormItem>
                                     <FormLabel>Old password</FormLabel>
                                     <FormControl>
-                                        <Input className="w-full" placeholder="Enter your old password" {...field} />
+                                        <PasswordInput className="w-full" placeholder="Enter your old password" {...field} />
                                     </FormControl>
                                     <FormMessage className="text-[12px]" />
                                 </FormItem>
@@ -48,11 +48,9 @@ export default function ChangePassword() {
                                 <FormItem>
                                     <FormLabel>New password</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Enter you new password" {...field} />
+                                        <PasswordInput placeholder="Enter you new password" {...field} />
                                     </FormControl>
-                                    <FormDescription className="text-[12px]">
-                                        Password must include at least one number, one lowercase letter, one uppercase letter, and one special character
-                                    </FormDescription>
+                                    <FormMessage className="text-[12px]" />
                                 </FormItem>
                             )}
                         />
@@ -65,8 +63,9 @@ export default function ChangePassword() {
                                 <FormItem>
                                     <FormLabel>Confirm password</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Confirm your new password" {...field} />
+                                        <PasswordInput placeholder="Confirm your new password" {...field} />
                                     </FormControl>
+                                    <FormMessage className="text-[12px]" />
                                 </FormItem>
                             )}
                         />

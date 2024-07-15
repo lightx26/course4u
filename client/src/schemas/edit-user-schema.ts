@@ -4,7 +4,7 @@ export const editUserSchema = z.object({
     name: z.string().max(50).optional(),
     username: z.string().max(50).optional(),
     avatar: z.string().optional(),
-    phoneNumber: z.string().max(10).regex(/^\d+$/).optional(),
+    phoneNumber: z.string().min(0).max(11).regex(/^\d*$/).optional(),
     dateOfBirth: z.date({
         required_error: "A date of birth is required.",
     }).optional(),

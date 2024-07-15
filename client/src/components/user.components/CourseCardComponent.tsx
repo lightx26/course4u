@@ -26,7 +26,7 @@ export default function CourseCardComponent({ course }: PropsType) {
         alt={course.name}
       />
       <div className="flex flex-col gap-2 px-2 pt-2 text-left">
-        <h3 className="text-base font-medium text-left text line-clamp-2 overflow-ellipsis min-h-12">
+        <h3 className="text-sm font-medium text-left text line-clamp-2 overflow-ellipsis min-h-12">
           {course.name}
         </h3>
         {/*Assignee role and status are optional*/}
@@ -49,7 +49,7 @@ export default function CourseCardComponent({ course }: PropsType) {
           </div>
         )}
         <div className="flex items-center gap-3">
-          <p className='text-base font-semibold'>{course.platform}</p>
+          <p className='text-sm font-medium'>{course.platform}</p>
           {course.level && (
             <p className={cn("px-2 py-1 rounded text-xs font-medium", color)}>
               {" "}
@@ -68,8 +68,8 @@ export default function CourseCardComponent({ course }: PropsType) {
           <div className="flex gap-1">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
+              width="15"
+              height="15"
               viewBox="0 0 20 20"
               fill="none"
             >
@@ -78,14 +78,14 @@ export default function CourseCardComponent({ course }: PropsType) {
                 fill="#FD8E1F"
               />
             </svg>
-            <p>{course.rating ? course.rating.toFixed(1) : "No rating yet"}</p>
+            <p className="text-[12px]">{course.rating ? course.rating.toFixed(1) : "No rating yet"}</p>
           </div>
 
           <div className="flex gap-1">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
+              width="15"
+              height="15"
               viewBox="0 0 20 20"
               fill="none"
             >
@@ -103,7 +103,7 @@ export default function CourseCardComponent({ course }: PropsType) {
                 strokeLinejoin="round"
               />
             </svg>
-            <p>{course.enrollmentCount} mgmies</p>
+            <p className="text-[12px]">{course.enrollmentCount} mgmies</p>
           </div>
         </div>
       </div>
@@ -113,7 +113,7 @@ export default function CourseCardComponent({ course }: PropsType) {
 
 export const SkeletonLoader = () => {
   return (
-    <div className="h-[344px] w-full overflow-hidden text-sm leading-normal transition-shadow bg-white rounded-md shadow cursor-pointer duration-250">
+    <div className="h-[342px] w-full overflow-hidden text-sm leading-normal transition-shadow bg-white rounded-md shadow cursor-pointer duration-250">
       <div>
         <Skeleton className="object-cover w-full bg-gray-300 h-52 animate-pulse"></Skeleton>
         <div className="flex flex-col gap-2 px-2 pt-2 text-left">

@@ -13,6 +13,7 @@ export interface IUser {
     avatarUrl: string;
     dateOfBirth: string;
     role: string;
+    gender?: string;
   };
   statusLogin: "idle" | "loading" | "failed";
   statusRegister: "idle" | "loading" | "failed";
@@ -39,6 +40,7 @@ const initialState: IUser = {
     avatarUrl: "",
     dateOfBirth: "",
     role: "",
+    gender: ""
   },
   statusLogin: "idle",
   statusRegister: "idle",
@@ -62,11 +64,11 @@ export const fetchUserDetails = createAsyncThunk(
   }
 );
 export const userRegister = createAsyncThunk(
-    "users/userRegister",
-    async (payload: ISignUpRequest) => {
-        const response = await handleRegister(payload);
-        return response;
-    }
+  "users/userRegister",
+  async (payload: ISignUpRequest) => {
+    const response = await handleRegister(payload);
+    return response;
+  }
 );
 // Create a slice
 export const userSlice = createSlice({
@@ -84,6 +86,7 @@ export const userSlice = createSlice({
         avatarUrl: "",
         dateOfBirth: "",
         role: "",
+        gender: "",
       };
       localStorage.removeItem("access_token");
     },

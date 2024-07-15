@@ -165,7 +165,7 @@ export default function FilterWrap() {
     ]
     );
     return (
-        <div className='sticky max-h-[90vh] custom-scrollbar overflow-y-auto border-2 border-gray-100 border-solid p-2 rounded-md w-full'>
+        <div className='sticky max-h-[90vh] custom-scrollbar overflow-y-auto border-2 border-gray-100 border-solid p-1 rounded-md w-full'>
             <div className='sticky flex flex-col w-full gap-5 pb-12 select-none min-w-64'>
                 <FilterComponent key={'cat1'} isHaveSearch={true} title='Category' list={mockFilterComponentData[0]} />
                 <FilterComponent key={'cat2'} isMultipleChoice={false} isHaveSearch={false} title='Rating' list={mockFilterComponentData[1]} />

@@ -67,7 +67,7 @@ export default function MainContent() {
     const length = Array.from(new Set(selectedItems.flatMap(item => item.listChoice.map(choice => choice.name)))).length;
 
     return (
-        <div className='flex flex-col gap-5 w-[80%] p-3 grow'>
+        <div className='flex flex-col gap-5 w-[80%] p-2 grow'>
             <div className='flex flex-wrap gap-2'>
                 {selectedItems.map((item) => (
                     item.listChoice.map((choice) => (

@@ -3,7 +3,7 @@ import UserProfileForm from "../../../components/user.components/personal/UserPr
 
 export default function AccountSettingScreen() {
     return (
-        <div className="bg-gray-50 min-h-[90vh] flex items-stretch justify-center text-base p-28">
+        <div className="bg-gray-50 min-h-[90vh] flex items-stretch justify-center gap-4 text-base p-28">
             <UserProfileForm />
             <ChangePassword />
         </div>

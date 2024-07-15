@@ -45,7 +45,7 @@ const LayoutUser = ({ children }: { children?: ReactElement }) => {
     const user = useSelector((state: RootState) => state.user.user);
     const userRole = user.role;
     return (
-        <div className='app-container'>
+        <div className='app-container bg-gray-50'>
             {isUserRoute && userRole === "USER" && (
                 <>
                     <HeaderHomepage />

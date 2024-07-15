@@ -39,7 +39,8 @@ export default function UserProfileForm() {
             avatar: "",
             phoneNumber: "",
             dateOfBirth: undefined,
-            email: ""
+            email: "",
+            gender: ""
         },
     })
 
@@ -51,6 +52,7 @@ export default function UserProfileForm() {
         form.setValue("email", userInfor.email ?? "")
         form.setValue("dateOfBirth", userInfor.dateOfBirth ? new Date(userInfor.dateOfBirth) : undefined)
         form.setValue("avatar", userInfor.avatarUrl ?? "")
+        form.setValue("gender", userInfor.gender ?? "")
         setAvatar({ ...avatar, imageUrl: userInfor.avatarUrl })
     }, [userInfor])
     function onSubmit(values: z.infer<typeof editUserSchema>) {
@@ -104,9 +106,9 @@ export default function UserProfileForm() {
 
 
     return (
-        <div className="flex items-center justify-center w-1/2 p-2 grow">
+        <div className="flex items-center h-[500px] justify-center w-1/2 p-2 bg-white shadow-sm rounded-3xl grow">
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="bg-white w-full shadow-sm rounded-3xl space-y-8 p-[20px] flex flex-col items-end">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="w-full h-full justify-between p-[20px] gap-3 flex flex-col items-end">
                     <h3 className="w-full text-xl font-semibold text-left">Account setting</h3>
                     <div className={cn("flex w-full gap-6", { 'pointer-events-none opacity-80': !isEditing })}>
                         <div className="w-[70%] grow justify-between flex flex-col">
@@ -143,7 +145,11 @@ export default function UserProfileForm() {
                                     <FormItem>
                                         <FormLabel>Phone number</FormLabel>
                                         <FormControl>
-                                            <Input readOnly={!isEditing} placeholder="Enter you phone number" {...field} />
+                                            <Input type="tel" readOnly={!isEditing} placeholder="Enter you phone number" {...field} onChange={(e) => {
+                                                // Chỉ cho phép nhập số, dấu cách, và dấu gạch nối
+                                                const value = e.target.value.replace(/[^\d\s-]+/, '');
+                                                field.onChange(value); // Cập nhật giá trị vào form
+                                            }} />
                                         </FormControl>
                                         <FormMessage className="text-[12px]" />
                                     </FormItem>
@@ -264,7 +270,7 @@ export default function UserProfileForm() {
                                                         )}
                                                     >
                                                         {field.value ? (
-                                                            format(field.value, "PPP")
+                                                            format(field.value, "MM/dd/yyyy")
                                                         ) : (
                                                             <span>Pick a date</span>
                                                         )}
@@ -296,15 +302,15 @@ export default function UserProfileForm() {
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Gender</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <Select value={field.value?.toUpperCase()} onValueChange={field.onChange} defaultValue={field.value}>
                                             <FormControl>
                                                 <SelectTrigger className="border border-gray-200 border-solid">
-                                                    <SelectValue placeholder="Select your gender" />
+                                                    <SelectValue placeholder="Gender" />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value="Male">Male</SelectItem>
-                                                <SelectItem value="Female">Female</SelectItem>
+                                                <SelectItem value="MALE">Male</SelectItem>
+                                                <SelectItem value="FEMALE">Female</SelectItem>
                                             </SelectContent>
                                         </Select>
                                         <FormMessage className="text-[12px]" />
