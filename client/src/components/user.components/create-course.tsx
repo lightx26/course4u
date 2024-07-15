@@ -60,14 +60,14 @@ const CreateCourse = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto mt-20 border-2 p-20 pt-10 pb-10 border-gray-200 rounded-3xl">
+    <div className="w-full px-20 py-10 bg-white border-2 border-gray-200 rounded-3xl">
       <h2 className="text-[32px] text-center mb-5 font-semibold">
         Create Course
       </h2>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 w-full "
+          className="w-full space-y-8 "
         >
           <CourseForm form={form} isEdit={true} />
           <div className="flex justify-end">

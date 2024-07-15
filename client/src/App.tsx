@@ -13,9 +13,10 @@ import { AppDispatch, RootState } from "./redux/store/store.ts";
 import { fetchUserDetails } from "./redux/slice/user.slice.ts";
 import NotPermitted from "./screens/user.screens/NotPermitted.tsx";
 import NotFound from "./screens/user.screens/NotFound.tsx";
-import CreateCourse from "./components/user.components/create-course.tsx";
 
 import SignUp from "./screens/user.screens/SignUp.tsx";
+import AdminCoursePageScreen from "./screens/admin.screens/AdminCoursePageScreen.tsx";
+import CreateCoursesScreen from "./screens/admin.screens/CreateCoursesScreen.tsx";
 export type CourseType = {
   id: string;
   name: string;
@@ -136,7 +137,7 @@ const router = createBrowserRouter(
           path: "course/create",
           element: (
             <ProtectedRoute>
-              <CreateCourse />
+              <CreateCoursesScreen />
             </ProtectedRoute>
           ),
         },
@@ -181,6 +182,10 @@ const router = createBrowserRouter(
           index: true,
           element: <>this is admin homepage</>,
         },
+        {
+          path: "courses",
+          element: <AdminCoursePageScreen />,
+        }
       ],
     },
     {

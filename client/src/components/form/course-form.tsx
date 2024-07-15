@@ -173,11 +173,11 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                 Link <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
-                <div className="w-full relative">
+                <div className="relative w-full">
                   <Input
                     placeholder="Course Link"
                     {...field}
-                    className="w-full flex-1"
+                    className="flex-1 w-full"
                     disabled={!isEdit}
                   />
                   <Button
@@ -185,7 +185,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                     onClick={handleCourseLink}
                     size="sm"
                     variant="default"
-                    className="absolute right-0 top-1/2 transform -translate-y-1/2 cursor-pointer text-violet-600 bg-violet-200 hover:bg-violet-600 hover:text-white"
+                    className="absolute right-0 transform -translate-y-1/2 cursor-pointer top-1/2 text-violet-600 bg-violet-200 hover:bg-violet-600 hover:text-white"
                     disabled={!isEdit}
                   >
                     <ArrowRightToLine width={20} height={20} />
@@ -283,7 +283,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                     Level{""}
                     <span className="text-red-500">*</span>
                   </FormLabel>
-                  <Select
+                  <Select className="border-gray-300"
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                     value={field.value}
@@ -413,10 +413,10 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
 const CourseSkeleton = () => {
   return (
     <>
-      <div className="space-y-12 w-full">
-        <Skeleton className="skeleton-input w-full h-12 mb-4"></Skeleton>
-        <Skeleton className="skeleton-input w-full h-12 mb-4"></Skeleton>
-        <Skeleton className="skeleton-input w-full h-12 mb-4"></Skeleton>
+      <div className="bg-white rounded-3xl w-[1634px] max-[100%]">
+        <Skeleton className="w-full h-12 mb-4 skeleton-input"></Skeleton>
+        <Skeleton className="w-full h-12 mb-4 skeleton-input"></Skeleton>
+        <Skeleton className="w-full h-12 mb-4 skeleton-input"></Skeleton>
       </div>
       <div className="flex w-full gap-6 space-y-2">
         <div className="w-[60%] flex justify-between flex-col mt-4">
@@ -424,13 +424,13 @@ const CourseSkeleton = () => {
             <Skeleton className="skeleton-select w-[50%] h-12 mb-4"></Skeleton>
             <Skeleton className="skeleton-select w-[50%] h-12 mb-4"></Skeleton>
           </div>
-          <Skeleton className="skeleton-input w-full h-12"></Skeleton>
+          <Skeleton className="w-full h-12 skeleton-input"></Skeleton>
         </div>
         <div className="w-[40%] flex gap-4 space-y-4">
           <Skeleton className="skeleton-thumbnail w-full h-[192px] rounded-xl"></Skeleton>
-          <div className="flex flex-col gap-5 w-full">
-            <Skeleton className="skeleton-text h-16"></Skeleton>
-            <Skeleton className="skeleton-button w-28 h-10"></Skeleton>
+          <div className="flex flex-col w-full gap-5">
+            <Skeleton className="h-16 skeleton-text"></Skeleton>
+            <Skeleton className="h-10 skeleton-button w-28"></Skeleton>
           </div>
         </div>
       </div>
