@@ -30,8 +30,8 @@ public class CourseController {
         return ResponseEntity.ok(courseService.getCourseDtoById(id));
     }
 
-    @PostMapping("/available")
-    public ResponseEntity<?> getAvailableCourses(@RequestBody AvailableCourseRequest request) {
+    @PostMapping("/search")
+    public ResponseEntity<?> getAvailableCourses(@RequestBody CourseSearchRequest request) {
 
         if (!CoursePageUtil.isValidPageSize(request.getPageSize())) {
             return ResponseEntity.unprocessableEntity()

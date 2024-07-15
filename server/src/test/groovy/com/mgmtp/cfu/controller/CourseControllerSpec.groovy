@@ -1,9 +1,8 @@
 package com.mgmtp.cfu.controller
 
-import com.mgmtp.cfu.dto.coursedto.AvailableCourseRequest
+import com.mgmtp.cfu.dto.coursedto.CourseSearchRequest
 import com.mgmtp.cfu.dto.coursedto.CourseDto
 import com.mgmtp.cfu.dto.coursedto.CourseOverviewDTO
-import com.mgmtp.cfu.dto.coursedto.CoursePageDTO
 import com.mgmtp.cfu.dto.coursedto.CoursePageFilter
 import com.mgmtp.cfu.enums.CoursePageSortOption
 import com.mgmtp.cfu.exception.MapperNotFoundException
@@ -27,7 +26,7 @@ class CourseControllerSpec extends Specification {
     def "Get available courses with valid page size returns OK response"() {
         given:
         def filter = new CoursePageFilter()
-        def request = new AvailableCourseRequest(page: page, pageSize: pageSize, sortBy: sortBy, filter: filter)
+        def request = new CourseSearchRequest(page: page, pageSize: pageSize, sortBy: sortBy, filter: filter)
         def coursesPage = new PageImpl([new CourseOverviewDTO()]) // Dữ liệu mẫu trả về từ service
         courseServiceMock.getAvailableCoursesPage(request.getSortBy(), request.getPage(), request.getPageSize()) >> coursesPage
 
@@ -55,7 +54,7 @@ class CourseControllerSpec extends Specification {
         def sortBy = "INVALID_SORT_BY"
 
         when:
-        def request = new AvailableCourseRequest(page: page, pageSize: pageSize, sortBy: sortBy)
+        def request = new CourseSearchRequest(page: page, pageSize: pageSize, sortBy: sortBy)
 
         then:
         thrown(IllegalArgumentException)
@@ -63,7 +62,7 @@ class CourseControllerSpec extends Specification {
 
     def "Get available courses with invalid page size returns UNPROCESSABLE_ENTITY response"() {
         given:
-        def request = new AvailableCourseRequest(page: 1, pageSize: 0)
+        def request = new CourseSearchRequest(page: 1, pageSize: 0)
 
         when:
         ResponseEntity<?> response = courseController.getAvailableCourses(request)
@@ -76,7 +75,7 @@ class CourseControllerSpec extends Specification {
     def "Return Internal Server Error when service thrown an exception"() {
         given:
         def filter = new CoursePageFilter()
-        def request = new AvailableCourseRequest(page: 1, pageSize: 8, sortBy: CoursePageSortOption.NEWEST, filter: filter)
+        def request = new CourseSearchRequest(page: 1, pageSize: 8, sortBy: CoursePageSortOption.NEWEST, filter: filter)
         courseServiceMock.getAvailableCoursesPage(filter, request.getSortBy(), request.getPage(), request.getPageSize()) >> { throw new MapperNotFoundException() }
 
         when:
