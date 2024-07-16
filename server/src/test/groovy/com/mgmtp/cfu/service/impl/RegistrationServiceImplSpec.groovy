@@ -32,7 +32,7 @@ class RegistrationServiceImplSpec extends Specification {
     RegistrationOverviewMapper registrationOverviewMapper=Mock(RegistrationOverviewMapper)
 
     @Subject
-    RegistrationServiceImpl registrationService = new RegistrationServiceImpl(registrationRepository, registrationOverviewMapper, registrationMapperFactory,registrationOverviewMapper)
+    RegistrationServiceImpl registrationService = new RegistrationServiceImpl(registrationRepository, registrationOverviewMapper, registrationMapperFactory, registrationDetailMapper)
 
     def "return registration details successfully"() {
         given:

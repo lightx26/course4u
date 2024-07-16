@@ -4,6 +4,7 @@ import com.mgmtp.cfu.dto.PageResponse;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO;
 import com.mgmtp.cfu.enums.RegistrationStatus;
 import com.mgmtp.cfu.exception.MapperNotFoundException;
+import com.mgmtp.cfu.mapper.RegistrationDetailMapper;
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper;
 
 import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO;
@@ -37,12 +38,15 @@ import java.util.ArrayList;
 public class RegistrationServiceImpl implements RegistrationService {
     private final RegistrationRepository registrationRepository;
     private final MapperFactory<Registration> registrationMapperFactory;
+    private final RegistrationDetailMapper registrationDetailMapper;
+    private final RegistrationOverviewMapper registrationOverviewMapper;
 
     @Autowired
-    public RegistrationServiceImpl(RegistrationRepository registrationRepository, RegistrationOverviewMapper registrationOverviewMapper, MapperFactory<Registration> registrationMapperFactory) {
+    public RegistrationServiceImpl(RegistrationRepository registrationRepository, RegistrationOverviewMapper registrationOverviewMapper, MapperFactory<Registration> registrationMapperFactory, RegistrationDetailMapper registrationDetailMapper) {
         this.registrationRepository = registrationRepository;
         this.registrationOverviewMapper = registrationOverviewMapper;
         this.registrationMapperFactory = registrationMapperFactory;
+        this.registrationDetailMapper = registrationDetailMapper;
     }
 
     @Override

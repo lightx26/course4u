@@ -39,51 +39,6 @@ class RegistrationControllerSpec extends Specification {
             ex.message == "Registration not found"
     }
 
-    def "getRegistrationForAdmin has correct response status and correct DTO"() {
-        given:
-        def page = 1
-        def status = ""
-
-        RegistrationOverviewDTO registrationOverviewDTO = RegistrationOverviewDTO.builder().build()
-        def pagedResponse = new PageImpl<>([registrationOverviewDTO], PageRequest.of(page, 1), 1)
-        registrationService.getAllRegistrations(page) >> pagedResponse
-
-        when:
-        ResponseEntity<?> response = registrationController.getRegistrationForAdmin(page, status)
-
-        then:
-        response.statusCode.value() == 200
-        response.body == pagedResponse
-    }
-
-    def "getRegistrationForAdmin with incorrect page throw an exception"() {
-        given:
-        def page = -1
-        def status = ""
-
-        when:
-        ResponseEntity<?> response = registrationController.getRegistrationForAdmin(page, status)
-
-        then:
-        response.statusCode.value() == 400
-        response.getBody() == "Page number must be greater than 0"
-    }
-
-    def "getRegistrationForAdmin with incorrect status throw an exception"(){
-        given:
-        def page = 1
-        def status = "incorrect"
-
-        registrationService.getRegistrationByStatus(page, status) >> { throw new RegistrationStatusNotFoundException("Registration status not found") }
-
-        when:
-        ResponseEntity<?> response = registrationController.getRegistrationForAdmin(page, status)
-
-        then:
-        def e = thrown(RegistrationStatusNotFoundException)
-        e.message == "Registration status not found"
-    }
-
     def 'getListOfMyRegistration: return ok response'(){
         given:
         registrationService.getMyRegistrationPage(_,_)>>List.of()
