@@ -62,12 +62,12 @@ function RegistrationCardComponent({ registration }: PropsType) {
 
   //
   // Since JS Date format is in yyyy-mm-dd,
-  // We need to convert it to mm-dd-yyyy to fit the project
+  // We need to convert it to dd-mm-yyyy to fit the project
   //
   const convertJSDatesToCorrectFormat = (date?: Date): string => {
     if (!date) return "";
     const newDate = date.toString().split("-");
-    [newDate[0], newDate[1], newDate[2]] = [newDate[1], newDate[2], newDate[0]];
+    [newDate[0], newDate[2]] = [newDate[2], newDate[0]];
     return newDate.join("/");
   }
 
@@ -78,6 +78,9 @@ function RegistrationCardComponent({ registration }: PropsType) {
   const handlePopup = () => {
     alert("Popup has appeared")
   }
+
+  const status = convertStatus(registration.status ? registration.status : "");
+  const period = handlePeriod(registration.startDate, registration.endDate);
 
   return (
     <div
@@ -97,7 +100,7 @@ function RegistrationCardComponent({ registration }: PropsType) {
       </div>
       <div className="informations px-4 py-3">
         <div className="flex flex-col gap-2 text-left">
-          <h3 className="text-sm font-medium text-left line-clamp-2 h-12 overflow-ellipsis">
+          <h3 className="text-sm font-medium text-left line-clamp-2 h-11 overflow-ellipsis">
             {registration.courseName}
           </h3>
         </div>
@@ -122,12 +125,12 @@ function RegistrationCardComponent({ registration }: PropsType) {
               color: `${fontColor}`,
             }}
           >
-            {convertStatus(registration.status ? registration.status : "")}
+            {status}
           </div>
         </div>
         <div className="platform mt-3 text-xs">{registration.coursePlatform}</div>
         <div className="period text-xs">
-          {handlePeriod(registration.startDate, registration.endDate)}
+          {period}
         </div>
       </div>
     </div>
