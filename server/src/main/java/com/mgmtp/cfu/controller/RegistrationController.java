@@ -21,22 +21,7 @@ public class RegistrationController {
 
     @GetMapping("/{id}")
     public ResponseEntity<RegistrationDetailDTO> getDetailRegistration(@PathVariable Long id) {
-        return ResponseEntity.ok(registrationService.getDetailRegistration(id))
-    };
-
-    @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> getRegistrationForAdmin(
-            @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "status", defaultValue = "all") String status)
-    {
-        if (page <= 0){
-            return ResponseEntity.badRequest().body("Page number must be greater than 0");
-        }
-
-        return (status.equalsIgnoreCase("all") || status.isEmpty()) ?
-                ResponseEntity.ok(registrationService.getAllRegistrations(page)):
-                ResponseEntity.ok(registrationService.getRegistrationByStatus(page, status));
+        return ResponseEntity.ok(registrationService.getDetailRegistration(id));
     }
 
     @GetMapping("/my-registration")
@@ -46,8 +31,5 @@ public class RegistrationController {
             page = 1;
         }
         return ResponseEntity.ok(registrationService.getMyRegistrationPage(page, status));
-    @GetMapping("/{id}")
-    public ResponseEntity<RegistrationDetailDTO> getDetailRegistration(@PathVariable Long id) {
-        return ResponseEntity.ok(registrationService.getDetailRegistration(id));
     }
 }
