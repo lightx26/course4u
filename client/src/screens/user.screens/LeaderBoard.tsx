@@ -1,14 +1,8 @@
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../components/ui/select";
+
 import React, { useState } from "react";
 import logo from "../../assets/images/logo.jpg";
 import Card_LeaderBoard from "../../components/user.components/Card_LeaderBoard";
-import { Table } from "antd";
+import { Table,Select } from "antd";
 import type { TableProps } from "antd";
 import "../../assets/css/Leader_board.css";
 const LeaderBoard: React.FC = () => {
@@ -151,6 +145,11 @@ const LeaderBoard: React.FC = () => {
       score: 60,
     },
   ];
+
+
+  const handleChange = (value: string) => {
+    setValueYear(value);
+  };
   return (
     <>
       <div style={{ backgroundColor: "#f5f5f5", paddingBottom: "50px" }}>
@@ -190,18 +189,16 @@ const LeaderBoard: React.FC = () => {
             >
               <div style={{ color: "#666666", fontSize: "1.1rem" }}>Year</div>
               <div>
-                <Select>
-                  <SelectTrigger className="w-[150px] h-[35px]">
-                    <SelectValue placeholder="2024" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="2024" defaultValue={valueYear}>
-                      2024
-                    </SelectItem>
-                    <SelectItem value="2023">2023</SelectItem>
-                    <SelectItem value="2022">2022</SelectItem>
-                  </SelectContent>
-                </Select>
+              <Select
+      defaultValue={valueYear}
+      style={{ width: 120 }}
+      onChange={handleChange}
+      options={[
+        { value: '2024', label: '2024' },
+        { value: '2023', label: '2023' },
+        { value: '2022', label: '2022' },
+      ]}
+    />
               </div>
             </div>
           </div>

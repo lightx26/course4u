@@ -6,6 +6,7 @@ import com.mgmtp.cfu.dto.authdto.SignUpRequest
 import com.mgmtp.cfu.dto.authdto.SignUpResponse
 import com.mgmtp.cfu.service.impl.AuthServiceImpl
 import com.mgmtp.cfu.util.SignUpValidator
+import org.apache.coyote.BadRequestException
 import org.springframework.http.ResponseEntity
 import spock.lang.Specification
 import spock.lang.Subject
@@ -33,9 +34,9 @@ class AuthControllerSpec extends Specification {
                 new LoginRequest(username, password)
         authService.authenticate(_) >> LoginResponse.builder().accessToken("This is valid access token.").build()
         when:
-        authController.signIn(wrongLoginRequest)
+        def response = authController.signIn(wrongLoginRequest)
         then:
-        def e = thrown(IllegalArgumentException)
+        response.statusCode.value()==400
         where:
         username | password
         "asd"    | null

@@ -16,7 +16,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleException() {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responsePre +"Server encountered an internal error.\"}" );
     }
-    @ExceptionHandler({IllegalArgumentException.class, BadCredentialsException.class,NotExistEmailException.class,BadRequestRunTimeException.class})
+    @ExceptionHandler({ BadCredentialsException.class,NotExistEmailException.class})
     public ResponseEntity<?> handleIllegalArgumentException(final Exception e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsePre + e.getMessage() + "\"}"); }
 
@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
         ErrorResponse response = new ErrorResponse(HttpStatus.NOT_FOUND.value()+"", cnfe.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
-    @ExceptionHandler({IllegalStateException.class})
+    @ExceptionHandler({IllegalStateException.class,IllegalArgumentException.class})
     public ResponseEntity<?> handleIllegalStateException(final Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responsePre + e.getMessage() + "\"}");
     }

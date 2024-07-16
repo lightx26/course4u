@@ -19,7 +19,7 @@ public class AuthController {
     @PostMapping("/login")
     ResponseEntity<?> signIn(@RequestBody LoginRequest loginRequest){
         if(!LoginValidator.isValid(loginRequest))
-            throw new IllegalArgumentException("Missing required field(s): username, password.");
+            return ResponseEntity.badRequest().body("Missing required field(s): username, password.");
         var loginResponse=authService.authenticate(loginRequest);
         return ResponseEntity.ok(loginResponse);
     }
