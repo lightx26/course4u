@@ -1,4 +1,4 @@
-import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import {createBrowserRouter, Outlet, RouterProvider} from "react-router-dom";
 import HeaderHomepage from "./components/user.components/header";
 import HomepageScreen from "./screens/user.screens/HomepageScreen";
 import Login from "./screens/user.screens/Login.tsx";
@@ -13,6 +13,8 @@ import { AppDispatch, RootState } from "./redux/store/store.ts";
 import { fetchUserDetails } from "./redux/slice/user.slice.ts";
 import NotPermitted from "./screens/user.screens/NotPermitted.tsx";
 import NotFound from "./screens/user.screens/NotFound.tsx";
+import HeaderAdminPage from "./components/admin.components/mainPage.components/HeaderAdminPage.tsx";
+import AdminHomePage from "./screens/admin.screens/AdminHome.tsx";
 
 import SignUp from "./screens/user.screens/SignUp.tsx";
 import AdminCoursePageScreen from "./screens/admin.screens/AdminCoursePageScreen.tsx";
@@ -37,7 +39,26 @@ export type CourseType = {
   rating?: number;
   enrollmentCount?: number;
   level?: string;
-};
+}
+
+export type RegistrationType = {
+    id?: string;
+    startDate?: Date,
+    endDate?: Date,
+    registerDate?: Date,
+    lastUpdated?: Date,
+    courseId?: string,
+    courseName?: string,
+    courseThumbnailUrl?: string,
+    coursePlatform?: string,
+    userId?: string,
+    userName?: string,
+    userFullName?: string,
+    userAvatarUrl?: string,
+    duration?: number,
+    durationUnit?: string,
+    status?: string,
+}
 
 const LayoutUser = ({ children }: { children?: ReactElement }) => {
   const isUserRoute = window.location.pathname.startsWith(
@@ -74,7 +95,7 @@ const LayoutAdmin = () => {
     <>
       {isAdminRoute && userRole === "ADMIN" && (
         <div className="app-container">
-          <div>this is admin header</div>
+            <HeaderAdminPage />
           <Outlet />
         </div>
       )}
@@ -180,7 +201,7 @@ const router = createBrowserRouter(
       children: [
         {
           index: true,
-          element: <>this is admin homepage</>,
+          element: <AdminHomePage/>
         },
         {
           path: "courses",
@@ -232,4 +253,5 @@ function App() {
   }, []);
   return <>{<RouterProvider router={router} />}</>;
 }
+
 export default App;
