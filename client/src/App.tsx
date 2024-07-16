@@ -21,6 +21,7 @@ import AdminCoursePageScreen from "./screens/admin.screens/AdminCoursePageScreen
 import CreateCoursesScreen from "./screens/admin.screens/CreateCoursesScreen.tsx";
 import { ProtectedRouteLogin } from "./components/user.components/ProtectedRouteLogin.tsx";
 import { isTokenExpired } from "./utils/validateToken.ts";
+import LeaderBoard from "./screens/user.screens/LeaderBoard.tsx";
 export type CourseType = {
   id: string;
   name: string;
@@ -156,6 +157,12 @@ const router = createBrowserRouter(
           path: "courses/:id",
           element: <Detail_Of_Course />,
         },
+          {
+              path: "leader-board",
+              element: (
+                      <LeaderBoard />
+              ),
+          },
       ],
     },
     {
