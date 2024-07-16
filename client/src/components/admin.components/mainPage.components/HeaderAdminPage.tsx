@@ -22,8 +22,7 @@ const HeaderAdminPage: React.FC = () => {
 
           <div>
             <span
-              className="text-purple text-2xl font-bold h-100"
-              style={{ color: "purple" }}
+              className="text-[#861FA2] text-2xl font-bold h-100"
             >
               ADMIN
             </span>
@@ -75,8 +74,7 @@ const HeaderAdminPage: React.FC = () => {
         <div className="flex items-center space-x-4">
           <div className="flex items-center justify-center gap-5">
             <button
-              className="w-44 h-11 border border-gray-300 rounded-full bg-purple-700 text-white font-semibold"
-              style={{ backgroundColor: "purple" }}
+              className="w-44 h-11 border bg-[#861FA2] border-gray-300 rounded-full bg-purple-700 text-white font-semibold"
             >
               Create a new course
             </button>

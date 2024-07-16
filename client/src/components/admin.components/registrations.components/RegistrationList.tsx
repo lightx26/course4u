@@ -31,7 +31,7 @@ function RegistrationList({
     }
 
     return (
-      <div className="grid gap-2 text-black xl:grid-cols-4 md:grid-cols-2 auto-rows-auto">
+      <div className="grid gap-3 text-black xl:grid-cols-4 md:grid-cols-2 auto-rows-auto">
         {ListRegistration.map((registration) => (
           <RegistrationCardComponent
             registration={registration}

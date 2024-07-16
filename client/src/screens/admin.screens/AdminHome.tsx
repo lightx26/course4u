@@ -35,7 +35,7 @@ function AdminHomePage() {
   }, [currentPage]);
 
   return (
-    <div className="bg-[#F5F7FA] h-[100dvh] min-h-[980px]">
+    <div className="bg-[#F5F7FA] h-[100dvh] min-h-[1024px]">
       <div className="body flex gap-10 px-14 pt-10 w-screen max-w-screen-2xl my-0 mx-auto">
         <div className="card w-56 rounded-2xl">
           <AdminCard />

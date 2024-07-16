@@ -78,11 +78,11 @@ function RegistrationCardComponent({ registration }: PropsType) {
   return (
     <a
       href=""
-      className="w-full gap-5 overflow-hidden text-sm rounded-xl leading-normal transition-shadow bg-white border border-gray-200 border-solid shadow cursor-pointer duration-250 hover:shadow-lg grow"
+      className="w-full overflow-hidden text-sm rounded-xl leading-normal transition-shadow bg-white border border-gray-200 border-solid shadow cursor-pointer duration-250 hover:shadow-lg grow"
     >
       <div className="course-information rounded-3xl">
         <img
-          className="object-cover w-full max-h-48 rounded-xl"
+          className="object-cover w-full h-52 rounded-xl"
           src={
             registration.courseThumbnailUrl
               ? registration.courseThumbnailUrl
@@ -93,15 +93,15 @@ function RegistrationCardComponent({ registration }: PropsType) {
       </div>
       <div className="informations px-4 py-3">
         <div className="flex flex-col gap-2 text-left">
-          <h3 className="text-base font-medium text-left text line-clamp-2 overflow-ellipsis min-h-8">
+          <h3 className="text-sm font-medium text-left line-clamp-2 h-12 overflow-ellipsis">
             {registration.courseName}
           </h3>
         </div>
         <div className="user_information flex justify-between">
-          <div className="flex gap-1.5 align-center">
+          <div className="flex gap-1 align-center">
             <div className="my-auto">
               <img
-                className="w-10 h-10 rounded-full"
+                className="object-cover w-10 h-10 rounded-full"
                 src={registration.userAvatarUrl}
                 alt="user-avatar"
               />
