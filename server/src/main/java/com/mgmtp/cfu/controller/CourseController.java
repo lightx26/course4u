@@ -1,6 +1,7 @@
 package com.mgmtp.cfu.controller;
 
 import com.mgmtp.cfu.dto.coursedto.*;
+import com.mgmtp.cfu.exception.DuplicateCourseException;
 import com.mgmtp.cfu.exception.MapperNotFoundException;
 import com.mgmtp.cfu.service.CourseService;
 import com.mgmtp.cfu.util.CoursePageUtil;
@@ -48,7 +49,9 @@ public class CourseController {
         try {
             CourseResponse courseResponse = courseService.createCourse(courseRequest);
             return ResponseEntity.status(HttpStatus.CREATED).body(courseResponse);
-        } catch (Exception e) {
+        } catch (DuplicateCourseException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+        } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }

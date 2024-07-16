@@ -10,6 +10,7 @@ import com.mgmtp.cfu.entity.Course;
 import com.mgmtp.cfu.exception.CourseNotFoundException;
 import com.mgmtp.cfu.enums.CoursePageSortOption;
 import com.mgmtp.cfu.enums.CourseStatus;
+import com.mgmtp.cfu.exception.DuplicateCourseException;
 import com.mgmtp.cfu.exception.MapperNotFoundException;
 import com.mgmtp.cfu.mapper.DTOMapper;
 import com.mgmtp.cfu.mapper.factory.MapperFactory;
@@ -68,7 +69,7 @@ public class CourseServiceImpl implements CourseService {
         try {
             Course course = modelMapper.map(courseRequest, Course.class);
             if (courseRepository.findCourseByLinkIgnoreCase(course.getLink()) != null) {
-                throw new RuntimeException("Course with link " + course.getLink() + " already exists");
+                throw new DuplicateCourseException("Course with link " + course.getLink() + " already exists");
             }
             String thumbnailUrl = null;
             if (courseRequest.getThumbnailFile() != null)

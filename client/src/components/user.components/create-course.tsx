@@ -53,14 +53,25 @@ const CreateCourse = () => {
       formData.append("thumbnailUrl", values.thumbnailUrl);
     }
 
-    instance.postForm("/courses", formData)
+    instance
+      .postForm("/courses", formData)
       .then((res) => {
-        console.log(res.data);
         alert("Create course successfully");
       })
       .catch((error) => {
-        console.error(error);
-        alert("An error occurred while creating the course");
+        if (error.response) {
+          if (error.response.status === 409) {
+            alert("Course with this link already exists");
+          } else if (error.response.status === 500) {
+            alert("An error occurred on the server while creating the course");
+          } else {
+            alert(`An unexpected error occurred: ${error.response.status}`);
+          }
+        } else if (error.request) {
+          alert("No response received from the server");
+        } else {
+          alert("An error occurred while setting up the request");
+        }
       });
   }
 
@@ -70,10 +81,7 @@ const CreateCourse = () => {
         Create Course
       </h2>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full"
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
           <CourseForm form={form} isEdit={true} />
           <div className="flex justify-end">
             <Button variant="success" className="mt-10">

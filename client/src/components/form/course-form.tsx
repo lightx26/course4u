@@ -152,7 +152,8 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
       if (data) {
         if (data.title != null) form?.setValue("name", data.title);
         form?.trigger("name");
-        if (data.url != null && data.url != "") form?.setValue("link", standardizeUrl(data.url));
+        if (data.url != null && data.url != "")
+          form?.setValue("link", standardizeUrl(data.url));
         if (data.site_name != null) form?.setValue("platform", data.site_name);
         if (data.image) {
           setThumbnail({
@@ -267,7 +268,10 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={course?.platform || form?.watch("platform")}
-                    value={course?.platform.toUpperCase() || form?.watch("platform").toUpperCase()}
+                    value={
+                      course?.platform.toUpperCase() ||
+                      form?.watch("platform").toUpperCase()
+                    }
                     disabled={!isEdit}
                   >
                     <FormControl>
@@ -296,7 +300,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                   </FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={''}
+                    defaultValue={""}
                     value={field.value}
                     disabled={!isEdit}
                   >
