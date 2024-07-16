@@ -9,6 +9,7 @@ import com.mgmtp.cfu.enums.CoursePageSortOption;
 import com.mgmtp.cfu.enums.CourseStatus;
 import com.mgmtp.cfu.enums.RegistrationStatus;
 import com.mgmtp.cfu.util.RegistrationStatusUtil;
+import jakarta.persistence.Query;
 import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 

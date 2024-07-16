@@ -4,6 +4,7 @@ import com.mgmtp.cfu.dto.coursedto.*;
 
 import com.mgmtp.cfu.dto.coursedto.CourseRequest;
 import com.mgmtp.cfu.dto.coursedto.CourseResponse;
+import com.mgmtp.cfu.dto.coursereviewdto.RatingsPage;
 import com.mgmtp.cfu.entity.Category;
 import com.mgmtp.cfu.entity.Course;
 import com.mgmtp.cfu.exception.BadRequestRunTimeException;
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
