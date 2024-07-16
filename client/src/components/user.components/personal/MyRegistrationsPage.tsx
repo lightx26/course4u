@@ -10,10 +10,10 @@ export type OverviewMyRegistrationType = {
   id?: string;
   courseName: string;
   status: Status;
-  platform: string;
+  coursePlatform: string;
   startDate: Date;
   endDate: Date;
-  thumbnailUrl: string;
+  courseThumbnailUrl: string;
 };
 
 export default function MyRegistrationPage() {

@@ -1,5 +1,6 @@
 package com.mgmtp.cfu.dto.registrationdto;
 
+import com.mgmtp.cfu.enums.DurationUnit;
 import com.mgmtp.cfu.enums.RegistrationStatus;
 import lombok.*;
 
@@ -15,14 +16,17 @@ public class RegistrationOverviewDTO {
     private Long id;
     private RegistrationStatus status;
     private LocalDate startDate;
-    private LocalDate registerDate;
     private LocalDate endDate;
-    private String courseName;
-    private LocalDateTime lastUpdate;
+    private LocalDate registerDate;
+    private LocalDateTime lastUpdated;
     private Long courseId;
+    private String courseName;
+    private String courseThumbnailUrl;
+    private String coursePlatform;
     private Long userId;
     private String userName;
-    private String userFullName;
-    private String thumbnailUrl;
-    private String platform;
+    private String userFullname;
+    private String userAvatarUrl;
+    private Integer duration;
+    private DurationUnit durationUnit;
 }

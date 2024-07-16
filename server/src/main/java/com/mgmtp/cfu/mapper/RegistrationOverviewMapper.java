@@ -12,10 +12,11 @@ public abstract class RegistrationOverviewMapper implements DTOMapper<Registrati
     @Override
     @Mapping(target = "courseName", source = "course.name")
     @Mapping(target = "courseId", source = "course.id")
+    @Mapping(target = "coursePlatform", source = "course.platform")
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "userName", source = "user.username")
-    @Mapping(target = "userFullName", source = "user.fullName")
-    @Mapping(target = "platform", source = "course.platform")
-    @Mapping(target = "thumbnailUrl", source = "course.thumbnailUrl")
+    @Mapping(target = "userFullname", source = "user.fullName")
+    @Mapping(target = "userAvatarUrl", source = "user.avatarUrl")
+    @Mapping(target = "courseThumbnailUrl", source = "course.thumbnailUrl")
     public abstract RegistrationOverviewDTO toDTO(Registration registration);
 }

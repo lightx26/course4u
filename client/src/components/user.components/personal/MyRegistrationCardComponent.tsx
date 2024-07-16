@@ -52,7 +52,7 @@ export default function MyRegistrationComponents({ registration }: PropsType) {
         className='pb-5 mb-3 w-full overflow-hidden text-sm leading-normal transition-shadow bg-white rounded-md shadow cursor-pointer duration-250'>
             <div>
                 <img
-                    src={registration.thumbnailUrl}
+                    src={registration.courseThumbnailUrl}
                     alt=""
                     className='object-cover w-full bg-gray-300 h-52'
                 />
@@ -73,7 +73,7 @@ export default function MyRegistrationComponents({ registration }: PropsType) {
                     </p>
                     <div className='flex items-center gap-1'>
                         <i className='fas fa-clock'></i>
-                        <p className='text-gray-600 text-opacity-100 text-neutral-950'>{registration.platform}</p>
+                        <p className='text-gray-600 text-opacity-100 text-neutral-950'>{registration.coursePlatform}</p>
                     </div>
                     <div className='flex justify-start p-2' style={{ padding: '0px' }}>
                         <div className='flex items-start gap-1'>
