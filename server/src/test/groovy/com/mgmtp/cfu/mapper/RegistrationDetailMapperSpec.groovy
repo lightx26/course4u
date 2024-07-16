@@ -33,7 +33,7 @@ class RegistrationDetailMapperSpec extends Specification {
                 score: 95,
                 registerDate: LocalDate.of(2023, 6, 15),
                 duration: 6,
-                lastUpdate: LocalDateTime.of(2023, 7, 10, 10, 0),
+                lastUpdated: LocalDateTime.of(2023, 7, 10, 10, 0),
                 durationUnit: DurationUnit.MONTH,
                 course: new Course(
                         name: "Test Course",

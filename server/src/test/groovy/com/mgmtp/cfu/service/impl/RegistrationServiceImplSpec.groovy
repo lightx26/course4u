@@ -29,7 +29,7 @@ class RegistrationServiceImplSpec extends Specification {
     RegistrationRepository registrationRepository = Mock(RegistrationRepository)
     MapperFactory<Registration> registrationMapperFactory = Mock(RegistrationMapperFactory)
     RegistrationDetailMapper registrationDetailMapper = Mock(RegistrationDetailMapper)
-    RegistrationOverviewMapper registrationOverviewMapper=Mock(RegistrationOverviewMapper)
+    RegistrationOverviewMapper registrationOverviewMapper= Mock(RegistrationOverviewMapper)
 
     @Subject
     RegistrationServiceImpl registrationService = new RegistrationServiceImpl(registrationRepository, registrationOverviewMapper, registrationMapperFactory, registrationDetailMapper)
@@ -214,6 +214,7 @@ class RegistrationServiceImplSpec extends Specification {
         }
         SecurityContextHolder.context.authentication = authentication
         registrationRepository.getByUserId(userId,_) >> List.of(registrations)
+        registrationMapperFactory.getDTOMapper(_)>> Optional.of(registrationOverviewMapper)
         when:
         def result = registrationService.getMyRegistrationPage(1, status)
         then:
@@ -231,6 +232,7 @@ class RegistrationServiceImplSpec extends Specification {
         def authentication = Mock(Authentication) {
             getCredentials() >> User.builder().id(userId).build()
         }
+        registrationMapperFactory.getDTOMapper(_)>> Optional.of(registrationOverviewMapper)
         SecurityContextHolder.context.authentication = authentication
         registrationRepository.getByUserId(userId,_) >> List.of(registrations,registrayion2)
         registrationOverviewMapper.toDTO(_)>> RegistrationOverviewDTO.builder().id(1).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDate.now()).build()
@@ -253,6 +255,7 @@ class RegistrationServiceImplSpec extends Specification {
         }
         SecurityContextHolder.context.authentication = authentication
         registrationRepository.getByUserId(userId,_) >> List.of(registrations)
+        registrationMapperFactory.getDTOMapper(_)>> Optional.of(registrationOverviewMapper)
 
         when:
         registrationService.getMyRegistrationPage(0, status)
@@ -266,7 +269,6 @@ class RegistrationServiceImplSpec extends Specification {
      * Test cases for getAllRegistrations and getRegistrationByStatus
      */
 
-        registrationMapperFactory.getDTOMapper(_)>> Optional.of(registrationOverviewMapper)
     def "getAllRegistrations should return registration list"() {
         given:
             def page = 1
