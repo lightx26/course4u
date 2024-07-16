@@ -4,12 +4,14 @@ import createSagaMiddleware from "redux-saga";
 import RootSaga from "../saga/root.saga";
 import userReducer from "../slice/user.slice";
 import filterItemCheckboxSlice from "../slice/filterItemCheckbox.slice";
+import categoryReducer from "../slice/category.slice";
 const sagaMiddleware = createSagaMiddleware();
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
     user: userReducer,
-    filter: filterItemCheckboxSlice
+    filter: filterItemCheckboxSlice,
+    category: categoryReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(sagaMiddleware),

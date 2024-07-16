@@ -1,82 +1,21 @@
+import { useSelector } from 'react-redux';
 import FilterComponent from './FilterComponent'
 import { FilterItemType } from './MainContent'
+import { RootState } from '../../../redux/store/store';
 
 export default function FilterWrap() {
-    const mockFilterComponentData: FilterItemType[][] = [];
-    mockFilterComponentData[0] = ([
-        {
-            id: 'cat1',
-            name: 'Web Development',
+    const listCategory = useSelector((state: RootState) => state.category);
+    const mockFilterComponentData: FilterItemType[][] = [[], [], [], []];
+    mockFilterComponentData[0] = listCategory.map((item) => {
+        return {
+            id: `cat${item.id}`,
+            name: item.name,
             countNumber: 1200,
             parentID: 'cat1',
             checked: false
-        },
-        {
-            id: 'cat2',
-            name: 'Front-end Development',
-            countNumber: 800,
-            parentID: 'cat1',
-            checked: false
-        },
-        {
-            id: 'cat3',
-            name: 'Back-end Development',
-            countNumber: 900,
-            parentID: 'cat1',
-            checked: false
-        },
-        {
-            id: 'cat4',
-            name: 'Full Stack Development',
-            countNumber: 1500,
-            parentID: 'cat1',
-            checked: false
-        },
-        {
-            id: 'cat5',
-            name: 'Mobile Development',
-            countNumber: 700,
-            parentID: 'cat1',
-            checked: false
-        },
-        {
-            id: 'cat6',
-            name: 'Data Science',
-            countNumber: 600,
-            parentID: 'cat1',
-            checked: false
-        },
-        {
-            id: 'cat7',
-            name: 'Machine Learning',
-            countNumber: 500,
-            parentID: 'cat1',
-            checked: false
-        },
-        {
-            id: 'cat8',
-            name: 'Cybersecurity',
-            countNumber: 400,
-            parentID: 'cat1',
-            checked: false
-        },
-        {
-            id: 'cat9',
-            name: 'Cloud Computing',
-            countNumber: 300,
-            parentID: 'cat1',
-            checked: false
-        },
-        {
-            id: 'cat10',
-            name: 'Blockchain',
-            countNumber: 200,
-            parentID: 'cat1',
-            checked: false
-        },
-        // Thêm nhiều phân loại khác nếu cần
-    ]
-    );
+        }
+    });
+
     mockFilterComponentData[1] = ([
         {
             id: 'rat1',
@@ -157,7 +96,7 @@ export default function FilterWrap() {
         },
         {
             id: 'plat3',
-            name: 'Linkedin Learning',
+            name: 'Linkedin',
             countNumber: 900,
             parentID: 'cat4',
             checked: false
