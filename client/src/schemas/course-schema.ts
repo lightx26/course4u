@@ -16,9 +16,8 @@ export const courseSchema = z.object({
         message: "Teacher name must be at least 3 characters long!",
     }),
     link: z.string().url({ message: "Link must be a valid URL!" }),
-    level: z.enum(["BEGINNER", "INTERMEDIATE", "ADVANCED"], {
-        message:
-            "Level must be one of 'beginner', 'intermediate', or 'advanced'!",
+    level: z.string().refine((val) => ["BEGINNER", "INTERMEDIATE", "ADVANCED"].includes(val), {
+        message: "Level must be one of 'BEGINNER', 'INTERMEDIATE', or 'ADVANCED'!"
     }),
     platform: z.string({ message: "Platform required!" }),
     categories: z.array(optionSchema).min(1),
