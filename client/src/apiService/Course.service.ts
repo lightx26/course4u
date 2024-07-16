@@ -32,4 +32,14 @@ const fetchDataCourseById = async (id: string | null) => {
   }
 };
 
-export { fetchListAvailableCourse, fetchDataCourseById };
+const deleteCourseById = async (id: string | undefined) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const response = await instance.delete(`/courses/${id}`);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export { fetchListAvailableCourse, fetchDataCourseById, deleteCourseById };

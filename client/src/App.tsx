@@ -206,7 +206,10 @@ const router = createBrowserRouter(
               <CreateCoursesScreen />
             </ProtectedRoute>
           ),
-        },
+        },{
+              path: "courses/:id",
+              element: <Detail_Of_Course />,
+          },
       ],
     },
     {

@@ -67,6 +67,16 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
         zoom: 1,
         aspect: { value: 4 / 3, text: "4:3" },
       });
+      form?.setValue("link", course.link);
+      form?.setValue("level", course.level);
+      form?.setValue("teacherName", course.teacherName);
+      const categoriesData = course?.categories?.map((category) => ({
+        label: category.name,
+        value: category.name!,
+      }));
+      form?.setValue("categories", categoriesData || []);
+      form?.setValue("platform", course.platform);
+      form?.setValue("name", course.name);
     }
   }, [course]);
 

@@ -2,15 +2,22 @@ import { useNavigate } from "react-router-dom";
 import { CourseType } from "../../App";
 import { cn } from "../../utils";
 import { Skeleton } from "../ui/skeleton";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store/store";
 type PropsType = {
   course: CourseType;
 };
 
 export default function CourseCardComponent({ course }: PropsType) {
   const navigate = useNavigate();
+  const userRole = useSelector((state: RootState) => state.user.user.role);
   const handleClickCourseDetail = (id: string) => (e: React.MouseEvent) => {
     e.preventDefault();
-    navigate(`/courses/${id}`);
+    if (userRole === "ADMIN") {
+      navigate(`${id}`);
+    } else if (userRole === "USER") {
+      navigate(`/courses/${id}`);
+    }
   };
   const thumbnailUrl = course.thumbnailUrl?.startsWith("http")
     ? course.thumbnailUrl
