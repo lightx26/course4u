@@ -1,6 +1,6 @@
 package com.mgmtp.cfu.controller;
 
-import com.mgmtp.cfu.dto.UserDto;
+import com.mgmtp.cfu.dto.userdto.UserDto;
 import com.mgmtp.cfu.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
