@@ -14,5 +14,11 @@ import java.util.Map;
 @AllArgsConstructor
 public class RatingsPage {
     private double averageRating = 0;
-    private Map<Integer, Long> detailRatings = new HashMap<>();
+    private Map<Integer, Long> detailRatings = new HashMap<>(Map.ofEntries(
+            Map.entry(1, 0L),
+            Map.entry(2, 0L),
+            Map.entry(3, 0L),
+            Map.entry(4, 0L),
+            Map.entry(5, 0L)))
+    ;
 }
