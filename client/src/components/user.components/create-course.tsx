@@ -56,6 +56,7 @@ const CreateCourse = () => {
     instance
       .postForm("/courses", formData)
       .then((res) => {
+        console.log(res);
         alert("Create course successfully");
       })
       .catch((error) => {

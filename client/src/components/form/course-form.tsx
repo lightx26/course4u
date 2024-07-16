@@ -145,7 +145,6 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
 
   const handleCourseLink = async () => {
     setLoading(true);
-
     const courseLink = form?.watch("link");
     try {
       const data = await fetchOpenGraphData(courseLink!);
