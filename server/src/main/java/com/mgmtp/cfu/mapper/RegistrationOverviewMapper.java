@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
 @Component
 public abstract class RegistrationOverviewMapper implements DTOMapper<RegistrationOverviewDTO, Registration>{
     @Override
-    @Mapping(target = "courseName", source = "course.name")
     @Mapping(target = "courseId", source = "course.id")
+    @Mapping(target = "courseName", source = "course.name")
+    @Mapping(target = "courseThumbnailUrl", source = "course.thumbnailUrl")
     @Mapping(target = "coursePlatform", source = "course.platform")
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "userName", source = "user.username")
     @Mapping(target = "userFullname", source = "user.fullName")
     @Mapping(target = "userAvatarUrl", source = "user.avatarUrl")
-    @Mapping(target = "courseThumbnailUrl", source = "course.thumbnailUrl")
     public abstract RegistrationOverviewDTO toDTO(Registration registration);
 }
