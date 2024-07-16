@@ -62,17 +62,17 @@ export default function FilterItemComponent({ prop, isMultipleChoice }: PropsTyp
     }
 
     return (
-        <div className="flex justify-between text-base cursor-pointer text-[#4E5566] hover:text-[#7E22CE]" onClick={onFilterItemClick}>
-            <div className="flex items-center gap-2">
+        <div className="flex max-w-60 justify-between text-sm cursor-pointer text-[#4E5566] hover:text-[#7E22CE]" onClick={onFilterItemClick}>
+            <div className="flex items-center gap-2 max-w-60">
                 <input className="sr-only" type='checkbox' readOnly={true} id={prop.id} checked={checked} />
                 <div className={`w-4 h-4 rounded border ${checked ? 'bg-violet-600 border-transparent' : 'border-gray-400'} flex items-center justify-center`}>
                     {checked && <svg className="w-3 h-3 text-white" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
                         <path d="M5 13l4 4L19 7"></path>
                     </svg>}
                 </div>
-                <div className="block text-sm">{prop.name}</div>
+                <div className="text-[13px] line-clamp-1 h-[20px] overflow-ellipsis max-w-[170px]" title={prop.name}>{prop.name}</div>
             </div>
-            <div className="pt-1 text-sm">{prop.countNumber}</div>
+            <div className="pt-1 text-[12px]">{prop.countNumber}</div>
         </div>
     )
 }

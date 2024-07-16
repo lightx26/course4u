@@ -44,7 +44,7 @@ export default function ListFilterItem(props: PropsType) {
     };
 
     return (
-        <div className="flex flex-col h-full gap-3">
+        <div className="flex flex-col gap-3">
             {props.list.slice(0, displayCount).map((item) => (
                 <FilterItemComponent isMultipleChoice={props.isMultipleChoice} key={item.id} prop={item} onClick={() => { toggleItemCheck(item.id) }} />
             ))}
