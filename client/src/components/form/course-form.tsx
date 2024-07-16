@@ -132,16 +132,27 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
     form!.setValue("thumbnailUrl", croppedImageUrl);
     setIsOpen(false);
   };
+  const standardizeUrl = (url: string) => {
+    try {
+      const urlObj = new URL(url);
+      console.log(`${urlObj.protocol}//${urlObj.hostname}${urlObj.pathname}`);
+      return `${urlObj.protocol}//${urlObj.hostname}${urlObj.pathname}`;
+    } catch (error) {
+      console.error("Invalid URL:", error);
+      return url; // Return the original URL if it's invalid
+    }
+  };
 
   const handleCourseLink = async () => {
     setLoading(true);
+
     const courseLink = form?.watch("link");
     try {
       const data = await fetchOpenGraphData(courseLink!);
       if (data) {
         if (data.title != null) form?.setValue("name", data.title);
         form?.trigger("name");
-        if (data.url != null && data.url != "") form?.setValue("link", data.url);
+        if (data.url != null && data.url != "") form?.setValue("link", standardizeUrl(data.url));
         if (data.site_name != null) form?.setValue("platform", data.site_name);
         if (data.image) {
           setThumbnail({
