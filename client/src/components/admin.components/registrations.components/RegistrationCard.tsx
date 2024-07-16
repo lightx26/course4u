@@ -75,10 +75,14 @@ function RegistrationCardComponent({ registration }: PropsType) {
     return `Period: ${convertJSDatesToCorrectFormat(startDate)} - ${convertJSDatesToCorrectFormat(endDate)}`
   }
 
+  const handlePopup = () => {
+    alert("Popup has appeared")
+  }
+
   return (
-    <a
-      href=""
+    <div
       className="w-full overflow-hidden text-sm rounded-xl leading-normal transition-shadow bg-white border border-gray-200 border-solid shadow cursor-pointer duration-250 hover:shadow-lg grow"
+      onClick={handlePopup}
     >
       <div className="course-information rounded-3xl">
         <img
@@ -126,7 +130,7 @@ function RegistrationCardComponent({ registration }: PropsType) {
           {handlePeriod(registration.startDate, registration.endDate)}
         </div>
       </div>
-    </a>
+    </div>
   );
 }
 

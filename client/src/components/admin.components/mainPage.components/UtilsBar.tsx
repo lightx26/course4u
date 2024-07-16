@@ -62,9 +62,8 @@ const UtilsBar = () => {
             <div className="search-bar w-[70%]">
                 <span className="text-[11px] font-normal">Search: </span>
                 <div
-                    className="bg-white flex px-2 py-0.5"
+                    className="bg-white flex px-2 py-0.5 items-center"
                     style={{
-                        alignItems: "center",
                         border: "1px solid rgba(233, 234, 240, 1)",
                     }}
                 >
@@ -74,13 +73,12 @@ const UtilsBar = () => {
                         alt="search"
                     />
                     <input
-                        className="w-full h-[70%] ml-2 py-2 placeholder-opacity-10 focus:outline-none"
+                        className="w-full h-[70%] ml-2 py-2 placeholder-opacity-5 focus:outline-none"
                         placeholder="Search registration by course name or learner"
                         value={searchContent}
                         onChange={(e) => {
                             setSearchContent(e.target.value);
                         }}
-                        style={{fontSize: "12px"}}
                     ></input>
                 </div>
             </div>

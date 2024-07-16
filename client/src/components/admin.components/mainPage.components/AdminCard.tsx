@@ -8,6 +8,7 @@ interface AdminCardProps {
 }
 
 function AdminCard() {
+  // Placeholder information
   const adminInformation: AdminCardProps = {
     username: "Admin",
     email: "admin@mgm-tp.com",
