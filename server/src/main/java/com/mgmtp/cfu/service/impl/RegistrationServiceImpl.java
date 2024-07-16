@@ -7,19 +7,15 @@ import com.mgmtp.cfu.exception.MapperNotFoundException;
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper;
 
 import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO;
-import com.mgmtp.cfu.dto.RegistrationOverviewDTO;
 import com.mgmtp.cfu.entity.Registration;
-import com.mgmtp.cfu.enums.RegistrationStatus;
 import com.mgmtp.cfu.exception.RegistrationNotFoundException;
 import com.mgmtp.cfu.exception.RegistrationStatusNotFoundException;
 import com.mgmtp.cfu.mapper.DTOMapper;
-import com.mgmtp.cfu.mapper.RegistrationOverviewMapper;
 import com.mgmtp.cfu.mapper.factory.MapperFactory;
 import com.mgmtp.cfu.repository.RegistrationRepository;
 import com.mgmtp.cfu.service.RegistrationService;
 import com.mgmtp.cfu.util.AuthUtils;
 import com.mgmtp.cfu.util.RegistrationValidator;
-import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,8 +25,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
-
 
 import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getRegistrationOverviewDTOS;
 import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getSortedRegistrations;
@@ -63,27 +57,6 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     @Override
-    public Page<RegistrationOverviewDTO> getRegistrationByStatus(int page, String status) {
-        try{
-            PageRequest pageRequest = PageRequest.of(page - 1, 8);
-            RegistrationStatus registrationStatus = RegistrationStatus.valueOf(status.toUpperCase());
-
-            Page<Registration> registrations = registrationRepository.findAllByStatus(registrationStatus, pageRequest);
-
-            List<RegistrationOverviewDTO> modifiedResponseContent = registrations
-                    .getContent()
-                    .stream()
-                    .map(registrationOverviewMapper::toDTO)
-                    .toList();
-
-            return new PageImpl<>(modifiedResponseContent, pageRequest, registrations.getTotalElements());
-        }
-        catch (IllegalArgumentException e){
-            throw new RegistrationStatusNotFoundException("Status not found");
-        }
-    }
-
-    @Override
     public PageResponse getMyRegistrationPage(int page, String status) {
         status = status.trim();
         var userId = AuthUtils.getCurrentUser().getId();
@@ -104,7 +77,6 @@ public class RegistrationServiceImpl implements RegistrationService {
         var listOfMyRegistration = getRegistrationOverviewDTOS(page, myRegistrations, registrationMapperFactory.getDTOMapper(RegistrationOverviewDTO.class));
         return PageResponse.builder().list(listOfMyRegistration).totalElements(myRegistrations.size()).build();
     }
-}
 
     @Override
     public Page<RegistrationOverviewDTO> getAllRegistrations(int page) {
@@ -119,4 +91,26 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         return new PageImpl<>(modifiedResponseContent, pageRequest, registrations.getTotalElements());
     }
+
+    @Override
+    public Page<RegistrationOverviewDTO> getRegistrationByStatus(int page, String status) {
+        try{
+            PageRequest pageRequest = PageRequest.of(page - 1, 8);
+            RegistrationStatus registrationStatus = RegistrationStatus.valueOf(status.toUpperCase());
+
+            Page<Registration> registrations = registrationRepository.findAllByStatus(registrationStatus, pageRequest);
+
+            List<RegistrationOverviewDTO> modifiedResponseContent = registrations
+                    .getContent()
+                    .stream()
+                    .map(registrationOverviewMapper::toDTO)
+                    .toList();
+
+            return new PageImpl<>(modifiedResponseContent, pageRequest, registrations.getTotalElements());
+        }
+        catch (IllegalArgumentException e){
+            throw new RegistrationStatusNotFoundException("Status not found");
+        }
+    }
+
 }

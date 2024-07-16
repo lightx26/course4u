@@ -1,7 +1,7 @@
 package com.mgmtp.cfu.controller
 
-import com.mgmtp.cfu.dto.RegistrationDetailDTO
-import com.mgmtp.cfu.dto.RegistrationOverviewDTO
+import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO
+import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO
 import com.mgmtp.cfu.exception.RegistrationNotFoundException
 import com.mgmtp.cfu.exception.RegistrationStatusNotFoundException
 import com.mgmtp.cfu.service.RegistrationService
@@ -18,7 +18,7 @@ class RegistrationControllerSpec extends Specification {
     def "test getDetailRegistration"() {
         given:
             def registrationId = 1
-        RegistrationDetailDTO registrationDetailDTO = RegistrationDetailDTO.builder().build()
+            RegistrationDetailDTO registrationDetailDTO = RegistrationDetailDTO.builder().build()
             registrationService.getDetailRegistration(registrationId) >> registrationDetailDTO
         when:
             ResponseEntity<RegistrationDetailDTO> response = registrationController.getDetailRegistration(registrationId)
