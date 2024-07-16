@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import RegistrationPaginationSection from "./RegistrationPaginationSection.tsx";
 import SatusFilter from "../StatusFilter.tsx";
 import { fetchListOfMyRegistration } from "../../../apiService/MyRegistration.service.ts";
 import ListMyRegistrationCardComponent from "./ListMyRegistrationCardComponent.tsx";
 import { Status, statusList } from "../../../utils/index.ts";
+import PaginationSection from "../Homepage/PaginationSection.tsx";
 
 
 export type OverviewMyRegistrationType = {
@@ -71,7 +71,7 @@ export default function MyRegistrationPage() {
         />
       )}
       {totalItem > 10 && (
-        <RegistrationPaginationSection
+        <PaginationSection
           totalItems={totalItem}
           currentPage={currentPage}
           itemPerPage={10}

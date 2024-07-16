@@ -22,7 +22,7 @@ export default function PaginationSection({ totalItems, itemPerPage, currentPage
     return (
         <Pagination>
             <PaginationContent>
-                <PaginationItem className={currentPage == 1 ? 'pointer-events-none opacity-80' : ''}>
+                <PaginationItem className={currentPage == 1 ? 'pointer-events-none opacity-50 cursor-not-allowed' : ''}>
                     <PaginationPrevious onClick={(event) => {
                         if (currentPage > 1)
                             handlePageClick(event, currentPage - 1)
@@ -62,7 +62,7 @@ export default function PaginationSection({ totalItems, itemPerPage, currentPage
                 <PaginationItem key={lastPage}>
                     <PaginationLink className={currentPage == lastPage ? 'bg-violet-600 text-white' : ''} onClick={(event) => handlePageClick(event, lastPage)}>{lastPage}</PaginationLink>
                 </PaginationItem>
-                <PaginationItem className={currentPage == lastPage ? 'pointer-events-none opacity-80' : ''}>
+                <PaginationItem className={currentPage == lastPage ? 'pointer-events-none opacity-50 cursor-not-allowed' : ''}>
                     <PaginationNext onClick={(event) => {
                         if (currentPage < lastPage)
                             handlePageClick(event, currentPage + 1)

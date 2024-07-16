@@ -1,6 +1,6 @@
 import instance from "../utils/customizeAxios";
 
-async function fetchListAvailableCourse(offset: number = 1, limit: number = 8, sortBy: string = "NEWEST", categoryFilters: number[], levelFilters: string[], platformFilters: string[], minRating: number = 0) {
+async function fetchListAvailableCourse(offset: number = 1, limit: number = 8, sortBy: string = "NEWEST", categoryFilters?: number[], levelFilters?: string[], platformFilters?: string[], minRating: number = 0) {
   // eslint-disable-next-line no-useless-catch
   try {
     const request_params = {
