@@ -39,6 +39,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import java.util.Set;
 
+
 @Service
 @Log4j2
 public class CourseServiceImpl implements CourseService {
@@ -67,9 +68,6 @@ public class CourseServiceImpl implements CourseService {
         throw new CourseNotFoundException("course with id " + id + " not found");
     }
 
-    //    private final ModelMapper modelMapper;
-    @Value("${uploadDir}")
-    private String uploadDir;
 
     @Override
     public CourseResponse createCourse(CourseRequest courseRequest) {

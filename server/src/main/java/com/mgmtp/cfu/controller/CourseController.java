@@ -1,7 +1,5 @@
 package com.mgmtp.cfu.controller;
 
-import com.mgmtp.cfu.dto.AvailableCourseRequest;
-import com.mgmtp.cfu.dto.CourseDto;
 import com.mgmtp.cfu.exception.BadRequestRunTimeException;
 import com.mgmtp.cfu.dto.coursedto.*;
 import com.mgmtp.cfu.exception.DuplicateCourseException;

@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler({ServerErrorRuntimeException.class})
     public ResponseEntity<?> handleException(final Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(500, e.getMessage(),null));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(e.getMessage(),"500"));
     }
     @ExceptionHandler({AccessDeniedException.class})
     public ResponseEntity<?> handleAccessDeniedException(final Exception e) {

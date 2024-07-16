@@ -42,9 +42,6 @@ class CourseServiceImplSpec extends Specification {
     @Subject
     CourseService courseService = new CourseServiceImpl(courseRepository, courseMapperFactory, categorySerivce, uploadService)
 
-    def setup() {
-        courseService.uploadDir = "./uploads"
-    }
 
     def "test createCourse with thumbnail file"() {
         given:
