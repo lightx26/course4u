@@ -121,7 +121,10 @@ export const RegistrationsForm = ({
                             <FormItem className='w-[100px] mt-8'>
                                 <Select
                                     onValueChange={field.onChange}
-                                    defaultValue={field.value}
+                                    defaultValue={
+                                        durationUnit ||
+                                        form.watch("durationUnit")
+                                    }
                                     disabled={!isEdit}
                                 >
                                     <FormControl>

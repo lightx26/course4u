@@ -255,39 +255,44 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
       <div className="flex items-stretch gap-6">
         <div className="w-[60%] gap-6 flex justify-between flex-col">
           <div className="flex gap-4">
-            <FormField
-              control={form!.control}
-              name="platform"
-              render={({ field }) => (
-                <FormItem className="w-[50%]">
-                  <FormLabel>
-                    Platform{""}
-                    <span className="text-red-500">*</span>
-                  </FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={course?.platform || form?.watch("platform")}
-                    value={
-                      course?.platform.toUpperCase() ||
-                      form?.watch("platform").toUpperCase()
-                    }
-                    disabled={!isEdit}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a platform to this course" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="COURSERA">Coursera</SelectItem>
-                      <SelectItem value="UDEMY">Udemy</SelectItem>
-                      <SelectItem value="LINKEDIN">Linkedin</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                  control={form!.control}
+                  name='platform'
+                  render={({ field }) => (
+                      <FormItem className='w-[50%]'>
+                          <FormLabel>
+                              Platform{""}
+                              <span className='text-red-500'>*</span>
+                          </FormLabel>
+                          <Select
+                              onValueChange={field.onChange}
+                              defaultValue={
+                                  course?.platform.toUpperCase() ||
+                                  form?.watch("platform").toUpperCase()
+                              }
+                              disabled={!isEdit}
+                          >
+                              <FormControl>
+                                  <SelectTrigger>
+                                      <SelectValue placeholder='Select a platform to this course' />
+                                  </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                  <SelectItem value='COURSERA'>
+                                      Coursera
+                                  </SelectItem>
+                                  <SelectItem value='UDEMY'>
+                                      Udemy
+                                  </SelectItem>
+                                  <SelectItem value='LINKEDIN'>
+                                      LinkedIn
+                                  </SelectItem>
+                              </SelectContent>
+                          </Select>
+                          <FormMessage />
+                      </FormItem>
+                  )}
+              />
             <FormField
               control={form!.control}
               name="level"

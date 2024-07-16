@@ -158,7 +158,9 @@ INSERT INTO "Registration" ("Id", "Status", "StartDate", "EndDate", "Score", "Re
 INSERT INTO "Registration" ("Id", "Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdate", "DurationUnit", "UserId") VALUES (97, 'DRAFT', '2024-05-26', '2025-05-07', 80, '2023-08-04', 11, 4, null, 'MONTH', 1);
 INSERT INTO "Registration" ("Id", "Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdate", "DurationUnit", "UserId") VALUES (98, 'VERIFIED', '2024-05-14', '2025-07-08', 44, '2024-04-26', 32, 1, null, 'DAY', 1);
 INSERT INTO "Registration" ("Id", "Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdate", "DurationUnit", "UserId") VALUES (99, 'DOCUMENT_DECLINED', '2023-07-20', '2024-10-19', 62, '2024-07-08', 67, 3, null, 'WEEK', 1);
-INSERT INTO "Registration" ("Id", "Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdate", "DurationUnit", "UserId") VALUES (100, 'VERIFIED', '2024-02-10', null, 35, '2023-10-16', 27, 3, null, 'MONTH', 1);
+
+INSERT INTO "Registration" ("Id", "Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdate", "DurationUnit", "UserId") VALUES (100, 'DRAFT', '2024-02-10', '2025-02-27', 35, '2023-10-16', 27, 32, null, 'MONTH', 1);
+INSERT INTO "Registration" ("Id", "Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdate", "DurationUnit", "UserId") VALUES (101, 'DRAFT', '2024-02-10', '2025-02-27', 35, '2023-10-16', 27, 1, null, 'MONTH', 1);
 
 INSERT INTO "CourseReview" ("CourseId", "UserId", "Rating", "Comment", "CreatedDate")
 values ('1', '1', '5', 'Good course', '2021-01-01'),
