@@ -23,7 +23,7 @@ async function fetchListAvailableCourse(offset: number = 1, limit: number = 8, s
   }
 }
 
-const fetchDataCourseById = async (id: string | null) => {
+const fetchDataCourseById = async (id: string | undefined) => {
   try {
     const response = await instance.get(`/courses/${id}`);
     return response;

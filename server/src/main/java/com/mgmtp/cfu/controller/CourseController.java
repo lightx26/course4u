@@ -64,7 +64,7 @@ public class CourseController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void deleteCourse(@PathVariable Long id) {
         if(Objects.isNull(id))
-            throw new BadRequestRunTimeException("The course id must not null.");
+            throw new BadRequestRunTimeException("The course id must not be null.");
         courseService.deleteCourseById(id);
     }
 }

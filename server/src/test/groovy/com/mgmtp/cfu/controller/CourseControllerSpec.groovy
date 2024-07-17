@@ -1,12 +1,7 @@
 package com.mgmtp.cfu.controller
 
 import com.mgmtp.cfu.dto.coursedto.CourseSearchRequest
-import com.mgmtp.cfu.dto.AvailableCourseRequest
-import com.mgmtp.cfu.dto.CourseDto
-import com.mgmtp.cfu.dto.CoursePageDTO
-import com.mgmtp.cfu.controller.CourseController
 import com.mgmtp.cfu.exception.BadRequestRunTimeException
-import com.mgmtp.cfu.dto.coursedto.AvailableCourseRequest
 import com.mgmtp.cfu.dto.coursedto.CourseDto
 import com.mgmtp.cfu.dto.coursedto.CourseOverviewDTO
 import com.mgmtp.cfu.dto.coursedto.CoursePageFilter
