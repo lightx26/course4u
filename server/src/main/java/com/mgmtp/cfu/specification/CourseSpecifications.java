@@ -51,7 +51,7 @@ public class CourseSpecifications {
 
     public static Specification<Course> sortByCreatedDateDesc() {
         return (root, query, builder) -> {
-            query.orderBy(builder.desc(root.get("createdDate")));
+            query.orderBy(builder.desc(root.get("createdDate")), builder.asc(root.get("id")));
             return query.getRestriction();
         };
     }
@@ -74,7 +74,7 @@ public class CourseSpecifications {
                     .where(cb.equal(courseSubqueryJoin.get("id"), root.get("id")));
 
             // Main query
-            query.orderBy(cb.desc(enrollmentCountSubquery));
+            query.orderBy(cb.desc(enrollmentCountSubquery), cb.asc(root.get("id")));
 
             return query.getRestriction();
         };
@@ -86,7 +86,7 @@ public class CourseSpecifications {
 
             query.orderBy(builder.desc(builder.selectCase()
                     .when(builder.isNull(ratingSubquery.getSelection()), -1.0)
-                    .otherwise(ratingSubquery)));
+                    .otherwise(ratingSubquery)), builder.asc(root.get("id")));
 
             return query.getRestriction();
         };
