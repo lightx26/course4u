@@ -1,19 +1,53 @@
-
-import React, { useState } from "react";
-import logo from "../../assets/images/logo.jpg";
+import React, { useEffect, useState } from "react";
 import Card_LeaderBoard from "../../components/user.components/Card_LeaderBoard";
-import { Table,Select } from "antd";
+import { Table, Select } from "antd";
 import type { TableProps } from "antd";
 import "../../assets/css/Leader_board.css";
+import {
+  getAllYearsLeadBoard,
+  getDataLeaderBoard,
+} from "../../apiService/Score.service";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store/store";
+interface DataType {
+  key: string;
+  rank: number;
+  userInfor: {
+    avatarUrl: string;
+    username: string;
+    fullname: string;
+    email: string;
+  };
+  time: number;
+  score: number;
+  mine: boolean;
+}
+interface IDataResponse {
+  avatarUrl: string;
+  email: string;
+  fullName: string;
+  learningTime: number;
+  mine: boolean;
+  score: number;
+  userId: number;
+  username: string;
+}
+
+interface IYear {
+  value: string;
+  label: string;
+}
 const LeaderBoard: React.FC = () => {
   const [valueYear, setValueYear] = useState<string>("2024");
-  interface DataType {
-    key: string;
-    rank: number;
-    username: object;
-    time: number;
-    score: number;
-  }
+  const [dataCardLeaderBoard, setDataCardLeaderBoard] = useState<DataType[]>(
+    []
+  );
+  const [dataLeaderBoardTable, setDataLeaderBoardTable] = useState<DataType[]>(
+    []
+  );
+
+  const [dataYears, setDataYears] = useState<IYear[]>([]);
+  const username = useSelector((state: RootState) => state.user.user.username);
 
   const columns: TableProps<DataType>["columns"] = [
     {
@@ -21,40 +55,28 @@ const LeaderBoard: React.FC = () => {
       dataIndex: "rank",
       key: "rank",
       width: 100,
-      render: (text) => <p style={{ fontWeight: "500" }}>{text}</p>,
+      render: (text) => <p className="font-medium">{text}</p>,
     },
     {
       title: "Username",
-      dataIndex: "username",
-      key: "username",
+      dataIndex: "userInfor",
+      key: "userInfor",
       render: (data: { avatarUrl: string; username: string }) => {
         return (
           <>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <div
-                style={{
-                  position: "relative",
-                  width: "30px",
-                  height: "30px",
-                  borderRadius: "50%",
-                }}
-              >
+            <div className="flex items-center gap-2.5">
+              <div className="relative w-8 h-8 rounded-full">
                 <img
                   src={data.avatarUrl}
                   alt=""
-                  style={{
-                    position: "absolute",
-                    width: "100%",
-                    height: "100%",
-                    left: 0,
-                    right: 0,
-                    objectFit: "cover",
-                    objectPosition: "center",
-                    borderRadius: "50%",
-                  }}
+                  className="absolute w-full h-full object-cover object-center rounded-full"
                 />
               </div>
-              <div style={{ fontWeight: 400 }}>{data.username}</div>
+              <div className="font-normal">
+                {data.username === username
+                  ? `${data.username} (You)`
+                  : `${data.username}`}
+              </div>
             </div>
           </>
         );
@@ -64,180 +86,122 @@ const LeaderBoard: React.FC = () => {
       title: "Time",
       dataIndex: "time",
       key: "time",
-      render: (text) => <p style={{ fontSize: "1rem" }}>{text}</p>,
+      render: (text) => <p className="text-[16px]">{text}</p>,
     },
     {
       title: "Score",
       dataIndex: "score",
       key: "score",
-      render: (text) => <p style={{ fontSize: "1rem" }}>{text}</p>,
+      render: (text) => <p className="text-[16px]">{text}</p>,
     },
   ];
-  const data: DataType[] = [
-    {
-      key: "1",
-      rank: 4,
-      username: {
-        avatarUrl: logo,
-        username: "NguyenThucHoang",
-      },
-      time: 44,
-      score: 60,
-    },
-    {
-      key: "2",
-      rank: 5,
-      username: {
-        avatarUrl: logo,
-        username: "NguyenThucHoang",
-      },
-      time: 44,
-      score: 60,
-    },
-    {
-      key: "3",
-      rank: 6,
-      username: {
-        avatarUrl: logo,
-        username: "NguyenThucHoang",
-      },
-      time: 44,
-      score: 60,
-    },
-    {
-      key: "4",
-      rank: 7,
-      username: {
-        avatarUrl: logo,
-        username: "NguyenThucHoang",
-      },
-      time: 44,
-      score: 60,
-    },
-    {
-      key: "5",
-      rank: 8,
-      username: {
-        avatarUrl: logo,
-        username: "NguyenThucHoang",
-      },
-      time: 44,
-      score: 60,
-    },
-    {
-      key: "6",
-      rank: 9,
-      username: {
-        avatarUrl: logo,
-        username: "NguyenThucHoang",
-      },
-      time: 44,
-      score: 60,
-    },
-    {
-      key: "7",
-      rank: 10,
-      username: {
-        avatarUrl: logo,
-        username: "NguyenThucHoang",
-      },
-      time: 44,
-      score: 60,
-    },
-  ];
-
 
   const handleChange = (value: string) => {
     setValueYear(value);
   };
+
+  const fetchDataLeaderBoard = async (valueYear: string) => {
+    const result = await getDataLeaderBoard(valueYear);
+    if (result && result.leaderboardUserDTOs) {
+      const dataTmp: DataType[] = result.leaderboardUserDTOs.map(
+        (item: IDataResponse, index: number) => ({
+          key: index.toString(),
+          rank: index + 1,
+          userInfor: {
+            avatarUrl: item.avatarUrl,
+            username: item.username,
+            email: item.email,
+            fullname: item.fullName,
+          },
+          time: item.learningTime,
+          score: item.score,
+          mine: item.mine,
+        })
+      );
+
+      let reorderedData: DataType[] = [];
+      if (dataTmp.length >= 3) {
+        reorderedData = [dataTmp[1], dataTmp[0], dataTmp[2]];
+      } else if (dataTmp.length === 2) {
+        reorderedData = [dataTmp[1], dataTmp[0]];
+      } else if (dataTmp.length === 1) {
+        reorderedData = [dataTmp[0]];
+      }
+
+      setDataCardLeaderBoard(reorderedData);
+
+      if (dataTmp.length > 3) {
+        setDataLeaderBoardTable(dataTmp.slice(3));
+      }
+    }
+  };
+
+  const fetchAllYears = async () => {
+    const result = await getAllYearsLeadBoard();
+    if (result && result.data) {
+      const dataTmp: IYear[] = result.data.map((item: string) => ({
+        value: item,
+        label: item,
+      }));
+      setDataYears(dataTmp);
+    }
+  };
+  const rowClassName = (record: DataType) => {
+    return record.mine ? "colorText" : "";
+  };
+
+  useEffect(() => {
+    fetchDataLeaderBoard(valueYear);
+  }, [valueYear]);
+
+  useEffect(() => {
+    fetchAllYears();
+  }, []);
+
   return (
     <>
-      <div style={{ backgroundColor: "#f5f5f5", paddingBottom: "50px" }}>
-        <div
-          style={{
-            maxWidth: "1536px",
-            margin: "0 auto",
-            padding: "25px 20px 0px 20px",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: "0px 10px",
-            }}
-          >
+      <div className="bg-gray-100 pb-12">
+        <div className="max-w-screen-2xl mx-auto px-5 pt-6">
+          <div className="flex items-center justify-between px-2.5">
             <div>
-              <span style={{ fontSize: "2rem", fontWeight: 600 }}>
-                Ranking of
-              </span>
-              <span
-                style={{ fontSize: "2rem", fontWeight: 600, color: "#861fa2" }}
-              >
-                {" "}
-                Year 2024
-              </span>
+              <span className="text-4xl font-semibold">Ranking</span>
             </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "25px",
-              }}
-            >
-              <div style={{ color: "#666666", fontSize: "1.1rem" }}>Year</div>
+            <div className="flex items-center justify-center gap-6">
+              <div className="text-gray-600 text-lg">Year</div>
               <div>
-              <Select
-      defaultValue={valueYear}
-      style={{ width: 120 }}
-      onChange={handleChange}
-      options={[
-        { value: '2024', label: '2024' },
-        { value: '2023', label: '2023' },
-        { value: '2022', label: '2022' },
-      ]}
-    />
+                <Select
+                  defaultValue={valueYear}
+                  style={{ width: 120 }}
+                  onChange={handleChange}
+                  options={dataYears}
+                />
               </div>
             </div>
           </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              gap: "30px",
-              marginTop: "40px",
-              alignItems: "flex-end",
-            }}
-          >
-            <Card_LeaderBoard
-              username="NguyenThucHoang"
-              email="hoang.thuc.nguyen@mgm-tp.com"
-              ranking={2}
-              avatarUrl={logo}
-              score={8888}
-              learningTime={160}
-            />
-            <Card_LeaderBoard
-              username="NguyenThucHoang"
-              email="hoang.thuc.nguyen@mgm-tp.com"
-              ranking={1}
-              avatarUrl={logo}
-              score={8888}
-              learningTime={160}
-            />
-            <Card_LeaderBoard
-              username="NguyenThucHoang"
-              email="hoang.thuc.nguyen@mgm-tp.com"
-              ranking={3}
-              avatarUrl={logo}
-              score={8888}
-              learningTime={160}
-            />
+          <div className="flex justify-center gap-8 mt-10 items-end">
+            {dataCardLeaderBoard &&
+              dataCardLeaderBoard.length > 0 &&
+              dataCardLeaderBoard.map((item: DataType, index: number) => {
+                if (index <= 2)
+                  return (
+                    <Card_LeaderBoard
+                      username={item.userInfor.username}
+                      email={item.userInfor.email}
+                      ranking={item.rank}
+                      avatarUrl={item.userInfor.avatarUrl}
+                      score={item.score}
+                      learningTime={item.time}
+                    />
+                  );
+              })}
           </div>
-          <div style={{ marginTop: "50px" }}>
-            <Table columns={columns} dataSource={data} pagination={false} />
+          <div className="mt-12">
+            <Table
+              columns={columns}
+              dataSource={dataLeaderBoardTable}
+              pagination={false}
+              rowClassName={rowClassName}
+            />
           </div>
         </div>
       </div>

@@ -1,3 +1,9 @@
 .ant-table-wrapper .ant-table-thead > tr > th {
   background-color: white !important;
 }
+
+.colorText {
+  color: #861fa2;
+  font-size: 16px;
+  font-weight: 500;
+}
