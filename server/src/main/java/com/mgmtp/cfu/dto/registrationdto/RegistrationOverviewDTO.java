@@ -1,5 +1,6 @@
 package com.mgmtp.cfu.dto.registrationdto;
 
+import com.mgmtp.cfu.enums.CoursePlatform;
 import com.mgmtp.cfu.enums.DurationUnit;
 import com.mgmtp.cfu.enums.RegistrationStatus;
 import lombok.*;
@@ -22,7 +23,7 @@ public class RegistrationOverviewDTO {
     private Long courseId;
     private String courseName;
     private String courseThumbnailUrl;
-    private String coursePlatform;
+    private CoursePlatform coursePlatform;
     private Long userId;
     private String userName;
     private String userFullname;

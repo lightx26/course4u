@@ -1,6 +1,7 @@
 package com.mgmtp.cfu.mapper
 
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO
+import com.mgmtp.cfu.enums.CoursePlatform
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper
 import com.mgmtp.cfu.entity.Course
 import com.mgmtp.cfu.entity.Registration
@@ -17,12 +18,13 @@ class RegistrationOverviewMapperSpec extends Specification {
     RegistrationOverviewMapper registrationOverviewMapper = Mappers.getMapper(RegistrationOverviewMapper.class)
     def "test ToDto"() {
         given:
+        def platform = CoursePlatform.LINKEDIN
         def course = Course.builder()
                 .id(1)
                 .name("Java")
                 .status(CourseStatus.AVAILABLE)
                 .link("link")
-                .platform("platform")
+                .platform(platform)
                 .thumbnailUrl("thumbnail")
                 .createdDate(LocalDate.now())
                 .teacherName("Teacher Name")

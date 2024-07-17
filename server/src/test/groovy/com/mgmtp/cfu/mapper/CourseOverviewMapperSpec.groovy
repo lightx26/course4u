@@ -2,6 +2,7 @@ package com.mgmtp.cfu.mapper
 
 import com.mgmtp.cfu.dto.coursedto.CourseOverviewDTO
 import com.mgmtp.cfu.entity.Course
+import com.mgmtp.cfu.enums.CoursePlatform
 import com.mgmtp.cfu.mapper.dataprovider.CourseDataProvider
 import org.mapstruct.factory.Mappers
 import spock.lang.Specification
@@ -31,7 +32,7 @@ class CourseOverviewMapperSpec extends Specification {
         given:
         courseMapper.courseDataProvider = courseDataProvider
         int enrollmentCount = 5
-        Course courseEntity = new Course(id:1, name:"Test Course", platform:"Test Platform")
+        Course courseEntity = new Course(id:1, name:"Test Course", platform: CoursePlatform.UDEMY)
         courseDataProvider.countLegitRegistrationInCourse(courseEntity.id) >> enrollmentCount
 
         when:

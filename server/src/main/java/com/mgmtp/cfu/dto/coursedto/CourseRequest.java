@@ -1,6 +1,7 @@
 package com.mgmtp.cfu.dto.coursedto;
 
 import com.mgmtp.cfu.enums.CourseLevel;
+import com.mgmtp.cfu.enums.CoursePlatform;
 import com.mgmtp.cfu.enums.CourseStatus;
 import com.mgmtp.cfu.util.UrlUtils;
 import lombok.*;
@@ -16,7 +17,7 @@ import java.util.List;
 public class CourseRequest {
     private String name;
     private String link;
-    private String platform;
+    private CoursePlatform platform;
     private MultipartFile thumbnailFile;
     private String thumbnailUrl;
     private String teacherName;

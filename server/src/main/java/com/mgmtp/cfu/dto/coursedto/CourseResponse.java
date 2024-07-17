@@ -1,6 +1,7 @@
 package com.mgmtp.cfu.dto.coursedto;
 
 import com.mgmtp.cfu.enums.CourseLevel;
+import com.mgmtp.cfu.enums.CoursePlatform;
 import com.mgmtp.cfu.enums.CourseStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +17,7 @@ import java.util.Set;
 public class CourseResponse {
     private String name;
     private String link;
-    private String platform;
+    private CoursePlatform platform;
     private String thumbnailUrl;
     private String teacherName;
     private CourseStatus status;

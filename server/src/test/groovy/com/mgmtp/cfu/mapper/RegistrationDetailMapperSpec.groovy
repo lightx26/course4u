@@ -6,6 +6,7 @@ import com.mgmtp.cfu.entity.Course
 import com.mgmtp.cfu.entity.Registration
 import com.mgmtp.cfu.entity.User
 import com.mgmtp.cfu.enums.CourseLevel
+import com.mgmtp.cfu.enums.CoursePlatform
 import com.mgmtp.cfu.enums.CourseStatus
 import com.mgmtp.cfu.enums.DurationUnit
 import com.mgmtp.cfu.enums.Gender
@@ -25,6 +26,7 @@ class RegistrationDetailMapperSpec extends Specification {
 
     def "test toDTO"() {
         given:
+        def platform = CoursePlatform.UDEMY
         Registration registration = new Registration(
                 id: 1L,
                 status: RegistrationStatus.APPROVED,
@@ -37,7 +39,7 @@ class RegistrationDetailMapperSpec extends Specification {
                 durationUnit: DurationUnit.MONTH,
                 course: new Course(
                         name: "Test Course",
-                        platform: "Test Platform",
+                        platform: platform,
                         id: 1L,
                         categories: new HashSet<Category>([new Category(id: 1,name: "Test Category")]),
                         link: "Test Link",
@@ -76,7 +78,7 @@ class RegistrationDetailMapperSpec extends Specification {
             dto.durationUnit == DurationUnit.MONTH
 
             def course = dto.course
-            course.platform == "Test Platform"
+            course.platform == platform
             course.name == "Test Course"
             course.id == 1L
             course.categories.size() == 1

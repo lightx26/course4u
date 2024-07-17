@@ -10,6 +10,7 @@ import com.mgmtp.cfu.entity.Course
 import com.mgmtp.cfu.entity.Registration
 import com.mgmtp.cfu.enums.CoursePageSortOption
 import com.mgmtp.cfu.enums.CourseLevel
+import com.mgmtp.cfu.enums.CoursePlatform
 import com.mgmtp.cfu.enums.CourseStatus
 import com.mgmtp.cfu.exception.BadRequestRunTimeException
 import com.mgmtp.cfu.exception.ServerErrorRuntimeException
@@ -55,7 +56,7 @@ class CourseServiceImplSpec extends Specification {
         CourseRequest courseRequest = CourseRequest.builder()
                 .name("Java Programming")
                 .link("https://example.com/java-course")
-                .platform("Udemy")
+                .platform(CoursePlatform.UDEMY)
                 .teacherName("John Doe")
                 .thumbnailFile(thumbnailFile)
                 .status(CourseStatus.PENDING)
@@ -68,7 +69,7 @@ class CourseServiceImplSpec extends Specification {
         Course course = Course.builder()
                 .name("Java Programming")
                 .link("https://example.com/java-course")
-                .platform("Udemy")
+                .platform(CoursePlatform.UDEMY)
                 .thumbnailUrl("https://example.com/thumbnail.jpg")
                 .teacherName("John Doe")
                 .createdDate(LocalDate.now())
@@ -103,7 +104,7 @@ class CourseServiceImplSpec extends Specification {
         CourseRequest courseRequest = CourseRequest.builder()
                 .name("Java Programming")
                 .link("https://example.com/java-course")
-                .platform("Udemy")
+                .platform(CoursePlatform.UDEMY)
                 .teacherName("John Doe")
                 .thumbnailUrl("https://example.com/thumbnail.jpg")
                 .status(CourseStatus.PENDING)
@@ -114,7 +115,7 @@ class CourseServiceImplSpec extends Specification {
         Course course = Course.builder()
                 .name("Java Programming")
                 .link("https://example.com/java-course")
-                .platform("Udemy")
+                .platform(CoursePlatform.UDEMY)
                 .thumbnailUrl("https://example.com/thumbnail.jpg")
                 .teacherName("John Doe")
                 .createdDate(LocalDate.now())
@@ -220,7 +221,7 @@ class CourseServiceImplSpec extends Specification {
                    new CoursePageFilter(categoryFilters: [1, 2, 3],
                            levelFilters: [CourseLevel.BEGINNER, CourseLevel.INTERMEDIATE],
                            minRating: 3.5,
-                           platformFilters: ["Udemy"])]
+                           platformFilters: ["UDEMY"])]
     }
 
     def "Should return the last page when pageNo is too high"() {

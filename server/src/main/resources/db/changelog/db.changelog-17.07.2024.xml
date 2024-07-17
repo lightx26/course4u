@@ -4,7 +4,11 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="0" author="KDNguyen">
-        <renameColumn tableName="Registration" oldColumnName="LastUpdate" newColumnName="LastUpdated"/>
+    <changeSet id="6" author="Quang Nguyen">
+        <sql>
+            UPDATE "Course" SET "Platform" = 'UDEMY' WHERE "Platform" = 'Udemy';
+            UPDATE "Course" SET "Platform" = 'COURSERA' WHERE "Platform" = 'Coursera';
+            UPDATE "Course" SET "Platform" = 'LINKEDIN' WHERE "Platform" IN ('Linkedin', 'Linkedin Learning');
+        </sql>
     </changeSet>
 </databaseChangeLog>
