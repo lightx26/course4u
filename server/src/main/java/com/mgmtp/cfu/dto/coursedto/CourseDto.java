@@ -2,7 +2,6 @@ package com.mgmtp.cfu.dto.coursedto;
 
 import com.mgmtp.cfu.entity.Category;
 import com.mgmtp.cfu.enums.CourseLevel;
-import com.mgmtp.cfu.enums.CoursePlatform;
 import com.mgmtp.cfu.enums.CourseStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +23,7 @@ public class CourseDto {
 
     private String link;
 
-    private CoursePlatform platform;
+    private String platform;
 
     private String thumbnailUrl;
 

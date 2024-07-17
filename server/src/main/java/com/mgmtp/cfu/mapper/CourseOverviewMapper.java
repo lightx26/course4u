@@ -16,6 +16,7 @@ public abstract class CourseOverviewMapper implements DTOMapper<CourseOverviewDT
         this.courseDataProvider = courseDataProvider;
     }
 
+    @Mapping(target = "platform", source = "platform.label")
     @Mapping(target = "enrollmentCount", expression = "java(courseDataProvider.countLegitRegistrationInCourse(course.getId()))")
     @Mapping(target = "rating", expression = "java(courseDataProvider.calculateAvgRating(course.getId()))")
     public abstract CourseOverviewDTO toDTO(Course course);

@@ -41,7 +41,7 @@ class CourseOverviewMapperSpec extends Specification {
         then:
         courseDTO.id == courseEntity.id
         courseDTO.name == courseEntity.name
-        courseDTO.platform == courseEntity.platform
+        courseDTO.platform == courseEntity.platform.getLabel()
         courseDTO.enrollmentCount == enrollmentCount
     }
 }

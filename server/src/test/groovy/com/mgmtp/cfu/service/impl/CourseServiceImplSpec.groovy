@@ -88,7 +88,7 @@ class CourseServiceImplSpec extends Specification {
         courseResponse != null
         courseResponse.name == courseRequest.name
         courseResponse.link == courseRequest.link
-        courseResponse.platform == courseRequest.platform
+        courseResponse.platform == courseRequest.platform.name()
         courseResponse.teacherName == courseRequest.teacherName
         courseResponse.status == courseRequest.status
         courseResponse.level == courseRequest.level
@@ -133,7 +133,7 @@ class CourseServiceImplSpec extends Specification {
         courseResponse != null
         courseResponse.name == courseRequest.name
         courseResponse.link == courseRequest.link
-        courseResponse.platform == courseRequest.platform
+        courseResponse.platform == courseRequest.platform.name()
         courseResponse.teacherName == courseRequest.teacherName
         courseResponse.categories.size() > 0
         // Verify interactions

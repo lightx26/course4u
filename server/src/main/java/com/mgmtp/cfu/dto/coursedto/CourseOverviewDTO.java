@@ -1,7 +1,6 @@
 package com.mgmtp.cfu.dto.coursedto;
 
 import com.mgmtp.cfu.enums.CourseLevel;
-import com.mgmtp.cfu.enums.CoursePlatform;
 import com.mgmtp.cfu.enums.CourseStatus;
 import lombok.*;
 
@@ -15,7 +14,7 @@ import java.time.LocalDate;
 public class CourseOverviewDTO {
     private Long id;
     private String name;
-    private CoursePlatform platform;
+    private String platform;
     private CourseLevel level;
     private LocalDate createdDate;
     private String thumbnailUrl;

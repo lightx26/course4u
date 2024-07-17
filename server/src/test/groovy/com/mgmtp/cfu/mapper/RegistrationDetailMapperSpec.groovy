@@ -78,7 +78,7 @@ class RegistrationDetailMapperSpec extends Specification {
             dto.durationUnit == DurationUnit.MONTH
 
             def course = dto.course
-            course.platform == platform
+            course.platform == platform.getLabel()
             course.name == "Test Course"
             course.id == 1L
             course.categories.size() == 1

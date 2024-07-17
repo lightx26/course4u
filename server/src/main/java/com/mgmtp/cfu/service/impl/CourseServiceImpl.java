@@ -34,11 +34,9 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import java.util.Set;
-
 
 @Service
 @Log4j2
@@ -62,12 +60,11 @@ public class CourseServiceImpl implements CourseService {
         Optional<Course> optCourse = courseRepository.findById(id);
         if (optCourse.isPresent()) {
             Course course = optCourse.get();
-            return new CourseDto(course.getId(), course.getName(), course.getLink(), course.getPlatform(), course.getThumbnailUrl(), course.getTeacherName(),
-                    course.getCreatedDate(), course.getStatus(), course.getLevel(), course.getCategories());
+            return new CourseDto(course.getId(), course.getName(), course.getLink(), course.getPlatform().getLabel(), course.getThumbnailUrl(), course.getTeacherName(),
+                                 course.getCreatedDate(), course.getStatus(), course.getLevel(), course.getCategories());
         }
         throw new CourseNotFoundException("course with id " + id + " not found");
     }
-
 
     @Override
     public CourseResponse createCourse(CourseRequest courseRequest) {
@@ -102,7 +99,6 @@ public class CourseServiceImpl implements CourseService {
             throw new RuntimeException("Error while uploading thumbnail");
         }
     }
-
 
     @Override
     public Page<CourseOverviewDTO> getAvailableCoursesPage(CoursePageFilter filter, CoursePageSortOption sortBy, int pageNo, int pageSize) {
