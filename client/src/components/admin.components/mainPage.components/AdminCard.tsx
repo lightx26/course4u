@@ -17,10 +17,10 @@ function AdminCard() {
 
   return (
     <div
-      className="bg-white h-96 rounded-2xl pt-4"
+      className="bg-white h-[20rem] rounded-2xl pt-4"
       style={{ boxShadow: "0px 0px 4px 0px rgba(0, 0, 0, 0.25)" }}
     >
-      <div className="personalizaion h-[40%] border-b-2">
+      <div className="personalizaion h-[49%] border-b-2">
         <div className="avatar h-[50%] w-full flex align-center justify-center mb-2.5">
           <div className="flex align-center justify-center">
             <img

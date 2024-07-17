@@ -1,21 +1,22 @@
 import React from "react";
-import SignOut from "../../../assets/images/admin.images/SignOut.svg";
 
+import functionList from "../../../utils/functionList";
+import {useDispatch} from "react-redux";
 import {AppDispatch} from "../../../redux/store/store.ts";
 import {useNavigate} from "react-router-dom";
-import {useDispatch} from "react-redux";
-import {handleLogout} from "../../../redux/slice/user.slice.ts";
 
-import functionList from "../../../utils/functionList.ts";
+import functionMapping from "../../../utils/functionMapping.ts";
 
 const PersonalizationFunctionList = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
 
-    const handleSignoutClick = (e: React.MouseEvent) => {
-        e.preventDefault();
-        navigate("/login");
-        dispatch(handleLogout());
+    const handleFunctionMapping = (e: React.MouseEvent, itemAlt: string) => {
+        functionMapping(e, navigate, dispatch, itemAlt);
+    }
+
+    const handleGap = (alt: string) => {
+        return alt == 'sign_out' ? '1.5' : '2.5'
     }
 
     return (
@@ -25,7 +26,14 @@ const PersonalizationFunctionList = () => {
         >
             {functionList.map((item) => (
                 <div
-                    className="function flex align-center justify-start pb-2 gap-1 cursor-pointer"
+                    className={`
+                        function flex align-center justify-start pb-2 cursor-pointer
+                        gap-${handleGap(item.alt)}
+                    `}
+                    key={item.key}
+                    onClick={(e) => {
+                        handleFunctionMapping(e, item.alt)
+                    }}
                 >
                     <div className="icon flex items-center">
                         <img className="h-[70%]" src={item.imgSrc} alt={item.alt}/>
@@ -33,13 +41,6 @@ const PersonalizationFunctionList = () => {
                     <span>{item.message}</span>
                 </div>
             ))}
-            <div className="function flex align-center justify-start gap-1 cursor-pointer"
-                 onClick={(e) => handleSignoutClick(e)}>
-                <div className="icon flex items-center">
-                    <img className="h-[70%]" src={SignOut} alt="registration_list_icon"/>
-                </div>
-                <span>Sign out</span>
-            </div>
         </div>
     )
 }

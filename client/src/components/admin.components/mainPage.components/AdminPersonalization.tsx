@@ -17,9 +17,9 @@ const AdminPersonalization = () =>{
 
     return (
         <div
-            className="bg-white h-[24rem] pt-4"
+            className="bg-white h-[19rem] pt-4"
         >
-            <div className="personalizaion h-[35%] border-b-2">
+            <div className="personalizaion h-[44%] border-b-2">
                 <div className="avatar h-[50%] w-full flex align-center justify-center mb-2.5">
                     <div className="flex align-center justify-center">
                         <img

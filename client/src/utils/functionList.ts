@@ -1,34 +1,31 @@
 import CourseList from "../assets/images/admin.images/CourseList.svg";
-import Notification from "../assets/images/admin.images/Notification.svg";
-import CreateCourse from "../assets/images/admin.images/CreateCourse.svg";
 import EditProfile from "../assets/images/admin.images/EditProfile.svg";
+import SignOut from "../assets/images/admin.images/SignOut.svg";
 
 const functionList = [
     {
+        key: 1,
         imgSrc: CourseList,
-        alt: "registration_list_icon",
-        message: "Registration List",
+        alt: "registration_list",
+        message: "Registration List"
     },
     {
+        key: 2,
         imgSrc: CourseList,
-        alt: "registration_list_icon",
+        alt: "course_list",
         message: "Course List"
     },
     {
-        imgSrc: Notification,
-        alt: "registration_list_icon",
-        message: "Create a notification"
-    },
-    {
-        imgSrc: CreateCourse,
-        alt: "registration_list_icon",
-        message: "Create a course"
-    },
-    {
+        key: 3,
         imgSrc: EditProfile,
-        alt: "registration_list_icon",
+        alt: "edit_profile",
         message: "Edit profile"
+    },
+    {
+        key: 4,
+        imgSrc: SignOut,
+        alt: "sign_out",
+        message: "Sign out",
     }
-]
-
+];
 export default functionList;
