@@ -9,6 +9,8 @@ import { toast } from "sonner";
 import { RootState } from "../../redux/store/store";
 import "../../assets/css/login.css";
 import { useAppDispatch } from "../../redux/store/hook";
+import { DatePicker } from "antd";
+import type { DatePickerProps } from "antd";
 interface ISignUpRequest {
   username: string;
   password: string;
@@ -39,11 +41,10 @@ const SignUp: React.FC = () => {
   });
 
   const [statusChangeGender, setStatusChangeGender] = useState(false);
-  const [statusChangeDateOfBirth, setStatusChangeDateOfBirth] = useState(false);
 
   const navigate = useNavigate();
   function hasSpecialChar(str: string) {
-    const specialCharsRegex = /[`~!@#$%^&*()\-_=+{};:'"\\|,.<>\/? ]+/;
+    const specialCharsRegex = /[`~!@#$%^&*()\-=+{}[\];:'"\\|,.<>\/? ]+/;
     return specialCharsRegex.test(str);
   }
 
@@ -51,6 +52,13 @@ const SignUp: React.FC = () => {
   const statusRegister: string = useSelector(
     (state: RootState) => state.user.statusRegister
   );
+  function containsVietnameseAccent(str: string) {
+    // Regular expression to match Vietnamese characters with accents
+    const vietnameseRegex =
+      /[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ]/;
+
+    return vietnameseRegex.test(str);
+  }
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -69,6 +77,16 @@ const SignUp: React.FC = () => {
           setErrors((prevErrors) => ({
             ...prevErrors,
             username: "Username is required.",
+          }));
+        } else if (containsVietnameseAccent(value)) {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            username: "Username cannot have Vietnamese accents.",
+          }));
+        } else if (value.length > 50) {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            username: "Max length for username is 50 characters.",
           }));
         } else {
           setErrors((prevErrors) => ({ ...prevErrors, username: "" }));
@@ -106,7 +124,7 @@ const SignUp: React.FC = () => {
     const errors = [];
 
     if (!password || !confirmPassword)
-      return "Password and confirm password is required.";
+      return "Password and confirm password are required.";
     if (!minLength.test(password)) errors.push("8 characters long");
     if (!hasUpperCase.test(password)) errors.push("one uppercase letter");
     if (!hasNumber.test(password)) errors.push("one number");
@@ -121,14 +139,6 @@ const SignUp: React.FC = () => {
     }
 
     return "";
-  }
-
-  function convertDateFormat(dateString: string) {
-    // Split the input date string by the hyphen
-    const [year, month, day] = dateString.split("-");
-
-    // Return the date in dd/mm/yyyy format
-    return `${day}/${month}/${year}`;
   }
   const handleSubmitForm = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -149,16 +159,28 @@ const SignUp: React.FC = () => {
         username: "Username is required.",
       }));
       formHasError = true;
+    } else if (hasSpecialChar(username)) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        username: "Username cannot have special characters.",
+      }));
+      formHasError = true;
     } else if (username.length > 50) {
       setErrors((prevErrors) => ({
         ...prevErrors,
         username: "Max length for username is 50 characters.",
       }));
       formHasError = true;
+    } else if (containsVietnameseAccent(username)) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        username: "Username cannot have Vietnamese accents.",
+      }));
+      formHasError = true;
     }
 
-    // Validate email
     if (!email) {
+      // Validate email
       setErrors((prevErrors) => ({
         ...prevErrors,
         email: "Email is required.",
@@ -203,14 +225,12 @@ const SignUp: React.FC = () => {
       return;
     } else {
       const dataToSubmit: ISignUpRequest = {
-        username: formData.username,
-        email: formData.email,
+        username: formData.username.toLowerCase(),
+        email: formData.email.toLowerCase(),
         password: formData.password,
         confirmPassword: formData.confirmPassword,
-        fullname: formData.fullname,
-        dateofbirth: formData.dateOfBirth
-          ? convertDateFormat(formData.dateOfBirth)
-          : "",
+        fullname: formData.fullname.trim(),
+        dateofbirth: formData.dateOfBirth,
         gender: formData.gender,
       };
       const result = await dispatch(userRegister(dataToSubmit));
@@ -231,16 +251,47 @@ const SignUp: React.FC = () => {
             ...prevErrors,
             email: "Email is already in use.",
           }));
-        } else if (message === "Username existed on system.") {
+        } else if (message === "Username is already in use.") {
           setErrors((prevErrors) => {
-            return { ...prevErrors, username: "Username existed on system." };
+            return { ...prevErrors, username: "Username is already in use." };
           });
         }
       }
     }
   };
+
+  const handleChangeDateOfBirth: DatePickerProps["onChange"] = (
+    _,
+    dateString
+  ) => {
+    setFormData({ ...formData, dateOfBirth: dateString.toString() });
+  };
   return (
     <div className="w-full h-screen flex">
+      <div className="w-1/2 relative">
+        <img
+          src={logo}
+          alt=""
+          className="w-full h-full absolute left-0 right-0 object-cover object-center"
+        />
+        <div className="absolute top-1/4 left-8">
+          <div className="bg-white w-[120px] h-[120px] rounded-full flex justify-center items-center">
+            <div className="relative w-[65px] h-[72px]">
+              <img
+                src={logo_c4u}
+                alt=""
+                className="absolute left-0 top-0 object-cover object-center w-full h-full"
+              />
+            </div>
+          </div>
+          <div className="text-white font-semibold text-4xl my-1">Course4U</div>
+          <div className="text-white font-normal text-2xl">
+            Wishing you success on your path to learning
+            <br />
+            and self-improvement!
+          </div>
+        </div>
+      </div>
       <div className=" w-1/2 flex justify-center items-center direction-column ">
         <form action="" className="w-3/4 flex flex-col p-5 gap-4">
           <div className="flex flex-col gap-1">
@@ -376,19 +427,13 @@ at least one uppercase letter, one special character, and one number."
                 >
                   Date Of Birth
                 </label>
-                <input
-                  type="date"
-                  id="dateofbirth"
-                  name="dateofbirth"
+
+                <DatePicker
+                  format="MM/DD/YYYY"
+                  placeholder="mm/dd/yyyy"
+                  inputReadOnly={true}
                   className="border border-gray-300 h-10 pl-3 pr-4 rounded-lg text-sm font-normal outline-none"
-                  onChange={(e) => {
-                    setStatusChangeDateOfBirth(true);
-                    setFormData({ ...formData, dateOfBirth: e.target.value });
-                  }}
-                  style={{
-                    color: statusChangeDateOfBirth ? "black" : "#a4abb6",
-                  }}
-                  onKeyDown={(e) => e.preventDefault()}
+                  onChange={handleChangeDateOfBirth}
                 />
               </div>
               <div className="flex flex-col gap-1 w-1/2">
@@ -476,29 +521,6 @@ at least one uppercase letter, one special character, and one number."
             </span>
           </div>
         </form>
-      </div>
-
-      <div className="w-1/2 relative">
-        <img
-          src={logo}
-          alt=""
-          className="w-full h-full absolute left-0 right-0 object-cover object-center"
-        />
-        <div className="absolute top-1/4 left-8">
-          <div className="bg-white w-[120px] h-[120px] rounded-full flex justify-center items-center">
-            <div className="relative w-[65px] h-[72px]">
-              <img
-                src={logo_c4u}
-                alt=""
-                className="absolute left-0 top-0 object-cover object-center w-full h-full"
-              />
-            </div>
-          </div>
-          <div className="text-white font-semibold text-4xl my-1">Course4U</div>
-          <div className="text-white font-normal text-2xl">
-            Learn Efficiently - Earn Your Rewards
-          </div>
-        </div>
       </div>
     </div>
   );

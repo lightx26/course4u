@@ -72,10 +72,10 @@ public class AuthServiceImpl implements IAuthService {
             throw new AccountExistByEmailException("Email is already in use.");
         }
         if(userRepository.existsByUsername(signUpRequest.getUsername()))
-            throw new AccountExistByEmailException("Username existed on system.");
+            throw new AccountExistByEmailException("Username is already in use.");
         // Hash the password
         String hashedPassword = passwordEncoder.encode(signUpRequest.getPassword());
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
         User user = User.builder()
                 .username(signUpRequest.getUsername())
                 .password(hashedPassword)

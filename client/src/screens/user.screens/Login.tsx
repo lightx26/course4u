@@ -46,7 +46,9 @@ const Login: React.FC = () => {
   ) => {
     e.preventDefault();
     if (validate()) {
-      const result = await dispatch(userLogin({ username, password }));
+      const result = await dispatch(
+        userLogin({ username: username.toLowerCase(), password })
+      );
       if (userLogin.fulfilled.match(result)) {
         const access_token = result.payload?.access_token;
         if (access_token) {

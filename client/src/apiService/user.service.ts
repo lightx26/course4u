@@ -44,5 +44,4 @@ const getUserDetails = async () => {
   }
 };
 
-export { handleLogin, handleRegister ,getUserDetails};
-
+export { handleLogin, handleRegister, getUserDetails };

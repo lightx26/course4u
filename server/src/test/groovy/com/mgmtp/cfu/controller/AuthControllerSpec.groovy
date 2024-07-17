@@ -60,7 +60,7 @@ class AuthControllerSpec extends Specification {
 
     def "RegisterUser returns ok response when signup request is valid"() {
         given:
-        def signUpRequest = new SignUpRequest(username: "user", email: "user@mgm-tp.com", password: "Password1!", confirmPassword: "Password1!", fullname: "fullname", dateofbirth: "17/11/2003", gender: "MALE")
+        def signUpRequest = new SignUpRequest(username: "user", email: "user@mgm-tp.com", password: "Password1!", confirmPassword: "Password1!", fullname: "fullname", dateofbirth: "11/17/2003", gender: "MALE")
         def signUpResponse = new SignUpResponse(username: "user", message: "User registered successfully")
 
         when:

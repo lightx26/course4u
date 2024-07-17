@@ -19,6 +19,8 @@ import AdminHomePage from "./screens/admin.screens/AdminHome.tsx";
 import SignUp from "./screens/user.screens/SignUp.tsx";
 import AdminCoursePageScreen from "./screens/admin.screens/AdminCoursePageScreen.tsx";
 import CreateCoursesScreen from "./screens/admin.screens/CreateCoursesScreen.tsx";
+import { ProtectedRouteLogin } from "./components/user.components/ProtectedRouteLogin.tsx";
+import { isTokenExpired } from "./utils/validateToken.ts";
 export type CourseType = {
   id: string;
   name: string;
@@ -148,12 +150,8 @@ const router = createBrowserRouter(
         },
         {
           path: "courses/:id",
-          element: (
-            <ProtectedRoute>
-              <Detail_Of_Course />
-            </ProtectedRoute>
-          ),
-        },
+          element: <Detail_Of_Course />,
+        }
       ],
     },
     {
@@ -229,11 +227,19 @@ const router = createBrowserRouter(
     },
     {
       path: "login",
-      element: <Login />,
+      element: (
+        <ProtectedRouteLogin>
+          <Login />
+        </ProtectedRouteLogin>
+      ),
     },
     {
       path: "signup",
-      element: <SignUp />,
+      element: (
+        <ProtectedRouteLogin>
+          <SignUp />
+        </ProtectedRouteLogin>
+      ),
     },
   ],
   {
@@ -244,12 +250,14 @@ const router = createBrowserRouter(
 function App() {
   const dispatch = useDispatch<AppDispatch>();
   const getAccount = async () => {
-    if (
-      window.location.pathname === `${import.meta.env.VITE_BASE_URL}/login` ||
-      window.location.pathname === `${import.meta.env.VITE_BASE_URL}/signup`
-    )
-      return;
-    await dispatch(fetchUserDetails());
+    // if (
+    //   window.location.pathname === `${import.meta.env.VITE_BASE_URL}/login` ||
+    //   window.location.pathname === `${import.meta.env.VITE_BASE_URL}/signup`
+    // )
+    //   return;
+    const access_token: string | null = localStorage.getItem("access_token");
+    if (access_token && !isTokenExpired(access_token))
+      await dispatch(fetchUserDetails());
   };
   useEffect(() => {
     getAccount();

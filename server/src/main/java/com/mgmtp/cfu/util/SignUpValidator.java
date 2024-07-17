@@ -48,13 +48,13 @@ public class SignUpValidator {
         // Validate dateOfBirth
         if (signUpRequest.getDateofbirth() != null && !signUpRequest.getDateofbirth().isEmpty()) {
             try {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
                 LocalDate dateOfBirth = LocalDate.parse(signUpRequest.getDateofbirth(), formatter);
                 if (dateOfBirth.isAfter(LocalDate.now())) {
                     errors.add("Date of birth cannot be a future date.");
                 }
             } catch (DateTimeParseException e) {
-                errors.add("Invalid date of birth format. Use dd/MM/yyyy.");
+                errors.add("Invalid date of birth format. Use MM/dd/yyyy.");
             }
         }
 

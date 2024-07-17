@@ -15,7 +15,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     }
   }, [dispatch, navigate]);
 
-  return children;
+  return <>{children}</>;
 };
 
 export { ProtectedRoute };

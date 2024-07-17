@@ -59,12 +59,13 @@ public class EmailServiceImpl implements IEmailService {
                     helper.setSubject(subject);
                     helper.setText(content, true);
                     emailSender.send(message);
-                } catch (MessagingException ignored) {
-
+                } catch (MessagingException ex) {
+                    log.error(ex.getMessage(), ex);
                 }
             });
             executorService.shutdown();
-        } catch (Exception ignored) {
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
         }
     }
 
@@ -77,6 +78,7 @@ public class EmailServiceImpl implements IEmailService {
                 modifyContent(document, mailContentUnit.getId(), mailContentUnit.getContent(), mailContentUnit.getHref(), mailContentUnit.getTag());
             return document.asXML();
         } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
         }
         return null;
     }
