@@ -47,7 +47,7 @@ const LeaderBoard: React.FC = () => {
   );
 
   const [dataYears, setDataYears] = useState<IYear[]>([]);
-  const username = useSelector((state: RootState) => state.user.user.username);
+  const fullname = useSelector((state: RootState) => state.user.user.fullName);
 
   const columns: TableProps<DataType>["columns"] = [
     {
@@ -58,10 +58,17 @@ const LeaderBoard: React.FC = () => {
       render: (text) => <p className="font-medium">{text}</p>,
     },
     {
-      title: "Username",
+      title: "Fullname",
       dataIndex: "userInfor",
       key: "userInfor",
-      render: (data: { avatarUrl: string; username: string }) => {
+      render: (data: {
+        avatarUrl: string;
+        username: string;
+        fullname: string | null;
+      }) => {
+        const displayName = data.fullname ? data.fullname : "Anonymous";
+        const isCurrentUser =
+          (!fullname && !data.fullname) || data.fullname === fullname;
         return (
           <>
             <div className="flex items-center gap-2.5">
@@ -73,9 +80,7 @@ const LeaderBoard: React.FC = () => {
                 />
               </div>
               <div className="font-normal">
-                {data.username === username
-                  ? `${data.username} (You)`
-                  : `${data.username}`}
+                {isCurrentUser ? `${displayName} (You)` : displayName}
               </div>
             </div>
           </>
@@ -102,6 +107,7 @@ const LeaderBoard: React.FC = () => {
 
   const fetchDataLeaderBoard = async (valueYear: string) => {
     const result = await getDataLeaderBoard(valueYear);
+    console.log(result.leaderboardUserDTOs);
     if (result && result.leaderboardUserDTOs) {
       const dataTmp: DataType[] = result.leaderboardUserDTOs.map(
         (item: IDataResponse, index: number) => ({
@@ -185,7 +191,7 @@ const LeaderBoard: React.FC = () => {
                 if (index <= 2)
                   return (
                     <Card_LeaderBoard
-                      username={item.userInfor.username}
+                      fullname={item.userInfor.fullname}
                       email={item.userInfor.email}
                       ranking={item.rank}
                       avatarUrl={item.userInfor.avatarUrl}

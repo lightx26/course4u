@@ -1,5 +1,5 @@
 interface IProps {
-  username: string;
+  fullname: string | null;
   email: string;
   avatarUrl: string;
   ranking: number;
@@ -7,67 +7,35 @@ interface IProps {
   learningTime: number;
 }
 const Card_LeaderBoard = (props: IProps) => {
-  const { username, email, avatarUrl, ranking, score, learningTime } = props;
+  const { fullname, email, avatarUrl, ranking, score, learningTime } = props;
+  const rankingColor =
+    ranking === 1
+      ? "text-yellow-500"
+      : ranking === 2
+      ? "text-gray-500"
+      : "text-red-900";
   return (
     <>
       <div
-        className="card"
-        style={{
-          backgroundColor: "white",
-          width: "25%",
-          // height: "200px",
-          borderRadius: "15px",
-          padding: "15px 20px 25px 15px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          paddingBottom:
-            ranking === 1 ? "40px" : ranking === 2 ? "20px" : "10px",
-          gap: "20px",
-        }}
+        className={`card bg-white w-1/4 rounded-lg p-4 flex flex-col justify-between gap-5 ${
+          ranking === 1 ? "pb-10" : ranking === 2 ? "pb-5" : "pb-2.5"
+        }`}
       >
         <div className="flex justify-start items-start gap-5">
-          <div
-            style={{
-              position: "relative",
-              width: "70px",
-              height: "70px",
-              borderRadius: "50%",
-            }}
-          >
+          <div className="relative w-[70px] h-[70px] rounded-full">
             <img
               src={avatarUrl}
               alt=""
-              style={{
-                position: "absolute",
-                width: "100%",
-                height: "100%",
-                left: 0,
-                right: 0,
-                objectFit: "cover",
-                objectPosition: "center",
-                borderRadius: "50%",
-              }}
+              className="absolute w-full h-full left-0 right-0 object-cover object-center rounded-full"
             />
             <div
-              style={{
-                width: "35px",
-                height: "35px",
-                borderRadius: "50%",
-                position: "absolute",
-                bottom: 0,
-                right: 0,
-                backgroundColor:
-                  ranking === 1
-                    ? "#fbbc04"
-                    : ranking === 2
-                    ? "#666666"
-                    : "#482121",
-
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
+              className={`w-9 h-9 rounded-full absolute bottom-0 right-0 ${
+                ranking === 1
+                  ? "bg-yellow-500"
+                  : ranking === 2
+                  ? "bg-gray-500"
+                  : "bg-red-900"
+              } flex items-center justify-center`}
             >
               <svg
                 width="22"
@@ -84,83 +52,22 @@ const Card_LeaderBoard = (props: IProps) => {
             </div>
           </div>
           <div>
-            <div
-              style={{
-                fontSize: "1.2rem",
-                fontWeight: 500,
-                marginBottom: "5px",
-              }}
-            >
-              {username}
+            <div className="text-xl font-medium mb-1">
+              {fullname ? `${fullname}` : "Anonymous"}
             </div>
-            <div style={{ fontSize: "0.8rem", fontWeight: 400 }}>{email}</div>
+            <div className="text-sm font-normal">{email}</div>
           </div>
         </div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "0px 10px 0px 0px",
-          }}
-        >
+        <div className="flex items-center justify-between pr-2.5">
           <div>
-            <div
-              style={{
-                fontSize: "1.3rem",
-                fontWeight: 500,
-                color:
-                  ranking === 1
-                    ? "#fbbc04"
-                    : ranking === 2
-                    ? "#666666"
-                    : "#482121",
-              }}
-            >
-              Score
-            </div>
-            <div
-              style={{
-                fontSize: "1.5rem",
-                fontWeight: 500,
-                color:
-                  ranking === 1
-                    ? "#fbbc04"
-                    : ranking === 2
-                    ? "#666666"
-                    : "#482121",
-              }}
-            >
-              {score}
-            </div>
+            <div className={`text-lg font-medium ${rankingColor}`}>Score</div>
+            <div className={`text-xl font-medium ${rankingColor}`}>{score}</div>
           </div>
           <div>
-            <div
-              style={{
-                fontSize: "1.3rem",
-                fontWeight: 500,
-                color:
-                  ranking === 1
-                    ? "#fbbc04"
-                    : ranking === 2
-                    ? "#666666"
-                    : "#482121",
-              }}
-            >
+            <div className={`text-lg font-medium ${rankingColor}`}>
               Learning time/year
             </div>
-            <div
-              style={{
-                fontSize: "1.5rem",
-                fontWeight: 500,
-                color:
-                  ranking === 1
-                    ? "#fbbc04"
-                    : ranking === 2
-                    ? "#666666"
-                    : "#482121",
-              }}
-            >
+            <div className={`text-xl font-medium ${rankingColor}`}>
               {learningTime} day
             </div>
           </div>

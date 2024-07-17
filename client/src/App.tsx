@@ -157,12 +157,12 @@ const router = createBrowserRouter(
           path: "courses/:id",
           element: <Detail_Of_Course />,
         },
-          {
-              path: "leader-board",
-              element: (
-                      <LeaderBoard />
-              ),
-          },
+        {
+          path: "leaderboard",
+          element: (
+              <LeaderBoard />
+          ),
+        },
       ],
     },
     {
