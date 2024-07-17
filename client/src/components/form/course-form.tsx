@@ -145,7 +145,6 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
   const standardizeUrl = (url: string) => {
     try {
       const urlObj = new URL(url);
-      console.log(`${urlObj.protocol}//${urlObj.hostname}${urlObj.pathname}`);
       return `${urlObj.protocol}//${urlObj.hostname}${urlObj.pathname}`;
     } catch (error) {
       console.error("Invalid URL:", error);

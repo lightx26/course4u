@@ -33,7 +33,6 @@ const Registrations = ({ className, id }: Props) => {
             if (!id) return;
             setIsLoading(true);
             await instance.get(`/registrations/${id}`).then((res) => {
-                console.log(res.data);
                 if (res.data.status === "DRAFT" || res.data.status === "NONE") {
                     setIsEdit(true);
                 } else {
@@ -58,7 +57,7 @@ const Registrations = ({ className, id }: Props) => {
             <h2 className='text-[#1E293B] text-[40px] tracking-tighter leading-8 font-semibold font-inter'>
                 Detail of registration
             </h2>
-            <div className='w-full flex justify-between items-center'>
+            <div className='flex items-center justify-between w-full'>
                 <RegistrationUser
                     fullName={registration?.user?.fullName || ""}
                     avatarUrl={registration?.user?.avatarUrl || ""}
@@ -83,22 +82,22 @@ const Registrations = ({ className, id }: Props) => {
 export const RegistrationSkeleton = () => {
     return (
         <div className='w-[1352px] pt-5 px-10 pb-10 flex flex-col items-center gap-5 rounded-[30px] mx-auto my-8'>
-            <Skeleton className='skeleton-title w-3/5 h-10 mb-4'></Skeleton>
-            <div className='w-full flex justify-between items-center mb-5'>
+            <Skeleton className='w-3/5 h-10 mb-4 skeleton-title'></Skeleton>
+            <div className='flex items-center justify-between w-full mb-5'>
                 <div className='flex gap-3'>
                     <Skeleton className='skeleton-avatar w-[74px] h-[74px] rounded-full'></Skeleton>
                     <div className='flex flex-col'>
-                        <Skeleton className='skeleton-text w-32 h-5 mb-2'></Skeleton>
-                        <Skeleton className='skeleton-text w-40 h-4 mb-2'></Skeleton>
-                        <Skeleton className='skeleton-text w-20 h-4'></Skeleton>
+                        <Skeleton className='w-32 h-5 mb-2 skeleton-text'></Skeleton>
+                        <Skeleton className='w-40 h-4 mb-2 skeleton-text'></Skeleton>
+                        <Skeleton className='w-20 h-4 skeleton-text'></Skeleton>
                     </div>
                 </div>
-                <Skeleton className='skeleton-status w-24 h-10'></Skeleton>
+                <Skeleton className='w-24 h-10 skeleton-status'></Skeleton>
             </div>
-            <div className='space-y-4 w-full'>
-                <Skeleton className='skeleton-input w-full h-12 mb-4'></Skeleton>
-                <Skeleton className='skeleton-input w-full h-12 mb-4'></Skeleton>
-                <Skeleton className='skeleton-input w-full h-12 mb-4'></Skeleton>
+            <div className='w-full space-y-4'>
+                <Skeleton className='w-full h-12 mb-4 skeleton-input'></Skeleton>
+                <Skeleton className='w-full h-12 mb-4 skeleton-input'></Skeleton>
+                <Skeleton className='w-full h-12 mb-4 skeleton-input'></Skeleton>
             </div>
             <div className='flex w-full gap-6'>
                 <div className='w-[60%] flex justify-between flex-col'>
@@ -106,18 +105,18 @@ export const RegistrationSkeleton = () => {
                         <Skeleton className='skeleton-select w-[50%] h-12 mb-4'></Skeleton>
                         <Skeleton className='skeleton-select w-[50%] h-12 mb-4'></Skeleton>
                     </div>
-                    <Skeleton className='skeleton-input w-full h-12'></Skeleton>
+                    <Skeleton className='w-full h-12 skeleton-input'></Skeleton>
                 </div>
                 <div className='w-[40%] flex gap-4'>
                     <Skeleton className='skeleton-thumbnail w-full h-[192px] rounded-xl'></Skeleton>
-                    <div className='flex flex-col gap-5 w-full'>
-                        <Skeleton className='skeleton-text h-16'></Skeleton>
-                        <Skeleton className='skeleton-button w-28 h-10'></Skeleton>
+                    <div className='flex flex-col w-full gap-5'>
+                        <Skeleton className='h-16 skeleton-text'></Skeleton>
+                        <Skeleton className='h-10 skeleton-button w-28'></Skeleton>
                     </div>
                 </div>
             </div>
-            <Skeleton className='skeleton-select w-full h-12 my-4'></Skeleton>
-            <div className='flex w-full justify-end pr-4 gap-2 mt-6'>
+            <Skeleton className='w-full h-12 my-4 skeleton-select'></Skeleton>
+            <div className='flex justify-end w-full gap-2 pr-4 mt-6'>
                 <Skeleton className='skeleton-select w-[100px] h-12'></Skeleton>
                 <Skeleton className='skeleton-select w-[100px] h-12'></Skeleton>
                 <Skeleton className='skeleton-select w-[100px] h-12'></Skeleton>

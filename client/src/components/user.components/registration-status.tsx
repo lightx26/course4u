@@ -4,7 +4,6 @@ type Props = {
     status?: string;
 };
 export const RegistrationStatus = ({ status = "NONE" }: Props) => {
-    console.log(status);
     return (
         <>
             <div
@@ -27,8 +26,8 @@ export const RegistrationStatus = ({ status = "NONE" }: Props) => {
                     {status === "DOCUMENT_DECLINED"
                         ? status.replace("_", " ")
                         : status === "NONE"
-                        ? "DRAFT"
-                        : status}
+                            ? "DRAFT"
+                            : status}
                 </p>
             </div>
         </>

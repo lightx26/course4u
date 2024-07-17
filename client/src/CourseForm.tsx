@@ -83,7 +83,6 @@ const CourseForm: React.FC = () => {
         body: formDataToSend,
       });
       const data = await response.json();
-      console.log("Success:", data);
       setUploadedImage(data.thumbnail); // Assuming the response returns the URL of the uploaded image
     } catch (error) {
       console.error("Error:", error);
@@ -96,7 +95,6 @@ const CourseForm: React.FC = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Images:", data);
         setImageUrls(data); // Assuming data is an array of image URLs
       })
       .catch((error) => {

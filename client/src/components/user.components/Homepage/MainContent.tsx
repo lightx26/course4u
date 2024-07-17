@@ -54,13 +54,11 @@ export default function MainContent() {
 
 
     const onPageNumberClick = (newPageNumber: number) => {
+        //update page number
         dispatch(updatePage(newPageNumber));
+        //Search when change page number
         dispatch(searchCoursesByFilterNameAndSortBy());
     }
-
-    // const onSortByChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    //     setSortBy(e.target.value);
-    // }
 
     const length = Array.from(new Set(selectedItems.flatMap(item => item.listChoice.map(choice => choice.name)))).length;
 

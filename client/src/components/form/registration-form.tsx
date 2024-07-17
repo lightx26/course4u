@@ -70,6 +70,7 @@ export const RegistrationsForm = ({
             form.setValue("categories", categoriesData || []);
         }
     }, [course, duration, durationUnit, form, id]);
+    // @ts-nocheck
     function onSubmit(values: z.infer<typeof registrationSchema>) {
         console.log(values);
     }
@@ -78,7 +79,7 @@ export const RegistrationsForm = ({
         <Form {...form}>
             <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className='space-y-8 w-full '
+                className='w-full space-y-8 '
             >
                 <CourseForm
                     //eslint-disable-next-line

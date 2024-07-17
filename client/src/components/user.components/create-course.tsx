@@ -28,7 +28,6 @@ const CreateCourse = () => {
   });
 
   async function onSubmit(values: z.infer<typeof courseSchema>) {
-    console.log(values);
     // Helper function to convert blob URL to File object
     async function blobToFile(blobUrl: string, fileName: string) {
       const response = await fetch(blobUrl);

@@ -10,7 +10,7 @@ export default function FilterWrap() {
     //get Category from store
     const listCategory = useSelector((state: RootState) => state.category);
     const [categoryList, setCategoryList] = useState<FilterItemType[]>([]);
-    const [ingList, setRatingList] = useState<FilterItemType[]>([]);
+    const [ratingList, setRatingList] = useState<FilterItemType[]>([]);
     const [levelList, setLevelList] = useState<FilterItemType[]>([]);
     const [platformList, setPlatformList] = useState<FilterItemType[]>([]);
 
@@ -131,7 +131,7 @@ export default function FilterWrap() {
                 {/*Category need search*/}
                 <FilterComponent key={'Category'} isHaveSearch={true} title='Category' list={categoryList} />
                 {/*Rating can only choose one option/time*/}
-                <FilterComponent key={'Rating'} isMultipleChoice={false} isHaveSearch={false} title='Rating' list={ingList} />
+                <FilterComponent key={'Rating'} isMultipleChoice={false} isHaveSearch={false} title='Rating' list={ratingList} />
                 <FilterComponent key={'Level'} isHaveSearch={false} title='Level' list={levelList} />
                 <FilterComponent key={'Platform'} isHaveSearch={false} title='Platform' list={platformList} />
             </div>

@@ -28,10 +28,11 @@ export default function FilterComponent(prop: Prop) {
 
     //Handle the search change event (for FilterComponent have search bar).
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log('before-->', event.target.value);
-        const searchText = event.target.value.trim().split(/\s+/).join(' ').toLowerCase();
-        console.log('search text-->', searchText);
+        //Get the search text and remove all space
+        const searchText = event.target.value.trim().toLowerCase();
+        //Filter the list of filter items based on the search text.
         const filteredList = prop.list.filter(item => item.name.toLowerCase().includes(searchText));
+        //Show result after search filter cafeteria
         setListFilterItem(filteredList);
     };
 

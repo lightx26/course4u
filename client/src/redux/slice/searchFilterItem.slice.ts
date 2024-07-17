@@ -25,7 +25,6 @@ export const filterItemSlice = createSlice({
         },
 
         toggleFilterItem: (state, action: PayloadAction<FilterItemSliceType & { choiceId: string }>) => {
-            console.log('State', state);
             const componentIndex = state.findIndex(item => item.FilterComponentId === action.payload.FilterComponentId);
 
             if (componentIndex !== -1) {
@@ -48,8 +47,6 @@ export const filterItemSlice = createSlice({
                     }]
                 });
             }
-            console.log('Toggle filter item', action.payload);
-            console.log('State', state);
         },
         deleteAllFilterItem: () => {
             return [];
