@@ -2,60 +2,13 @@ import {useState} from "react";
 import SearchGlass from "../../../assets/images/admin.images/SearchGlass.svg";
 import Select from "../Select";
 
-const registrationStatusList = [
-    {
-        value: "1",
-        content: "Submitted",
-    },
-    {
-        value: "2",
-        content: "Declined",
-    },
-    {
-        value: "3",
-        content: "Approved",
-    },
-    {
-        value: "4",
-        content: "Done",
-    },
-    {
-        value: "5",
-        content: "Verifying",
-    },
-    {
-        value: "6",
-        content: "Declined (Document)",
-    },
-    {
-        value: "7",
-        content: "Verified",
-    },
-    {
-        value: "8",
-        content: "Close",
-    },
-    {
-        value: "9",
-        content: "Discard",
-    },
-];
-
-const orderByList = [
-    {
-        value: "1",
-        content: "Created Date",
-    },
-    {
-        value: "2",
-        content: "Last modified",
-    }
-]
+import registrationStatusList from "../../../utils/registrationStatusList";
+import orderByList from "../../../utils/orderByList.ts";
 
 const UtilsBar = () => {
     const [searchContent, setSearchContent] = useState("");
-    const [sortStatusId, setsortStatusId] = useState("1");
-    const [sortOrder, setSortOrder] = useState("1");
+    const [sortStatusId, setSortStatusId] = useState("0");
+    const [sortOrder, setSortOrder] = useState("0");
 
     return (
         <div className="h-[10%] utils-bar flex gap-7">
@@ -88,7 +41,7 @@ const UtilsBar = () => {
                     listOption={registrationStatusList}
                     value={sortStatusId}
                     onSortByChange={(e) => {
-                        setsortStatusId(e.target.value);
+                        setSortStatusId(e.target.value);
                     }}
                 />
             </div>
