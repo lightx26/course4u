@@ -95,17 +95,19 @@ const LayoutAdmin = () => {
   const userRole = user.role;
   return (
     <>
-      {isAdminRoute && userRole === "ADMIN" && (
-        <div className="app-container">
-          <HeaderAdminPage />
-          <Outlet />
-        </div>
-      )}
-      {isAdminRoute && (userRole === "USER" || userRole === "ACCOUNTANT") && (
-        <>
-          <NotPermitted />
-        </>
-      )}
+      <div className="app-container ">
+        {isAdminRoute && userRole === "ADMIN" && (
+          <>
+            <HeaderAdminPage />
+            <Outlet />
+          </>
+        )}
+        {isAdminRoute && (userRole === "USER" || userRole === "ACCOUNTANT") && (
+          <>
+            <NotPermitted />
+          </>
+        )}
+      </div>
     </>
   );
 };
@@ -118,17 +120,19 @@ const LayoutAccountant = () => {
   const userRole = user.role;
   return (
     <>
-      {isAccountRoute && userRole === "ACCOUNTANT" && (
-        <div className="app-container">
-          <div>this is accountant header</div>
-          <Outlet />
-        </div>
-      )}
-      {isAccountRoute && (userRole === "USER" || userRole === "ADMIN") && (
-        <>
-          <NotPermitted />
-        </>
-      )}
+      <div className="app-container">
+        {isAccountRoute && userRole === "ACCOUNTANT" && (
+          <>
+            <div>this is accountant header</div>
+            <Outlet />
+          </>
+        )}
+        {isAccountRoute && (userRole === "USER" || userRole === "ADMIN") && (
+          <>
+            <NotPermitted />
+          </>
+        )}
+      </div>
     </>
   );
 };
@@ -151,7 +155,7 @@ const router = createBrowserRouter(
         {
           path: "courses/:id",
           element: <Detail_Of_Course />,
-        }
+        },
       ],
     },
     {
@@ -199,15 +203,12 @@ const router = createBrowserRouter(
         },
         {
           path: "course/create",
-          element: (
-            <ProtectedRoute>
-              <CreateCoursesScreen />
-            </ProtectedRoute>
-          ),
-        },{
-              path: "courses/:id",
-              element: <Detail_Of_Course />,
-          },
+          element: <CreateCoursesScreen />,
+        },
+        {
+          path: "courses/:id",
+          element: <Detail_Of_Course />,
+        },
       ],
     },
     {
@@ -256,8 +257,12 @@ function App() {
     // )
     //   return;
     const access_token: string | null = localStorage.getItem("access_token");
-    if (access_token && !isTokenExpired(access_token))
-      await dispatch(fetchUserDetails());
+    if (access_token && !isTokenExpired(access_token)) {
+      const userData = await dispatch(fetchUserDetails());
+      if (!fetchUserDetails.fulfilled.match(userData)) {
+        window.location.href = `${import.meta.env.VITE_BASE_URL}/login`;
+      }
+    }
   };
   useEffect(() => {
     getAccount();

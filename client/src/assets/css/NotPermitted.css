@@ -1,6 +1,6 @@
 .custom-result {
   font-size: 20px;
-  margin-top: 200px; /* Adjust font size */
+  height: 100vh; /* Adjust font size */
 }
 
 .custom-result > .ant-result-title {
