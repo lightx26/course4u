@@ -1,11 +1,13 @@
 package com.mgmtp.cfu.dto.coursedto;
 
-
 import com.mgmtp.cfu.enums.CourseLevel;
 import com.mgmtp.cfu.enums.CourseStatus;
+import com.mgmtp.cfu.util.UrlUtils;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 @Data
@@ -28,5 +30,18 @@ public class CourseRequest {
     public static class CategoryCourseRequestDTO {
         private String label;
         private String value;
+    }
+
+
+    public void setName(String name) {
+        this.name = name != null ? name.trim() : null;
+    }
+
+    public void setLink(String link) throws MalformedURLException {
+        this.link = link != null ? UrlUtils.standardizeUrl(link.trim()) : null;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName != null ? teacherName.trim() : null;
     }
 }

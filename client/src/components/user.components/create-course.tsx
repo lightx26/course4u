@@ -6,8 +6,12 @@ import { CourseForm } from "../form/course-form";
 import { Form } from "../ui/form";
 import { Button } from "../ui/button";
 import instance from "../../utils/customizeAxios";
+import { toast } from "sonner";
+import {} from "@radix-ui/react-alert-dialog";
+import { useNavigate } from "react-router-dom";
 
 const CreateCourse = () => {
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof courseSchema>>({
     resolver: zodResolver(courseSchema),
     mode: "onBlur",
@@ -23,6 +27,7 @@ const CreateCourse = () => {
       // Otherwise, if users upload a thumbnail image, request name should be thumbnailFile
     },
   });
+
   async function onSubmit(values: z.infer<typeof courseSchema>) {
     console.log(values);
     // Helper function to convert blob URL to File object
@@ -52,46 +57,67 @@ const CreateCourse = () => {
     } else {
       formData.append("thumbnailUrl", values.thumbnailUrl);
     }
-
     instance
       .postForm("/courses", formData)
-      .then((res) => {
-        console.log(res);
-        alert("Create course successfully");
+      .then((_res) => {
+        toast.success("Create a new course successfully", {
+          description: "You will be redirected to the admin page in 3 seconds",
+          style: {
+            color: "green",
+            fontWeight: "bold",
+            textAlign: "center",
+          },
+          onAutoClose: () => {
+            navigate("/admin", {
+              replace: true,
+              state: { refresh: true },
+            });
+          },
+        });
       })
       .catch((error) => {
         if (error.response) {
           if (error.response.status === 409) {
-            alert("Course with this link already exists");
+            toast.error("Create a new course unsuccessfully", {
+              description:
+                "Your course already exists in the system. Please check again!",
+              style: {
+                color: "red",
+                fontWeight: "bold",
+                textAlign: "center",
+              },
+            });
           } else if (error.response.status === 500) {
-            alert("An error occurred on the server while creating the course");
-          } else {
-            alert(`An unexpected error occurred: ${error.response.status}`);
+            toast.error("Internal Server Error. Please try again later.", {
+              style: {
+                color: "red",
+                fontWeight: "bold",
+                textAlign: "center",
+              },
+            });
           }
-        } else if (error.request) {
-          alert("No response received from the server");
-        } else {
-          alert("An error occurred while setting up the request");
         }
       });
   }
 
   return (
-    <div className="w-full px-20 py-10 bg-white border-2 border-gray-200 rounded-3xl">
-      <h2 className="text-[32px] text-center mb-5 font-semibold">
-        Create Course
-      </h2>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
-          <CourseForm form={form} isEdit={true} />
-          <div className="flex justify-end">
-            <Button variant="success" className="mt-10">
-              CREATE
-            </Button>
-          </div>
-        </form>
-      </Form>
-    </div>
+    <>
+      <div className="w-full px-20 py-10 bg-white border-2 border-gray-200 rounded-3xl">
+        <h2 className="text-[32px] text-center mb-5 font-semibold">
+          Create a new course
+        </h2>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
+            <CourseForm form={form} isEdit={true} />
+            <div className="flex justify-end">
+              <Button variant="success" className="mt-10">
+                SUBMIT
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </div>
+    </>
   );
 };
 

@@ -153,7 +153,10 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
         form?.trigger("name");
         if (data.url != null && data.url != "")
           form?.setValue("link", standardizeUrl(data.url));
-        if (data.site_name != null) form?.setValue("platform", data.site_name);
+        if (data.site_name != null) {
+          form?.setValue("platform", data.site_name.toUpperCase());
+          form?.trigger("platform");
+        }
         if (data.image) {
           setThumbnail({
             ...thumbnail,
@@ -221,7 +224,6 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                   placeholder="Course Name"
                   {...field}
                   className="w-full"
-                  maxValue={100}
                   disabled={!isEdit}
                 />
               </FormControl>
@@ -243,7 +245,6 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                   placeholder="Teacher Name"
                   {...field}
                   className="w-full"
-                  maxValue={80}
                   disabled={!isEdit}
                 />
               </FormControl>
@@ -255,44 +256,38 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
       <div className="flex items-stretch gap-6">
         <div className="w-[60%] gap-6 flex justify-between flex-col">
           <div className="flex gap-4">
-              <FormField
-                  control={form!.control}
-                  name='platform'
-                  render={({ field }) => (
-                      <FormItem className='w-[50%]'>
-                          <FormLabel>
-                              Platform{""}
-                              <span className='text-red-500'>*</span>
-                          </FormLabel>
-                          <Select
-                              onValueChange={field.onChange}
-                              defaultValue={
-                                  course?.platform.toUpperCase() ||
-                                  form?.watch("platform").toUpperCase()
-                              }
-                              disabled={!isEdit}
-                          >
-                              <FormControl>
-                                  <SelectTrigger>
-                                      <SelectValue placeholder='Select a platform to this course' />
-                                  </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                  <SelectItem value='COURSERA'>
-                                      Coursera
-                                  </SelectItem>
-                                  <SelectItem value='UDEMY'>
-                                      Udemy
-                                  </SelectItem>
-                                  <SelectItem value='LINKEDIN'>
-                                      LinkedIn
-                                  </SelectItem>
-                              </SelectContent>
-                          </Select>
-                          <FormMessage />
-                      </FormItem>
-                  )}
-              />
+            <FormField
+              control={form!.control}
+              name="platform"
+              render={({ field }) => (
+                <FormItem className="w-[50%]">
+                  <FormLabel>
+                    Platform{""}
+                    <span className="text-red-500">*</span>
+                  </FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={
+                      course?.platform.toUpperCase() ||
+                      form?.watch("platform").toUpperCase()
+                    }
+                    disabled={!isEdit}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a platform to this course" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="COURSERA">Coursera</SelectItem>
+                      <SelectItem value="UDEMY">Udemy</SelectItem>
+                      <SelectItem value="LINKEDIN">LinkedIn</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form!.control}
               name="level"
@@ -342,6 +337,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                     placeholder="Select category you like..."
                     creatable={true}
                     disabled={!isEdit}
+                    form={form}
                   />
                 </FormControl>
                 <FormMessage />

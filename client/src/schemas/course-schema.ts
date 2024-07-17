@@ -1,25 +1,40 @@
 import { z } from "zod";
 
+const trimAndSingleSpace = (val: string) => val.trim().replace(/\s+/g, ' ');
+
 const optionSchema = z.object({
     label: z.string().optional(),
-    value: z.string(),
+    value: z.string()
+        .transform(trimAndSingleSpace)
+        .refine(val => val.length > 0, { message: "This field is required!" }),
     name: z.string().optional(),
 });
 
 export const courseSchema = z.object({
-    name: z
-        .string()
-        .min(1, "Name required!")
-        .min(3, { message: "Name must be at least 3 characters long!" })
-        .max(100, { message: "Name must be at most 100 characters long!" }),
-    teacherName: z.string().min(3, {
-        message: "Teacher name must be at least 3 characters long!",
-    }),
-    link: z.string().url({ message: "Link must be a valid URL!" }),
-    level: z.string().refine((val) => ["BEGINNER", "INTERMEDIATE", "ADVANCED"].includes(val), {
-        message: "Level must be one of 'BEGINNER', 'INTERMEDIATE', or 'ADVANCED'!"
-    }),
-    platform: z.string({ message: "Platform required!" }),
-    categories: z.array(optionSchema).min(1),
+    name: z.string()
+        .transform(trimAndSingleSpace)
+        .refine(val => val.length > 0, { message: "This field is required!" }),
+    teacherName: z.string()
+        .transform(trimAndSingleSpace)
+        .refine(val => val.length > 0, { message: "This field is required!" }),
+    link: z.string()
+        .transform(trimAndSingleSpace)
+        .refine(val => val.length > 0, { message: "This field is required!" })
+        .refine(value => {
+            try {
+                new URL(value);
+                return true;
+            } catch {
+                return false;
+            }
+        }, { message: "Invalid URL format" }),
+    level: z.string()
+        .transform(trimAndSingleSpace)
+        .refine(val => val.length > 0, { message: "This field is required!" }),
+    platform: z.string()
+        .transform(trimAndSingleSpace)
+        .refine(val => val.length > 0, { message: "This field is required!" }),
+    categories: z.array(optionSchema)
+        .refine(arr => arr.length > 0, { message: "This field is required!" }),
     thumbnailUrl: z.string(),
 });

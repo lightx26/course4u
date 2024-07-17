@@ -1,4 +1,4 @@
-import {createBrowserRouter, Outlet, RouterProvider} from "react-router-dom";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import HeaderHomepage from "./components/user.components/header";
 import HomepageScreen from "./screens/user.screens/HomepageScreen";
 import Login from "./screens/user.screens/Login.tsx";
@@ -39,26 +39,26 @@ export type CourseType = {
   rating?: number;
   enrollmentCount?: number;
   level?: string;
-}
+};
 
 export type RegistrationType = {
-    id?: string;
-    startDate?: Date,
-    endDate?: Date,
-    registerDate?: Date,
-    lastUpdated?: Date,
-    courseId?: string,
-    courseName?: string,
-    courseThumbnailUrl?: string,
-    coursePlatform?: string,
-    userId?: string,
-    userName?: string,
-    userFullName?: string,
-    userAvatarUrl?: string,
-    duration?: number,
-    durationUnit?: string,
-    status?: string,
-}
+  id?: string;
+  startDate?: Date;
+  endDate?: Date;
+  registerDate?: Date;
+  lastUpdated?: Date;
+  courseId?: string;
+  courseName?: string;
+  courseThumbnailUrl?: string;
+  coursePlatform?: string;
+  userId?: string;
+  userName?: string;
+  userFullName?: string;
+  userAvatarUrl?: string;
+  duration?: number;
+  durationUnit?: string;
+  status?: string;
+};
 
 const LayoutUser = ({ children }: { children?: ReactElement }) => {
   const isUserRoute = window.location.pathname.startsWith(
@@ -95,7 +95,7 @@ const LayoutAdmin = () => {
     <>
       {isAdminRoute && userRole === "ADMIN" && (
         <div className="app-container">
-            <HeaderAdminPage />
+          <HeaderAdminPage />
           <Outlet />
         </div>
       )}
@@ -154,14 +154,6 @@ const router = createBrowserRouter(
             </ProtectedRoute>
           ),
         },
-        {
-          path: "course/create",
-          element: (
-            <ProtectedRoute>
-              <CreateCoursesScreen />
-            </ProtectedRoute>
-          ),
-        },
       ],
     },
     {
@@ -201,12 +193,20 @@ const router = createBrowserRouter(
       children: [
         {
           index: true,
-          element: <AdminHomePage/>
+          element: <AdminHomePage />,
         },
         {
           path: "courses",
           element: <AdminCoursePageScreen />,
-        }
+        },
+        {
+          path: "course/create",
+          element: (
+            <ProtectedRoute>
+              <CreateCoursesScreen />
+            </ProtectedRoute>
+          ),
+        },
       ],
     },
     {

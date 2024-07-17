@@ -8,6 +8,9 @@ import { forwardRef, useEffect } from "react";
 import { Badge } from "./badge";
 import { Command, CommandGroup, CommandItem, CommandList } from "./command";
 import { cn } from "../../utils/utils";
+import { UseFormReturn } from "react-hook-form";
+import { courseSchema } from "../../schemas/course-schema";
+import { z } from "zod";
 
 export interface Option {
   value?: string;
@@ -35,6 +38,7 @@ interface MultipleSelectorProps {
   emptyIndicator?: React.ReactNode;
   /** Debounce time for async search. Only work with `onSearch`. */
   delay?: number;
+  form?: UseFormReturn<z.infer<typeof courseSchema>> | undefined;
   /**
    * Only work with `onSearch` prop. Trigger search when `onFocus`.
    * For example, when user click on the input, it will trigger the search to get initial options.
@@ -191,6 +195,7 @@ const MultipleSelector = React.forwardRef<
       commandProps,
       inputProps,
       hideClearAllButton = false,
+      form,
     }: MultipleSelectorProps,
     ref: React.Ref<MultipleSelectorRef>
   ) => {
@@ -473,7 +478,10 @@ const MultipleSelector = React.forwardRef<
             />
             <button
               type="button"
-              onClick={() => setSelected(selected.filter((s) => s.fixed))}
+              onClick={() => {
+                form?.setValue("categories", []);
+                setSelected(selected.filter((s) => s.fixed));
+              }}
               className={cn(
                 (hideClearAllButton ||
                   disabled ||
@@ -520,7 +528,7 @@ const MultipleSelector = React.forwardRef<
                           return (
                             <CommandItem
                               key={option.value}
-                              value={option.value}
+                              value={option.label}
                               disabled={option.disable}
                               onMouseDown={(e) => {
                                 e.preventDefault();
