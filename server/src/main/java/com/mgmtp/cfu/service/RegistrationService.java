@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 
 public interface RegistrationService {
     RegistrationDetailDTO getDetailRegistration(Long id);
-    Page<RegistrationOverviewDTO> getRegistrationByStatus(int page, String status);
-    Page<RegistrationOverviewDTO> getAllRegistrations(int page);
     PageResponse getMyRegistrationPage(int page, String status);
+    Page<RegistrationOverviewDTO> getAllRegistrations(int page);
+    Page<RegistrationOverviewDTO> getRegistrationByStatus(int page, String status);
 }

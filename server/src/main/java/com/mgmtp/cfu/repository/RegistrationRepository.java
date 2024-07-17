@@ -5,9 +5,6 @@ import com.mgmtp.cfu.enums.RegistrationStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import com.mgmtp.cfu.enums.RegistrationStatus;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -19,5 +16,7 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
     int countLegitRegistrationInCourse(Long courseId);
 
 
+    @Query("SELECT r FROM Registration r WHERE r.status NOT IN ?1")
+    Page<Registration> findAllExceptStatus(List<RegistrationStatus> excludedStatuses, Pageable pageable);
     Page<Registration> findAllByStatus(RegistrationStatus status, Pageable pageable);
 }

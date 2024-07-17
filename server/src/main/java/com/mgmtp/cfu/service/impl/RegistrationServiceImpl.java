@@ -84,8 +84,9 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     public Page<RegistrationOverviewDTO> getAllRegistrations(int page) {
+        List<RegistrationStatus> excludedStatuses = List.of(RegistrationStatus.DRAFT);
         PageRequest pageRequest = PageRequest.of(page - 1, 8);
-        Page<Registration> registrations = registrationRepository.findAll(pageRequest);
+        Page<Registration> registrations = registrationRepository.findAllExceptStatus(excludedStatuses, pageRequest);
 
         List<RegistrationOverviewDTO> modifiedResponseContent = registrations
                 .getContent()
@@ -101,7 +102,6 @@ public class RegistrationServiceImpl implements RegistrationService {
         try{
             PageRequest pageRequest = PageRequest.of(page - 1, 8);
             RegistrationStatus registrationStatus = RegistrationStatus.valueOf(status.toUpperCase());
-
             Page<Registration> registrations = registrationRepository.findAllByStatus(registrationStatus, pageRequest);
 
             List<RegistrationOverviewDTO> modifiedResponseContent = registrations
