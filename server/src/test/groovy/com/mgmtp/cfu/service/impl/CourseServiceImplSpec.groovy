@@ -143,6 +143,7 @@ class CourseServiceImplSpec extends Specification {
         given:
         int pageNo = 1
         int pageSize = 5
+        String search = "java"
         CoursePageSortOption sortOption = CoursePageSortOption.NEWEST
         CoursePageFilter filter = new CoursePageFilter()
         List<Course> courses = createCourses(5)
@@ -150,7 +151,7 @@ class CourseServiceImplSpec extends Specification {
         courseMapperFactory.getDTOMapper(CourseOverviewDTO.class) >> Optional.empty()
 
         when:
-        CoursePageDTO result = courseService.getAvailableCoursesPage(filter, sortOption, pageNo, pageSize)
+        CoursePageDTO result = courseService.getAvailableCoursesPage(search, filter, sortOption, pageNo, pageSize)
 
         then:
         thrown(MapperNotFoundException)
@@ -176,7 +177,7 @@ class CourseServiceImplSpec extends Specification {
         List courseOverviewDTOs = mockCoursePage.map(courseOverviewMapper::toDTO).getContent()
 
         when:
-        def result = courseService.getAvailableCoursesPage(filter, sortOption, pageNo, pageSize)
+        def result = courseService.getAvailableCoursesPage(search, filter, sortOption, pageNo, pageSize)
 
         then:
         result.content == courseOverviewDTOs
@@ -185,6 +186,7 @@ class CourseServiceImplSpec extends Specification {
 
         where:
         pageNo << [-10, -1, 0, 1]
+        search << ["", "Java", "  Python  ", "   "]
     }
 
     def "Should return a full page when pageNo and pageSize are reasonable"() {
@@ -209,7 +211,7 @@ class CourseServiceImplSpec extends Specification {
 
 
         when:
-        def result = courseService.getAvailableCoursesPage(filter, sortOption, pageNo, pageSize)
+        def result = courseService.getAvailableCoursesPage(search, filter, sortOption, pageNo, pageSize)
 
         then:
         result.content == courseOverviewDTOs
@@ -221,13 +223,17 @@ class CourseServiceImplSpec extends Specification {
                    new CoursePageFilter(categoryFilters: [1, 2, 3],
                            levelFilters: [CourseLevel.BEGINNER, CourseLevel.INTERMEDIATE],
                            minRating: 3.5,
-                           platformFilters: ["UDEMY"])]
+                           platformFilters: ["UDEMY"]),
+                   new CoursePageFilter(categoryFilters: [], levelFilters: [CourseLevel.ADVANCED], minRating: 0, platformFilters: []),
+                   new CoursePageFilter()]
+        search << ["", "Java", "  PYTHON  ", "   "]
     }
 
     def "Should return the last page when pageNo is too high"() {
         given:
         int pageNo = 99
         int pageSize = 5
+        String search = "123"
         CoursePageFilter filter = new CoursePageFilter()
         CoursePageSortOption sortOption = CoursePageSortOption.NEWEST
         List<Course> courses = createCourses(7)
@@ -253,7 +259,7 @@ class CourseServiceImplSpec extends Specification {
         List courseOverviewDTOs = mockCoursePage.map(courseOverviewMapper::toDTO).getContent()
 
         when:
-        def result = courseService.getAvailableCoursesPage(filter, sortOption, pageNo, pageSize)
+        def result = courseService.getAvailableCoursesPage(search, filter, sortOption, pageNo, pageSize)
 
         then:
         result.content == courseOverviewDTOs

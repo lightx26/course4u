@@ -10,7 +10,7 @@ export default function FilterWrap() {
     //get Category from store
     const listCategory = useSelector((state: RootState) => state.category);
     const [categoryList, setCategoryList] = useState<FilterItemType[]>([]);
-    const [ratingList, setRatingList] = useState<FilterItemType[]>([]);
+    const [ingList, setRatingList] = useState<FilterItemType[]>([]);
     const [levelList, setLevelList] = useState<FilterItemType[]>([]);
     const [platformList, setPlatformList] = useState<FilterItemType[]>([]);
 
@@ -20,12 +20,11 @@ export default function FilterWrap() {
     }, [dispatch]);
 
     useEffect(() => {
-        console.log('listCategory:', listCategory); // Log Redux state
         const updatedCategoryList = listCategory.map((item) => ({
-            id: `cat${item.id}`,
+            id: `${item.id}`,
             name: item.name,
             countNumber: 1200,
-            parentID: 'cat1',
+            parentID: 'Category',
             checked: false
         }));
         setCategoryList(updatedCategoryList);
@@ -34,38 +33,38 @@ export default function FilterWrap() {
     useEffect(() => {
         const initialRatingList = [
             {
-                id: 'rat1',
+                id: '5',
                 name: '5 Star',
                 countNumber: 1200,
-                parentID: 'cat2',
+                parentID: 'Rating',
                 checked: false
             },
             {
-                id: 'rat2',
+                id: '4',
                 name: '4 Star & up',
                 countNumber: 800,
-                parentID: 'cat2',
+                parentID: 'Rating',
                 checked: false
             },
             {
-                id: 'rat3',
+                id: '3',
                 name: '3 Star & up',
                 countNumber: 900,
-                parentID: 'cat2',
+                parentID: 'Rating',
                 checked: false
             },
             {
-                id: 'rat4',
+                id: '2',
                 name: '2 Star & up',
                 countNumber: 1500,
-                parentID: 'cat2',
+                parentID: 'Rating',
                 checked: false
             },
             {
-                id: 'rat5',
+                id: '1',
                 name: '1 Star & up',
                 countNumber: 700,
-                parentID: 'cat2',
+                parentID: 'Rating',
                 checked: false
             }
         ];
@@ -75,24 +74,24 @@ export default function FilterWrap() {
     useEffect(() => {
         const initialLevelList = [
             {
-                id: 'lev1',
+                id: 'BEGINNER',
                 name: 'Beginner',
                 countNumber: 1200,
-                parentID: 'cat3',
+                parentID: 'Level',
                 checked: false
             },
             {
-                id: 'lev2',
+                id: 'INTERMEDIATE',
                 name: 'Intermediate',
                 countNumber: 800,
-                parentID: 'cat3',
+                parentID: 'Level',
                 checked: false
             },
             {
-                id: 'lev3',
+                id: 'ADVANCED',
                 name: 'Advanced',
                 countNumber: 900,
-                parentID: 'cat3',
+                parentID: 'Level',
                 checked: false
             }
         ];
@@ -102,24 +101,24 @@ export default function FilterWrap() {
     useEffect(() => {
         const initialPlatformList = [
             {
-                id: 'plat1',
+                id: 'UDEMY',
                 name: 'Udemy',
                 countNumber: 1200,
-                parentID: 'cat4',
+                parentID: 'Platform',
                 checked: false
             },
             {
-                id: 'plat2',
+                id: 'COURSERA',
                 name: 'Coursera',
                 countNumber: 800,
-                parentID: 'cat4',
+                parentID: 'Platform',
                 checked: false
             },
             {
-                id: 'plat3',
-                name: 'Linkedin',
+                id: 'LINKEDIN',
+                name: 'LinkedIn',
                 countNumber: 900,
-                parentID: 'cat4',
+                parentID: 'Platform',
                 checked: false
             }
         ];
@@ -130,11 +129,11 @@ export default function FilterWrap() {
         <div className='sticky max-h-[90vh] custom-scrollbar overflow-y-auto border-2 border-gray-100 border-solid p-1 rounded-md'>
             <div className='flex flex-col w-64 max-w-full gap-5 pb-10 select-none'>
                 {/*Category need search*/}
-                <FilterComponent key={'cat1'} isHaveSearch={true} title='Category' list={categoryList} />
+                <FilterComponent key={'Category'} isHaveSearch={true} title='Category' list={categoryList} />
                 {/*Rating can only choose one option/time*/}
-                <FilterComponent key={'cat2'} isMultipleChoice={false} isHaveSearch={false} title='Rating' list={ratingList} />
-                <FilterComponent key={'cat3'} isHaveSearch={false} title='Level' list={levelList} />
-                <FilterComponent key={'cat4'} isHaveSearch={false} title='Platform' list={platformList} />
+                <FilterComponent key={'Rating'} isMultipleChoice={false} isHaveSearch={false} title='Rating' list={ingList} />
+                <FilterComponent key={'Level'} isHaveSearch={false} title='Level' list={levelList} />
+                <FilterComponent key={'Platform'} isHaveSearch={false} title='Platform' list={platformList} />
             </div>
         </div>
     );

@@ -7,7 +7,6 @@ import { Form } from "../ui/form";
 import { Button } from "../ui/button";
 import instance from "../../utils/customizeAxios";
 import { toast } from "sonner";
-import {} from "@radix-ui/react-alert-dialog";
 import { useNavigate } from "react-router-dom";
 
 const CreateCourse = () => {

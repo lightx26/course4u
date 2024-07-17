@@ -101,7 +101,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Page<CourseOverviewDTO> getAvailableCoursesPage(CoursePageFilter filter, CoursePageSortOption sortBy, int pageNo, int pageSize) {
+    public Page<CourseOverviewDTO> getAvailableCoursesPage(String search, CoursePageFilter filter, CoursePageSortOption sortBy, int pageNo, int pageSize) {
         Optional<DTOMapper<CourseOverviewDTO, Course>> courseMapperOpt = courseMapperFactory.getDTOMapper(CourseOverviewDTO.class);
 
         if (courseMapperOpt.isEmpty()) {
@@ -110,30 +110,34 @@ public class CourseServiceImpl implements CourseService {
 
         DTOMapper<CourseOverviewDTO, Course> courseMapper = courseMapperOpt.get();
 
-        Page<Course> coursePage = getAvailableCourses(filter, sortBy, pageNo, pageSize);
+        Page<Course> coursePage = getAvailableCourses(search, filter, sortBy, pageNo, pageSize);
         return coursePage.map(courseMapper::toDTO);
     }
 
-    private Page<Course> getAvailableCourses(CoursePageFilter filter, CoursePageSortOption sortBy, int pageNo, int pageSize) {
+    private Page<Course> getAvailableCourses(String search, CoursePageFilter filter, CoursePageSortOption sortBy, int pageNo, int pageSize) {
         // Make sure pageNo is valid: at least 1 and at most maxPageNum
         pageNo = Math.max(pageNo, 1);
 
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
 
-        Page<Course> coursePage = getAvailableCourseBySpec(filter, sortBy, pageable);
+        Page<Course> coursePage = getAvailableCourseBySpec(search, filter, sortBy, pageable);
 
         // If pageNo is greater than the total number of pages, return the last page
         int totalPages = coursePage.getTotalPages();
         if (totalPages > 0 && pageNo > totalPages) {
             pageable = PageRequest.of(totalPages - 1, pageSize);
-            return getAvailableCourseBySpec(filter, sortBy, pageable);
+            return getAvailableCourseBySpec(search, filter, sortBy, pageable);
         }
 
         return coursePage;
     }
 
-    private Page<Course> getAvailableCourseBySpec(CoursePageFilter filter, CoursePageSortOption sortBy, Pageable pageable) {
+    private Page<Course> getAvailableCourseBySpec(String search, CoursePageFilter filter, CoursePageSortOption sortBy, Pageable pageable) {
         Specification<Course> spec = CourseSpecifications.hasStatus(CourseStatus.AVAILABLE);
+
+        if (search != null && !search.isBlank()) {
+            spec = spec.and(CourseSpecifications.nameLike(search));
+        }
 
         if (filter != null) {
             spec = spec.and(getFilterSpec(filter));

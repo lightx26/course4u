@@ -26,8 +26,8 @@ export default function CourseCardComponent({ course }: PropsType) {
     course.level?.toLowerCase() === "beginner"
       ? "bg-green-200 text-green-600"
       : course.level?.toLowerCase() === "intermediate"
-      ? "bg-yellow-100 text-yellow-600"
-      : "bg-rose-100 text-rose-600";
+        ? "bg-yellow-100 text-yellow-600"
+        : "bg-rose-100 text-rose-600";
   return (
     <div
       onClick={handleClickCourseDetail(course.id)}
@@ -39,9 +39,11 @@ export default function CourseCardComponent({ course }: PropsType) {
         alt={course.name}
       />
       <div className="flex flex-col gap-2 px-2 pt-2 text-left">
-        <h3 className="text-sm font-medium text-left text line-clamp-2 overflow-ellipsis min-h-12">
-          {course.name}
-        </h3>
+        <div className="h-[40px] overflow-hidden flex items-center">
+          <h3 className="text-sm font-medium text-left text line-clamp-2 overflow-ellipsis h-[40px]">
+            {course.name}
+          </h3>
+        </div>
         {/*Assignee role and status are optional*/}
         {course.assignee && (
           <div className="flex items-center gap-2">
@@ -60,7 +62,11 @@ export default function CourseCardComponent({ course }: PropsType) {
           </div>
         )}
         <div className="flex items-center gap-3">
-          <p className="text-sm font-medium">{course.platform}</p>
+          <p className="text-sm font-medium">
+            {course.platform === 'COURSERA' ? 'Coursera' :
+              course.platform === 'LINKEDIN' ? 'LinkedIn' :
+                course.platform === 'UDEMY' ? 'Udemy' : course.platform}
+          </p>
           {course.level && (
             <p className={cn("px-2 py-1 rounded text-xs font-medium", color)}>
               {" "}

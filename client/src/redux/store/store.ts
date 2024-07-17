@@ -4,6 +4,7 @@ import createSagaMiddleware from "redux-saga";
 import RootSaga from "../saga/root.saga";
 import userReducer from "../slice/user.slice";
 import filterItemCheckboxSlice from "../slice/filterItemCheckbox.slice";
+import courseReducer from "../slice/course.slice";
 import categoryReducer from "../slice/category.slice";
 const sagaMiddleware = createSagaMiddleware();
 export const store = configureStore({
@@ -11,6 +12,7 @@ export const store = configureStore({
     counter: counterReducer,
     user: userReducer,
     filter: filterItemCheckboxSlice,
+    courses: courseReducer,
     category: categoryReducer
   },
   middleware: (getDefaultMiddleware) =>

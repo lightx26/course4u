@@ -27,15 +27,15 @@ class CourseControllerSpec extends Specification {
     def "Get available courses with valid page size returns OK response"() {
         given:
         def filter = new CoursePageFilter()
-        def request = new CourseSearchRequest(page: page, pageSize: pageSize, sortBy: sortBy, filter: filter)
+        def request = new CourseSearchRequest(page: page, pageSize: pageSize, sortBy: sortBy, filter: filter, search: "")
         def coursesPage = new PageImpl([new CourseOverviewDTO()]) // Dữ liệu mẫu trả về từ service
-        courseServiceMock.getAvailableCoursesPage(request.getSortBy(), request.getPage(), request.getPageSize()) >> coursesPage
+        courseServiceMock.getAvailableCoursesPage(request.getSearch(), request.getFilter(), request.getSortBy(), request.getPage(), request.getPageSize()) >> coursesPage
 
         when:
         ResponseEntity<?> response = courseController.getAvailableCourses(request)
 
         then:
-        1 * courseServiceMock.getAvailableCoursesPage(request.getFilter(), request.getSortBy(), request.getPage(), request.getPageSize()) >> coursesPage
+        1 * courseServiceMock.getAvailableCoursesPage(request.getSearch(), request.getFilter(), request.getSortBy(), request.getPage(), request.getPageSize()) >> coursesPage
         response.getStatusCode().value() == 200
         response.getBody() == coursesPage
 
@@ -76,8 +76,8 @@ class CourseControllerSpec extends Specification {
     def "Return Internal Server Error when service thrown an exception"() {
         given:
         def filter = new CoursePageFilter()
-        def request = new CourseSearchRequest(page: 1, pageSize: 8, sortBy: CoursePageSortOption.NEWEST, filter: filter)
-        courseServiceMock.getAvailableCoursesPage(filter, request.getSortBy(), request.getPage(), request.getPageSize()) >> { throw new MapperNotFoundException() }
+        def request = new CourseSearchRequest(page: 1, pageSize: 8, sortBy: CoursePageSortOption.NEWEST, filter: filter, search: "")
+        courseServiceMock.getAvailableCoursesPage(request.getSearch(), request.getFilter(), request.getSortBy(), request.getPage(), request.getPageSize()) >> { throw new MapperNotFoundException() }
 
         when:
         ResponseEntity<?> response = courseController.getAvailableCourses(request)

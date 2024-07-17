@@ -4,9 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store/store";
 import { handleLogout } from "../../redux/slice/user.slice";
 import { useNavigate } from "react-router-dom";
+import { searchCoursesByFilterNameAndSortBy, updateSearch } from "../../redux/slice/course.slice";
 const HeaderHomepage: React.FC = () => {
   const [isDropdownAvatarOpen, setIsDropdownAvatarOpen] =
     useState<boolean>(false);
+
+  const searchTerm = useSelector((state: RootState) => state.courses.searchTerm);
 
   const toggleDropdown = () => {
     setIsDropdownAvatarOpen(!isDropdownAvatarOpen);
@@ -14,8 +17,13 @@ const HeaderHomepage: React.FC = () => {
 
   const userData = useSelector((state: RootState) => state.user.user);
   const navigate = useNavigate();
+  const dispatch: AppDispatch = useDispatch();
   const goToHomePage = () => {
-    navigate("/"); // Sử dụng '/' để chuyển hướng đến trang chủ
+    if (window.location.pathname === "/") {
+      window.location.reload();
+    } else {
+      navigate("/");
+    }
   };
 
   const goToMyProfilePage = () => {
@@ -30,7 +38,14 @@ const HeaderHomepage: React.FC = () => {
     navigate("/personal/score");
   };
 
-  const dispatch = useDispatch<AppDispatch>();
+  const handleSearch = () => {
+    if (window.location.pathname !== "/") {
+      goToHomePage();
+    }
+    dispatch(updateSearch(searchTerm?.trim()));
+    dispatch(searchCoursesByFilterNameAndSortBy());
+  };
+
   return (
     <header
       className="p-4 bg-white"
@@ -83,8 +98,18 @@ const HeaderHomepage: React.FC = () => {
               outline: "none",
               backgroundColor: "#f5f7fa",
             }}
+            value={searchTerm}
+            onChange={(e) => {
+              dispatch(updateSearch(e.target.value))
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSearch();
+              }
+            }}
             autoFocus
           ></input>
+
         </div>
 
         <div className="flex items-center space-x-4">
@@ -228,7 +253,7 @@ const HeaderHomepage: React.FC = () => {
 
             {isDropdownAvatarOpen && (
               <div
-                className="absolute right-2 top-10 pt-2 mt-2 bg-white border border-gray-200 rounded-md shadow-xl w-60"
+                className="absolute pt-2 mt-2 bg-white border border-gray-200 rounded-md shadow-xl right-2 top-10 w-60"
                 style={{ zIndex: "999999" }}
                 onMouseLeave={() => {
                   if (isDropdownAvatarOpen) {

@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { FilterItemType } from './MainContent';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleFilterItem } from '../../../redux/slice/filterItemCheckbox.slice';
-import { RootState } from '../../../redux/store/store';
+import { AppDispatch, RootState } from '../../../redux/store/store';
+import { searchCoursesByFilterNameAndSortBy } from '../../../redux/slice/course.slice';
 
 
 type PropsType = {
@@ -13,7 +14,7 @@ type PropsType = {
 
 export default function FilterItemComponent({ prop, isMultipleChoice }: PropsType) {
     const [checked, setChecked] = useState(prop.checked);
-    const dispatch = useDispatch();
+    const dispatch: AppDispatch = useDispatch();
 
     // Sử dụng useSelector để lấy state từ store
     const selectedItems = useSelector((state: RootState) => state.filter);
@@ -59,6 +60,7 @@ export default function FilterItemComponent({ prop, isMultipleChoice }: PropsTyp
                 name: prop.name
             }]
         }));
+        dispatch(searchCoursesByFilterNameAndSortBy())
     }
 
     return (

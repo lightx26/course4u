@@ -4,7 +4,7 @@ type FilterItemSlice = {
     name: string;
 }
 
-type FilterItemSliceType = {
+export type FilterItemSliceType = {
     FilterComponentId: string;
     listChoice: FilterItemSlice[];
 }

@@ -1,25 +1,34 @@
 import instance from "../utils/customizeAxios";
 
-async function fetchListAvailableCourse(offset: number = 1, limit: number = 8, sortBy: string = "NEWEST", categoryFilters?: number[], levelFilters?: string[], platformFilters?: string[], minRating: number = 0) {
-  // eslint-disable-next-line no-useless-catch
+export type SearchParams = {
+  searchTerm?: string;
+  categoryFilter?: string[];
+  levelFilter?: string[];
+  platformFilter?: string[];
+  minRating?: string;
+  limit?: number;
+  sortBy?: string;
+  page?: number;
+};
+
+async function fetchListAvailableCourse(Searcher: SearchParams) {
   try {
     const request_params = {
-      page: offset,
-      pageSize: limit,
-      sortBy: sortBy,
+      page: Searcher.page ?? 1,
+      pageSize: Searcher.limit ?? 8,
+      sortBy: Searcher.sortBy ?? 'NEWEST',
+      search: Searcher.searchTerm ?? '',
       filter: {
-        categoryFilters,
-        levelFilters,
-        platformFilters,
-        minRating,
+        categoryFilters: Searcher.categoryFilter ?? [],
+        levelFilters: Searcher.levelFilter ?? [],
+        platformFilters: Searcher.platformFilter ?? [],
+        minRating: Searcher.minRating ?? '0',
       }
-    }
-    const response = await instance.post(
-      `/courses/search`, request_params
-    );
+    };
+    const response = await instance.post(`/courses/search`, request_params);
     return response;
   } catch (error) {
-    throw error;
+    console.error(error);
   }
 }
 

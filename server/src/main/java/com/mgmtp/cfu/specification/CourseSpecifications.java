@@ -14,7 +14,7 @@ import java.util.List;
 
 public class CourseSpecifications {
     public static Specification<Course> nameLike(String name) {
-        return (root, query, builder) -> builder.like(root.get("name"), "%" + name + "%");
+        return (root, query, builder) -> builder.like(builder.upper(root.get("name")), "%" + name.toUpperCase() + "%");
     }
 
     public static Specification<Course> hasStatus(CourseStatus status) {
@@ -22,9 +22,10 @@ public class CourseSpecifications {
     }
 
     public static Specification<Course> hasCategories(List<Long> categoryIds) {
-        return (root, query, builder) -> (
-                root.join("categories").get("id").in(categoryIds)
-        );
+        return (root, query, builder) -> {
+            query.distinct(true);
+            return root.join("categories").get("id").in(categoryIds);
+        };
     }
 
     public static Specification<Course> hasRatingGreaterThan(double rating) {

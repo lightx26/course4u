@@ -13,6 +13,7 @@ import lombok.Setter;
 public class CourseSearchRequest {
     private int page = 1;
     private int pageSize = 8;
-    private CoursePageSortOption sortBy = CoursePageSortOption.NEWEST;
+    private String search = "";
     private CoursePageFilter filter = new CoursePageFilter();
+    private CoursePageSortOption sortBy = CoursePageSortOption.NEWEST;
 }

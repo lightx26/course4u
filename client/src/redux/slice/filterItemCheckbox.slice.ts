@@ -48,8 +48,9 @@ export const filterItemSlice = createSlice({
                     }]
                 });
             }
-            console.log('Toggle filter item', action.payload);
-            console.log('State', state);
+        },
+        getAllFilterItems: (state) => {
+            return state;
         },
         deleteAllFilterItem: () => {
             return [];
@@ -57,6 +58,6 @@ export const filterItemSlice = createSlice({
     },
 });
 
-export const { addFilterItem, removeFilterItem, toggleFilterItem } = filterItemSlice.actions;
+export const { addFilterItem, removeFilterItem, toggleFilterItem, getAllFilterItems } = filterItemSlice.actions;
 
 export default filterItemSlice.reducer;

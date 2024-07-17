@@ -28,7 +28,9 @@ export default function FilterComponent(prop: Prop) {
 
     //Handle the search change event (for FilterComponent have search bar).
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const searchText = event.target.value.toLowerCase();
+        console.log('before-->', event.target.value);
+        const searchText = event.target.value.trim().split(/\s+/).join(' ').toLowerCase();
+        console.log('search text-->', searchText);
         const filteredList = prop.list.filter(item => item.name.toLowerCase().includes(searchText));
         setListFilterItem(filteredList);
     };
