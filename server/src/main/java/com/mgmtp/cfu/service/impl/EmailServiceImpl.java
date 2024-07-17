@@ -72,8 +72,7 @@ public class EmailServiceImpl implements IEmailService {
     private String generateContentForWelcomeMail(List<MailContentUnit> mailContentUnits, Resource resource) {
         try {
             SAXReader reader = new SAXReader();
-            Document document = reader.read(resource.getFile());
-            log.info(document.getName() + mailContentUnits.get(0).getTag());
+            Document document = reader.read(resource.getInputStream());
             for (MailContentUnit mailContentUnit : mailContentUnits)
                 modifyContent(document, mailContentUnit.getId(), mailContentUnit.getContent(), mailContentUnit.getHref(), mailContentUnit.getTag());
             return document.asXML();
