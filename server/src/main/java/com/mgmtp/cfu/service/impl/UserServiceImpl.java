@@ -9,6 +9,7 @@ import com.mgmtp.cfu.service.UploadService;
 import com.mgmtp.cfu.util.AuthUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
 
@@ -19,13 +20,15 @@ public class UserServiceImpl implements IUserService {
     private final UserRepository userRepository;
 
     private final UploadService uploadService;
+    
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${course4u.upload.profile-directory}")
     private String uploadProfileDir;
 
     @Override
     public UserDto getMyProfile() {
-        var user =AuthUtils.getCurrentUser();
+        var user = AuthUtils.getCurrentUser();
         return UserMapper.toUserDto(user);
     }
 
@@ -46,6 +49,17 @@ public class UserServiceImpl implements IUserService {
         user.setGender(userDto.getGender());
         userRepository.save(user);
         return UserMapper.toUserDto(user);
+    }
+
+    @Override
+    public int changeUserPassword(String oldPassword, String newPassword) {
+        User user = AuthUtils.getCurrentUser();
+        boolean checkPassword = passwordEncoder.matches(oldPassword, user.getPassword());
+        if (checkPassword) {
+            userRepository.changeUserPassword(passwordEncoder.encode(newPassword), user.getId());
+            return 1;
+        }
+        return 0;
     }
 
 }

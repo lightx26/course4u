@@ -4,9 +4,11 @@ import com.mgmtp.cfu.dto.userdto.UserDto
 import com.mgmtp.cfu.entity.User
 import com.mgmtp.cfu.enums.Gender
 import com.mgmtp.cfu.enums.Role
-import com.mgmtp.cfu.repository.UserRepository
 import com.mgmtp.cfu.service.UploadService
 import org.springframework.web.multipart.MultipartFile
+import com.mgmtp.cfu.repository.UserRepository
+import com.mgmtp.cfu.util.AuthUtils
+import org.springframework.security.crypto.password.PasswordEncoder
 import spock.lang.Specification
 import spock.lang.Subject
 import org.springframework.security.core.context.SecurityContext
@@ -19,9 +21,10 @@ class UserServiceImplSpec extends Specification {
 
     def userRepository = Mock(UserRepository)
     def uploadService = Mock(UploadService)
+    def passwordEncoder = Mock(PasswordEncoder)
 
     @Subject
-    def userService = new UserServiceImpl(userRepository, uploadService)
+    def userService = new UserServiceImpl(userRepository, uploadService, passwordEncoder)
 
     def setup() {
         def securityContext = Mock(SecurityContext)
@@ -57,7 +60,6 @@ class UserServiceImplSpec extends Specification {
         userDto.avatarUrl == "/aksh/sdh"
         userDto.gender == Gender.FEMALE
         userDto.telephone == "008837623"
-
     }
 
     def "editUserProfile update user info and return UserDto"() {
@@ -73,6 +75,34 @@ class UserServiceImplSpec extends Specification {
 
         then:
         result.getId() == userDto.getId()
+    }
+
+    def "Change user password successfully and return 1"() {
+        given:
+        def user = AuthUtils.getCurrentUser()
+        def oldPassword = "123"
+        def newPassword = "123456"
+        passwordEncoder.matches(oldPassword, user.getPassword()) >> true
+
+        when:
+        int result = userService.changeUserPassword(oldPassword, newPassword)
+
+        then:
+        result == 1
+    }
+
+    def "Change user password failed and return 0"() {
+        given:
+        def user = AuthUtils.getCurrentUser()
+        def oldPassword = "123"
+        def newPassword = "123456"
+        passwordEncoder.matches(oldPassword, user.getPassword()) >> false
+
+        when:
+        int result = userService.changeUserPassword(oldPassword, newPassword)
+
+        then:
+        result == 0
     }
 
 }
