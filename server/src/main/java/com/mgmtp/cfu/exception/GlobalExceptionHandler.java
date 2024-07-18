@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
     @ExceptionHandler({ BadCredentialsException.class,NotExistEmailException.class})
     public ResponseEntity<?> handleIllegalArgumentException(final Exception e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.builder().message(e.getMessage()).status("400").build());}

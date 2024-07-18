@@ -1,6 +1,7 @@
 package com.mgmtp.cfu.repository;
 
 import com.mgmtp.cfu.entity.User;
+import com.mgmtp.cfu.enums.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -19,6 +20,8 @@ public interface UserRepository extends JpaRepository<User,Long> {
     boolean existsByEmail(String email);
 
     List<User> findAllByEmail(String email);
+
+    List<User> findAllByRole(Role role);
 
     @Transactional
     @Modifying

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="1" author="Phuoc Huan">
+        <createTable tableName="Document">
+            <column name="Id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="RegistrationId" type="BIGINT"/>
+            <column name="Url" type="VARCHAR"/>
+            <column name="Status" type="VARCHAR(20)"/>
+            <column name="Type" type="VARCHAR(20)"/>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="Document"
+                baseColumnNames="RegistrationId"
+                referencedTableName="Registration"
+                referencedColumnNames="Id"
+                constraintName="fk_document_registration"
+        />
+    </changeSet>
+</databaseChangeLog>
