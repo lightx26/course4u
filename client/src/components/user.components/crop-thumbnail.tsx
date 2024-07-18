@@ -1,4 +1,4 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, useState, useEffect } from "react";
 import Cropper, { Point } from "react-easy-crop";
 import { Button } from "../ui/button";
 import getCroppedImg from "../../utils/cropImage";
@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+
 type Props = {
   children?: ReactElement;
   imageUrl: string | null;
@@ -51,15 +52,38 @@ export const CropThumbnail = ({
     aspectInit
   );
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [imageModified, setImageModified] = useState(false);
+
   const onCropChange = (crop: Point) => {
     setCrop(crop);
+    setImageModified(true);
   };
-  const onOpen = () => {
-    setIsOpen(!isOpen);
-  };
+
   const onZoomChange = (zoom: number) => {
     setZoom(zoom);
+    setImageModified(true);
   };
+
+  //@ts-ignore
+  const onCropComplete = (croppedArea, croppedAreaPixels) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+    setImageModified(true);
+  };
+
+  const onCrop = async () => {
+    const croppedImageUrl = await getCroppedImg(imageUrl!, croppedAreaPixels!);
+    // @ts-ignore
+    setCroppedImageFor(crop, zoom, aspect, croppedImageUrl);
+    setIsOpen(false);
+  };
+
+  const onResetImage = async () => {
+    const imageBlob = base64ToBlob(imageUrl!);
+    const imageBlobUrl = URL.createObjectURL(imageBlob);
+    setCroppedImageFor(cropInit, zoomInit, aspectInit, imageBlobUrl);
+    setIsOpen(false);
+  };
+
   const base64ToBlob = (base64: string) => {
     const byteString = atob(base64.split(",")[1]);
     const mimeString = base64.split(",")[0].split(":")[1].split(";")[0];
@@ -70,22 +94,25 @@ export const CropThumbnail = ({
     }
     return new Blob([ab], { type: mimeString });
   };
-  //@ts-ignore
-  const onCropComplete = (croppedArea, croppedAreaPixels) => {
-    setCroppedAreaPixels(croppedAreaPixels);
+
+  useEffect(() => {
+    const handleDialogClose = () => {
+      if (isOpen && imageModified) {
+        const imageBlob = base64ToBlob(imageUrl!);
+        const imageBlobUrl = URL.createObjectURL(imageBlob);
+        setCroppedImageFor(cropInit, zoomInit, aspectInit, imageBlobUrl);
+      }
+    };
+
+    return handleDialogClose;
+  }, [isOpen, imageModified]);
+
+  const onOpenChange = (open: boolean) => {
+    setIsOpen(open);
   };
-  const onCrop = async () => {
-    const croppedImageUrl = await getCroppedImg(imageUrl!, croppedAreaPixels!);
-    // @ts-ignore
-    setCroppedImageFor(crop, zoom, aspect, croppedImageUrl);
-  };
-  const onResetImage = async () => {
-    const imageBlob = base64ToBlob(imageUrl!);
-    const imageBlobUrl = URL.createObjectURL(imageBlob);
-    setCroppedImageFor(cropInit, zoomInit, aspectInit, imageBlobUrl);
-  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={onOpen}>
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
       {isEdit ? (
         <DialogTrigger asChild onClick={() => setIsOpen(true)}>
           {children}
