@@ -55,45 +55,56 @@ const CreateCourse = () => {
     } else {
       formData.append("thumbnailUrl", values.thumbnailUrl);
     }
+
     instance
       .postForm("/courses", formData)
-      .then((_res) => {
-        toast.success("Create a new course successfully", {
-          description: "You will be redirected to the admin page in 3 seconds",
-          style: {
-            color: "green",
-            fontWeight: "bold",
-            textAlign: "center",
-          },
-          onAutoClose: () => {
-            navigate("/admin", {
-              replace: true,
-              state: { refresh: true },
-            });
-          },
-        });
+      .then((res) => {
+        if (res.status === 201) {
+          toast.success("Create a new course successfully", {
+            description:
+              "You will be redirected to the admin page in 3 seconds",
+            style: {
+              color: "green",
+              fontWeight: "bold",
+              textAlign: "center",
+            },
+            onAutoClose: () => {
+              navigate("/admin", {
+                replace: true,
+                state: { refresh: true },
+              });
+            },
+          });
+        } else if (res.status === 500) {
+          toast.error("Thumbnail size should be smaller than 10MB!", {
+            description: "Please crop thumbnail before submit again!",
+            style: {
+              color: "red",
+              fontWeight: "bold",
+              textAlign: "center",
+            },
+          });
+        }
       })
-      .catch((error) => {
-        if (error.response) {
-          if (error.response.status === 409) {
-            toast.error("Create a new course unsuccessfully", {
-              description:
-                "Your course already exists in the system. Please check again!",
-              style: {
-                color: "red",
-                fontWeight: "bold",
-                textAlign: "center",
-              },
-            });
-          } else if (error.response.status === 500) {
-            toast.error("Internal Server Error. Please try again later.", {
-              style: {
-                color: "red",
-                fontWeight: "bold",
-                textAlign: "center",
-              },
-            });
-          }
+      .catch((_error) => {
+        if (_error.response.status === 409) {
+          toast.error("Create a new course unsuccessfully", {
+            description:
+              "Your course already exists in the system. Please check again!",
+            style: {
+              color: "red",
+              fontWeight: "bold",
+              textAlign: "center",
+            },
+          });
+        } else {
+          toast.error("Something went wrong!.", {
+            style: {
+              color: "red",
+              fontWeight: "bold",
+              textAlign: "center",
+            },
+          });
         }
       });
   }

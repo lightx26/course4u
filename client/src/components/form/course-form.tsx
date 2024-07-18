@@ -25,6 +25,7 @@ import fetchOpenGraphData from "../../utils/CourseDetail";
 import instance from "../../utils/customizeAxios";
 import { ArrowRightToLine, Upload } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
+import { toast } from "sonner";
 
 const courseSchema = registrationSchema.omit({
   duration: true,
@@ -89,16 +90,24 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
           value: category.id + "",
         }));
         setCategories(categories);
-      } catch (error) {
-        console.error("Failed to fetch categories:", error);
-      }
+      } catch (error) {}
     };
     getCategories();
   }, []);
 
   const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
+    (acceptedFiles: File[], rejectedFiles: File[]) => {
       const file = new FileReader();
+      if (rejectedFiles.length > 0) {
+        toast.error("Thumbnail size should be smaller than 10MB!", {
+          description: "Please crop thumbnail before submit again!",
+          style: {
+            color: "red",
+            fontWeight: "bold",
+            textAlign: "center",
+          },
+        });
+      }
       file.onload = () => {
         setThumbnail({ ...thumbnail, imageUrl: file.result as string });
         form!.setValue("thumbnailUrl", file.result as string);
@@ -111,6 +120,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    //@ts-ignore
     onDrop,
     accept: {
       "image/jpeg": [".jpg", ".jpeg"],
@@ -147,8 +157,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
       const urlObj = new URL(url);
       return `${urlObj.protocol}//${urlObj.hostname}${urlObj.pathname}`;
     } catch (error) {
-      console.error("Invalid URL:", error);
-      return url; // Return the original URL if it's invalid
+      return url;
     }
   };
 
@@ -176,7 +185,6 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
         }
       }
     } catch (error) {
-      console.error("Error fetching Open Graph data:", error);
     } finally {
       setLoading(false);
     }
