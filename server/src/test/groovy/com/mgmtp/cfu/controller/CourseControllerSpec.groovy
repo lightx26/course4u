@@ -154,4 +154,21 @@ class CourseControllerSpec extends Specification {
         then:
         def ex=thrown(BadRequestRunTimeException.class)
     }
+
+
+    def'getRelatedCourses: Course id is null.'(){
+        given:
+        when:
+        courseController.getRelatedCourses(null)
+        then:
+        def ex=thrown(BadRequestRunTimeException.class)
+    }
+    def'getRelatedCourses: return ok.'(){
+        given:
+        courseServiceMock.getRelatedCourses(_ as Long)>> List.of()
+        when:
+        def response =courseController.getRelatedCourses(1)
+        then:
+        response.statusCode.value()==200
+    }
 }

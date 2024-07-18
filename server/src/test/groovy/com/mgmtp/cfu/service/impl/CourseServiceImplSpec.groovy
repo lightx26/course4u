@@ -16,6 +16,7 @@ import com.mgmtp.cfu.enums.CoursePlatform
 import com.mgmtp.cfu.enums.CourseStatus
 import com.mgmtp.cfu.enums.Role
 import com.mgmtp.cfu.exception.BadRequestRunTimeException
+import com.mgmtp.cfu.exception.CourseNotFoundException
 import com.mgmtp.cfu.exception.ServerErrorRuntimeException
 import com.mgmtp.cfu.exception.MapperNotFoundException
 import com.mgmtp.cfu.mapper.factory.MapperFactory
@@ -47,6 +48,7 @@ class CourseServiceImplSpec extends Specification {
     UploadService uploadService = Mock()
     @Subject
     CourseService courseService = new CourseServiceImpl(courseRepository, courseMapperFactory, categoryService, uploadService)
+
 
     def setup() {
         AuthUtils.getCurrentUser() >> new User()
@@ -333,4 +335,33 @@ class CourseServiceImplSpec extends Specification {
         then:
         def ex = thrown(ServerErrorRuntimeException)
     }
+
+    def "getRelatedCourses return ok"(){
+        given:
+        var categories=Set.of(Category.builder().name("ABC").id(1).build())
+        courseRepository.findById(_)>>> Optional.of(Course.builder().categories(categories).id(1).status(CourseStatus.AVAILABLE).registrations(new HashSet<Registration>(Arrays.asList(Registration.builder().id(1).build()))).build())
+        courseRepository.findTop8RelatedCourse(_,_,_,_)>> createAvailableCourses(7)
+        courseMapperFactory.getDTOMapper(CourseOverviewDTO.class) >> Optional.of(courseOverviewMapper)
+        courseOverviewMapper.toDTO(_) >> new CourseOverviewDTO(id: 1)
+
+        when:
+        def list=courseService.getRelatedCourses(1)
+        then:
+        list.size()==7
+    }
+    List<Course> createAvailableCourses(int numCourses) {
+        var categories=Set.of(Category.builder().name("ABC").id(1).build())
+        return (1..numCourses).collect { new Course(id: it, status: CourseStatus.AVAILABLE, categories: categories) }
+    }
+
+
+    def "getRelatedCourses return The course with ID \" + courseId + \" isn't found."(){
+        given:
+        courseRepository.findById(_)>>> Optional.empty()
+        when:
+        courseService.getRelatedCourses(1)
+        then:
+        thrown(CourseNotFoundException)
+    }
+
 }

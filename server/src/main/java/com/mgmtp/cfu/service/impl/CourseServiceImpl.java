@@ -13,6 +13,8 @@ import com.mgmtp.cfu.enums.CourseStatus;
 import com.mgmtp.cfu.exception.DuplicateCourseException;
 import com.mgmtp.cfu.exception.MapperNotFoundException;
 import com.mgmtp.cfu.exception.ServerErrorRuntimeException;
+import com.mgmtp.cfu.mapper.CourseOverviewMapperImpl;
+import com.mgmtp.cfu.mapper.DTOMapper;
 import com.mgmtp.cfu.mapper.factory.MapperFactory;
 import com.mgmtp.cfu.repository.CourseRepository;
 import com.mgmtp.cfu.service.CategoryService;
@@ -28,13 +30,18 @@ import org.springframework.data.jpa.domain.Specification;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -45,8 +52,12 @@ public class CourseServiceImpl implements CourseService {
     private final UploadService uploadService;
     @Value("${course4u.upload.thumbnail-directory}")
     private String uploadThumbnailDir;
+
     @Autowired
-    public CourseServiceImpl(CourseRepository courseRepository, MapperFactory<Course> courseMapperFactory, CategoryService categoryService, UploadService uploadService) {
+    public CourseServiceImpl(CourseRepository courseRepository, MapperFactory<Course> courseMapperFactory,
+                             CategoryService categoryService,
+                             UploadService uploadService
+                             ) {
         this.courseRepository = courseRepository;
         this.courseMapperFactory = courseMapperFactory;
         this.categoryService = categoryService;
@@ -59,7 +70,7 @@ public class CourseServiceImpl implements CourseService {
         if (optCourse.isPresent()) {
             Course course = optCourse.get();
             return new CourseDto(course.getId(), course.getName(), course.getLink(), course.getPlatform().getLabel(), course.getThumbnailUrl(), course.getTeacherName(),
-                                 course.getCreatedDate(), course.getStatus(), course.getLevel(), course.getCategories());
+                    course.getCreatedDate(), course.getStatus(), course.getLevel(), course.getCategories());
         }
         throw new CourseNotFoundException("course with id " + id + " not found");
     }
@@ -73,8 +84,7 @@ public class CourseServiceImpl implements CourseService {
                 throw new DuplicateCourseException("Course with link " + course.getLink() + " already exists");
             }
             String thumbnailUrl = null;
-            if (courseRequest.getThumbnailFile() != null)
-            {
+            if (courseRequest.getThumbnailFile() != null) {
                 thumbnailUrl = uploadService.uploadThumbnail(courseRequest.getThumbnailFile(), uploadThumbnailDir);
             } else if (courseRequest.getThumbnailUrl() != null) {
                 thumbnailUrl = courseRequest.getThumbnailUrl();
@@ -159,7 +169,7 @@ public class CourseServiceImpl implements CourseService {
             if (courseRepository.existsById(id)) {
                 if (isRemovableCourse(id))
                     courseRepository.deleteById(id);
-                 else
+                else
                     throw new BadRequestRunTimeException("Course can't be removed. It was registered by someone.");
             } else
                 throw new BadRequestRunTimeException("Course don't exist.");
@@ -168,8 +178,40 @@ public class CourseServiceImpl implements CourseService {
         }
     }
 
+
     private boolean isRemovableCourse(Long id) {
         var course = courseRepository.findById(id).orElseThrow();
         return course.getRegistrations().isEmpty();
+    }
+
+
+    @Override
+    public List<CourseOverviewDTO> getRelatedCourses(Long courseId) {
+        var course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new CourseNotFoundException("The course with ID " + courseId + " isn't found."));
+        Pageable pageable = PageRequest.of(0, 8);
+        // Find related courses based on categories and course status
+        var relatedCourses = courseRepository.findTop8RelatedCourse(
+                course.getCategories().stream().map(Category::getName).collect(Collectors.toSet()),
+                pageable,
+                courseId,
+                CourseStatus.AVAILABLE
+        );
+        var courseMapper = getOverviewCourseMapper();
+        // Map to DTO, set null ratings to 0.0, and sort by rating in descending order
+        return relatedCourses.stream()
+                .map(courseMapper::toDTO)
+                .peek(courseOverviewDTO -> {
+                    if (courseOverviewDTO.getRating() == null) {
+                        courseOverviewDTO.setRating(0.0);
+                    }
+                })
+                .sorted(Comparator.comparing(CourseOverviewDTO::getRating).reversed())
+                .toList();
+    }
+
+    private DTOMapper<CourseOverviewDTO, Course> getOverviewCourseMapper() {
+        Optional<DTOMapper<CourseOverviewDTO, Course>> courseMapperOpt = courseMapperFactory.getDTOMapper(CourseOverviewDTO.class);
+        return courseMapperOpt.orElseThrow(()-> new ServerErrorRuntimeException("Couldn't get mapper"));
     }
 }

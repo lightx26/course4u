@@ -198,4 +198,6 @@ VALUES ('Java', 'AVAILABLE'), ('Networking', 'AVAILABLE'), ('Artificial Intellig
        ('React', 'PENDING'), ('UX-UI', 'AVAILABLE'), ('Data Structure & Algorithm', 'AVAILABLE');
 
 INSERT INTO "Category_Course"("CourseId", "CategoryId")
-VALUES (1, 1), (1, 2), (1, 3);
+VALUES (1, 1), (1, 2), (1, 3),(2, 1), (3, 2), (3, 3),(4, 1), (4, 2), (5, 3),
+       (5, 1), (6, 2), (6, 3),(7, 1), (7, 2), (8, 3),(8, 1), (8, 2), (9, 3),
+       (9, 1), (9, 2), (10, 3),(10, 1), (10, 2), (11, 3),(12, 1), (13, 2), (13, 3);
