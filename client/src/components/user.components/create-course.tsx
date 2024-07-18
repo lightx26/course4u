@@ -26,7 +26,16 @@ const CreateCourse = () => {
       // Otherwise, if users upload a thumbnail image, request name should be thumbnailFile
     },
   });
-
+  const base64ToBlob = (base64: string) => {
+    const byteString = atob(base64.split(",")[1]);
+    const mimeString = base64.split(",")[0].split(":")[1].split(";")[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], { type: mimeString });
+  };
   async function onSubmit(values: z.infer<typeof courseSchema>) {
     // Helper function to convert blob URL to File object
     async function blobToFile(blobUrl: string, fileName: string) {
@@ -51,6 +60,14 @@ const CreateCourse = () => {
     // Handle the thumbnailUrl if it starts with "blob:"
     if (values.thumbnailUrl.startsWith("blob:")) {
       const thumbnailFile = await blobToFile(values.thumbnailUrl, values.name);
+      formData.append("thumbnailFile", thumbnailFile);
+    } else if (values.thumbnailUrl.startsWith("data:")) {
+      const thumbnailFromBase64 = base64ToBlob(values.thumbnailUrl);
+      const thumbnailFile = new File(
+        [thumbnailFromBase64],
+        `${values.name}.jpg`,
+        { type: thumbnailFromBase64.type }
+      );
       formData.append("thumbnailFile", thumbnailFile);
     } else {
       formData.append("thumbnailUrl", values.thumbnailUrl);
@@ -98,7 +115,8 @@ const CreateCourse = () => {
             },
           });
         } else {
-          toast.error("Something went wrong!.", {
+          toast.error("Something went wrong!", {
+            description: "Please contact admin to get help!",
             style: {
               color: "red",
               fontWeight: "bold",

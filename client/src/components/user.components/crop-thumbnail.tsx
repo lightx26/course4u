@@ -1,4 +1,4 @@
-import { ReactElement, useState, useEffect } from "react";
+import { ReactElement, useState } from "react";
 import Cropper, { Point } from "react-easy-crop";
 import { Button } from "../ui/button";
 import getCroppedImg from "../../utils/cropImage";
@@ -11,7 +11,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-
 type Props = {
   children?: ReactElement;
   imageUrl: string | null;
@@ -52,67 +51,30 @@ export const CropThumbnail = ({
     aspectInit
   );
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
-  const [imageModified, setImageModified] = useState(false);
-
   const onCropChange = (crop: Point) => {
     setCrop(crop);
-    setImageModified(true);
   };
-
+  const onOpen = () => {
+    setIsOpen(!isOpen);
+  };
   const onZoomChange = (zoom: number) => {
     setZoom(zoom);
-    setImageModified(true);
   };
 
   //@ts-ignore
   const onCropComplete = (croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels);
-    setImageModified(true);
   };
-
   const onCrop = async () => {
     const croppedImageUrl = await getCroppedImg(imageUrl!, croppedAreaPixels!);
     // @ts-ignore
     setCroppedImageFor(crop, zoom, aspect, croppedImageUrl);
-    setIsOpen(false);
   };
-
   const onResetImage = async () => {
-    const imageBlob = base64ToBlob(imageUrl!);
-    const imageBlobUrl = URL.createObjectURL(imageBlob);
-    setCroppedImageFor(cropInit, zoomInit, aspectInit, imageBlobUrl);
-    setIsOpen(false);
+    setCroppedImageFor(cropInit, zoomInit, aspectInit, imageUrl!);
   };
-
-  const base64ToBlob = (base64: string) => {
-    const byteString = atob(base64.split(",")[1]);
-    const mimeString = base64.split(",")[0].split(":")[1].split(";")[0];
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
-    }
-    return new Blob([ab], { type: mimeString });
-  };
-
-  useEffect(() => {
-    const handleDialogClose = () => {
-      if (isOpen && imageModified) {
-        const imageBlob = base64ToBlob(imageUrl!);
-        const imageBlobUrl = URL.createObjectURL(imageBlob);
-        setCroppedImageFor(cropInit, zoomInit, aspectInit, imageBlobUrl);
-      }
-    };
-
-    return handleDialogClose;
-  }, [isOpen, imageModified]);
-
-  const onOpenChange = (open: boolean) => {
-    setIsOpen(open);
-  };
-
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog open={isOpen} onOpenChange={onOpen}>
       {isEdit ? (
         <DialogTrigger asChild onClick={() => setIsOpen(true)}>
           {children}

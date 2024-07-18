@@ -4,7 +4,7 @@ import CreateCourse from "../../components/user.components/create-course";
 export default function CreateCoursesScreen() {
   return (
     <div className="flex justify-center items-start min-h-[100vh] p-14 gap-6">
-      <div className="w-[20%]">
+      <div className="w-[18%]">
         <AdminCard />
       </div>
       <CreateCourse />
