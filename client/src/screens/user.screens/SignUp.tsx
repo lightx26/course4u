@@ -44,7 +44,7 @@ const SignUp: React.FC = () => {
 
   const navigate = useNavigate();
   function hasSpecialChar(str: string) {
-    const specialCharsRegex = /[`~!@#$%^&*()\-=+{}[\];:'"\\|,.<>\/? ]+/;
+    const specialCharsRegex = /[!@#$%^&*(),.?":{}|<>`~\[\]\\\/';=+\-_\s]/;
     return specialCharsRegex.test(str);
   }
 
