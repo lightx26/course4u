@@ -159,9 +159,7 @@ const router = createBrowserRouter(
         },
         {
           path: "leaderboard",
-          element: (
-              <LeaderBoard />
-          ),
+          element: <LeaderBoard />,
         },
       ],
     },
@@ -258,15 +256,11 @@ const router = createBrowserRouter(
 function App() {
   const dispatch = useDispatch<AppDispatch>();
   const getAccount = async () => {
-    // if (
-    //   window.location.pathname === `${import.meta.env.VITE_BASE_URL}/login` ||
-    //   window.location.pathname === `${import.meta.env.VITE_BASE_URL}/signup`
-    // )
-    //   return;
     const access_token: string | null = localStorage.getItem("access_token");
     if (access_token && !isTokenExpired(access_token)) {
       const userData = await dispatch(fetchUserDetails());
-      if (!fetchUserDetails.fulfilled.match(userData)) {
+      if (userData.payload.status === 403) {
+        localStorage.removeItem("access_token");
         window.location.href = `${import.meta.env.VITE_BASE_URL}/login`;
       }
     }
