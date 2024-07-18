@@ -23,7 +23,7 @@ import { ProtectedRouteLogin } from "./components/user.components/ProtectedRoute
 import { isTokenExpired } from "./utils/validateToken.ts";
 import LeaderBoard from "./screens/user.screens/LeaderBoard.tsx";
 export type CourseType = {
-  id: string;
+  id: string | undefined;
   name: string;
   thumbnailUrl?: string;
   assignee?: {

@@ -76,10 +76,120 @@ const fetchDataReviewsCourseById = async (
   }
 };
 
+const fetchDataRelatedCourseById = async (id: string | undefined) => {
+  try {
+    // const response = await instance.get(
+    //   `/courses/${id}/relation`
+    // );
+    // return response;
+    return [
+      {
+        id: 3,
+        name: "Django for Beginners aaa",
+        platform: "Udemy",
+        level: "BEGINNER",
+        createdDate: "2021-01-01",
+        thumbnailUrl:
+          "https://img-c.udemycdn.com/course/480x270/822444_a6db.jpg",
+        rating: 3.0,
+        enrollmentCount: 14,
+        status: "AVAILABLE",
+      },
+      {
+        id: 5,
+        name: "Data Science and Machine Learning Bootcamp",
+        platform: "Udemy",
+        level: "BEGINNER",
+        createdDate: "2021-01-01",
+        thumbnailUrl:
+          "https://img-c.udemycdn.com/course/480x270/903744_8eb2.jpg",
+        rating: 3.0,
+        enrollmentCount: 1,
+        status: "AVAILABLE",
+      },
+      {
+        id: 10,
+        name: "abchdnd",
+        platform: "LinkedIn",
+        level: "BEGINNER",
+        createdDate: "2013-09-02",
+        thumbnailUrl:
+          "https://media.thethaovanhoa.vn/Upload/QDN4HPIpMrJuoPNyIvLDA/files/2022/07/Jin-BTS-VIP2.jpg",
+        rating: 0.0,
+        enrollmentCount: 1,
+        status: "AVAILABLE",
+      },
+      {
+        id: 8,
+        name: "Vue JS - The Complete Guide",
+        platform: "Udemy",
+        level: "INTERMEDIATE",
+        createdDate: "2021-01-01",
+        thumbnailUrl:
+          "https://img-c.udemycdn.com/course/480x270/995016_ebf4.jpg",
+        rating: 0.0,
+        enrollmentCount: 0,
+        status: "AVAILABLE",
+      },
+      {
+        id: 9,
+        name: "Python for Data Science and Machine Learning",
+        platform: "Udemy",
+        level: "BEGINNER",
+        createdDate: "2021-01-01",
+        thumbnailUrl:
+          "https://img-c.udemycdn.com/course/480x270/903744_8eb2.jpg",
+        rating: 0.0,
+        enrollmentCount: 0,
+        status: "AVAILABLE",
+      },
+      {
+        id: 13,
+        name: "Spring Boot",
+        platform: "Udemy",
+        level: "ADVANCED",
+        createdDate: "2021-01-01",
+        thumbnailUrl:
+          "https://img-b.udemycdn.com/course/480x270/543600_64d1_4.jpg",
+        rating: 0.0,
+        enrollmentCount: 0,
+        status: "AVAILABLE",
+      },
+      {
+        id: 6,
+        name: "JavaScript - The Complete Guide",
+        platform: "Udemy",
+        level: "INTERMEDIATE",
+        createdDate: "2021-01-01",
+        thumbnailUrl:
+          "https://img-c.udemycdn.com/course/480x270/1501104_967d_9.jpg",
+        rating: 0.0,
+        enrollmentCount: 0,
+        status: "AVAILABLE",
+      },
+      {
+        id: 7,
+        name: "Complete C# Masterclass",
+        platform: "Udemy",
+        level: "ADVANCED",
+        createdDate: "2021-01-01",
+        thumbnailUrl:
+          "https://img-c.udemycdn.com/course/480x270/382002_5d4d.jpg",
+        rating: 0.0,
+        enrollmentCount: 1,
+        status: "AVAILABLE",
+      },
+    ];
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export {
   fetchListAvailableCourse,
   fetchDataCourseById,
   deleteCourseById,
   fetchDataRatingsCourseById,
   fetchDataReviewsCourseById,
+  fetchDataRelatedCourseById,
 };

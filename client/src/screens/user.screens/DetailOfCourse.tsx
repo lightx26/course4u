@@ -10,6 +10,7 @@ import {
   fetchDataCourseById,
   fetchDataRatingsCourseById,
   fetchDataReviewsCourseById,
+  fetchDataRelatedCourseById,
 } from "../../apiService/Course.service.ts";
 import { useParams } from "react-router-dom";
 import { Rate } from "antd";
@@ -82,13 +83,13 @@ interface CourseType {
   platform: string;
   createdDate: string;
   level: string;
-  categories: {
+  categories?: {
     value: string;
     name?: string | undefined;
     label?: string | undefined;
   }[]; // Update the type of 'categories'
-  link: string;
-  teacherName: string;
+  link?: string;
+  teacherName?: string;
   status: string;
 }
 
@@ -147,6 +148,10 @@ const Detail_Of_Course: React.FC = () => {
   const [dataReviews, setDataReviews] = useState<IReview[]>([]);
   const [totalItemsReviews, setTotalItemsReviews] = useState<number>(20);
 
+  //Related Course
+  const [dataRelatedCourse, setDataRelatedCourse] = useState<CourseType[]>([]);
+  const [trackingIndex, setTrackingIndex] = useState<number>(1);
+
   const { id } = useParams();
   const userData = useSelector((state: RootState) => state.user.user);
   const role = userData.role;
@@ -155,9 +160,10 @@ const Detail_Of_Course: React.FC = () => {
   };
 
   const getDataDetailCourse = async (id: string | undefined) => {
-    const [result, resultRatings] = await Promise.all([
+    const [result, resultRatings, resultRelatedCourse] = await Promise.all([
       fetchDataCourseById(id),
       fetchDataRatingsCourseById(id),
+      fetchDataRelatedCourseById(id),
     ]);
     if (result && result.data) {
       setCourseData(result.data);
@@ -169,6 +175,14 @@ const Detail_Of_Course: React.FC = () => {
         countRating += resultRatings.data.detailRatings[key];
       }
       setTotalRating(countRating);
+    }
+
+    if (resultRelatedCourse) {
+      const convertedResult = resultRelatedCourse.map((course) => ({
+        ...course,
+        id: course.id.toString(),
+      }));
+      setDataRelatedCourse(convertedResult);
     }
   };
 
@@ -235,6 +249,8 @@ const Detail_Of_Course: React.FC = () => {
   const handleChangeOptionStar = (option: Option) => {
     setCurrentOption(option);
   };
+
+  console.log("check related course", dataRelatedCourse);
 
   return (
     <>
@@ -528,7 +544,7 @@ const Detail_Of_Course: React.FC = () => {
                         {truncateText(
                           courseData?.categories
                             ?.map((item) => item.name)
-                            .join(`, `),
+                            .join(`, `) ?? "",
                           3
                         )}
                       </div>
@@ -631,40 +647,66 @@ const Detail_Of_Course: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex justify-between items-center w-full flex-wrap pb-[80px]">
-                  <div className="previosBtn w-[50px] h-[50px] border border-[#ccc] rounded-full flex justify-center items-center cursor-pointer">
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 9 16"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
+                  {trackingIndex === 1 && (
+                    <div className="w-[50px] h-[50px] rounded-full"></div>
+                  )}
+                  {trackingIndex === 2 && (
+                    <div
+                      className="previosBtn w-[50px] h-[50px] border border-[#ccc] rounded-full flex justify-center items-center cursor-pointer"
+                      onClick={() => setTrackingIndex(1)}
                     >
-                      <path
-                        d="M7.28782 15.9999L9.00037 14.1199L3.43761 7.99988L9.00036 1.87988L7.28781 -0.000121921L0.000365512 7.99988L7.28782 15.9999Z"
-                        fill="black"
-                      />
-                    </svg>
-                  </div>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 9 16"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M7.28782 15.9999L9.00037 14.1199L3.43761 7.99988L9.00036 1.87988L7.28781 -0.000121921L0.000365512 7.99988L7.28782 15.9999Z"
+                          fill="black"
+                        />
+                      </svg>
+                    </div>
+                  )}
+
                   <div className="itemCourseRelated flex justify-around items-center gap-[5px] flex-row py-[10px] w-[90%]">
-                    {coursesRelated &&
-                      coursesRelated.map((item) => {
-                        return <CourseCardComponent course={item} />;
+                    {dataRelatedCourse &&
+                      trackingIndex === 1 &&
+                      dataRelatedCourse.map((item, index) => {
+                        if (index < 4)
+                          return <CourseCardComponent course={item} />;
+                      })}
+
+                    {dataRelatedCourse &&
+                      trackingIndex === 2 &&
+                      dataRelatedCourse.map((item, index) => {
+                        if (index >= 4)
+                          return <CourseCardComponent course={item} />;
                       })}
                   </div>
-                  <div className="nextBtn w-[50px] h-[50px] border border-[#ccc] rounded-full flex justify-center items-center cursor-pointer">
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 10 16"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
+                  {trackingIndex === 2 && (
+                    <div className="w-[50px] h-[50px] rounded-full"></div>
+                  )}
+                  {trackingIndex === 1 && (
+                    <div
+                      className="nextBtn w-[50px] h-[50px] border border-[#ccc] rounded-full flex justify-center items-center cursor-pointer"
+                      onClick={() => setTrackingIndex(2)}
                     >
-                      <path
-                        d="M2.11256 0.00012207L0.400009 1.88012L5.96276 8.00012L0.400009 14.1201L2.11256 16.0001L9.40001 8.00012L2.11256 0.00012207Z"
-                        fill="black"
-                      />
-                    </svg>
-                  </div>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 10 16"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M2.11256 0.00012207L0.400009 1.88012L5.96276 8.00012L0.400009 14.1201L2.11256 16.0001L9.40001 8.00012L2.11256 0.00012207Z"
+                          fill="black"
+                        />
+                      </svg>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
