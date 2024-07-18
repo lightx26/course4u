@@ -16,14 +16,14 @@ async function fetchListAvailableCourse(Searcher: SearchParams) {
     const request_params = {
       page: Searcher.page ?? 1,
       pageSize: Searcher.limit ?? 8,
-      sortBy: Searcher.sortBy ?? 'NEWEST',
-      search: Searcher.searchTerm ?? '',
+      sortBy: Searcher.sortBy ?? "NEWEST",
+      search: Searcher.searchTerm ?? "",
       filter: {
         categoryFilters: Searcher.categoryFilter ?? [],
         levelFilters: Searcher.levelFilter ?? [],
         platformFilters: Searcher.platformFilter ?? [],
-        minRating: Searcher.minRating ?? '0',
-      }
+        minRating: Searcher.minRating ?? "0",
+      },
     };
     const response = await instance.post(`/courses/search`, request_params);
     return response;
@@ -51,4 +51,35 @@ const deleteCourseById = async (id: string | undefined) => {
   }
 };
 
-export { fetchListAvailableCourse, fetchDataCourseById, deleteCourseById };
+const fetchDataRatingsCourseById = async (id: string | undefined) => {
+  try {
+    const response = await instance.get(`/courses/${id}/ratings`);
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const fetchDataReviewsCourseById = async (
+  id: string | undefined,
+  page: number,
+  size: number = 3,
+  starFilter: number
+) => {
+  try {
+    const response = await instance.get(
+      `/courses/${id}/reviews?page=${page}&size=${size}&starFilter=${starFilter}`
+    );
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export {
+  fetchListAvailableCourse,
+  fetchDataCourseById,
+  deleteCourseById,
+  fetchDataRatingsCourseById,
+  fetchDataReviewsCourseById,
+};

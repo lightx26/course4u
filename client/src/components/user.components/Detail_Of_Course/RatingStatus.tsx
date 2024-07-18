@@ -10,7 +10,7 @@ interface RatingDetailProps {
 const RatingDetail: React.FC<RatingDetailProps> = (props) => {
   const { rating, label, percentage } = props;
   return (
-    <div className="flex items-center gap-1.5 h-[25px]">
+    <div className="flex items-center gap-1 h-[25px]">
       <div className="w-[30%] h-[100%]">
         <Rate
           disabled
@@ -30,7 +30,7 @@ const RatingDetail: React.FC<RatingDetailProps> = (props) => {
             isLabelVisible={false}
           />
         </div>
-        <div>{percentage}%</div>
+        <div className="w-[10%] text-right">{percentage}%</div>
       </div>
     </div>
   );

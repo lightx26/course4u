@@ -171,6 +171,18 @@ values ('1', '1', '5', 'Good course', '2021-01-01'),
        ('4', '1', '4', 'Noice :)', '2021-01-01'),
        ('4', '2', '4', 'Humor teacher, good lesson', '2021-01-01'),
        ('5', '2', '4', 'Make I feed like I am a stupid', '2021-01-01'),
+       ('1', '2', '5', 'This course is truly an eye-opener. I learned so much valuable information that I can immediately apply to my work.  ', '2021-02-10'),
+       ('1', '2', '4', 'I found the course content to be well-organized and informative. ', '2021-03-15'),
+       ('1', '1', '5', 'This course was absolutely fantastic! The instructor is a true expert in the field and was able to share their knowledge  ', '2021-04-20'),
+       ('1', '2', '5', 'Excellent course with very detailed explanations and clear examples. Highly recommend to anyone looking to learn!', '2021-01-02'),
+       ('1', '1', '4', 'Good course, but some topics were a bit confusing. Overall, a positive experience.', '2021-02-03'),
+       ('1', '2', '4', 'This course was a good mix of theory and practical application. The instructor provided clear instructions and helpful feedback. ).', '2023-01-10'),
+       ('1', '1', '3', 'The course content was well-organized, but the pace was a bit too slow for me. I would have preferred to cover more material in a shorter amount of time.', '2023-02-19'),
+       ('1', '1', '5', 'This course exceeded my expectations! The instructor was incredibly knowledgeable and able to answer all of my questions in a comprehensive way. ', '2023-03-28'),
+       ('1', '2', '4', 'I found this course to be helpful for beginners, but it may not be challenging enough for more experienced learners.', '2024-01-07'),
+       ('1', '1', '4', 'This course provided a good overview of the topic, but it would have been beneficial to have more in-depth coverage of certain areas. ', '2022-02-14'),
+       ('1', '2', '5', 'I thoroughly enjoyed this course! The instructor was passionate and engaging, and the material was presented in a way that was easy to follow.', '2022-03-23'),
+       ('1', '1', '5', 'This course was absolutely fantastic! I learned so much and feel like I can now confidently apply this knowledge in my work.', '2024-02-16'),
        ('5', '1', '2', 'Make no sense', '2021-01-01');
 
 INSERT INTO "Category"("Name", "Status")

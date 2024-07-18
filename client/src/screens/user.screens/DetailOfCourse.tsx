@@ -6,13 +6,27 @@ import RatingDetail from "../../components/user.components/Detail_Of_Course/Rati
 import CommentDetail from "../../components/user.components/Detail_Of_Course/CommentDetail.tsx";
 import PaginationSection from "../../components/user.components/Homepage/PaginationSection.tsx";
 import CourseCardComponent from "../../components/user.components/CourseCardComponent.tsx";
-import { fetchDataCourseById } from "../../apiService/Course.service.ts";
+import {
+  fetchDataCourseById,
+  fetchDataRatingsCourseById,
+  fetchDataReviewsCourseById,
+} from "../../apiService/Course.service.ts";
 import { useParams } from "react-router-dom";
 import { Rate } from "antd";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store.ts";
 import ModalEditOrDeleteCourse from "../../components/user.components/ModalEditOrDeleteCourse.tsx";
 
+interface IRatings {
+  averageRating: number;
+  detailRatings: {
+    "1": number;
+    "2": number;
+    "3": number;
+    "4": number;
+    "5": number;
+  };
+}
 const coursesRelated = [
   {
     id: "course_001",
@@ -77,17 +91,62 @@ interface CourseType {
   teacherName: string;
   status: string;
 }
+
+interface Option {
+  label: React.ReactNode;
+  value: string;
+}
+
+interface IReview {
+  userFullName: string;
+  userAvatar: string;
+  comment: string;
+  rating: number;
+  createdDate: string;
+}
+
 const Detail_Of_Course: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState(1);
   const [courseData, setCourseData] = useState<CourseType>();
+
+  //Ratings
+  const [dataRatings, setDataRatings] = useState<IRatings>();
+  const [totalRating, setTotalRating] = useState(0);
+
+  //Reviews
   const options = [
-    "1 Star Rating",
-    "2 Star Rating",
-    "3 Star Rating",
-    "4 Star Rating",
-    "5 Star Rating",
-    "All",
+    {
+      label: "1 Star Rating",
+      value: "1",
+    },
+    {
+      label: "2 Star Rating",
+      value: "2",
+    },
+    {
+      label: "3 Star Rating",
+      value: "3",
+    },
+    {
+      label: "4 Star Rating",
+      value: "4",
+    },
+    {
+      label: "5 Star Rating",
+      value: "5",
+    },
+    {
+      label: "All",
+      value: "0",
+    },
   ];
+  const [currentOption, setCurrentOption] = useState<Option>({
+    label: "All",
+    value: "0",
+  });
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [dataReviews, setDataReviews] = useState<IReview[]>([]);
+  const [totalItemsReviews, setTotalItemsReviews] = useState<number>(20);
+
   const { id } = useParams();
   const userData = useSelector((state: RootState) => state.user.user);
   const role = userData.role;
@@ -96,14 +155,46 @@ const Detail_Of_Course: React.FC = () => {
   };
 
   const getDataDetailCourse = async (id: string | undefined) => {
-    const result = await fetchDataCourseById(id);
+    const [result, resultRatings] = await Promise.all([
+      fetchDataCourseById(id),
+      fetchDataRatingsCourseById(id),
+    ]);
     if (result && result.data) {
       setCourseData(result.data);
+    }
+    if (resultRatings && resultRatings.data) {
+      setDataRatings(resultRatings.data);
+      let countRating = 0;
+      for (const key in resultRatings.data.detailRatings) {
+        countRating += resultRatings.data.detailRatings[key];
+      }
+      setTotalRating(countRating);
+    }
+  };
+
+  const getDataReviews = async (
+    id: string | undefined,
+    currentPage: number,
+    currentOption: Option
+  ) => {
+    const resultReviews = await fetchDataReviewsCourseById(
+      id,
+      currentPage,
+      3,
+      parseInt(currentOption.value)
+    );
+    if (resultReviews && resultReviews.data) {
+      setTotalItemsReviews(resultReviews.data.totalElements);
+      setDataReviews(resultReviews.data.content);
     }
   };
   useEffect(() => {
     getDataDetailCourse(id);
   }, [id]);
+
+  useEffect(() => {
+    getDataReviews(id, currentPage, currentOption);
+  }, [id, currentOption, currentPage]);
 
   function convertDate(dateString: string) {
     const [year, month, day] = dateString.split("-");
@@ -139,6 +230,10 @@ const Detail_Of_Course: React.FC = () => {
   const capitalizeFirstLetter = (text: string) => {
     if (!text) return "";
     return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+  };
+
+  const handleChangeOptionStar = (option: Option) => {
+    setCurrentOption(option);
   };
 
   return (
@@ -193,12 +288,12 @@ const Detail_Of_Course: React.FC = () => {
                     <div className="mt-[10px] flex justify-center items-center gap-[20px]">
                       <div className="border border-[#ccc] w-[20%] h-full flex flex-col justify-center items-center p-[10px_15px]">
                         <div className="text-[2rem] font-[600] mb-[15px]">
-                          4.8
+                          {dataRatings?.averageRating.toFixed(1)}
                         </div>
                         <div className="mb-[5px]">
                           <Rate
                             disabled
-                            defaultValue={4.8}
+                            defaultValue={dataRatings?.averageRating}
                             allowHalf
                             style={{ fontSize: "16px", color: "purple" }}
                           />
@@ -211,27 +306,62 @@ const Detail_Of_Course: React.FC = () => {
                         <RatingDetail
                           rating={5}
                           label="5 Star Rating"
-                          percentage={75}
+                          percentage={
+                            dataRatings && totalRating !== 0
+                              ? Math.round(
+                                  (dataRatings.detailRatings["5"] * 100) /
+                                    totalRating
+                                )
+                              : 0
+                          }
                         />
                         <RatingDetail
                           rating={4}
                           label="4 Star Rating"
-                          percentage={21}
+                          percentage={
+                            dataRatings && totalRating !== 0
+                              ? Math.round(
+                                  (dataRatings.detailRatings["4"] * 100) /
+                                    totalRating
+                                )
+                              : 0
+                          }
                         />
                         <RatingDetail
                           rating={3}
                           label="3 Star Rating"
-                          percentage={3}
+                          percentage={
+                            dataRatings && totalRating !== 0
+                              ? Math.round(
+                                  (dataRatings.detailRatings["3"] * 100) /
+                                    totalRating
+                                )
+                              : 0
+                          }
                         />
                         <RatingDetail
                           rating={2}
                           label="2 Star Rating"
-                          percentage={1}
+                          percentage={
+                            dataRatings && totalRating !== 0
+                              ? Math.round(
+                                  (dataRatings.detailRatings["2"] * 100) /
+                                    totalRating
+                                )
+                              : 0
+                          }
                         />
                         <RatingDetail
                           rating={1}
                           label="1 Star Rating"
-                          percentage={0.5}
+                          percentage={
+                            dataRatings && totalRating !== 0
+                              ? Math.round(
+                                  (dataRatings.detailRatings["1"] * 100) /
+                                    totalRating
+                                )
+                              : 0
+                          }
                         />
                       </div>
                     </div>
@@ -242,46 +372,33 @@ const Detail_Of_Course: React.FC = () => {
                       <div className="w-[160px]">
                         <Dropdown
                           options={options}
-                          value={options[0]}
+                          value={currentOption.value.toString()}
                           placeholder="Select an option"
+                          onChange={(option) => handleChangeOptionStar(option)}
                         />
                       </div>
                     </div>
                     <div className="pt-[10px] flex flex-col gap-[10px]">
-                      <CommentDetail
-                        avaUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTC0WlXghDvWabW8nUqRhu__QHkmWEsZx2PbQ&s"
-                        rating={5}
-                        username="Guy Hawkins"
-                        comment="I appreciate the precise short videos (10 mins or less each) because overly long videos tend to make me lose focus. The instructor is very knowledgeable in Web Design and it shows as he shares his knowledge. These were my best 6 months of training. Thanks, Vako.
-                    I appreciate the precise short videos (10 mins or less each) because overly long videos tend to make me lose focus. The instructor is very knowledgeable in Web Design and it shows as he shares his knowledge. These were my best 6 months of training. Thanks, Vako.
-                    I appreciate the precise short videos (10 mins or less each) because overly long videos tend to make me lose focus. The instructor is very knowledgeable in Web Design and it shows as he shares his knowledge. These were my best 6 months of training. Thanks, Vako.
-                    I appreciate the precise short videos (10 mins or less each) because overly long videos tend to make me lose focus. The instructor is very knowledgeable in Web Design and it shows as he shares his knowledge. These were my best 6 months of training. Thanks, Vako.
-                    I appreciate the precise short videos (10 mins or less each) because overly long videos tend to make me lose focus. The instructor is very knowledgeable in Web Design and it shows as he shares his knowledge. These were my best 6 months of training. Thanks, Vako.
-                    I appreciate the precise short videos (10 mins or less each) because overly long videos tend to make me lose focus. The instructor is very knowledgeable in Web Design and it shows as he shares his knowledge. These were my best 6 months of training. Thanks, Vako.
-                    I appreciate the precise short videos (10 mins or less each) because overly long videos tend to make me lose focus. The instructor is very knowledgeable in Web Design and it shows as he shares his knowledge. These were my best 6 months of training. Thanks, Vako.
-                    I appreciate the precise short videos (10 mins or less each) because overly long videos tend to make me lose focus. The instructor is very knowledgeable in Web Design and it shows as he shares his knowledge. These were my best 6 months of training. Thanks, Vako."
-                      />
-                      <hr />
-                      <CommentDetail
-                        avaUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTC0WlXghDvWabW8nUqRhu__QHkmWEsZx2PbQ&s"
-                        rating={5}
-                        username="Guy Hawkins"
-                        comment="I appreciate the precise short videos (10 mins or less each) because overly long videos tend to make me lose focus. The instructor is very knowledgeable in Web Design and it shows as he shares his knowledge. These were my best 6 months of training. Thanks, Vako."
-                      />
-                      <hr />
-                      <CommentDetail
-                        avaUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTC0WlXghDvWabW8nUqRhu__QHkmWEsZx2PbQ&s"
-                        rating={5}
-                        username="Guy Hawkins"
-                        comment="I appreciate the precise short videos (10 mins or less each) because overly long videos tend to make me lose focus. The instructor is very knowledgeable in Web Design and it shows as he shares his knowledge. These were my best 6 months of training. Thanks, Vako."
-                      />
+                      {dataReviews &&
+                        dataReviews.length > 0 &&
+                        dataReviews.map((item: IReview) => {
+                          return (
+                            <CommentDetail
+                              userAvatar={item.userAvatar}
+                              rating={item.rating}
+                              userFullName={item.userFullName}
+                              comment={item.comment}
+                              createdDate={item.createdDate}
+                            />
+                          );
+                        })}
                     </div>
                   </div>
                   <div className="w-full h-[50px] flex justify-center items-center mt-[20px]">
                     <PaginationSection
-                      totalItems={45}
+                      totalItems={totalItemsReviews}
                       currentPage={currentPage}
-                      itemPerPage={5}
+                      itemPerPage={3}
                       setCurrentPage={onPageNumberClick}
                     />
                   </div>

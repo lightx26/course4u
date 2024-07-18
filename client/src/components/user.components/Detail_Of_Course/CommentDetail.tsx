@@ -1,14 +1,43 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Rate } from "antd";
-interface IComment {
-  avaUrl: string;
-  username: string;
-  rating: number;
+interface IReview {
+  userAvatar: string;
+  userFullName: string;
   comment: string;
+  createdDate: string;
+  rating: number;
+}
+function timeAgo(inputTime: string): string {
+  const now = new Date();
+  const timeDiff = now.getTime() - new Date(inputTime).getTime();
+
+  const seconds = Math.floor(timeDiff / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  const weeks = Math.floor(days / 7);
+  const months = Math.floor(days / 30.44); // Trung bình số ngày trong một tháng
+  const years = Math.floor(days / 365.25); // Trung bình số ngày trong một năm
+
+  if (seconds < 60) {
+    return "vài giây trước";
+  } else if (minutes < 60) {
+    return `${minutes} mins ago`;
+  } else if (hours < 24) {
+    return `${hours} hours ago`;
+  } else if (days < 7) {
+    return `${days} days ago`;
+  } else if (weeks < 4) {
+    return `${weeks} week ago`;
+  } else if (months < 12) {
+    return `${months} months ago`;
+  } else {
+    return `${years} years ago`;
+  }
 }
 
-const CommentDetail: React.FC<IComment> = (props) => {
-  const { avaUrl, username, rating, comment } = props;
+const CommentDetail: React.FC<IReview> = (props) => {
+  const { userAvatar, rating, userFullName, comment, createdDate } = props;
   const [isExpanded, setIsExpanded] = useState(false);
   const [showSeeMore, setShowSeeMore] = useState(false);
   const commentRef = useRef<HTMLParagraphElement>(null);
@@ -44,7 +73,7 @@ const CommentDetail: React.FC<IComment> = (props) => {
     <div className="flex items-start gap-2.5">
       <div className="relative w-[50px] h-[50px] rounded-full">
         <img
-          src={avaUrl}
+          src={userAvatar}
           alt=""
           className="absolute w-full h-full object-cover object-center rounded-full"
         />
@@ -52,7 +81,7 @@ const CommentDetail: React.FC<IComment> = (props) => {
       <div className="flex flex-col items-start gap-1.25 max-w-[calc(100%-60px)] flex-wrap">
         <div className="flex flex-col">
           <div className="flex items-center h-[30px] gap-1.25">
-            <div className="text-[15px] font-medium">{username}</div>
+            <div className="text-[15px] font-medium">{userFullName}</div>
             <div>
               <svg
                 width="24"
@@ -68,13 +97,13 @@ const CommentDetail: React.FC<IComment> = (props) => {
               </svg>
             </div>
             <div className="text-[12px] font-semibold leading-none text-gray-500 mt-0.5">
-              1 weeks ago
+              {timeAgo(createdDate)}
             </div>
           </div>
           <div className="flex justify-start">
             <Rate
               disabled
-              defaultValue={rating}
+              value={rating}
               allowHalf
               style={{ fontSize: "12px", color: "black" }}
             />
@@ -83,7 +112,7 @@ const CommentDetail: React.FC<IComment> = (props) => {
         <div className="relative">
           <p
             ref={commentRef}
-            className={`text-[15px] ${
+            className={`text-[15px] mt-2 ${
               isExpanded ? "line-clamp-none" : "line-clamp-6"
             } text-justify`}
             style={{ marginBottom: showSeeMore ? "20px" : "0px" }}
