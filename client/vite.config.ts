@@ -19,8 +19,6 @@ export default defineConfig(({mode}: ConfigEnv): UserConfigExport => {
       host: true,
     },
     base: env.VITE_BASE_URL,
-    optimizeDeps: {
-      exclude: ['chunk-JKEHHYL4.js']
-    }
+
   }
 });
