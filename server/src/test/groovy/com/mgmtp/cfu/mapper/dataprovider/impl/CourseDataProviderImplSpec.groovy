@@ -1,22 +1,24 @@
 package com.mgmtp.cfu.mapper.dataprovider.impl
 
 import com.mgmtp.cfu.mapper.dataprovider.CourseDataProvider
-import com.mgmtp.cfu.repository.CourseRepository
+import com.mgmtp.cfu.repository.CourseReviewRepository
+import com.mgmtp.cfu.repository.RegistrationRepository
 import com.mgmtp.cfu.util.RegistrationStatusUtil
 import spock.lang.Specification
 import spock.lang.Subject
 
 class CourseDataProviderImplSpec extends Specification {
-    CourseRepository courseRepository = Mock(CourseRepository)
+    RegistrationRepository registrationRepository = Mock(RegistrationRepository);
+    CourseReviewRepository courseReviewRepository = Mock(CourseReviewRepository);
 
     @Subject
-    CourseDataProvider courseDataProvider = new CourseDataProviderImpl(courseRepository)
+    CourseDataProvider courseDataProvider = new CourseDataProviderImpl(registrationRepository, courseReviewRepository)
 
     def "should return number of legit registration in a course"() {
         given:
         int courseId = 1
         int enrollmentCount = 10
-        courseRepository.countRegistrationInCourse(courseId, RegistrationStatusUtil.ACCEPTED_STATUSES) >> enrollmentCount
+        registrationRepository.countRegistrationInCourse(courseId, RegistrationStatusUtil.ACCEPTED_STATUSES) >> enrollmentCount
 
         when:
         int result = courseDataProvider.countLegitRegistrationInCourse(courseId)
@@ -29,7 +31,7 @@ class CourseDataProviderImplSpec extends Specification {
         given:
         int courseId = 1
         double averageRating = 4.5
-        courseRepository.calculateAvgRating(courseId) >> averageRating
+        courseReviewRepository.calculateAvgRating(courseId) >> averageRating
 
         when:
         Double result = courseDataProvider.calculateAvgRating(courseId)
@@ -41,7 +43,7 @@ class CourseDataProviderImplSpec extends Specification {
     def "should return null when course is not found or not have any rating"() {
         given:
         int courseId = 1
-        courseRepository.calculateAvgRating(courseId) >> null
+        courseReviewRepository.calculateAvgRating(courseId) >> null
 
         when:
         Double result = courseDataProvider.calculateAvgRating(courseId)

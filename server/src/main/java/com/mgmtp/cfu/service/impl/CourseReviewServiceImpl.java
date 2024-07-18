@@ -68,6 +68,7 @@ public class CourseReviewServiceImpl implements CourseReviewService {
     }
 
     private Page<CourseReview> getReviewsOfCourse(Long courseId, Integer starFilter, int page, int size) {
+        // Make sure the page is not less than 1
         page = Math.max(1, page);
 
         Sort sort = Sort.by(Sort.Order.desc("createdDate"), Sort.Order.asc("id"));
@@ -76,6 +77,7 @@ public class CourseReviewServiceImpl implements CourseReviewService {
         Page<CourseReview> reviewsPage = geReviewsOfCourseBySpec(courseId, starFilter, pageable);
 
         int totalPages = reviewsPage.getTotalPages();
+        // Return the last page if the requested page is greater than the total pages
         if (totalPages > 0 && page > totalPages) {
             pageable = PageRequest.of(totalPages - 1, size);
             return geReviewsOfCourseBySpec(courseId, starFilter, pageable);

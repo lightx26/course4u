@@ -5,7 +5,6 @@ import com.mgmtp.cfu.dto.coursedto.CoursePageDTO
 import com.mgmtp.cfu.dto.coursedto.CoursePageFilter
 import com.mgmtp.cfu.dto.coursedto.CourseRequest
 import com.mgmtp.cfu.dto.coursedto.CourseResponse
-import com.mgmtp.cfu.dto.coursereviewdto.RatingsPage
 import com.mgmtp.cfu.entity.Category
 import com.mgmtp.cfu.entity.Course
 import com.mgmtp.cfu.entity.Registration
@@ -24,8 +23,6 @@ import com.mgmtp.cfu.service.CategoryService
 import com.mgmtp.cfu.service.CourseService
 import com.mgmtp.cfu.service.UploadService
 import org.springframework.dao.CannotAcquireLockException
-import org.springframework.dao.DataAccessException
-import org.jetbrains.annotations.NotNull
 import org.springframework.data.domain.PageImpl
 import org.springframework.web.multipart.MultipartFile
 import spock.lang.Specification
@@ -159,7 +156,7 @@ class CourseServiceImplSpec extends Specification {
         thrown(MapperNotFoundException)
     }
 
-    def "Should return the first page since pageNo is too low"() {
+    def "Should return the first page when pageNo is too low"() {
         given:
         int pageSize = 5
         CoursePageSortOption sortOption = CoursePageSortOption.MOST_ENROLLED
@@ -315,49 +312,5 @@ class CourseServiceImplSpec extends Specification {
         courseService.deleteCourseById(1)
         then:
         def ex = thrown(ServerErrorRuntimeException)
-    }
-
-    def "should return an initial rating page"() {
-        given:
-        def courseId = 1
-        courseRepository.calculateAvgRating(courseId) >> null
-
-        when:
-        def result = courseService.getRatingsPage(courseId)
-
-        then:
-        result.getAverageRating() == 0
-        result.getDetailRatings().get(1) == 0L
-        result.getDetailRatings().get(2) == 0L
-        result.getDetailRatings().get(3) == 0L
-        result.getDetailRatings().get(4) == 0L
-        result.getDetailRatings().get(5) == 0L
-    }
-
-    def "getRatingsPage returns ratings when ratings are present"() {
-        given:
-        Long courseId = 1L
-        Double avgRating = 4.5
-        def ratings = [
-                new Object[]{1, 1L},
-                new Object[]{2, 2L},
-                new Object[]{3, 3L},
-                new Object[]{4, 4L},
-                new Object[]{5, 5L},
-
-        ]
-        courseRepository.calculateAvgRating(courseId) >> avgRating
-        courseRepository.getRatingsInCourse(courseId) >> ratings
-
-        when:
-        def result = courseService.getRatingsPage(courseId)
-
-        then:
-        result.getAverageRating() == (double)4.5
-        result.getDetailRatings().get(1) == 1L
-        result.getDetailRatings().get(2) == 2L
-        result.getDetailRatings().get(3) == 3L
-        result.getDetailRatings().get(4) == 4L
-        result.getDetailRatings().get(5) == 5L
     }
 }

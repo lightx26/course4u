@@ -4,7 +4,6 @@ import com.mgmtp.cfu.dto.coursedto.*;
 
 import com.mgmtp.cfu.dto.coursedto.CourseRequest;
 import com.mgmtp.cfu.dto.coursedto.CourseResponse;
-import com.mgmtp.cfu.dto.coursereviewdto.RatingsPage;
 import com.mgmtp.cfu.entity.Category;
 import com.mgmtp.cfu.entity.Course;
 import com.mgmtp.cfu.exception.BadRequestRunTimeException;
@@ -14,11 +13,8 @@ import com.mgmtp.cfu.enums.CourseStatus;
 import com.mgmtp.cfu.exception.DuplicateCourseException;
 import com.mgmtp.cfu.exception.MapperNotFoundException;
 import com.mgmtp.cfu.exception.ServerErrorRuntimeException;
-import com.mgmtp.cfu.mapper.DTOMapper;
 import com.mgmtp.cfu.mapper.factory.MapperFactory;
 import com.mgmtp.cfu.repository.CourseRepository;
-import com.mgmtp.cfu.repository.CourseReviewRepository;
-import com.mgmtp.cfu.repository.RegistrationRepository;
 import com.mgmtp.cfu.service.CategoryService;
 import com.mgmtp.cfu.service.CourseService;
 import com.mgmtp.cfu.service.UploadService;
@@ -34,7 +30,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -50,7 +45,7 @@ public class CourseServiceImpl implements CourseService {
     @Value("${course4u.upload.thumbnail-directory}")
     private String uploadThumbnailDir;
     @Autowired
-    public CourseServiceImpl(CourseRepository courseRepository, CourseReviewRepository courseReviewRepository, RegistrationRepository registrationRepository, MapperFactory<Course> courseMapperFactory, CategoryService categoryService, UploadService uploadService) {
+    public CourseServiceImpl(CourseRepository courseRepository, MapperFactory<Course> courseMapperFactory, CategoryService categoryService, UploadService uploadService) {
         this.courseRepository = courseRepository;
         this.courseMapperFactory = courseMapperFactory;
         this.categoryService = categoryService;

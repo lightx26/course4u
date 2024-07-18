@@ -5,7 +5,6 @@ import com.mgmtp.cfu.exception.BadRequestRunTimeException
 import com.mgmtp.cfu.dto.coursedto.CourseDto
 import com.mgmtp.cfu.dto.coursedto.CourseOverviewDTO
 import com.mgmtp.cfu.dto.coursedto.CoursePageFilter
-import com.mgmtp.cfu.dto.coursereviewdto.RatingsPage
 import com.mgmtp.cfu.enums.CoursePageSortOption
 import com.mgmtp.cfu.exception.MapperNotFoundException
 import com.mgmtp.cfu.service.CourseService
@@ -147,25 +146,12 @@ class CourseControllerSpec extends Specification {
         then:
         1*courseServiceMock.deleteCourseById(1L)
     }
+
     def'deleteCourse: Course id is null.'(){
         given:
         when:
         courseController.deleteCourse(null)
         then:
         def ex=thrown(BadRequestRunTimeException.class)
-    }
-
-    def "should return a page of ratings"() {
-        given:
-        def courseId = 1;
-        def ratingsPage = new RatingsPage()
-        courseServiceMock.getRatingsPage(courseId) >> ratingsPage
-
-        when:
-        ResponseEntity<?> response = courseController.getRatingsOfCourse(courseId);
-
-        then:
-        response.getStatusCode().value() == 200
-        response.getBody() == ratingsPage
     }
 }
