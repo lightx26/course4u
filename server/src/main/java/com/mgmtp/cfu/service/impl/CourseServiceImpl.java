@@ -17,6 +17,8 @@ import com.mgmtp.cfu.exception.ServerErrorRuntimeException;
 import com.mgmtp.cfu.mapper.DTOMapper;
 import com.mgmtp.cfu.mapper.factory.MapperFactory;
 import com.mgmtp.cfu.repository.CourseRepository;
+import com.mgmtp.cfu.repository.CourseReviewRepository;
+import com.mgmtp.cfu.repository.RegistrationRepository;
 import com.mgmtp.cfu.service.CategoryService;
 import com.mgmtp.cfu.service.CourseService;
 import com.mgmtp.cfu.service.UploadService;
@@ -48,7 +50,7 @@ public class CourseServiceImpl implements CourseService {
     @Value("${course4u.upload.thumbnail-directory}")
     private String uploadThumbnailDir;
     @Autowired
-    public CourseServiceImpl(CourseRepository courseRepository, MapperFactory<Course> courseMapperFactory, CategoryService categoryService, UploadService uploadService) {
+    public CourseServiceImpl(CourseRepository courseRepository, CourseReviewRepository courseReviewRepository, RegistrationRepository registrationRepository, MapperFactory<Course> courseMapperFactory, CategoryService categoryService, UploadService uploadService) {
         this.courseRepository = courseRepository;
         this.courseMapperFactory = courseMapperFactory;
         this.categoryService = categoryService;
@@ -102,13 +104,13 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Page<CourseOverviewDTO> getAvailableCoursesPage(String search, CoursePageFilter filter, CoursePageSortOption sortBy, int pageNo, int pageSize) {
-        Optional<DTOMapper<CourseOverviewDTO, Course>> courseMapperOpt = courseMapperFactory.getDTOMapper(CourseOverviewDTO.class);
+        var courseMapperOpt = courseMapperFactory.getDTOMapper(CourseOverviewDTO.class);
 
         if (courseMapperOpt.isEmpty()) {
             throw new MapperNotFoundException("No mapper found for CourseOverviewDTO");
         }
 
-        DTOMapper<CourseOverviewDTO, Course> courseMapper = courseMapperOpt.get();
+        var courseMapper = courseMapperOpt.get();
 
         Page<Course> coursePage = getAvailableCourses(search, filter, sortBy, pageNo, pageSize);
         return coursePage.map(courseMapper::toDTO);

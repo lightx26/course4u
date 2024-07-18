@@ -10,5 +10,4 @@ public interface CourseService {
     CourseDto getCourseDtoById(Long id);
     CourseResponse createCourse(CourseRequest courseDTO);
     void deleteCourseById(Long id);
-    RatingsPage getRatingsPage(Long courseId);
 }

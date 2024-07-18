@@ -67,9 +67,4 @@ public class CourseController {
             throw new BadRequestRunTimeException("The course id must not be null.");
         courseService.deleteCourseById(id);
     }
-
-    @GetMapping("/ratings/{courseId}")
-    public ResponseEntity<?> getRatingsOfCourse(@PathVariable Long courseId) {
-        return ResponseEntity.ok(courseService.getRatingsPage(courseId));
-    }
 }
