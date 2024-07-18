@@ -12,11 +12,12 @@ import java.util.List;
 @Repository
 public interface RegistrationRepository extends JpaRepository<Registration, Long> {
     List<Registration> getByUserId(Long userId, Sort sort);
-    @Query("SELECT COUNT(r) FROM Registration r WHERE r.course.id = ?1 and (r.status = 'DONE' or r.status = 'VERIFYING' or r.status='VERIFIED' or r.status='CLOSED')")
-    int countLegitRegistrationInCourse(Long courseId);
-
 
     @Query("SELECT r FROM Registration r WHERE r.status NOT IN ?1")
     Page<Registration> findAllExceptStatus(List<RegistrationStatus> excludedStatuses, Pageable pageable);
+
+    @Query("SELECT COUNT(r) FROM Registration r WHERE r.course.id = ?1 and (r.status in ?2)")
+    int countRegistrationInCourse(Long courseId, List<RegistrationStatus> Statuses);
+
     Page<Registration> findAllByStatus(RegistrationStatus status, Pageable pageable);
 }

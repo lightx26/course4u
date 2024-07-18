@@ -12,14 +12,5 @@ import java.util.List;
 
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long>, JpaSpecificationExecutor<Course> {
-    @Query("SELECT COUNT(r) FROM Registration r WHERE r.course.id = ?1 and (r.status in ?2)")
-    int countRegistrationInCourse(Long courseId, List<RegistrationStatus> Statuses);
-
-    @Query("SELECT AVG(cr.rating) FROM CourseReview cr WHERE cr.course.id = ?1")
-    Double calculateAvgRating(Long courseId);
-
     Course findFirstByLinkIgnoreCase(String link);
-
-    @Query("SELECT cr.rating, COUNT(cr.rating) as RatingCount FROM CourseReview cr WHERE cr.course.id = ?1 GROUP BY cr.rating")
-    List<Object[]> getRatingsInCourse(Long courseId);
 }
