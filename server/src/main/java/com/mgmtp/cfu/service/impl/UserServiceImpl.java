@@ -20,7 +20,7 @@ public class UserServiceImpl implements IUserService {
     private final UserRepository userRepository;
 
     private final UploadService uploadService;
-    
+
     private final PasswordEncoder passwordEncoder;
 
     @Value("${course4u.upload.profile-directory}")
@@ -34,19 +34,24 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserDto editUserProfile(UserDto userDto) {
-        String uniqueFileName;
-        try {
-            uniqueFileName = uploadService.uploadThumbnail(userDto.getImageFile(), uploadProfileDir);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
         User user = AuthUtils.getCurrentUser();
+
         user.setFullName(userDto.getFullName());
         user.setTelephone(userDto.getTelephone());
-        user.setAvatarUrl("/profile/" + uniqueFileName);
         user.setDateOfBirth(userDto.getDateOfBirth());
         user.setGender(userDto.getGender());
+
+        if (!userDto.getImageFile().isEmpty()) {
+            String uniqueFileName;
+            try {
+                uniqueFileName = uploadService.uploadThumbnail(userDto.getImageFile(), uploadProfileDir);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            user.setAvatarUrl("/profile/" + uniqueFileName);
+        }
+
         userRepository.save(user);
         return UserMapper.toUserDto(user);
     }
