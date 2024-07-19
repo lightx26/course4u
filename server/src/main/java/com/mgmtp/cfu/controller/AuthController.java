@@ -5,8 +5,6 @@ import com.mgmtp.cfu.dto.authdto.LoginRequest;
 import com.mgmtp.cfu.service.IAuthService;
 import com.mgmtp.cfu.util.LoginValidator;
 import com.mgmtp.cfu.util.SignUpValidator;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthController {
     private final IAuthService authService;
-    @Operation(security = @SecurityRequirement(name = ""))
     @PostMapping("/login")
     ResponseEntity<?> signIn(@RequestBody LoginRequest loginRequest){
         if(!LoginValidator.isValid(loginRequest))

@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @OpenAPIDefinition(info = @Info(title = "Course4U", version = "0.1.0"), security = {@SecurityRequirement(name = "bearer-key")})
-
 public class SpringDocConfig {
     @Bean
     public OpenAPI customOpenAPI() {
