@@ -5,8 +5,6 @@ import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewPage;
 import com.mgmtp.cfu.entity.Registration;
 import com.mgmtp.cfu.enums.RegistrationStatus;
 import com.mgmtp.cfu.mapper.DTOMapper;
-import com.mgmtp.cfu.mapper.RegistrationOverviewMapper;
-import com.mgmtp.cfu.mapper.factory.MapperFactory;
 import com.mgmtp.cfu.repository.RegistrationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;

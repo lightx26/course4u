@@ -13,6 +13,10 @@ import com.mgmtp.cfu.enums.CategoryStatus;
 import com.mgmtp.cfu.enums.CourseStatus;
 import com.mgmtp.cfu.enums.NotificationType;
 import com.mgmtp.cfu.enums.RegistrationStatus;
+import com.mgmtp.cfu.exception.BadRequestRuntimeException;
+import com.mgmtp.cfu.exception.ConflictRuntimeException;
+import com.mgmtp.cfu.exception.MapperNotFoundException;
+import com.mgmtp.cfu.exception.RegistrationStatusNotFoundException;
 import com.mgmtp.cfu.exception.*;
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper;
 import com.mgmtp.cfu.entity.Registration;
@@ -36,6 +40,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
+
 
 import static com.mgmtp.cfu.util.AuthUtils.getCurrentUser;
 import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getRegistrationOverviewDTOS;
@@ -282,4 +287,25 @@ public class RegistrationServiceImpl implements RegistrationService {
         registrationRepository.delete(registration);
     }
 
+}
+
+    @Override
+    public boolean startLearningCourse(Long registrationId) {
+        var userId = getCurrentUser().getId();
+        if (!registrationRepository.existsByIdAndUserId(registrationId, userId))
+            throw new BadRequestRuntimeException("Not found any registration that id is "+registrationId);
+        var registrationOpt = registrationRepository.findById(registrationId);
+        if (registrationOpt.isPresent()) {
+            var registration=registrationOpt.get();
+            if(Objects.nonNull(registration.getStartDate()))
+                throw new ConflictRuntimeException("This course was started learning");
+            if (!registration.getStatus().equals(RegistrationStatus.APPROVED)) {
+                throw new BadRequestRuntimeException("This registration requires approval by admin.");
+            }
+            registration.setStartDate(LocalDateTime.now());
+            registrationRepository.save(registration);
+            return true;
+        }
+        return false;
+    }
 }

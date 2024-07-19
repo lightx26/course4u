@@ -3,6 +3,10 @@ package com.mgmtp.cfu.service.impl
 import com.mgmtp.cfu.dto.coursedto.CourseResponse
 import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO
+import com.mgmtp.cfu.entity.Course
+import com.mgmtp.cfu.entity.User
+import com.mgmtp.cfu.exception.BadRequestRuntimeException
+import com.mgmtp.cfu.exception.ConflictRuntimeException
 import com.mgmtp.cfu.dto.MailContentUnit
 import com.mgmtp.cfu.enums.CourseLevel
 import com.mgmtp.cfu.enums.CoursePlatform
@@ -49,8 +53,8 @@ import spock.lang.Specification;
 import spock.lang.Subject;
 
 import java.time.LocalDate
-
 import java.time.LocalDateTime
+
 
 class RegistrationServiceImplSpec extends Specification {
 
@@ -71,6 +75,12 @@ class RegistrationServiceImplSpec extends Specification {
             emailService, courseService
     );
 
+    def setup() {
+        def authentication = Mock(Authentication) {
+            getCredentials() >> User.builder().id(1).build()
+        }
+        SecurityContextHolder.context.authentication = authentication
+    }
     def "return registration details successfully"() {
         given:
         Long id = 1L
@@ -119,7 +129,7 @@ class RegistrationServiceImplSpec extends Specification {
         given: "a mock user and registration data"
         def userId = 1
         def status = "DEFAULT"
-        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).startDate(LocalDate.now()).build()
+        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).startDate(LocalDateTime.now()).build()
         def authentication = Mock(Authentication) {
             getCredentials() >> User.builder().id(userId).build()
         }
@@ -137,8 +147,8 @@ class RegistrationServiceImplSpec extends Specification {
         given:
         def userId = 1
         def status = "APPROVED"
-        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDate.now()).build()
-        def registrayion2= Registration.builder().id(2).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDate.now()).build()
+        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDateTime.now()).build()
+        def registrayion2= Registration.builder().id(2).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDateTime.now()).build()
 
         def authentication = Mock(Authentication) {
             getCredentials() >> User.builder().id(userId).build()
@@ -160,7 +170,7 @@ class RegistrationServiceImplSpec extends Specification {
         given: "a mock user and registration data"
         def userId = 1
         def status = "APPROVaaaED"
-        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).startDate(LocalDate.now()).build()
+        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).startDate(LocalDateTime.now()).build()
         def authentication = Mock(Authentication) {
             getCredentials() >> User.builder().id(userId).build()
         }
@@ -179,7 +189,7 @@ class RegistrationServiceImplSpec extends Specification {
         given: "a mock user and registration data"
         def userId = 1
         def status = "DEFAULT"
-        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).startDate(LocalDate.now()).build()
+        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).startDate(LocalDateTime.now()).build()
         def authentication = Mock(Authentication) {
             getCredentials() >> User.builder().id(userId).build()
         }
@@ -198,8 +208,8 @@ class RegistrationServiceImplSpec extends Specification {
         given:
         def userId = 1
         def status = "APPROVED"
-        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDate.now()).build()
-        def registrayion2= Registration.builder().id(2).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDate.now()).build()
+        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDateTime.now()).build()
+        def registrayion2= Registration.builder().id(2).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDateTime.now()).build()
 
         def authentication = Mock(Authentication) {
             getCredentials() >> User.builder().id(userId).build()
@@ -221,7 +231,7 @@ class RegistrationServiceImplSpec extends Specification {
         given: "a mock user and registration data"
         def userId = 1
         def status = "APPROVaaaED"
-        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).startDate(LocalDate.now()).build()
+        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).startDate(LocalDateTime.now()).build()
         def authentication = Mock(Authentication) {
             getCredentials() >> User.builder().id(userId).build()
         }
@@ -235,6 +245,56 @@ class RegistrationServiceImplSpec extends Specification {
         then:
         thrown(IllegalArgumentException)
     }
+
+    def "startLearningCourse: Not found any registration"(){
+        given:
+        registrationRepository.existsByIdAndUserId(_ as Long,_ as  Long)>>false
+        when:
+        registrationService.startLearningCourse(1)
+        then:
+        def e=thrown(BadRequestRuntimeException)
+    }
+
+    def "startLearningCourse: This course was started learning"(){
+        given:
+        registrationRepository.existsByIdAndUserId(_ as Long,_ as  Long)>>true
+        registrationRepository.findById(_ as Long)>> Optional.of(Registration.builder().id(1).startDate(LocalDateTime.now()).build());
+        when:
+        registrationService.startLearningCourse(1)
+        then:
+        def e=thrown(ConflictRuntimeException)
+    }
+    def "startLearningCourse: return true"(){
+        given:
+        registrationRepository.existsByIdAndUserId(_ as Long,_ as  Long)>>true
+        registrationRepository.findById(_ as Long)>> Optional.of(Registration.builder().id(1).status(RegistrationStatus.APPROVED).startDate(null).build());
+        when:
+        def result =registrationService.startLearningCourse(1)
+        then:
+        result
+    }
+    def "startLearningCourse: This registration requires approval by admin."(){
+        given:
+        registrationRepository.existsByIdAndUserId(_ as Long,_ as  Long)>>true
+        registrationRepository.findById(_ as Long)>> Optional.of(Registration.builder().id(1).status(RegistrationStatus.SUBMITTED).startDate(null).build());
+        when:
+        registrationService.startLearningCourse(1)
+        then:
+        def e=thrown(BadRequestRuntimeException)
+    }
+
+
+    def "startLearningCourse: return false"(){
+        given:
+        registrationRepository.existsByIdAndUserId(_ as Long,_ as  Long)>>true
+        registrationRepository.findById(_ as Long)>> Optional.empty()
+        when:
+        def result=registrationService.startLearningCourse(1)
+        then:
+        !result
+
+    }
+
 
 
     /*

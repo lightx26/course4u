@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+
 @Repository
 public interface RegistrationRepository extends JpaRepository<Registration, Long> {
     List<Registration> getByUserId(Long userId, Sort sort);
@@ -20,4 +21,6 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
     int countRegistrationInCourse(Long courseId, List<RegistrationStatus> Statuses);
 
     Page<Registration> findAllByStatus(RegistrationStatus status, Pageable pageable);
+
+    boolean existsByIdAndUserId(Long registrationId, Long userId);
 }

@@ -49,7 +49,7 @@ export default function MyRegistrationPage() {
   };
 
   return (
-    <div className="flex flex-col gap-5 w-[80%] p-3 grow">
+    <div className="flex flex-col gap-5 w-[80%] p-3 grow min-h-[1000px]">
       <div className="flex items-center justify-between">
         {listMyRegistration === null || listMyRegistration.length === 0 ? (
           <div>Showing 0 results</div>

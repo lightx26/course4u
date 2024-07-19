@@ -20,9 +20,9 @@ class AuthControllerSpec extends Specification {
         given:
         def correctLoginRequest =
                 new LoginRequest("user", "password")
-        authService.authenticate(_) >> LoginResponse.builder().accessToken("This is valid access token.").build()
+        authService.authenticate(_ as LoginRequest) >> LoginResponse.builder().accessToken("This is valid access token.").build()
         when:
-        ResponseEntity<LoginResponse> response = authController.signIn(correctLoginRequest)
+        ResponseEntity<LoginResponse> response = authController.signIn(correctLoginRequest) as ResponseEntity<LoginResponse>
         then:
         response.getBody().accessToken.equals("This is valid access token.")
         response.statusCode.value() == 200
@@ -32,7 +32,7 @@ class AuthControllerSpec extends Specification {
         given:
         def wrongLoginRequest =
                 new LoginRequest(username, password)
-        authService.authenticate(_) >> LoginResponse.builder().accessToken("This is valid access token.").build()
+        authService.authenticate(_ as LoginRequest) >> LoginResponse.builder().accessToken("This is valid access token.").build()
         when:
         def response = authController.signIn(wrongLoginRequest)
         then:

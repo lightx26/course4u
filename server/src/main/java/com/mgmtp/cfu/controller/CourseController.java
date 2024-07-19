@@ -1,6 +1,6 @@
 package com.mgmtp.cfu.controller;
 
-import com.mgmtp.cfu.exception.BadRequestRunTimeException;
+import com.mgmtp.cfu.exception.BadRequestRuntimeException;
 import com.mgmtp.cfu.dto.coursedto.*;
 import com.mgmtp.cfu.exception.DuplicateCourseException;
 import com.mgmtp.cfu.exception.MapperNotFoundException;
@@ -64,7 +64,7 @@ public class CourseController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void deleteCourse(@PathVariable Long id) {
         if(Objects.isNull(id))
-            throw new BadRequestRunTimeException("The course id must not be null.");
+            throw new BadRequestRuntimeException("The course id must not be null.");
         courseService.deleteCourseById(id);
     }
 

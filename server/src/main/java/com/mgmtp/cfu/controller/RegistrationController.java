@@ -2,6 +2,7 @@ package com.mgmtp.cfu.controller;
 
 import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO;
+import com.mgmtp.cfu.exception.UnknownErrorException;
 import com.mgmtp.cfu.exception.DuplicateCourseException;
 import com.mgmtp.cfu.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +45,14 @@ public class RegistrationController {
             page = 1;
         }
         return ResponseEntity.ok(registrationService.getMyRegistrationPage(page, status));
+    }
+    @PostMapping("/start-learning/{id}")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public void startLearningCourse(@PathVariable("id") Long registrationId){
+        boolean isStarted=registrationService.startLearningCourse(registrationId);
+        if(!isStarted)
+            throw new UnknownErrorException("Server arise problem.");
+
     }
 
     @PostMapping("/{id}/approve")

@@ -37,8 +37,8 @@ class RegistrationOverviewUtilsSpec extends Specification {
         Long userId = 1L
         def registrationRepository = Mock(RegistrationRepository)
         def expectedRegistrations = [
-                Registration.builder().id(2).lastUpdated(LocalDateTime.now().plusDays(2)).endDate(LocalDate.now()).startDate(LocalDate.now()).registerDate(LocalDate.now()).build(),
-                Registration.builder().id(1).lastUpdated(LocalDateTime.now()).endDate(LocalDate.now()).startDate(LocalDate.now()).registerDate(LocalDate.now()).build()
+                Registration.builder().id(2).lastUpdated(LocalDateTime.now().plusDays(2)).endDate(LocalDateTime.now()).startDate(LocalDateTime.now()).registerDate(LocalDate.now()).build(),
+                Registration.builder().id(1).lastUpdated(LocalDateTime.now()).endDate(LocalDateTime.now()).startDate(LocalDateTime.now()).registerDate(LocalDate.now()).build()
         ]
         registrationRepository.getByUserId(_, _) >> expectedRegistrations
         when:

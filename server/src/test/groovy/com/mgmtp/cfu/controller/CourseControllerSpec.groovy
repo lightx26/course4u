@@ -1,7 +1,7 @@
 package com.mgmtp.cfu.controller
 
 import com.mgmtp.cfu.dto.coursedto.CourseSearchRequest
-import com.mgmtp.cfu.exception.BadRequestRunTimeException
+import com.mgmtp.cfu.exception.BadRequestRuntimeException
 import com.mgmtp.cfu.dto.coursedto.CourseDto
 import com.mgmtp.cfu.dto.coursedto.CourseOverviewDTO
 import com.mgmtp.cfu.dto.coursedto.CoursePageFilter
@@ -152,7 +152,7 @@ class CourseControllerSpec extends Specification {
         when:
         courseController.deleteCourse(null)
         then:
-        def ex=thrown(BadRequestRunTimeException.class)
+        def ex=thrown(BadRequestRuntimeException.class)
     }
 
 

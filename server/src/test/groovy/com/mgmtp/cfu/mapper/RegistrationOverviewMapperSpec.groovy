@@ -12,6 +12,7 @@ import spock.lang.Specification
 import spock.lang.Subject
 
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 class RegistrationOverviewMapperSpec extends Specification {
     @Subject
@@ -32,9 +33,9 @@ class RegistrationOverviewMapperSpec extends Specification {
         def registration = Registration.builder()
                 .id(1)
                 .duration(15)
-                .endDate(LocalDate.now())
+                .endDate(LocalDateTime.now())
                 .registerDate(LocalDate.now())
-                .startDate(LocalDate.now())
+                .startDate(LocalDateTime.now())
                 .status(RegistrationStatus.DONE)
                 .score(10)
                 .course(course)
@@ -42,9 +43,9 @@ class RegistrationOverviewMapperSpec extends Specification {
         when:
         RegistrationOverviewDTO registrationDto = registrationOverviewMapper.toDTO(registration)
         then:
-        registrationDto.endDate == registration.endDate
+        registrationDto.endDate == registration.getEndDate().toLocalDate()
         registrationDto.registerDate == registration.registerDate
-        registrationDto.startDate == registration.startDate
+        registrationDto.startDate == registration.getStartDate().toLocalDate()
         registrationDto.status == registration.status
         registrationDto.courseId == registration.getCourse().getId()
     }

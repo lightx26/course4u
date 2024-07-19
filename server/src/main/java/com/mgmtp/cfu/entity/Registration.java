@@ -28,9 +28,9 @@ public class Registration {
     @Column(name = "`Status`")
     RegistrationStatus status;
     @Column(name = "`StartDate`")
-    LocalDate startDate;
+    LocalDateTime startDate;
     @Column(name = "`EndDate`")
-    LocalDate endDate;
+    LocalDateTime endDate;
     @Column(name = "`Score`")
     Integer score;
     @Column(name = "`RegisterDate`")

@@ -31,8 +31,8 @@ class RegistrationDetailMapperSpec extends Specification {
         Registration registration = new Registration(
                 id: 1L,
                 status: RegistrationStatus.APPROVED,
-                startDate: LocalDate.of(2023, 7, 1),
-                endDate: LocalDate.of(2023, 12, 31),
+                startDate: LocalDateTime.of(2023, 7, 1,0,0,0),
+                endDate: LocalDateTime.of(2023, 12, 31,0,0,0),
                 score: 95,
                 registerDate: LocalDate.of(2023, 6, 15),
                 duration: 6,
