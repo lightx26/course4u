@@ -20,7 +20,7 @@ function timeAgo(inputTime: string): string {
   const years = Math.floor(days / 365.25); // Trung bình số ngày trong một năm
 
   if (seconds < 60) {
-    return "vài giây trước";
+    return "Just now";
   } else if (minutes < 60) {
     return `${minutes} mins ago`;
   } else if (hours < 24) {
@@ -28,7 +28,7 @@ function timeAgo(inputTime: string): string {
   } else if (days < 7) {
     return `${days} days ago`;
   } else if (weeks < 4) {
-    return `${weeks} week ago`;
+    return `${weeks} weeks ago`;
   } else if (months < 12) {
     return `${months} months ago`;
   } else {
