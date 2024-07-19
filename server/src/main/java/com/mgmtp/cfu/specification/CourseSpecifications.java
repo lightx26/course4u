@@ -1,6 +1,7 @@
 package com.mgmtp.cfu.specification;
 
 import com.mgmtp.cfu.dto.coursedto.CoursePageFilter;
+import com.mgmtp.cfu.entity.Category;
 import com.mgmtp.cfu.entity.Course;
 import com.mgmtp.cfu.entity.CourseReview;
 import com.mgmtp.cfu.entity.Registration;
@@ -25,8 +26,16 @@ public class CourseSpecifications {
 
     public static Specification<Course> hasCategories(List<Long> categoryIds) {
         return (root, query, builder) -> {
-            query.distinct(true);
-            return root.join("categories").get("id").in(categoryIds);
+            // Sub-query instead of join category table
+            Subquery<Long> categorySubquery = query.subquery(Long.class);
+            Root<Course> courseSubqueryRoot = categorySubquery.from(Course.class);
+            Join<Course, Category> categoryJoin = courseSubqueryRoot.join("categories");
+
+            categorySubquery.select(courseSubqueryRoot.get("id"))
+                    .where(categoryJoin.get("id").in(categoryIds));
+
+            // Main query
+            return builder.in(root.get("id")).value(categorySubquery);
         };
     }
 
