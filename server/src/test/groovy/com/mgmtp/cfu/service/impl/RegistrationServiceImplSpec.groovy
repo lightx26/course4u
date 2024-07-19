@@ -2,24 +2,16 @@ package com.mgmtp.cfu.service.impl
 
 import com.mgmtp.cfu.dto.coursedto.CourseResponse
 import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest
-import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO
 import com.mgmtp.cfu.dto.MailContentUnit
-import com.mgmtp.cfu.entity.Course
-import com.mgmtp.cfu.entity.User
 import com.mgmtp.cfu.enums.CourseLevel
 import com.mgmtp.cfu.enums.CoursePlatform
-import com.mgmtp.cfu.exception.MapperNotFoundException
 import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO
 import com.mgmtp.cfu.entity.Notification
-import com.mgmtp.cfu.entity.Registration
 import com.mgmtp.cfu.entity.RegistrationFeedback
-import com.mgmtp.cfu.entity.User
 import com.mgmtp.cfu.enums.CategoryStatus
 import com.mgmtp.cfu.entity.Category
-import com.mgmtp.cfu.enums.CourseStatus
 import com.mgmtp.cfu.enums.NotificationType
-import com.mgmtp.cfu.enums.RegistrationStatus
 import com.mgmtp.cfu.exception.MapperNotFoundException
 import com.mgmtp.cfu.exception.RegistrationNotFoundException
 import com.mgmtp.cfu.exception.RegistrationStatusNotFoundException
@@ -27,8 +19,6 @@ import com.mgmtp.cfu.mapper.RegistrationDetailMapper
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper
 import com.mgmtp.cfu.mapper.UserMapper
 import com.mgmtp.cfu.mapper.factory.MapperFactory
-import com.mgmtp.cfu.mapper.factory.impl.RegistrationMapperFactory
-import com.mgmtp.cfu.dto.coursedto.CourseRequest
 
 import com.mgmtp.cfu.dto.RegistrationRequest
 import com.mgmtp.cfu.entity.Course
@@ -46,22 +36,16 @@ import com.mgmtp.cfu.repository.UserRepository
 import com.mgmtp.cfu.service.IEmailService;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import com.mgmtp.cfu.service.CourseService
 import com.mgmtp.cfu.util.AuthUtils
-import org.modelmapper.ModelMapper
 import org.springframework.security.core.context.SecurityContext
-import spock.lang.Specification
-import spock.lang.Subject
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import spock.lang.Specification;
 import spock.lang.Subject;
 
-
 import java.time.LocalDate
-import java.time.LocalDateTime;
 
 import java.time.LocalDateTime
 
@@ -72,20 +56,18 @@ class RegistrationServiceImplSpec extends Specification {
     RegistrationOverviewMapper registrationOverviewMapper = Mock(RegistrationOverviewMapper)
     CourseRepository courseRepository = Mock(CourseRepository)
     NotificationRepository notificationRepository = Mock(NotificationRepository)
-    UserMapper userMapper = Mock(UserMapper)
     RegistrationFeedbackRepository registrationFeedbackRepository = Mock(RegistrationFeedbackRepository)
     IEmailService emailService = Mock(IEmailService)
     UserRepository userRepository = Mock(UserRepository)
     def registrationDetailMapper = Mock(RegistrationDetailMapper)
 
     CourseService courseService = Mock()
-    ModelMapper modelMapper = Mock()
     @Subject
     RegistrationServiceImpl registrationService = new RegistrationServiceImpl(
             registrationRepository, registrationMapperFactory, registrationOverviewMapper,
-            courseRepository, notificationRepository, userMapper,
-            registrationFeedbackRepository, emailService,userRepository,courseService
-    )
+            courseRepository, notificationRepository, registrationFeedbackRepository,
+            emailService, userRepository, courseService
+    );
 
     def "return registration details successfully"() {
         given:

@@ -9,7 +9,6 @@ import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO;
 import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest;
 
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO;
-import com.mgmtp.cfu.enums.CourseLevel;
 import com.mgmtp.cfu.entity.Course;
 
 import com.mgmtp.cfu.entity.RegistrationFeedback;
@@ -21,13 +20,9 @@ import com.mgmtp.cfu.exception.MapperNotFoundException;
 import com.mgmtp.cfu.exception.RegistrationStatusNotFoundException;
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper;
 
-
-import com.mgmtp.cfu.entity.Course;
 import com.mgmtp.cfu.entity.Registration;
-import com.mgmtp.cfu.enums.CourseStatus;
 import com.mgmtp.cfu.exception.RegistrationNotFoundException;
 import com.mgmtp.cfu.mapper.DTOMapper;
-import com.mgmtp.cfu.mapper.UserMapper;
 import com.mgmtp.cfu.mapper.factory.MapperFactory;
 
 import com.mgmtp.cfu.repository.RegistrationRepository;
@@ -52,7 +47,6 @@ import java.util.List;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.*;
 
 import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getRegistrationOverviewDTOS;
 import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getSortedRegistrations;
@@ -65,7 +59,6 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final RegistrationOverviewMapper registrationOverviewMapper;
     private final CourseRepository courseRepository;
     private final NotificationRepository notificationRepository;
-    private final UserMapper userMapper;
     private final RegistrationFeedbackRepository registrationFeedbackRepository;
     private final IEmailService emailService;
     private final UserRepository userRepository;
@@ -77,7 +70,6 @@ public class RegistrationServiceImpl implements RegistrationService {
                                    RegistrationOverviewMapper registrationOverviewMapper,
                                    CourseRepository courseRepository,
                                    NotificationRepository notificationRepository,
-                                   UserMapper userMapper,
                                    RegistrationFeedbackRepository registrationFeedbackRepository,
                                    IEmailService emailService, UserRepository userRepository,
                                    CourseService courseService) {
@@ -86,7 +78,6 @@ public class RegistrationServiceImpl implements RegistrationService {
         this.registrationOverviewMapper = registrationOverviewMapper;
         this.courseRepository = courseRepository;
         this.notificationRepository = notificationRepository;
-        this.userMapper = userMapper;
         this.registrationFeedbackRepository = registrationFeedbackRepository;
         this.emailService = emailService;
         this.userRepository = userRepository;

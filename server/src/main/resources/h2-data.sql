@@ -160,9 +160,9 @@ INSERT INTO "Registration" ( "Status", "StartDate", "EndDate", "Score", "Registe
 INSERT INTO "Registration" ( "Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdated", "DurationUnit", "UserId") VALUES ('VERIFIED', '2024-05-14', '2025-07-08', 44, '2024-04-26', 32, 1, null, 'DAY', 1);
 INSERT INTO "Registration" ( "Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdated", "DurationUnit", "UserId") VALUES ('DOCUMENT_DECLINED', '2023-07-20', '2024-10-19', 62, '2024-07-08', 67, 3, null, 'WEEK', 1);
 
-INSERT INTO "Registration" ("Id", "Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdated", "DurationUnit", "UserId") VALUES ('DRAFT', '2024-02-10', '2025-02-27', 35, '2023-10-16', 27, 32, null, 'MONTH', 1);
-INSERT INTO "Registration" ("Id", "Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdated", "DurationUnit", "UserId") VALUES ('DRAFT', '2024-02-10', '2025-02-27', 35, '2023-10-16', 27, 1, null, 'MONTH', 1);
-INSERT INTO "Registration" ("Id", "Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdated", "DurationUnit", "UserId") VALUES ('SUBMITTED', '2024-02-10', '2025-02-27', 35, '2023-10-16', 27, 1, null, 'MONTH', 7);
+INSERT INTO "Registration" ("Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdated", "DurationUnit", "UserId") VALUES ('DRAFT', '2024-02-10', '2025-02-27', 35, '2023-10-16', 27, 32, null, 'MONTH', 1);
+INSERT INTO "Registration" ("Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdated", "DurationUnit", "UserId") VALUES ('DRAFT', '2024-02-10', '2025-02-27', 35, '2023-10-16', 27, 1, null, 'MONTH', 1);
+INSERT INTO "Registration" ("Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdated", "DurationUnit", "UserId") VALUES ('SUBMITTED', '2024-02-10', '2025-02-27', 35, '2023-10-16', 27, 1, null, 'MONTH', 7);
 
 INSERT INTO "CourseReview" ("CourseId", "UserId", "Rating", "Comment", "CreatedDate")
 values ('1', '1', '5', 'Good course', '2021-01-01'),

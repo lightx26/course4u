@@ -6,10 +6,8 @@ import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO;
 import org.springframework.data.domain.Page;
-import com.mgmtp.cfu.dto.PageResponse;
 import com.mgmtp.cfu.dto.RegistrationRequest;
-import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO;
-import com.mgmtp.cfu.entity.Registration;
+
 
 
 public interface RegistrationService {
