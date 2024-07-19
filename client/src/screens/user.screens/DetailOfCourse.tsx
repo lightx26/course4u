@@ -28,53 +28,6 @@ interface IRatings {
     "5": number;
   };
 }
-const coursesRelated = [
-  {
-    id: "course_001",
-    name: "Introduction to Programming Introduction to Programming Introduction to Programming Introduction to Programming",
-    thumbnailUrl:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpOci7zs9k4X9pUqo5q0M8XzVK-swsnNj_0g&s",
-
-    platform: "Online",
-    rating: 4.5,
-    studentNumber: 120,
-    level: "Beginner",
-  },
-  {
-    id: "course_002",
-    name: "Advanced JavaScript",
-    thumbnailUrl:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpOci7zs9k4X9pUqo5q0M8XzVK-swsnNj_0g&s",
-    platform: "Udemy",
-    rating: 4.8,
-    studentNumber: 85,
-    level: "Advanced",
-  },
-  {
-    id: "course_003",
-    name: "Data Science Basics",
-    thumbnailUrl:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpOci7zs9k4X9pUqo5q0M8XzVK-swsnNj_0g&s",
-
-    platform: "Offline",
-
-    rating: 4.7,
-    studentNumber: 200,
-    level: "Intermediate",
-  },
-  {
-    id: "course_004",
-    name: "Machine Learning",
-    thumbnailUrl:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpOci7zs9k4X9pUqo5q0M8XzVK-swsnNj_0g&s",
-
-    platform: "Online",
-
-    rating: 4.9,
-    studentNumber: 150,
-    level: "Advanced",
-  },
-];
 
 interface CourseType {
   id: string | undefined;
@@ -83,13 +36,13 @@ interface CourseType {
   platform: string;
   createdDate: string;
   level: string;
-  categories?: {
+  categories: {
     value: string;
     name?: string | undefined;
     label?: string | undefined;
   }[]; // Update the type of 'categories'
-  link?: string;
-  teacherName?: string;
+  link: string;
+  teacherName: string;
   status: string;
 }
 
@@ -178,10 +131,15 @@ const Detail_Of_Course: React.FC = () => {
     }
 
     if (resultRelatedCourse) {
-      const convertedResult = resultRelatedCourse.map((course) => ({
-        ...course,
-        id: course.id.toString(),
-      }));
+      const convertedResult: CourseType[] = resultRelatedCourse.map(
+        (course) => ({
+          ...course,
+          id: course.id.toString(),
+          categories: [],
+          link: "",
+          teacherName: "",
+        })
+      );
       setDataRelatedCourse(convertedResult);
     }
   };
@@ -233,6 +191,7 @@ const Detail_Of_Course: React.FC = () => {
     // If all words fit, truncate at character limit
     return truncatedText.trim().slice(0, maxLines * 15) + "...";
   }
+
   const thumbnailUrl = courseData?.thumbnailUrl?.startsWith("http")
     ? courseData.thumbnailUrl
     : `${import.meta.env.VITE_BACKEND_URL}/thumbnail/${
@@ -249,8 +208,6 @@ const Detail_Of_Course: React.FC = () => {
   const handleChangeOptionStar = (option: Option) => {
     setCurrentOption(option);
   };
-
-  console.log("check related course", dataRelatedCourse);
 
   return (
     <>

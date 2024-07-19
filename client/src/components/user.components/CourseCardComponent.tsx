@@ -11,14 +11,15 @@ type PropsType = {
 export default function CourseCardComponent({ course }: PropsType) {
   const navigate = useNavigate();
   const userRole = useSelector((state: RootState) => state.user.user.role);
-  const handleClickCourseDetail = (id: string) => (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (userRole === "ADMIN") {
-      navigate(`${id}`);
-    } else if (userRole === "USER") {
-      navigate(`/courses/${id}`);
-    }
-  };
+  const handleClickCourseDetail =
+    (id: string | undefined) => (e: React.MouseEvent) => {
+      e.preventDefault();
+      if (userRole === "ADMIN") {
+        navigate(`${id}`);
+      } else if (userRole === "USER") {
+        navigate(`/courses/${id}`);
+      }
+    };
   const thumbnailUrl = course.thumbnailUrl?.startsWith("http")
     ? course.thumbnailUrl
     : `${import.meta.env.VITE_BACKEND_URL}/thumbnail/${course.thumbnailUrl}`;
@@ -26,8 +27,8 @@ export default function CourseCardComponent({ course }: PropsType) {
     course.level?.toLowerCase() === "beginner"
       ? "bg-green-200 text-green-600"
       : course.level?.toLowerCase() === "intermediate"
-        ? "bg-yellow-100 text-yellow-600"
-        : "bg-rose-100 text-rose-600";
+      ? "bg-yellow-100 text-yellow-600"
+      : "bg-rose-100 text-rose-600";
   return (
     <div
       onClick={handleClickCourseDetail(course.id)}
@@ -63,9 +64,13 @@ export default function CourseCardComponent({ course }: PropsType) {
         )}
         <div className="flex items-center gap-3">
           <p className="text-sm font-medium">
-            {course.platform === 'COURSERA' ? 'Coursera' :
-              course.platform === 'LINKEDIN' ? 'LinkedIn' :
-                course.platform === 'UDEMY' ? 'Udemy' : course.platform}
+            {course.platform === "COURSERA"
+              ? "Coursera"
+              : course.platform === "LINKEDIN"
+              ? "LinkedIn"
+              : course.platform === "UDEMY"
+              ? "Udemy"
+              : course.platform}
           </p>
           {course.level && (
             <p className={cn("px-2 py-1 rounded text-xs font-medium", color)}>

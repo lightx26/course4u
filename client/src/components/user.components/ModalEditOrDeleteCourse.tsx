@@ -25,13 +25,13 @@ interface CourseType {
   platform: string;
   createdDate: string;
   level: string;
-  categories?: {
+  categories: {
     value: string;
     name?: string | undefined;
     label?: string | undefined;
   }[]; // Update the type of 'categories'
-  link?: string;
-  teacherName?: string;
+  link: string;
+  teacherName: string;
   status: string;
 }
 

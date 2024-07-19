@@ -82,6 +82,7 @@ const fetchDataRelatedCourseById = async (id: string | undefined) => {
     //   `/courses/${id}/relation`
     // );
     // return response;
+    console.log("check id", id);
     return [
       {
         id: 3,
