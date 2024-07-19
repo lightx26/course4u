@@ -2,6 +2,7 @@ package com.mgmtp.cfu.config;
 
 import com.mgmtp.cfu.security.JwtFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -21,8 +22,10 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import java.util.Arrays;
+
 @EnableWebSecurity
-@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true,prePostEnabled = true)
+@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -47,6 +50,12 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
+    @Value("${course4u.swagger.unsecured-urls}")
+    private String[] unsecuredSwaggerPaths;
+
+    @Value("${course4u.paths.unsecured-urls}")
+    private String[] unsecuredPaths;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
@@ -54,12 +63,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers("api/admin/**", "api/admin").hasRole("ADMIN");
                     authorize.requestMatchers("api/accountant/**", "api/accountant").hasRole("ACCOUNTANT");
-                    authorize.requestMatchers("api/auth/","api/auth/**", "/h2-console", "/h2-console/**").permitAll();
-                    authorize.requestMatchers("api/thumbnail/**").permitAll();
-                    authorize.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll();
                     authorize.requestMatchers(new AntPathRequestMatcher("/error")).permitAll() ;
-                    authorize.requestMatchers("api/auth/","api/auth/**", "/h2-console/**","/h2-console" ).permitAll();
-                    authorize.requestMatchers("api/avatar/**", "api/profile/**").permitAll();
+                    authorize.requestMatchers(unsecuredPaths).permitAll();
+                    authorize.requestMatchers(unsecuredSwaggerPaths).permitAll();
                     authorize.anyRequest().authenticated();
                 });
         http.addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class);

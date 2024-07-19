@@ -16,12 +16,10 @@ services:
     networks:
       - "cfu"
     labels:
-      - "traefik.http.routers.cfu-server-staging-cfu.rule=(PathPrefix(`/staging/api`) || PathPrefix(`/staging/swagger-ui`)"
-      - "traefik.http.middlewares.cfu-server-dev-swagger-ui-middleware.replacepathregex.regex=^/dev/swagger-ui(.*)"
-      - "traefik.http.middlewares.cfu-server-dev-swagger-ui-middleware.replacepathregex.replacement=/swagger-ui$$1"
+      - "traefik.http.routers.cfu-server-staging-cfu.rule=(PathPrefix(`/staging/api`) || PathPrefix(`/staging/swagger-ui`) || PathPrefix(`/staging/api-docs/`)"
       - "traefik.http.middlewares.cfu-server-staging-middleware.replacepathregex.regex=^/staging/api/(.*)"
       - "traefik.http.middlewares.cfu-server-staging-middleware.replacepathregex.replacement=/api/$$1"
-      - "traefik.http.routers.cfu-server-staging-cfu.middlewares=cfu-server-dev-swagger-ui-middleware,cfu-server-staging-middleware"
+      - "traefik.http.routers.cfu-server-staging-cfu.middlewares=cfu-server-staging-middleware"
 
   client-staging:
     image: "da-nang-internship-docker-local.dockerregistry.mgm-tp.com/com.mgmtp.da-nang-internship/com.mgmtp.cfu.client:staging"
@@ -56,7 +54,7 @@ services:
     networks:
       - "cfu"
     labels:
-      - "traefik.http.routers.cfu-server-dev.rule=(PathPrefix(`/dev/api`) || PathPrefix(`/dev/h2-console`))"
+      - "traefik.http.routers.cfu-server-dev.rule=(PathPrefix(`/dev/api`) || PathPrefix(`/dev/h2-console`) || PathPrefix(`/dev/swagger-ui`) || PathPrefix(`/dev/api-docs`))"
       - "traefik.http.middlewares.cfu-server-dev-h2console-middleware.replacepathregex.regex=^/dev/h2-console(.*)"
       - "traefik.http.middlewares.cfu-server-dev-h2console-middleware.replacepathregex.replacement=/h2-console$$1"
       - "traefik.http.middlewares.cfu-server-dev-api-middleware.replacepathregex.regex=^/dev/api/(.*)"
