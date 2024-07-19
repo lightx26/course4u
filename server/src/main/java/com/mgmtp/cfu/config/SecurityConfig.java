@@ -56,7 +56,7 @@ public class SecurityConfig {
                     authorize.requestMatchers("api/accountant/**", "api/accountant").hasRole("ACCOUNTANT");
                     authorize.requestMatchers("api/auth/","api/auth/**", "/h2-console", "/h2-console/**").permitAll();
                     authorize.requestMatchers("api/thumbnail/**").permitAll();
-                    authorize.requestMatchers("/swagger-ui/**", "v3/api-docs/**").permitAll();
+                    authorize.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll();
                     authorize.requestMatchers(new AntPathRequestMatcher("/error")).permitAll() ;
                     authorize.requestMatchers("api/auth/","api/auth/**", "/h2-console/**","/h2-console" ).permitAll();
                     authorize.requestMatchers("api/avatar/**", "api/profile/**").permitAll();
