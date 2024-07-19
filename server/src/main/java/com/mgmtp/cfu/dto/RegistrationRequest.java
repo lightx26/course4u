@@ -28,14 +28,6 @@ public class RegistrationRequest {
     private Integer duration;
     private DurationUnit durationUnit;
     private LocalDateTime lastUpdate;
-    @Getter
-    @Setter
-    public static class CategoryCourseRequestDTO {
-        private String label;
-        private String value;
-    }
-
-
     public void setName(String name) {
         this.name = name != null ? name.trim() : null;
     }
