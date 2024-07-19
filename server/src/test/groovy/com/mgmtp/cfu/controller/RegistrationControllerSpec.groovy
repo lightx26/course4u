@@ -1,5 +1,6 @@
 package com.mgmtp.cfu.controller
 
+import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest
 import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO
 import com.mgmtp.cfu.exception.RegistrationNotFoundException
 import com.mgmtp.cfu.service.RegistrationService
@@ -47,8 +48,38 @@ class RegistrationControllerSpec extends Specification {
         1|""
         2|null
         0|""
+    }
 
+    def 'test approve registration return ok response'() {
+        given:
+            def registrationId = 1
+        when:
+            def response = registrationController.approveRegistration(registrationId)
+        then:
+            response.statusCode.value() == 200
+    }
 
+    def 'test approve registration failed'() {
+        given:
+            def registrationId = 1
+        when:
+            registrationService.approveRegistration(registrationId) >> { throw new RegistrationNotFoundException("Registration not found") }
+        and:
+            registrationController.approveRegistration(registrationId)
+        then:
+            def ex = thrown(RegistrationNotFoundException)
+            ex.message == "Registration not found"
+    }
+
+    def 'test decline registration return ok response'() {
+        given:
+            def registrationId = 1
+            def userId = 2
+            def feedbackRequest = new FeedbackRequest(comment: "Test comment", userId: userId)
+        when:
+            def response = registrationController.declineRegistration(registrationId,feedbackRequest)
+        then:
+            response.statusCode.value() == 200
     }
 
 }

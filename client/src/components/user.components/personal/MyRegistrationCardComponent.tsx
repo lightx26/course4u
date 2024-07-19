@@ -1,37 +1,36 @@
 import { OverviewMyRegistrationType } from "./MyRegistrationsPage";
 import { Skeleton } from "../../ui/skeleton";
-import React from 'react';
-import { RegistrationModal } from "../../modal/registration-modal";
+import React from "react";
 import { Status } from "../../../utils/index.ts";
-
+import { useRegistrationModal } from "../../../hooks/use-registration-modal.ts";
 
 type PropsType = {
     registration: OverviewMyRegistrationType;
 };
 
-
 export default function MyRegistrationComponents({ registration }: PropsType) {
+    const { open } = useRegistrationModal((state) => state);
     const styles = {
         base: {
-          paddingBottom: '1.25rem',
-          marginBottom: '0.75rem',
-          width: '100%',
-          overflow: 'hidden',
-          fontSize: '0.875rem',
-          lineHeight: '1.5',
-          transition: 'box-shadow 0.25s ease',
-          backgroundColor: 'white',
-          borderRadius: '0.375rem',
-          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-          cursor: 'pointer',
+            paddingBottom: "1.25rem",
+            marginBottom: "0.75rem",
+            width: "100%",
+            overflow: "hidden",
+            fontSize: "0.875rem",
+            lineHeight: "1.5",
+            transition: "box-shadow 0.25s ease",
+            backgroundColor: "white",
+            borderRadius: "0.375rem",
+            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+            cursor: "pointer",
         },
         hover: {
-          backgroundColor: '#f0f0f0',
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+            backgroundColor: "#f0f0f0",
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
         },
-      };
+    };
 
-      const [hover, setHover] = React.useState(false);
+    const [hover, setHover] = React.useState(false);
     const startDate =
         typeof registration.startDate === "string"
             ? new Date(registration.startDate)
@@ -44,56 +43,92 @@ export default function MyRegistrationComponents({ registration }: PropsType) {
 
     return (
         <>
-        <RegistrationModal id={+registration.id!}>
-        <div
-        style={hover ? { ...styles.base, ...styles.hover } : styles.base}
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-        className='pb-5 mb-3 w-full overflow-hidden text-sm leading-normal transition-shadow bg-white rounded-md shadow cursor-pointer duration-250'>
-            <div>
-                <img
-                    src={registration.courseThumbnailUrl}
-                    alt=""
-                    className='object-cover w-full bg-gray-300 h-52'
-                />
-                <div className='flex flex-col gap-2 px-2 pt-2 text-left'>
-                <h2 className='text-lg font-normal h-14 line-clamp-2'>{registration.courseName}</h2>
-                <p
-                        className='text-white text-lg overflow-hidden bg-statusColor px-3 py-1 rounded-full w-[200px] text-center'
-                        style={{
-                            backgroundColor: getStatusColor(registration.status),
-                
-                        }}
-                    >
-                        {registration.status !== 'DOCUMENT_DECLINED' ? (
-                           <span>{registration.status && registration.status.charAt(0).toUpperCase() + registration.status.slice(1).toLowerCase()}</span>
-                        ) : (
-                            <span>Declined (Document)</span>
-                        )}
-                    </p>
-                    <div className='flex items-center gap-1'>
-                        <i className='fas fa-clock'></i>
-                        <p className='text-gray-600 text-opacity-100 text-neutral-950'>{registration.coursePlatform}</p>
-                    </div>
-                    <div className='flex justify-start p-2' style={{ padding: '0px' }}>
-                        <div className='flex items-start gap-1'>
-                            <i className='fas fa-calendar-alt'></i>
-                            <p className='text-gray-600' style={{}}>
-                                <p className='text-gray-600'>
-                                    {startDate === null ? 'Not started yet' :
-                                        `${String(startDate.getDate()).padStart(2, '0')}/${String(startDate.getMonth() + 1).padStart(2, '0')}/${startDate.getFullYear()}`}
-                                    {startDate === null || endDate === null ? '' :
-                                        `${" - " + String(endDate.getDate()).padStart(2, '0')}/${String(endDate.getMonth() + 1).padStart(2, '0')}/${endDate.getFullYear()}`}
-                                </p> </p>
-
+            <div
+                style={
+                    hover ? { ...styles.base, ...styles.hover } : styles.base
+                }
+                onClick={() => open(true, +registration.id!)}
+                onMouseEnter={() => setHover(true)}
+                onMouseLeave={() => setHover(false)}
+                className='pb-5 mb-3 w-full overflow-hidden text-sm leading-normal transition-shadow bg-white rounded-md shadow cursor-pointer duration-250'
+            >
+                <div>
+                    <img
+                        src={registration.courseThumbnailUrl}
+                        alt=''
+                        className='object-cover w-full bg-gray-300 h-52'
+                    />
+                    <div className='flex flex-col gap-2 px-2 pt-2 text-left'>
+                        <h2 className='text-lg font-normal h-14 line-clamp-2'>
+                            {registration.courseName}
+                        </h2>
+                        <p
+                            className='text-white text-lg overflow-hidden bg-statusColor px-3 py-1 rounded-full w-[200px] text-center'
+                            style={{
+                                backgroundColor: getStatusColor(
+                                    registration.status
+                                ),
+                            }}
+                        >
+                            {registration.status !== "DOCUMENT_DECLINED" ? (
+                                <span>
+                                    {registration.status &&
+                                        registration.status
+                                            .charAt(0)
+                                            .toUpperCase() +
+                                            registration.status
+                                                .slice(1)
+                                                .toLowerCase()}
+                                </span>
+                            ) : (
+                                <span>Declined (Document)</span>
+                            )}
+                        </p>
+                        <div className='flex items-center gap-1'>
+                            <i className='fas fa-clock'></i>
+                            <p className='text-gray-600 text-opacity-100 text-neutral-950'>
+                                {registration.coursePlatform}
+                            </p>
                         </div>
-
+                        <div
+                            className='flex justify-start p-2'
+                            style={{ padding: "0px" }}
+                        >
+                            <div className='flex items-start gap-1'>
+                                <i className='fas fa-calendar-alt'></i>
+                                <p className='text-gray-600' style={{}}>
+                                    <p className='text-gray-600'>
+                                        {startDate === null
+                                            ? "Not started yet"
+                                            : `${String(
+                                                  startDate.getDate()
+                                              ).padStart(2, "0")}/${String(
+                                                  startDate.getMonth() + 1
+                                              ).padStart(
+                                                  2,
+                                                  "0"
+                                              )}/${startDate.getFullYear()}`}
+                                        {startDate === null || endDate === null
+                                            ? ""
+                                            : `${
+                                                  " - " +
+                                                  String(
+                                                      endDate.getDate()
+                                                  ).padStart(2, "0")
+                                              }/${String(
+                                                  endDate.getMonth() + 1
+                                              ).padStart(
+                                                  2,
+                                                  "0"
+                                              )}/${endDate.getFullYear()}`}
+                                    </p>{" "}
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        </RegistrationModal>
-            </>
+        </>
     );
 }
 export const RegistrationSkeletonLoader = () => {
@@ -124,7 +159,6 @@ export const RegistrationSkeletonLoader = () => {
     );
 };
 
-
 function getStatusColor(status: Status) {
     const statusColors: Record<Status, string> = {
         DRAFT: "rgba(210, 204, 207, 1)",
@@ -138,6 +172,6 @@ function getStatusColor(status: Status) {
         CLOSED: "rgba(128, 128, 128, 1)",
         DOCUMENT_DECLINED: "rgba(236, 84, 84, 1)",
         NONE: "rgba(255, 255, 255, 1)", // add this line
-      };
+    };
     return statusColors[status];
 }

@@ -57,6 +57,7 @@ INSERT INTO "User" ("Username", "Password", "FullName", "AvatarUrl", "Email", "R
 INSERT INTO "User" ("Username", "Password", "FullName", "AvatarUrl", "Email", "Role", "DateOfBirth", "Gender", "Telephone") VALUES ('intern1', '$2a$10$bhBp0hDRVdW1A6RMKt0k0.m4709.So5X8.3GhmSOwNzcptfJOm0FW', null, null, 'intern@mgm-tp.com', 'ADMIN', null, null, null);
 INSERT INTO "User" ("Username", "Password", "FullName", "AvatarUrl", "Email", "Role", "DateOfBirth", "Gender", "Telephone") VALUES ('accountant', '$2a$10$8O/b4SGusmdgMuZFIv7JaOQXx1sQ.ISrffmXjGgC2b10S1ML.4ity', 'Accountant', null, 'accountant@mgm-tp.com', 'ACCOUNTANT', null, null, null);
 INSERT INTO "User" ("Username", "Password", "FullName", "AvatarUrl", "Email", "Role", "DateOfBirth", "Gender", "Telephone") VALUES ('triet1', '$2a$10$bhBp0hDRVdW1A6RMKt0k0.m4709.So5X8.3GhmSOwNzcptfJOm0FW', 'Le Huu Triet', 'https://cdnphoto.dantri.com.vn/COm1qksauO2sqAC-gVVI2DdH_1I=/thumb_w/1020/2023/01/24/khoa-hocdocx-1674520013659.png', 'triet@mgm-tpcom', 'USER', null, null, '0912345674');
+INSERT INTO "User" ("Username", "Password", "FullName", "AvatarUrl", "Email", "Role", "DateOfBirth", "Gender", "Telephone") VALUES ('avvduong', '$2a$10$bhBp0hDRVdW1A6RMKt0k0.m4709.So5X8.3GhmSOwNzcptfJOm0FW', 'Le Huu Triet', 'https://cdnphoto.dantri.com.vn/COm1qksauO2sqAC-gVVI2DdH_1I=/thumb_w/1020/2023/01/24/khoa-hocdocx-1674520013659.png', 'rankill52@gmail.com', 'USER', null, null, '0912345674');
 
 
 INSERT INTO "Registration" ( "Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdated", "DurationUnit", "UserId") VALUES ('VERIFIED', '2021-01-01', '2021-01-31', 40, '2021-01-04', 200, 3, null, null, 1);
@@ -159,8 +160,9 @@ INSERT INTO "Registration" ( "Status", "StartDate", "EndDate", "Score", "Registe
 INSERT INTO "Registration" ( "Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdated", "DurationUnit", "UserId") VALUES ('VERIFIED', '2024-05-14', '2025-07-08', 44, '2024-04-26', 32, 1, null, 'DAY', 1);
 INSERT INTO "Registration" ( "Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdated", "DurationUnit", "UserId") VALUES ('DOCUMENT_DECLINED', '2023-07-20', '2024-10-19', 62, '2024-07-08', 67, 3, null, 'WEEK', 1);
 
-INSERT INTO "Registration" ( "Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdated", "DurationUnit", "UserId") VALUES ( 'DRAFT', '2024-02-10', '2025-02-27', 35, '2023-10-16', 27, 32, null, 'MONTH', 1);
-INSERT INTO "Registration" ( "Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdated", "DurationUnit", "UserId") VALUES ( 'DRAFT', '2024-02-10', '2025-02-27', 35, '2023-10-16', 27, 1, null, 'MONTH', 1);
+INSERT INTO "Registration" ("Id", "Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdated", "DurationUnit", "UserId") VALUES ('DRAFT', '2024-02-10', '2025-02-27', 35, '2023-10-16', 27, 32, null, 'MONTH', 1);
+INSERT INTO "Registration" ("Id", "Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdated", "DurationUnit", "UserId") VALUES ('DRAFT', '2024-02-10', '2025-02-27', 35, '2023-10-16', 27, 1, null, 'MONTH', 1);
+INSERT INTO "Registration" ("Id", "Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdated", "DurationUnit", "UserId") VALUES ('SUBMITTED', '2024-02-10', '2025-02-27', 35, '2023-10-16', 27, 1, null, 'MONTH', 7);
 
 INSERT INTO "CourseReview" ("CourseId", "UserId", "Rating", "Comment", "CreatedDate")
 values ('1', '1', '5', 'Good course', '2021-01-01'),

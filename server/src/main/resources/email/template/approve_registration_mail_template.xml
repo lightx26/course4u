@@ -1,0 +1,32 @@
+<div style="max-width: 800px; margin: 0 auto; font-family: 'Montserrat', sans-serif; border: 1px solid #ccc; border-radius: 5%; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto; border-collapse: collapse;">
+        <tr>
+            <td style="height: 120px; text-align: center; vertical-align: middle; border-bottom: 1px solid #ccc;">
+                <div>
+                    <svg width="66" height="73" viewBox="0 0 66 73" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M25.4822 49.9765C24.5122 51.1165 23.4822 52.3165 22.4722 53.4965C13.2222 46.6065 11.2422 33.3665 17.7722 23.7865C25.2722 12.7765 38.1522 10.7565 51.9322 18.7365C53.7222 17.1265 55.6122 15.4365 57.5222 13.7165C46.7822 3.02649 28.2022 2.82649 16.5122 12.9465C3.90224 23.8765 1.94224 42.2265 12.0022 55.1965C23.3022 69.7565 40.3922 71.0865 59.9322 58.3765C60.8422 59.4265 61.8822 60.6165 62.8922 61.7665C50.7222 76.3165 25.4122 76.4865 10.9822 62.4665C-4.41776 47.5165 -3.49776 22.6465 12.9622 8.59649C28.4922 -4.66351 53.4122 -2.35351 65.5422 13.9365C61.0422 18.0865 56.4822 22.2865 51.9622 26.4465C40.9722 17.7765 32.0122 17.0665 24.7822 24.1165C17.5522 31.1665 17.7122 39.6765 25.4722 49.9765H25.4822Z" fill="black"/>
+                    </svg>
+                </div>
+                <div style="font-size: 30px; font-weight: 600">Course4U</div>
+            </td>
+        </tr>
+        <tr>
+            <td style="height: 200px; background-color: #50C878; text-align: center; vertical-align: middle;">
+                <div style="font-size: 35px; font-weight: 700; color: white;">Registration Approved!</div>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 30px 0 50px 0; text-align: center;">
+                <div id="user_greeting" style="font-size: 30px; font-weight: 600;">Hi User!</div>
+                <div style="width: 50%; margin: 20px auto; text-align: center; font-size: 16px; font-weight: 400; color: #847f7f;">
+                    Congratulations! Your registration with Course4U has been approved. You can now log in and start exploring a variety of courses tailored to your interests. Happy learning!
+                </div>
+                <div>
+                    <a id="client_url" style="display: inline-block; width: 180px; height: 40px; line-height: 40px; border-radius: 5px; border: 1px solid #ccc; background-color: #50C878; color: white; font-size: 1.1rem; font-weight: 600; text-decoration: none; cursor: pointer;" href="">
+                        START LEARNING!
+                    </a>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>

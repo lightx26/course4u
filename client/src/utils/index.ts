@@ -14,46 +14,46 @@ export enum Status {
 export const statusList = [
     {
         value: "SUBMITTED",
-        content: 'Submitted',
+        content: "Submitted",
     },
     {
         value: "ALL",
-        content: 'All',
+        content: "All",
     },
     {
         value: "DRAFT",
-        content: 'Draft',
+        content: "Draft",
     },
     {
         value: "DISCARDED",
-        content: 'Discarded',
+        content: "Discarded",
     },
     {
         value: "DECLINED",
-        content: 'Declined',
+        content: "Declined",
     },
     {
         value: "DONE",
-        content: 'Done',
+        content: "Done",
     },
     {
         value: "APPROVED",
-        content: 'Approved',
+        content: "Approved",
     },
     {
         value: "VERIFYING",
-        content: 'Verifying',
+        content: "Verifying",
     },
     {
         value: "VERIFIED",
-        content: 'Verified',
+        content: "Verified",
     },
     {
         value: "CLOSED",
-        content: 'Closed',
+        content: "Closed",
     },
     {
         value: "DOCUMENT_DECLINED",
-        content: 'Declined (Document)',
-    }
+        content: "Declined (Document)",
+    },
 ];

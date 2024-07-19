@@ -1,9 +1,13 @@
 package com.mgmtp.cfu.mapper;
 
-import com.mgmtp.cfu.dto.userdto.UserDto;
-import com.mgmtp.cfu.entity.User;
 
-public class UserMapper {
+import com.mgmtp.cfu.dto.userdto.UserDto;
+
+import com.mgmtp.cfu.entity.User;
+import org.mapstruct.Mapper;
+
+@Mapper(componentModel = "spring")
+public abstract class UserMapper implements DTOMapper<UserDto, User>, EntityMapper<UserDto, User>{
     public static UserDto toUserDto(User user) {
         return UserDto.builder()
                 .id(user.getId())
@@ -17,4 +21,6 @@ public class UserMapper {
                 .telephone(user.getTelephone())
                 .build();
     }
+
+    public abstract User toUser(UserDto userDto);
 }

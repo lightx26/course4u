@@ -27,6 +27,10 @@ import { toast } from "sonner";
 import blobToFile from "../../utils/convertBlobToFile";
 import { createNewRegistration } from "../../apiService/MyRegistration.service";
 import { base64ToBlob } from "../../utils/ThumbnailConverter";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store/store";
+import RegistrationAdminSection from "../admin.components/registrations.components/registration-admin-section";
+import FeedbackList from "../feedback-list";
 
 type RegistrationsFormProps = RegistrationsProps & {
   isEdit: boolean;
@@ -34,13 +38,14 @@ type RegistrationsFormProps = RegistrationsProps & {
 };
 
 export const RegistrationsForm = ({
-  id,
-  duration,
-  durationUnit,
-  status,
-  course,
-  isEdit,
-  setIsEdit,
+    id,
+    duration,
+    durationUnit,
+    status,
+    course,
+    isEdit,
+    setIsEdit,
+    registrationFeedbacks,
 }: RegistrationsFormProps) => {
   const form = useForm<z.infer<typeof registrationSchema>>({
     resolver: zodResolver(registrationSchema),
@@ -57,6 +62,7 @@ export const RegistrationsForm = ({
       thumbnailUrl: "",
     },
   });
+    const user = useSelector((state: RootState) => state.user);
   useEffect(() => {
     if (id) {
       form.setValue("duration", duration!);
@@ -155,75 +161,108 @@ export const RegistrationsForm = ({
     }
   }
 
-  return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full space-y-8 "
-      >
-        <CourseForm
-          //eslint-disable-next-line
-          // @ts-ignore
-          form={form}
-          course={course}
-          isEdit={isEdit}
-          registrationStatus={status}
-        />
-        <div className="flex w-[60%] pr-4 gap-2">
-          <FormField
-            control={form.control}
-            name="duration"
-            render={({ field }) => (
-              <FormItem className="flex-1">
-                <FormLabel>
-                  Duration <span className="text-red-500">*</span>
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="Duration"
-                    {...field}
-                    onChange={(event) => field.onChange(+event.target.value)}
-                    className=""
-                    disabled={!isEdit}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="durationUnit"
-            render={({ field }) => (
-              <FormItem className="w-[100px] mt-8">
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={durationUnit || form.watch("durationUnit")}
-                  disabled={!isEdit}
+    return (
+        <div className='flex flex-col'>
+            <Form {...form}>
+                <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className='w-full space-y-8 '
                 >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="DAY">Days</SelectItem>
-                    <SelectItem value="WEEK">Weeks</SelectItem>
-                    <SelectItem value="MONTH">Months</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
+                    <CourseForm
+                        //eslint-disable-next-line
+                        // @ts-ignore
+                        form={form}
+                        course={course}
+                        isEdit={isEdit}
+                        registrationStatus={status}
+                    />
+                    <div className='flex w-[60%] pr-4 gap-2'>
+                        <FormField
+                            control={form.control}
+                            name='duration'
+                            render={({ field }) => (
+                                <FormItem className='flex-1'>
+                                    <FormLabel>
+                                        Duration{" "}
+                                        <span className='text-red-500'>*</span>
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type='number'
+                                            placeholder='Duration'
+                                            {...field}
+                                            onChange={(event) =>
+                                                field.onChange(
+                                                    +event.target.value
+                                                )
+                                            }
+                                            className=''
+                                            disabled={!isEdit}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name='durationUnit'
+                            render={({ field }) => (
+                                <FormItem className='w-[100px] mt-8'>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        defaultValue={
+                                            durationUnit ||
+                                            form.watch("durationUnit")
+                                        }
+                                        disabled={!isEdit}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder='Select a level for this course' />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value='DAY'>
+                                                Days
+                                            </SelectItem>
+                                            <SelectItem value='WEEK'>
+                                                Weeks
+                                            </SelectItem>
+                                            <SelectItem value='MONTH'>
+                                                Months
+                                            </SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                    {user.user?.role === "USER" && (
+                        <div className='space-y-5'>
+                            {registrationFeedbacks.length > 0 && (
+                                <FeedbackList
+                                    feedbacks={registrationFeedbacks}
+                                />
+                            )}
+                            <RegistrationButton
+                                status={status!}
+                                setIsEdit={setIsEdit}
+                                isEdit={isEdit}
+                            />
+                        </div>
+                    )}
+                </form>
+            </Form>
+            {user.user?.role === "ADMIN" && (
+                <div className='space-y-5'>
+                    {registrationFeedbacks.length > 0 && (
+                        <FeedbackList feedbacks={registrationFeedbacks} />
+                    )}
+                    <RegistrationAdminSection status={status} />
+                </div>
             )}
-          />
         </div>
-        <RegistrationButton
-          status={status!}
-          setIsEdit={setIsEdit}
-          isEdit={isEdit}
-        />
-      </form>
-    </Form>
-  );
+    );
 };

@@ -4,6 +4,7 @@ import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO
 import com.mgmtp.cfu.entity.Category
 import com.mgmtp.cfu.entity.Course
 import com.mgmtp.cfu.entity.Registration
+import com.mgmtp.cfu.entity.RegistrationFeedback
 import com.mgmtp.cfu.entity.User
 import com.mgmtp.cfu.enums.CourseLevel
 import com.mgmtp.cfu.enums.CoursePlatform
@@ -61,9 +62,22 @@ class RegistrationDetailMapperSpec extends Specification {
                         role: "USER",
                         gender: "MALE"
                 ),
-
+                registrationFeedbacks: new HashSet<RegistrationFeedback>(
+                        [new RegistrationFeedback(
+                                id: 1,
+                                comment: "Test Feedback",
+                                createdDate: LocalDateTime.of(2023, 7, 10, 10, 0),
+                                user: new User(
+                                        id: 1L,
+                                        username: "test",
+                                        email: "admin",
+                                        avatarUrl: "Test Avatar",
+                                        role: Role.ADMIN,
+                                        fullName: "Admin"
+                                )
+                        )]
+                )
         )
-
         when:
             RegistrationDetailDTO dto = registrationDetailMapper.toDTO(registration)
 
@@ -99,5 +113,22 @@ class RegistrationDetailMapperSpec extends Specification {
             user.dateOfBirth == LocalDate.of(1999, 1, 1)
             user.role == Role.USER
             user.gender == Gender.MALE
+
+            def feedback = dto.registrationFeedbacks[0]
+            feedback.id == 1
+            feedback.comment == "Test Feedback"
+            feedback.createdDate == LocalDateTime.of(2023, 7, 10, 10, 0)
+            feedback.user.username == "test"
+            feedback.user.email == "admin"
+            feedback.user.avatarUrl == "Test Avatar"
+            feedback.user.role == Role.ADMIN
+            feedback.user.fullName == "Admin"
+
+            def userFeedback = dto.registrationFeedbacks[0].user
+            userFeedback.username == "test"
+            userFeedback.email == "admin"
+            userFeedback.avatarUrl == "Test Avatar"
+            userFeedback.role == Role.ADMIN
+            userFeedback.fullName == "Admin"
     }
 }

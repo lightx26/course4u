@@ -21,6 +21,7 @@ import AdminCoursePageScreen from "./screens/admin.screens/AdminCoursePageScreen
 import CreateCoursesScreen from "./screens/admin.screens/CreateCoursesScreen.tsx";
 import { ProtectedRouteLogin } from "./components/user.components/ProtectedRouteLogin.tsx";
 import { isTokenExpired } from "./utils/validateToken.ts";
+import { RegistrationModal } from "./components/modal/registration-modal.tsx";
 import LeaderBoard from "./screens/user.screens/LeaderBoard.tsx";
 export type CourseType = {
   id: string | undefined;
@@ -45,97 +46,102 @@ export type CourseType = {
 };
 
 export type RegistrationType = {
-  id?: string;
-  startDate?: Date;
-  endDate?: Date;
-  registerDate?: Date;
-  lastUpdated?: Date;
-  courseId?: string;
-  courseName?: string;
-  courseThumbnailUrl?: string;
-  coursePlatform?: string;
-  userId?: string;
-  userName?: string;
-  userFullName?: string;
-  userAvatarUrl?: string;
-  duration?: number;
-  durationUnit?: string;
-  status?: string;
+    id?: string;
+    startDate?: Date;
+    endDate?: Date;
+    registerDate?: Date;
+    lastUpdated?: Date;
+    courseId?: string;
+    courseName?: string;
+    courseThumbnailUrl?: string;
+    coursePlatform?: string;
+    userId?: string;
+    userName?: string;
+    userFullName?: string;
+    userAvatarUrl?: string;
+    duration?: number;
+    durationUnit?: string;
+    status?: string;
 };
 
 const LayoutUser = ({ children }: { children?: ReactElement }) => {
-  const isUserRoute = window.location.pathname.startsWith(
-    `${import.meta.env.VITE_BASE_URL}`
-  );
-  const user = useSelector((state: RootState) => state.user.user);
-  const userRole = user.role;
-  return (
-    <div className="app-container bg-gray-50">
-      {isUserRoute && userRole === "USER" && (
-        <>
-          <HeaderHomepage />
-          {children}
-          <Outlet />
-        </>
-      )}
+    const isUserRoute = window.location.pathname.startsWith(
+        `${import.meta.env.VITE_BASE_URL}`
+    );
+    const user = useSelector((state: RootState) => state.user.user);
+    const userRole = user.role;
+    return (
+        <div className='app-container bg-gray-50'>
+            {isUserRoute && userRole === "USER" && (
+                <>
+                    <HeaderHomepage />
+                    <RegistrationModal />
+                    {children}
+                    <Outlet />
+                </>
+            )}
 
-      {isUserRoute && (userRole === "ADMIN" || userRole === "ACCOUNTANT") && (
-        <>
-          <NotPermitted />
-        </>
-      )}
-    </div>
-  );
+            {isUserRoute &&
+                (userRole === "ADMIN" || userRole === "ACCOUNTANT") && (
+                    <>
+                        <NotPermitted />
+                    </>
+                )}
+        </div>
+    );
 };
 
 const LayoutAdmin = () => {
-  const isAdminRoute = window.location.pathname.startsWith(
-    `${import.meta.env.VITE_BASE_URL}/admin`
-  );
-  const user = useSelector((state: RootState) => state.user.user);
-  const userRole = user.role;
-  return (
-    <>
-      <div className="app-container ">
-        {isAdminRoute && userRole === "ADMIN" && (
-          <>
-            <HeaderAdminPage />
-            <Outlet />
-          </>
-        )}
-        {isAdminRoute && (userRole === "USER" || userRole === "ACCOUNTANT") && (
-          <>
-            <NotPermitted />
-          </>
-        )}
-      </div>
-    </>
-  );
+    const isAdminRoute = window.location.pathname.startsWith(
+        `${import.meta.env.VITE_BASE_URL}/admin`
+    );
+    const user = useSelector((state: RootState) => state.user.user);
+    const userRole = user.role;
+    return (
+        <>
+            <div className='app-container '>
+                {isAdminRoute && userRole === "ADMIN" && (
+                    <>
+                        <HeaderAdminPage />
+                        <RegistrationModal />
+                        <Outlet />
+                    </>
+                )}
+                {isAdminRoute &&
+                    (userRole === "USER" || userRole === "ACCOUNTANT") && (
+                        <>
+                            <NotPermitted />
+                        </>
+                    )}
+            </div>
+        </>
+    );
 };
 
 const LayoutAccountant = () => {
-  const isAccountRoute = window.location.pathname.startsWith(
-    `${import.meta.env.VITE_BASE_URL}/accountant`
-  );
-  const user = useSelector((state: RootState) => state.user.user);
-  const userRole = user.role;
-  return (
-    <>
-      <div className="app-container">
-        {isAccountRoute && userRole === "ACCOUNTANT" && (
-          <>
-            <div>this is accountant header</div>
-            <Outlet />
-          </>
-        )}
-        {isAccountRoute && (userRole === "USER" || userRole === "ADMIN") && (
-          <>
-            <NotPermitted />
-          </>
-        )}
-      </div>
-    </>
-  );
+    const isAccountRoute = window.location.pathname.startsWith(
+        `${import.meta.env.VITE_BASE_URL}/accountant`
+    );
+    const user = useSelector((state: RootState) => state.user.user);
+    const userRole = user.role;
+    return (
+        <>
+            <div className='app-container'>
+                {isAccountRoute && userRole === "ACCOUNTANT" && (
+                    <>
+                        <div>this is accountant header</div>
+                        <Outlet />
+                    </>
+                )}
+                {isAccountRoute &&
+                    (userRole === "USER" || userRole === "ADMIN") && (
+                        <>
+                            <NotPermitted />
+                        </>
+                    )}
+            </div>
+        </>
+    );
 };
 
 const router = createBrowserRouter(

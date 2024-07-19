@@ -2,6 +2,7 @@ package com.mgmtp.cfu.service;
 
 import com.mgmtp.cfu.dto.PageResponse;
 
+import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO;
 import org.springframework.data.domain.Page;
@@ -18,4 +19,6 @@ public interface RegistrationService {
 
     Page<RegistrationOverviewDTO> getAllRegistrations(int page);
     Page<RegistrationOverviewDTO> getRegistrationByStatus(int page, String status);
+    void approveRegistration(Long id);
+    void declineRegistration(Long id , FeedbackRequest feedbackRequest);
 }

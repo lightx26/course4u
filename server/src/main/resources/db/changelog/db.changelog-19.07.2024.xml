@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="3" author="Duong Anh">
+        <createTable tableName="Notification">
+            <column name="Id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="Content" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CreatedDate" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Type" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Seen" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="UserId" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="Notification"
+                baseColumnNames="UserId"
+                constraintName="fk_notification_user"
+                referencedTableName="User"
+                referencedColumnNames="Id"/>
+    </changeSet>
+    <changeSet id="4" author="Duong Anh">
+        <createTable tableName="RegistrationFeedback">
+            <column name="Id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="Comment" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="CreatedDate" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="RegistrationId" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="UserId" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="RegistrationFeedback"
+                baseColumnNames="RegistrationId"
+                constraintName="fk_registrationfeedback_registration"
+                referencedTableName="Registration"
+                referencedColumnNames="Id"/>
+
+        <addForeignKeyConstraint
+                baseTableName="RegistrationFeedback"
+                baseColumnNames="UserId"
+                constraintName="fk_registrationfeedback_user"
+                referencedTableName="User"
+                referencedColumnNames="Id"/>
+    </changeSet>
+
+</databaseChangeLog>

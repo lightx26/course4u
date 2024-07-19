@@ -9,78 +9,82 @@ import { RegistrationUser } from "./registration-user";
 import { RegistrationStatus } from "./registration-status";
 import { Skeleton } from "../ui/skeleton";
 import { userRegistrationSchema } from "../../schemas/user-schema";
+import { Feedback } from "../feedback-list";
 import { RootState } from "../../redux/store/store";
 import { useSelector } from "react-redux";
 
 export type RegistrationsProps = {
-  id?: number;
-  duration?: number;
-  durationUnit?: "DAY" | "WEEK" | "MONTH";
-  status?: Status;
-  course?: z.infer<typeof courseSchema>;
-  user?: z.infer<typeof userRegistrationSchema>;
+    id?: number;
+    duration?: number;
+    durationUnit?: "DAY" | "WEEK" | "MONTH";
+    status?: Status;
+    course?: z.infer<typeof courseSchema>;
+    user?: z.infer<typeof userRegistrationSchema>;
+    registrationFeedbacks: Feedback[];
 };
 type Props = {
   id?: number;
   className?: string;
 };
 const Registrations = ({ className, id }: Props) => {
-  const [isEdit, setIsEdit] = useState(true);
-  const [registration, setRegistration] = useState<RegistrationsProps | null>(
-    null
-  );
-  const [isLoading, setIsLoading] = useState(false);
-  const userData = useSelector((state: RootState) => state.user.user);
-
-  useEffect(() => {
-    const getDetailRegistration = async () => {
-      if (!id) return;
-      setIsLoading(true);
-      await instance.get(`/registrations/${id}`).then((res) => {
-        if (res.data.status === "DRAFT" || res.data.status === "NONE") {
-          setIsEdit(true);
-        } else {
-          setIsEdit(false);
-        }
-        setRegistration(res.data);
-      });
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 1000);
-    };
-    getDetailRegistration();
-  }, [id]);
-  if (isLoading) return <RegistrationSkeleton />;
-  return (
-    <div
-      className={cn(
-        "w-[1352px] pt-5 pb-10 px-10 flex flex-col items-center gap-5 rounded-[30px] mx-auto my-8",
-        className
-      )}
-    >
-      <h2 className="text-[#1E293B] text-[40px] tracking-tighter leading-8 font-semibold font-inter">
-        Create a registraion
-      </h2>
-      <div className="flex items-center justify-between w-full">
-        <RegistrationUser
-          fullName={registration?.user?.fullName || userData.fullName}
-          avatarUrl={registration?.user?.avatarUrl || userData.avatarUrl}
-          email={registration?.user?.email || userData.email}
-          telephone={registration?.user?.telephone || userData.telephone}
-        />
-        <RegistrationStatus status={registration?.status} />
-      </div>
-      <RegistrationsForm
-        id={+id!}
-        duration={id ? registration?.duration : undefined}
-        durationUnit={id ? registration?.durationUnit : undefined}
-        status={id ? registration?.status : undefined}
-        course={id ? registration?.course : undefined}
-        isEdit={isEdit}
-        setIsEdit={setIsEdit}
-      />
-    </div>
-  );
+    const [isEdit, setIsEdit] = useState(true);
+    const [registration, setRegistration] = useState<RegistrationsProps | null>(
+        null
+    );
+    const [isLoading, setIsLoading] = useState(false);
+    const userData = useSelector((state: RootState) => state.user.user);
+    useEffect(() => {
+        const getDetailRegistration = async () => {
+            if (!id) return;
+            setIsLoading(true);
+            await instance.get(`/registrations/${id}`).then((res) => {
+                if (res.data.status === "DRAFT" || res.data.status === "NONE") {
+                    setIsEdit(true);
+                } else {
+                    setIsEdit(false);
+                }
+                setRegistration(res.data);
+            });
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 1000);
+        };
+        getDetailRegistration();
+    }, [id]);
+    if (isLoading) return <RegistrationSkeleton />;
+    return (
+        <div
+            className={cn(
+                "w-[1352px] py-5 px-10 flex flex-col items-center gap-5 rounded-[30px] mx-auto my-8",
+                className
+            )}
+        >
+            <h2 className='text-[#1E293B] text-[40px] tracking-tighter leading-8 font-semibold font-inter'>
+                Detail of registration
+            </h2>
+            <div className='flex items-center justify-between w-full'>
+                <RegistrationUser
+                    fullName={registration?.user?.fullName || userData.fullName}
+                    avatarUrl={registration?.user?.avatarUrl || userData.avatarUrl}
+                    email={registration?.user?.email || userData.email}
+                    telephone={registration?.user?.telephone || userData.telephone}
+                />
+                <RegistrationStatus status={registration?.status} />
+            </div>
+            <RegistrationsForm
+                id={+id!}
+                duration={id ? registration?.duration : undefined}
+                durationUnit={id ? registration?.durationUnit : undefined}
+                status={id ? registration?.status : undefined}
+                course={id ? registration?.course : undefined}
+                isEdit={isEdit}
+                registrationFeedbacks={
+                    registration?.registrationFeedbacks || []
+                }
+                setIsEdit={setIsEdit}
+            />
+        </div>
+    );
 };
 
 export const RegistrationSkeleton = () => {

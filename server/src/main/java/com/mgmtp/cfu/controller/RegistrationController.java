@@ -1,5 +1,6 @@
 package com.mgmtp.cfu.controller;
 
+import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO;
 import com.mgmtp.cfu.exception.DuplicateCourseException;
 import com.mgmtp.cfu.service.RegistrationService;
@@ -43,5 +44,19 @@ public class RegistrationController {
             page = 1;
         }
         return ResponseEntity.ok(registrationService.getMyRegistrationPage(page, status));
+    }
+
+    @PostMapping("/{id}/approve")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> approveRegistration(@PathVariable Long id) {
+        registrationService.approveRegistration(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/decline")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> declineRegistration(@PathVariable Long id,@RequestBody FeedbackRequest feedbackRequest) {
+        registrationService.declineRegistration(id,feedbackRequest);
+        return ResponseEntity.ok().build();
     }
 }

@@ -9,7 +9,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -27,4 +27,5 @@ public class RegistrationDetailDTO {
     DurationUnit durationUnit;
     CourseRegistrationDTO course;
     UserRegistrationDTO user;
+    Set<RegistrationFeedbackDTO> registrationFeedbacks;
 }

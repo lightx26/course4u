@@ -9,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -48,4 +49,8 @@ public class Registration {
     @ManyToOne
     @JoinColumn(name = "`UserId`")
     User user;
+
+    @OneToMany(mappedBy = "registration",cascade = CascadeType.ALL)
+    @JsonBackReference
+    private Set<RegistrationFeedback> registrationFeedbacks;
 }
