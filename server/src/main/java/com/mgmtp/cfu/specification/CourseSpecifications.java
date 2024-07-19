@@ -1,12 +1,14 @@
 package com.mgmtp.cfu.specification;
 
+import com.mgmtp.cfu.dto.coursedto.CoursePageFilter;
 import com.mgmtp.cfu.entity.Course;
 import com.mgmtp.cfu.entity.CourseReview;
 import com.mgmtp.cfu.entity.Registration;
 import com.mgmtp.cfu.enums.CourseLevel;
+import com.mgmtp.cfu.enums.CoursePageSortOption;
 import com.mgmtp.cfu.enums.CourseStatus;
 import com.mgmtp.cfu.enums.RegistrationStatus;
-import jakarta.persistence.Query;
+import com.mgmtp.cfu.util.RegistrationStatusUtil;
 import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -52,7 +54,7 @@ public class CourseSpecifications {
 
     public static Specification<Course> sortByCreatedDateDesc() {
         return (root, query, builder) -> {
-            query.orderBy(builder.desc(root.get("createdDate")), builder.asc(root.get("id")));
+            query.orderBy(builder.desc(root.get("createdDate")), builder.desc(root.get("id")));
             return query.getRestriction();
         };
     }
@@ -75,7 +77,7 @@ public class CourseSpecifications {
                     .where(cb.equal(courseSubqueryJoin.get("id"), root.get("id")));
 
             // Main query
-            query.orderBy(cb.desc(enrollmentCountSubquery), cb.asc(root.get("id")));
+            query.orderBy(cb.desc(enrollmentCountSubquery), cb.desc(root.get("id")));
 
             return query.getRestriction();
         };
@@ -87,7 +89,7 @@ public class CourseSpecifications {
 
             query.orderBy(builder.desc(builder.selectCase()
                     .when(builder.isNull(ratingSubquery.getSelection()), -1.0)
-                    .otherwise(ratingSubquery)), builder.asc(root.get("id")));
+                    .otherwise(ratingSubquery)), builder.desc(root.get("id")));
 
             return query.getRestriction();
         };
@@ -104,5 +106,35 @@ public class CourseSpecifications {
                 .where(builder.equal(courseJoin.get("id"), root.get("id")));
 
         return ratingSubquery;
+    }
+
+    public static Specification<Course> getFilterSpec(CoursePageFilter filter) {
+        Specification<Course> spec = Specification.where(null);
+
+        if (!filter.getCategoryFilters().isEmpty()) {
+            spec = spec.and(hasCategories(filter.getCategoryFilters()));
+        }
+
+        if (filter.getMinRating() > 0) {
+            spec = spec.and(hasRatingGreaterThan(filter.getMinRating()));
+        }
+
+        if (!filter.getLevelFilters().isEmpty()) {
+            spec = spec.and(hasLevels(filter.getLevelFilters()));
+        }
+
+        if (!filter.getPlatformFilters().isEmpty()) {
+            spec = spec.and(hasPlatforms(filter.getPlatformFilters()));
+        }
+
+        return spec;
+    }
+
+    public static Specification<Course> getSortSpec(CoursePageSortOption sortBy) {
+        return switch (sortBy) {
+            case NEWEST -> sortByCreatedDateDesc();
+            case MOST_ENROLLED -> sortByEnrollmentCountDesc(RegistrationStatusUtil.ACCEPTED_STATUSES);
+            case RATING -> sortByRatingDesc();
+        };
     }
 }

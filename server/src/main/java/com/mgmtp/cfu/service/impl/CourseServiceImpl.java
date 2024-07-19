@@ -15,13 +15,11 @@ import com.mgmtp.cfu.exception.MapperNotFoundException;
 import com.mgmtp.cfu.exception.ServerErrorRuntimeException;
 import com.mgmtp.cfu.mapper.DTOMapper;
 import com.mgmtp.cfu.mapper.factory.MapperFactory;
-import com.mgmtp.cfu.repository.CategoryRepository;
 import com.mgmtp.cfu.repository.CourseRepository;
 import com.mgmtp.cfu.service.CategoryService;
 import com.mgmtp.cfu.service.CourseService;
 import com.mgmtp.cfu.service.UploadService;
 import com.mgmtp.cfu.specification.CourseSpecifications;
-import com.mgmtp.cfu.util.RegistrationStatusUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -140,45 +138,14 @@ public class CourseServiceImpl implements CourseService {
         }
 
         if (filter != null) {
-            spec = spec.and(getFilterSpec(filter));
+            spec = spec.and(CourseSpecifications.getFilterSpec(filter));
         }
 
         if (sortBy != null) {
-            spec = spec.and(getSortSpec(sortBy));
+            spec = spec.and(CourseSpecifications.getSortSpec(sortBy));
         }
 
         return courseRepository.findAll(spec, pageable);
-    }
-
-    private Specification<Course> getFilterSpec(CoursePageFilter filter) {
-        Specification<Course> spec = Specification.where(null);
-
-        if (!filter.getCategoryFilters().isEmpty()) {
-            spec = spec.and(CourseSpecifications.hasCategories(filter.getCategoryFilters()));
-        }
-
-        if (filter.getMinRating() > 0) {
-            spec = spec.and(CourseSpecifications.hasRatingGreaterThan(filter.getMinRating()));
-        }
-
-        if (!filter.getLevelFilters().isEmpty()) {
-            spec = spec.and(CourseSpecifications.hasLevels(filter.getLevelFilters()));
-        }
-
-        if (!filter.getPlatformFilters().isEmpty()) {
-            spec = spec.and(CourseSpecifications.hasPlatforms(filter.getPlatformFilters()));
-        }
-
-        return spec;
-    }
-
-    private Specification<Course> getSortSpec(CoursePageSortOption sortBy) {
-        return switch (sortBy) {
-            case NEWEST -> CourseSpecifications.sortByCreatedDateDesc();
-            case MOST_ENROLLED -> CourseSpecifications.sortByEnrollmentCountDesc(RegistrationStatusUtil.ACCEPTED_STATUSES);
-            case RATING -> CourseSpecifications.sortByRatingDesc();
-            default -> Specification.where(null);
-        };
     }
 
     @Override
