@@ -30,7 +30,7 @@ class NotificationServiceImplSpec extends Specification {
                 getCredentials() >> User.builder().id(userId).build()
             }
             SecurityContextHolder.context.authentication = authentication
-            notificationRepository.findAllByUserId(userId) >> notifications
+            notificationRepository.findAllByUserIdOrderByCreatedDateDesc(userId) >> notifications
             notificationUserMapper.toListDTO(notifications) >> notificationDTOs
 
         when:

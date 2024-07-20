@@ -20,7 +20,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public List<NotificationUserDTO> getAllNotificationByCurrUser() {
         var user = AuthUtils.getCurrentUser();
-        var notifications = notificationRepository.findAllByUserId(user.getId());
+        var notifications = notificationRepository.findAllByUserIdOrderByCreatedDateDesc(user.getId());
         return notificationUserMapper.toListDTO(notifications);
     }
 }
