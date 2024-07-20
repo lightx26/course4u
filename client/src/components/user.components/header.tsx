@@ -9,7 +9,7 @@ import {
   updateSearch,
 } from "../../redux/slice/course.slice";
 import { Notification } from "../notification";
-import { BarChart3Icon, BarChartIcon, BellIcon, PieChartIcon, SearchIcon, UserIcon } from "lucide-react";
+import { BarChart3Icon, BellIcon, PieChartIcon, SearchIcon, UserIcon } from "lucide-react";
 const HeaderHomepage: React.FC = () => {
   const [isDropdownAvatarOpen, setIsDropdownAvatarOpen] =
     useState<boolean>(false);
