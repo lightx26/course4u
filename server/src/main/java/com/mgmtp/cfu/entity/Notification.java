@@ -28,7 +28,7 @@ public class Notification {
     @Column(name = "`CreatedDate`")
     LocalDateTime createdDate;
 
-    @Column(name = "`Type")
+    @Column(name = "`Type`")
     @Enumerated(EnumType.STRING)
     NotificationType type;
 
