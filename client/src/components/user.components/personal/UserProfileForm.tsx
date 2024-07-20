@@ -83,7 +83,6 @@ export default function UserProfileForm() {
                 file = await blobToFile(values.avatarUrl, "avatar.jpg");  // Await the file
             }
             else {
-                alert('here');
                 file = await blobToFile(`${import.meta.env.VITE_BACKEND_URL}${values.avatarUrl}`, "avatar.jpg"); // Await the file
                 console.log(file);
             }
