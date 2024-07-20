@@ -21,11 +21,13 @@ const FeedbackList = ({ feedbacks }: Props) => {
                             alt='avatar'
                             className='rounded-full w-[40px] h-[40px] border-2 border-violet-500'
                         />
-                        <div>
+                        <div className=''>
                             <p className='text-[#1E293B] font-semibold'>
                                 {feedback.user?.fullName}
                             </p>
-                            <p className='text-[#64748B]'>{feedback.comment}</p>
+                            <p className='text-[#64748B] max-w-[1000px] whitespace-normal'>
+                                {feedback.comment}
+                            </p>
                         </div>
                     </div>
                 ))}

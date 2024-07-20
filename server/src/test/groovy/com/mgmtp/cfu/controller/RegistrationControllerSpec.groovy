@@ -75,7 +75,7 @@ class RegistrationControllerSpec extends Specification {
         given:
             def registrationId = 1
             def userId = 2
-            def feedbackRequest = new FeedbackRequest(comment: "Test comment", userId: userId)
+            def feedbackRequest = new FeedbackRequest(comment: "Test comment")
         when:
             def response = registrationController.declineRegistration(registrationId,feedbackRequest)
         then:

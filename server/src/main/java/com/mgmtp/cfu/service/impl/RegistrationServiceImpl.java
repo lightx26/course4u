@@ -61,7 +61,6 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final NotificationRepository notificationRepository;
     private final RegistrationFeedbackRepository registrationFeedbackRepository;
     private final IEmailService emailService;
-    private final UserRepository userRepository;
     private final CourseService courseService;
 
     @Autowired
@@ -71,8 +70,7 @@ public class RegistrationServiceImpl implements RegistrationService {
                                    CourseRepository courseRepository,
                                    NotificationRepository notificationRepository,
                                    RegistrationFeedbackRepository registrationFeedbackRepository,
-                                   IEmailService emailService, UserRepository userRepository,
-                                   CourseService courseService) {
+                                   IEmailService emailService, CourseService courseService) {
         this.registrationRepository = registrationRepository;
         this.registrationMapperFactory = registrationMapperFactory;
         this.registrationOverviewMapper = registrationOverviewMapper;
@@ -80,7 +78,6 @@ public class RegistrationServiceImpl implements RegistrationService {
         this.notificationRepository = notificationRepository;
         this.registrationFeedbackRepository = registrationFeedbackRepository;
         this.emailService = emailService;
-        this.userRepository = userRepository;
         this.courseService = courseService;
     }
 
@@ -165,13 +162,10 @@ public class RegistrationServiceImpl implements RegistrationService {
         if(registration.getStatus() != RegistrationStatus.SUBMITTED){
             throw new IllegalArgumentException("Registration must be in submitted status to be declined");
         }
-
-        var feedbackUser = userRepository.findById(feedbackRequest.getUserId()).orElseThrow(() -> new IllegalArgumentException("User not found"));
-
         // save feedback
         var registrationFeedback = RegistrationFeedback.builder()
                 .comment(feedbackRequest.getComment())
-                .user(feedbackUser)
+                .user(AuthUtils.getCurrentUser())
                 .registration(registration)
                 .createdDate(LocalDateTime.now())
                 .build();

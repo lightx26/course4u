@@ -22,13 +22,11 @@ export const approveRegistration = async (id: number, close: VoidFunction) => {
 export const declineRegistration = async (
     id: number,
     comment: string,
-    userId: number,
     close: VoidFunction
 ) => {
     try {
         await instance.post(`/registrations/${id}/decline`, {
             comment,
-            userId,
         });
         toast.success("Registration declined", {
             style: { color: "green" },

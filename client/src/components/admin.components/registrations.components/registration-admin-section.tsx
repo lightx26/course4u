@@ -32,7 +32,7 @@ const RegistrationAdminSection = ({ status }: Props) => {
         },
     });
     async function onSubmit(values: z.infer<typeof feedbackSchema>) {
-        await declineRegistration(id!, values.comment, +user.id, close);
+        await declineRegistration(id!, values.comment, close);
     }
     return (
         <Form {...form}>

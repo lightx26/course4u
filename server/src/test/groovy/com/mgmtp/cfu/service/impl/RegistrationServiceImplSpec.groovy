@@ -17,7 +17,7 @@ import com.mgmtp.cfu.exception.RegistrationNotFoundException
 import com.mgmtp.cfu.exception.RegistrationStatusNotFoundException
 import com.mgmtp.cfu.mapper.RegistrationDetailMapper
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper
-import com.mgmtp.cfu.mapper.UserMapper
+
 import com.mgmtp.cfu.mapper.factory.MapperFactory
 
 import com.mgmtp.cfu.dto.RegistrationRequest
@@ -32,7 +32,7 @@ import com.mgmtp.cfu.repository.CourseRepository
 import com.mgmtp.cfu.repository.NotificationRepository
 import com.mgmtp.cfu.repository.RegistrationFeedbackRepository
 import com.mgmtp.cfu.repository.RegistrationRepository
-import com.mgmtp.cfu.repository.UserRepository
+
 import com.mgmtp.cfu.service.IEmailService;
 
 import org.springframework.data.domain.Page;
@@ -58,7 +58,6 @@ class RegistrationServiceImplSpec extends Specification {
     NotificationRepository notificationRepository = Mock(NotificationRepository)
     RegistrationFeedbackRepository registrationFeedbackRepository = Mock(RegistrationFeedbackRepository)
     IEmailService emailService = Mock(IEmailService)
-    UserRepository userRepository = Mock(UserRepository)
     def registrationDetailMapper = Mock(RegistrationDetailMapper)
 
     CourseService courseService = Mock()
@@ -66,7 +65,7 @@ class RegistrationServiceImplSpec extends Specification {
     RegistrationServiceImpl registrationService = new RegistrationServiceImpl(
             registrationRepository, registrationMapperFactory, registrationOverviewMapper,
             courseRepository, notificationRepository, registrationFeedbackRepository,
-            emailService, userRepository, courseService
+            emailService, courseService
     );
 
     def "return registration details successfully"() {
@@ -412,11 +411,10 @@ class RegistrationServiceImplSpec extends Specification {
 
     def "declineRegistration should decline a registration"() {
         given:
-        def feedbackRequest = new FeedbackRequest(comment: "Not suitable", userId: 2L)
+        def feedbackRequest = new FeedbackRequest(comment: "Not suitable")
         def registration = new Registration(id: 1L, status: RegistrationStatus.SUBMITTED, course: new Course(name: "Course 101"), user: new User(email: "user@example.com"))
-        def user = new User(id: 2L)
+        def user = new User(id: 1L)
         registrationRepository.findById(1L) >> Optional.of(registration)
-        userRepository.findById(2L) >> Optional.of(user)
         registrationFeedbackRepository.save(_ as RegistrationFeedback) >> { RegistrationFeedback feedback -> feedback }
         notificationRepository.save(_ as Notification) >> { Notification notification -> notification }
         registrationRepository.save(_ as Registration) >> { Registration reg -> reg }
@@ -450,7 +448,7 @@ class RegistrationServiceImplSpec extends Specification {
 
     def "declineRegistration should throw RegistrationNotFoundException if registration is not found"() {
         given:
-        def feedbackRequest = new FeedbackRequest(comment: "Not suitable", userId: 2L)
+        def feedbackRequest = new FeedbackRequest(comment: "Not suitable")
 
         when:
         registrationRepository.findById(1L) >> Optional.empty()
@@ -463,7 +461,7 @@ class RegistrationServiceImplSpec extends Specification {
 
     def "declineRegistration should throw IllegalArgumentException if registration status is not SUBMITTED"() {
         given:
-        def feedbackRequest = new FeedbackRequest(comment: "Not suitable", userId: 2L)
+        def feedbackRequest = new FeedbackRequest(comment: "Not suitable")
         def registration = new Registration(id: 1L, status: RegistrationStatus.APPROVED)
 
         when:
@@ -475,20 +473,6 @@ class RegistrationServiceImplSpec extends Specification {
         0 * _
     }
 
-    def "declineRegistration should throw IllegalArgumentException if user is not found"() {
-        given:
-        def feedbackRequest = new FeedbackRequest(comment: "Not suitable", userId: 2L)
-        def registration = new Registration(id: 1L, status: RegistrationStatus.SUBMITTED)
-
-        when:
-        registrationRepository.findById(1L) >> Optional.of(registration)
-        userRepository.findById(2L) >> Optional.empty()
-        registrationService.declineRegistration(1,feedbackRequest)
-
-        then:
-        thrown(IllegalArgumentException)
-        0 * _
-    }
     User currentUser;
     def setup() {
         // Mocking SecurityContext and Authentication
