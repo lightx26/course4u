@@ -84,8 +84,8 @@ class RegistrationDetailMapperSpec extends Specification {
         then:
             dto.id == 1L
             dto.status == RegistrationStatus.APPROVED
-            dto.startDate == LocalDate.of(2023, 7, 1)
-            dto.endDate == LocalDate.of(2023, 12, 31)
+            dto.startDate == LocalDateTime.of(2023, 7, 1,0,0,0)
+            dto.endDate == LocalDateTime.of(2023, 12, 31,0,0,0)
             dto.score == 95
             dto.registerDate == LocalDate.of(2023, 6, 15)
             dto.duration == 6

@@ -161,7 +161,7 @@ class CourseControllerSpec extends Specification {
         when:
         courseController.getRelatedCourses(null)
         then:
-        def ex=thrown(BadRequestRunTimeException.class)
+        def ex=thrown(BadRequestRuntimeException.class)
     }
     def'getRelatedCourses: return ok.'(){
         given:

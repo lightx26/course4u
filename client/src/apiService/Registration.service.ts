@@ -42,6 +42,21 @@ export const declineRegistration = async (
         });
     }
 };
+export const startLearning = async (id: number) => {
+    try {
+        await instance.post(`/registrations/start-learning/${id}`);
+        toast.success("Start learning", {
+            style: { color: "green" },
+            description: "Start learning successfully",
+        });
+        return { status: 200 };
+    } catch (error) {
+        toast.error("Failed to start learning", {
+            style: { color: "red" },
+            description: "Failed to start learning",
+        });
+    }
+};
 
 export const closeRegistration = async (
     id: number,
@@ -74,10 +89,11 @@ export const removeRegistration = async (id: number) => {
             style: { color: "green" },
             description: "Registration removed successfully!!!",
         });
+        return { status: 200 };
     } catch (error) {
         toast.error("Failed to remove registration", {
             style: { color: "red" },
             description: "Something went wrong, please try again!!!",
         });
     }
-}
+};

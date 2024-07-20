@@ -3,20 +3,15 @@ package com.mgmtp.cfu.service.impl
 import com.mgmtp.cfu.dto.coursedto.CourseResponse
 import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO
-import com.mgmtp.cfu.entity.Course
-import com.mgmtp.cfu.entity.User
 import com.mgmtp.cfu.exception.BadRequestRuntimeException
 import com.mgmtp.cfu.exception.ConflictRuntimeException
 import com.mgmtp.cfu.dto.MailContentUnit
 import com.mgmtp.cfu.enums.CourseLevel
 import com.mgmtp.cfu.enums.CoursePlatform
 import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO
-import com.mgmtp.cfu.entity.Notification
-import com.mgmtp.cfu.entity.RegistrationFeedback
 import com.mgmtp.cfu.enums.CategoryStatus
 import com.mgmtp.cfu.entity.Category
 import com.mgmtp.cfu.enums.NotificationType
-import com.mgmtp.cfu.exception.BadRequestRunTimeException
 import com.mgmtp.cfu.exception.ForbiddenException
 import com.mgmtp.cfu.exception.MapperNotFoundException
 import com.mgmtp.cfu.exception.RegistrationNotFoundException
@@ -75,12 +70,6 @@ class RegistrationServiceImplSpec extends Specification {
             emailService, courseService
     );
 
-    def setup() {
-        def authentication = Mock(Authentication) {
-            getCredentials() >> User.builder().id(1).build()
-        }
-        SecurityContextHolder.context.authentication = authentication
-    }
     def "return registration details successfully"() {
         given:
         Long id = 1L
@@ -637,7 +626,7 @@ class RegistrationServiceImplSpec extends Specification {
         registrationService.deleteRegistration(id)
 
         then:
-        thrown(BadRequestRunTimeException)
+        thrown(BadRequestRuntimeException)
     }
 
     def "should throw ForbiddenException if user is not the owner of the registration"() {
@@ -663,7 +652,7 @@ class RegistrationServiceImplSpec extends Specification {
         registrationService.deleteRegistration(id)
 
         then:
-        thrown(BadRequestRunTimeException)
+        thrown(BadRequestRuntimeException)
     }
 
     def "should delete registration if all conditions are met"() {
@@ -691,6 +680,6 @@ class RegistrationServiceImplSpec extends Specification {
         registrationService.closeRegistration(1L, feedbackRequest)
 
         then:
-        thrown(BadRequestRunTimeException)
+        thrown(BadRequestRuntimeException)
     }
 }

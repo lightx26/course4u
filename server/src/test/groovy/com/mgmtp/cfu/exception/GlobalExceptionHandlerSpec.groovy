@@ -84,7 +84,7 @@ class GlobalExceptionHandlerSpec extends Specification {
 
     def "should handle BadRequestRunTimeException with BAD_REQUEST status"() {
         given:
-        def exception = new BadRequestRunTimeException("Bad request")
+        def exception = new BadRequestRuntimeException("Bad request")
 
         when:
         def response = globalExceptionHandler.handleBadRequestRunTimeException(exception)

@@ -7,4 +7,8 @@
     <changeSet id="5" author="Duong Anh">
         <modifyDataType tableName="RegistrationFeedback" columnName="Comment" newDataType="VARCHAR(500)" />
     </changeSet>
+    <changeSet id="6" author="Duong Anh">
+        <modifyDataType tableName="Registration" columnName="StartDate" newDataType="DATETIME" />
+        <modifyDataType tableName="Registration" columnName="EndDate" newDataType="DATETIME" />
+    </changeSet>
 </databaseChangeLog>

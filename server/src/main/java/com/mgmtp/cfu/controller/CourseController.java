@@ -71,7 +71,7 @@ public class CourseController {
     @GetMapping("/{id}/relation")
     public ResponseEntity<?> getRelatedCourses(@PathVariable("id") Long courseId) {
         if(Objects.isNull(courseId)||courseId<1)
-            throw new BadRequestRunTimeException("The course id is incorrect.");
+            throw new BadRequestRuntimeException("The course id is incorrect.");
         return ResponseEntity.ok(courseService.getRelatedCourses(courseId));
     }
 }

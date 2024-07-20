@@ -1,4 +1,8 @@
-import { removeRegistration } from "../../apiService/Registration.service";
+import {
+    removeRegistration,
+    startLearning,
+} from "../../apiService/Registration.service";
+import { useRegistrationDetail } from "../../hooks/use-registration-detail";
 import { useRegistrationModal } from "../../hooks/use-registration-modal";
 import { Status } from "../../utils/index";
 import { Button } from "../ui/button";
@@ -13,8 +17,9 @@ export const RegistrationButton = ({
     status = Status.NONE,
     setIsEdit,
     isEdit,
-    id
+    id,
 }: Props) => {
+    const { registration, closeRegistration } = useRegistrationDetail();
     const { close } = useRegistrationModal(state => state)
     const onEdit = () => {
         setIsEdit(true);
@@ -22,20 +27,36 @@ export const RegistrationButton = ({
 
     //Delete a registration
     const handleDeleteButtonClick = async () => {
-        await removeRegistration(id!);
+        const res = await removeRegistration(id!);
+        if (res?.status !== 200) {
+            return;
+        }
         setTimeout(() => {
             close(), 1000;
         });
-    }
-
+    };
+    const handleStartLearning = async () => {
+        const res = await startLearning(id!);
+        //TODO: Redirect to learning page + return link to redirect
+        if (res?.status !== 200) {
+            return;
+        }
+        window.open(registration?.course?.link);
+        closeRegistration();
+        close();
+    };
     return (
         <div className='flex justify-end gap-4'>
-            {(status === Status.DRAFT ||
-                status === Status.DISCARDED) && (
-                    <Button onClick={handleDeleteButtonClick} type="button" size='lg' variant='danger'>
-                        DELETE
-                    </Button>
-                )}
+            {(status === Status.DRAFT || status === Status.DISCARDED) && (
+                <Button
+                    onClick={handleDeleteButtonClick}
+                    type='button'
+                    size='lg'
+                    variant='danger'
+                >
+                    DELETE
+                </Button>
+            )}
             {(status === Status.SUBMITTED ||
                 status === Status.DECLINED ||
                 status === Status.APPROVED) &&
@@ -45,7 +66,12 @@ export const RegistrationButton = ({
                     </Button>
                 )}
             {status === Status.APPROVED && (
-                <Button size='lg' variant='blue'>
+                <Button
+                    size='lg'
+                    variant='blue'
+                    type='button'
+                    onClick={handleStartLearning}
+                >
                     START LEARNING
                 </Button>
             )}

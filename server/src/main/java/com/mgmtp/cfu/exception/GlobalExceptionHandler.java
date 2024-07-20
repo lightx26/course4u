@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -39,7 +38,7 @@ public class GlobalExceptionHandler {
     {
         return ResponseEntity.status(409).body(ErrorResponse.builder().message(e.getMessage()).status("409").build());
     }
-    @ExceptionHandler(BadRequestRunTimeException.class)
+    @ExceptionHandler(BadRequestRuntimeException.class)
     public ResponseEntity<?> handleBadRequestRunTimeException(final Exception e) {
         return ResponseEntity.status(400).body(ErrorResponse.builder().message(e.getMessage()).status("400").build());
     }

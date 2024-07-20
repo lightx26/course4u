@@ -15,8 +15,8 @@ import com.mgmtp.cfu.enums.CourseLevel
 import com.mgmtp.cfu.enums.CoursePlatform
 import com.mgmtp.cfu.enums.CourseStatus
 import com.mgmtp.cfu.enums.Role
-import com.mgmtp.cfu.exception.BadRequestRunTimeException
 import com.mgmtp.cfu.exception.CourseNotFoundException
+import com.mgmtp.cfu.exception.BadRequestRuntimeException
 import com.mgmtp.cfu.exception.ServerErrorRuntimeException
 import com.mgmtp.cfu.exception.MapperNotFoundException
 import com.mgmtp.cfu.mapper.factory.MapperFactory

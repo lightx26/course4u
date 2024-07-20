@@ -42,6 +42,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 
+
 import static com.mgmtp.cfu.util.AuthUtils.getCurrentUser;
 import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getRegistrationOverviewDTOS;
 import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getSortedRegistrations;
@@ -160,7 +161,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
         // send feedback
         if (feedbackRequest == null || feedbackRequest.getComment() == null || feedbackRequest.getComment().isBlank())
-            throw new BadRequestRunTimeException("Feedback comment is required");
+            throw new BadRequestRuntimeException("Feedback comment is required");
         feedbackService.sendFeedback(registration, feedbackRequest.getComment().trim());
 
         // Update registration
@@ -246,13 +247,13 @@ public class RegistrationServiceImpl implements RegistrationService {
         Registration registration = registrationRepository.findById(id).orElseThrow(() -> new RegistrationNotFoundException("Registration not found"));
 
         if (!RegistrationStatusUtil.isCloseableStatus(registration.getStatus())) {
-            throw new BadRequestRunTimeException("Registration status must be in [DONE, VERIFYING, DOCUMENT_DECLINED, VERIFIED]  to be closed");
+            throw new BadRequestRuntimeException("Registration status must be in [DONE, VERIFYING, DOCUMENT_DECLINED, VERIFIED]  to be closed");
         }
 
         // If the registration is not verified, send feedback
         if (registration.getStatus() != RegistrationStatus.VERIFIED) {
             if (feedbackRequest == null || feedbackRequest.getComment() == null || feedbackRequest.getComment().isBlank())
-                throw new BadRequestRunTimeException("Feedback comment is required");
+                throw new BadRequestRuntimeException("Feedback comment is required");
             feedbackService.sendFeedback(registration, feedbackRequest.getComment().trim());
         }
 
@@ -274,20 +275,20 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Override
     public void deleteRegistration(Long id) {
         var registration = registrationRepository.findById(id)
-                .orElseThrow(() -> new BadRequestRunTimeException("Registration not found"));
+                .orElseThrow(() -> new BadRequestRuntimeException("Registration not found"));
 
         if (!Objects.equals(getCurrentUser().getId(), registration.getUser().getId())) {
             throw new ForbiddenException("You do not have permission to delete this registration.");
         }
 
         if (registration.getStatus() != RegistrationStatus.DRAFT && registration.getStatus() != RegistrationStatus.DISCARDED) {
-            throw new BadRequestRunTimeException("Registration must be in DRAFT or DISCARDED status to be deleted.");
+            throw new BadRequestRuntimeException("Registration must be in DRAFT or DISCARDED status to be deleted.");
         }
 
         registrationRepository.delete(registration);
     }
 
-}
+
 
     @Override
     public boolean startLearningCourse(Long registrationId) {
@@ -303,6 +304,7 @@ public class RegistrationServiceImpl implements RegistrationService {
                 throw new BadRequestRuntimeException("This registration requires approval by admin.");
             }
             registration.setStartDate(LocalDateTime.now());
+            registration.setLastUpdated(LocalDateTime.now());
             registrationRepository.save(registration);
             return true;
         }
