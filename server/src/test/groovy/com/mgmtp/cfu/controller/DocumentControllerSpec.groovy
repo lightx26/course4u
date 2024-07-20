@@ -1,18 +1,57 @@
 package com.mgmtp.cfu.controller
 
+import com.mgmtp.cfu.dto.documentdto.DocumentDTO
+import com.mgmtp.cfu.entity.Document
 import com.mgmtp.cfu.exception.BadRequestRuntimeException
 import com.mgmtp.cfu.service.DocumentService
 import com.mgmtp.cfu.service.impl.DocumentServiceImpl
+import com.mgmtp.cfu.util.Constant
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.web.multipart.MaxUploadSizeExceededException
 import org.springframework.web.multipart.MultipartFile
 import spock.lang.Specification
 import spock.lang.Subject
+
 import com.mgmtp.cfu.util.Constant
 class DocumentControllerSpec extends Specification {
-    def documentService=Mock(DocumentService);
+    def documentService=Mock(DocumentService)
     @Subject
     DocumentController documentController=new DocumentController(documentService)
+    def "should get documents by registration id"() {
+        given:
+        Long registrationId = 1L
+        def documents = Document.builder().id(1).build()
+        documentService.getDocumentsByRegistrationId(registrationId) >> List.of(documents)
+        when:
+        def response=documentController.getDocument(registrationId)
+        then:
+        response.statusCode.value()==200
+
+    }
+
+    def "should approve document"() {
+        given:
+        Long registrationId = 1L
+        def document = DocumentDTO.builder().id(1).build()
+        documentService.approveDocument(_ as Long)>>document
+        when:
+        def response=documentController.approveDocument(registrationId)
+        then:
+        response.statusCode.value()==200
+        response.body.id==1
+    }
+
+    def "should decline document"() {
+        given:
+        Long registrationId = 1L
+        def document = DocumentDTO.builder().id(1).build()
+        documentService.declineDocument(_ as Long)>>document
+        when:
+        def response=documentController.declineDocument(registrationId)
+        then:
+        response.statusCode.value()==200
+        response.body.id==1
+    }
     def "should throw MaxUploadSizeExceededException if file size exceeds limit"() {
         given:
         MultipartFile file = new MockMultipartFile("file", "filename.txt", "text/plain",new byte[Constant.DOCUMENT_SIZE_LIMIT + 100])

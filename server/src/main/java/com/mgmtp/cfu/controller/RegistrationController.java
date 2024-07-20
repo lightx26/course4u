@@ -19,6 +19,8 @@ import com.mgmtp.cfu.dto.RegistrationRequest;
 import com.mgmtp.cfu.entity.Registration;
 import org.springframework.http.HttpStatus;
 
+import static com.mgmtp.cfu.util.RequestValidator.validateId;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/registrations")
@@ -106,4 +108,23 @@ public class RegistrationController {
         registrationService.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("{id}/verify/approval")
+    @PreAuthorize("hasRole('ROLE_ACCOUNTANT')")
+    public void verifyApprovalRegistration(@PathVariable Long id) {
+        validateId(id,"Registration");
+        registrationService.verifyApprovalRegistration(id);
+
+    }
+    @PostMapping("{id}/verify/decline")
+    @PreAuthorize("hasRole('ROLE_ACCOUNTANT')")
+    public void verifyDeclineRegistration(@PathVariable Long id, @RequestBody FeedbackRequest feedbackRequest) {
+        validateId(id,"registration id");
+        registrationService.verifyDeclineRegistration(id,feedbackRequest);
+
+    }
+
+
+
+
 }

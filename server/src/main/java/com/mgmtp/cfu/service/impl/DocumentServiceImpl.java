@@ -1,6 +1,7 @@
 package com.mgmtp.cfu.service.impl;
 
 import com.mgmtp.cfu.dto.MailContentUnit;
+import com.mgmtp.cfu.dto.documentdto.DocumentDTO;
 import com.mgmtp.cfu.entity.Document;
 import com.mgmtp.cfu.entity.Notification;
 import com.mgmtp.cfu.entity.User;
@@ -11,6 +12,10 @@ import com.mgmtp.cfu.enums.RegistrationStatus;
 import com.mgmtp.cfu.enums.Role;
 import com.mgmtp.cfu.exception.BadRequestRuntimeException;
 import com.mgmtp.cfu.exception.ForbiddenException;
+import com.mgmtp.cfu.enums.DocumentStatus;
+import com.mgmtp.cfu.exception.MapperNotFoundException;
+import com.mgmtp.cfu.mapper.DTOMapper;
+import com.mgmtp.cfu.mapper.factory.MapperFactory;
 import com.mgmtp.cfu.repository.DocumentRepository;
 import com.mgmtp.cfu.repository.NotificationRepository;
 import com.mgmtp.cfu.repository.RegistrationRepository;
@@ -40,11 +45,11 @@ import static com.mgmtp.cfu.util.NotificationUtil.createNotification;
 @RequiredArgsConstructor
 public class DocumentServiceImpl implements DocumentService {
     private final DocumentRepository documentRepository;
+    private final MapperFactory<Document> documentDtoMapperFactory;
     private final RegistrationRepository registrationRepository;
     private final IEmailService emailService;
     private final UserRepository userRepository;
     private final NotificationRepository notificationRepository;
-
     private String documentStorageDir;
     @Value("${course4u.vite.frontend.url}")
     private String clientUrl;
@@ -54,13 +59,21 @@ public class DocumentServiceImpl implements DocumentService {
         this.documentStorageDir = documentStorageDir;
     }
 
+    @Override
+    public List<DocumentDTO> getDocumentsByRegistrationId(Long registrationId) {
+        if (!registrationRepository.existsById(registrationId))
+            throw new BadRequestRuntimeException("Registration not found.");
+        List<Document> list = documentRepository.findAllByRegistrationId(registrationId);
+        list = list != null ? list : new ArrayList<>();
+
+        return list.stream().map(getMapper()::toDTO).toList();
+    }
 
     @Override
     public void submitDocument(MultipartFile[] certificates, MultipartFile[] payments, Long id) {
         var registration = registrationRepository.findById(id).orElseThrow(() ->
                 new BadRequestRuntimeException("Registration is not found.")
         );
-
         var user = getCurrentUser();
         if (!registration.getUser().getId().equals(user.getId())) {
             throw new ForbiddenException("You don't have permission.");
@@ -70,48 +83,73 @@ public class DocumentServiceImpl implements DocumentService {
         }
         storageDocuments(certificates, DocumentType.CERTIFICATE, registration, user);
         storageDocuments(payments, DocumentType.PAYMENT, registration, user);
-        notifyAccountant(user,registration);
+        notifyAccountant(user, registration);
         registration.setStatus(RegistrationStatus.VERIFYING);
         registration.setLastUpdated(LocalDateTime.now());
         registrationRepository.save(registration);
     }
 
+    @Override
+    public DocumentDTO approveDocument(Long id) {
+        return verifyDocument(id, DocumentStatus.APPROVED);
+    }
+
+    @Override
+    public DocumentDTO declineDocument(Long id) {
+        return verifyDocument(id, DocumentStatus.REFUSED);
+    }
+
     private void notifyAccountant(User user, Registration registration) {
         // TODO: Implement notification logic
-        var accountants=userRepository.findAllByRole(Role.ACCOUNTANT);
-        var content="Verification of Course Documents: " + user.getUsername() +
-        " has just submitted some document for registration with ID " + registration.getId() +
+        var accountants = userRepository.findAllByRole(Role.ACCOUNTANT);
+        var content = "Verification of Course Documents: " + user.getUsername() +
+                " has just submitted some document for registration with ID " + registration.getId() +
                 ". Please proceed with the verification.";
-        List<Notification> notifications=new ArrayList<>();
-        accountants.forEach(accountant->{
-            try{
-                notifications.add(createNotification(NotificationType.INFORMATION,accountant,content));
-                sendNoticedMail(accountant,content);
-            }catch (Exception e){
-                log.error(e.getMessage(),e.getCause());
+        List<Notification> notifications = new ArrayList<>();
+        accountants.forEach(accountant -> {
+            try {
+                notifications.add(createNotification(NotificationType.INFORMATION, accountant, content));
+                sendNoticedMail(accountant, content);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e.getCause());
             }
         });
         notificationRepository.saveAll(notifications);
 
     }
 
+    protected DocumentDTO verifyDocument(Long id, DocumentStatus documentStatus) {
+        var document = documentRepository.findById(id)
+                .orElseThrow(() -> new BadRequestRuntimeException("Document not found."));
+        document.setStatus(documentStatus);
+        return getMapper().toDTO(documentRepository.save(document));
+    }
+
     private void sendNoticedMail(User accountant, String content) {
-        var title="Verification of Course Documents";
-        List<MailContentUnit> mailContentUnits=List.of(
+        var title = "Verification of Course Documents";
+        List<MailContentUnit> mailContentUnits = List.of(
                 MailContentUnit.builder().id("notification_title").content(title).tag("div").build(),
                 MailContentUnit.builder().id("client_url").href(clientUrl).tag("a").build(),
-                MailContentUnit.builder().id("greeting").content("Dear "+ (accountant.getFullName()!=null?accountant.getFullName():accountant.getUsername())).tag("div").build(),
+                MailContentUnit.builder().id("greeting").content("Dear " + (accountant.getFullName() != null ? accountant.getFullName() : accountant.getUsername())).tag("div").build(),
                 MailContentUnit.builder().id("content").content(content).tag("div").build()
         );
-        emailService.sendMessage(accountant.getEmail(),title,ACCOUNTANT_NOTIFICATION_EMAIL_TEMPLATE_NAME, mailContentUnits );
+        emailService.sendMessage(accountant.getEmail(), title, ACCOUNTANT_NOTIFICATION_EMAIL_TEMPLATE_NAME, mailContentUnits);
+    }
 
+    private DTOMapper<DocumentDTO, Document> getMapper() {
+        var documentMapper = documentDtoMapperFactory.getDTOMapper(DocumentDTO.class);
+        if (documentMapper.isEmpty()) {
+            throw new MapperNotFoundException("No mapper found for DocumentDTO");
+        }
+        return documentMapper.get();
     }
 
 
-    private void storageDocuments(MultipartFile[] documents, DocumentType type, Registration registration, User user) {
+    private void storageDocuments(MultipartFile[] documents, DocumentType type, Registration registration, User
+            user) {
         List<Document> documentList = Arrays.stream(documents)
                 .map(document -> {
-                    String fileUrl = storageDocument(type, document, documentStorageDir+"/"+user.getUsername());
+                    String fileUrl = storageDocument(type, document, documentStorageDir + "/" + user.getUsername());
                     return Document.builder()
                             .registration(registration)
                             .status(PENDING)

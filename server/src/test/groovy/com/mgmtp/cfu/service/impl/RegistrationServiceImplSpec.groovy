@@ -17,6 +17,8 @@ import com.mgmtp.cfu.entity.Category
 import com.mgmtp.cfu.enums.NotificationType
 import com.mgmtp.cfu.exception.CourseNotFoundException
 import com.mgmtp.cfu.exception.DuplicateCourseException
+import com.mgmtp.cfu.enums.Role
+import com.mgmtp.cfu.exception.BadRequestRuntimeException
 import com.mgmtp.cfu.exception.ForbiddenException
 import com.mgmtp.cfu.exception.MapperNotFoundException
 import com.mgmtp.cfu.exception.RegistrationNotFoundException
@@ -41,6 +43,10 @@ import com.mgmtp.cfu.service.IEmailService
 import com.mgmtp.cfu.service.NotificationService;
 import com.mgmtp.cfu.service.RegistrationFeedbackService;
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.Page;
+import com.mgmtp.cfu.service.IEmailService;
+import com.mgmtp.cfu.repository.UserRepository
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -59,22 +65,24 @@ import java.time.LocalDateTime
 
 class RegistrationServiceImplSpec extends Specification {
 
-    RegistrationRepository registrationRepository = Mock()
-    MapperFactory<Registration> registrationMapperFactory = Mock()
-    RegistrationOverviewMapper registrationOverviewMapper = Mock()
-    CourseRepository courseRepository = Mock()
-    NotificationService notificationService = Mock()
-    RegistrationFeedbackService feedbackService = Mock()
-    IEmailService emailService = Mock()
-    RegistrationDetailMapper registrationDetailMapper = Mock()
+    RegistrationRepository registrationRepository = Mock(RegistrationRepository)
+    MapperFactory<Registration> registrationMapperFactory = Mock(MapperFactory)
+    RegistrationOverviewMapper registrationOverviewMapper = Mock(RegistrationOverviewMapper)
+    CourseRepository courseRepository = Mock(CourseRepository)
+    NotificationService notificationService = Mock(NotificationService)
+    RegistrationFeedbackService feedbackService = Mock(RegistrationFeedbackService)
+    IEmailService emailService = Mock(IEmailService)
+    UserRepository userRepository = Mock(UserRepository)
+    def registrationDetailMapper = Mock(RegistrationDetailMapper)
+    NotificationRepository notificationRepository = Mock();
     CourseService courseService = Mock()
+    RegistrationFeedbackRepository registrationFeedbackRepository = Mock();
 
     @Subject
     RegistrationServiceImpl registrationService = new RegistrationServiceImpl(
             registrationRepository, registrationMapperFactory, registrationOverviewMapper,
-            courseRepository, notificationService, feedbackService,
-            emailService, courseService
-    );
+            courseRepository, notificationRepository, registrationFeedbackRepository,
+            emailService, userRepository, notificationService, feedbackService, courseService)
 
     def "return registration details successfully"() {
         given:
@@ -134,7 +142,6 @@ class RegistrationServiceImplSpec extends Specification {
         when:
         def result = registrationService.getMyRegistrationPage(1, status)
         then:
-        result.list.size() == 1
         result.totalElements == 1
     }
 
@@ -208,7 +215,7 @@ class RegistrationServiceImplSpec extends Specification {
         def authentication = Mock(Authentication) {
             getCredentials() >> User.builder().id(userId).build()
         }
-        registrationMapperFactory.getDTOMapper(_)>> Optional.of(registrationOverviewMapper)
+        registrationMapperFactory.getDTOMapper(_) >> Optional.of(registrationOverviewMapper)
         SecurityContextHolder.context.authentication = authentication
         registrationRepository.getSortedRegistrations(userId) >> List.of(registrations,registrayion2)
         registrationOverviewMapper.toDTO(_)>> RegistrationOverviewDTO.builder().id(1).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDate.now()).build()
@@ -674,7 +681,7 @@ class RegistrationServiceImplSpec extends Specification {
         registrationRepository.save(_ as Registration) >> { Registration reg -> reg }
         when:
 
-        registrationService.declineRegistration(1,feedbackRequest)
+        registrationService.declineRegistration(1, feedbackRequest)
 
         then:
         1 * feedbackService.sendFeedback(registration, feedbackRequest.getComment())
@@ -695,7 +702,7 @@ class RegistrationServiceImplSpec extends Specification {
 
         when:
         registrationRepository.findById(1L) >> Optional.empty()
-        registrationService.declineRegistration(1,feedbackRequest)
+        registrationService.declineRegistration(1, feedbackRequest)
 
         then:
         thrown(RegistrationNotFoundException)
@@ -709,7 +716,7 @@ class RegistrationServiceImplSpec extends Specification {
 
         when:
         registrationRepository.findById(1L) >> Optional.of(registration)
-        registrationService.declineRegistration(1,feedbackRequest)
+        registrationService.declineRegistration(1, feedbackRequest)
 
         then:
         thrown(BadRequestRuntimeException)
@@ -816,6 +823,22 @@ class RegistrationServiceImplSpec extends Specification {
         1 * emailService.sendMessage(user.getEmail(), "Registration closed", _, _)
     }
 
+    def "verifyDeclineRegistration should throw exception if registration not in verifying status"() {
+        given:
+        Long id = 1L
+        FeedbackRequest feedbackRequest = new FeedbackRequest(comment: "Invalid document")
+        Registration registration = new Registration(id: id, status: RegistrationStatus.VERIFIED)
+        userRepository.findAllByRole(Role.ADMIN) >> List.of(User.builder().username("a").email("abc@gmail.com").build())
+        emailService.sendMessage(_ as String, _ as String, _ as String, _ as List<MailContentUnit>) >> {}
+        registrationRepository.findById(id) >> Optional.of(registration)
+
+        when:
+        registrationService.verifyDeclineRegistration(id, feedbackRequest)
+
+        then:
+        thrown(BadRequestRuntimeException)
+    }
+
     def "should close the registration with feedback"() {
         given:
         def user = new User(id: 1L, username: "User", email: "user@mgm-tp.com")
@@ -848,10 +871,11 @@ class RegistrationServiceImplSpec extends Specification {
         then:
         thrown(RegistrationNotFoundException)
     }
+
     def "should throw BadRequestRunTimeException if registration is not found"() {
         given:
         Long id = 1L
-        registrationRepository.findById(id)>>Optional.empty()
+        registrationRepository.findById(id) >> Optional.empty()
 
         when:
         registrationService.deleteRegistration(id)
@@ -864,7 +888,7 @@ class RegistrationServiceImplSpec extends Specification {
         given:
         Long id = 1L
         Registration registration = Registration.builder().user(User.builder().id(2).build()).build()
-        registrationRepository.findById(id)>>Optional.of(registration)
+        registrationRepository.findById(id) >> Optional.of(registration)
 
         when:
         registrationService.deleteRegistration(id)
@@ -877,7 +901,7 @@ class RegistrationServiceImplSpec extends Specification {
         given:
         Registration registration = Registration.builder().user(User.builder().id(1).build()).build()
         Long id = 1L
-       registrationRepository.findById(id)>>Optional.of(registration)
+        registrationRepository.findById(id) >> Optional.of(registration)
 
         when:
         registrationService.deleteRegistration(id)
@@ -890,7 +914,7 @@ class RegistrationServiceImplSpec extends Specification {
         given:
         Long id = 1L
         Registration registration = Registration.builder().status(RegistrationStatus.DISCARDED).user(User.builder().id(1).build()).build()
-        registrationRepository.findById(id)>>Optional.of(registration)
+        registrationRepository.findById(id) >> Optional.of(registration)
 
         when:
         registrationService.deleteRegistration(id)

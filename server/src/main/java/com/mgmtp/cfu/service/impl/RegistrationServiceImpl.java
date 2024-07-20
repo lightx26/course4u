@@ -12,6 +12,9 @@ import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewParams;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO;
 import com.mgmtp.cfu.entity.Course;
 import com.mgmtp.cfu.enums.*;
+import com.mgmtp.cfu.entity.RegistrationFeedback;
+import com.mgmtp.cfu.entity.User;
+import com.mgmtp.cfu.enums.*;
 import com.mgmtp.cfu.exception.*;
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper;
 import com.mgmtp.cfu.entity.Registration;
@@ -20,6 +23,7 @@ import com.mgmtp.cfu.mapper.factory.MapperFactory;
 import com.mgmtp.cfu.repository.RegistrationRepository;
 import com.mgmtp.cfu.service.*;
 import com.mgmtp.cfu.repository.*;
+import com.mgmtp.cfu.util.NotificationUtil;
 import com.mgmtp.cfu.util.RegistrationStatusUtil;
 import com.mgmtp.cfu.util.RegistrationValidator;
 import lombok.extern.slf4j.Slf4j;
@@ -34,13 +38,19 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.*;
-
 import java.util.List;
+
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
 import static com.mgmtp.cfu.util.AuthUtils.getCurrentUser;
+import static com.mgmtp.cfu.enums.NotificationType.INFORMATION;
+import static com.mgmtp.cfu.enums.RegistrationStatus.*;
+import static com.mgmtp.cfu.util.AuthUtils.getCurrentUser;
+import static com.mgmtp.cfu.util.Constant.APPROVE_REGISTRATION_EMAIL_TEMPLATE;
+import static com.mgmtp.cfu.util.Constant.DECLINE_REGISTRATION_EMAIL_TEMPLATE;
 import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getRegistrationOverviewDTOS;
 
 @Service
@@ -54,15 +64,21 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final RegistrationFeedbackService feedbackService;
     private final IEmailService emailService;
     private final CourseService courseService;
+    private final UserRepository userRepository;
+    private final NotificationRepository notificationRepository;
+    private final RegistrationFeedbackRepository registrationFeedbackRepository;
 
     @Autowired
     public RegistrationServiceImpl(RegistrationRepository registrationRepository,
                                    MapperFactory<Registration> registrationMapperFactory,
                                    RegistrationOverviewMapper registrationOverviewMapper,
                                    CourseRepository courseRepository,
+                                   NotificationRepository notificationRepository,
+                                   RegistrationFeedbackRepository registrationFeedbackRepository,
+                                   IEmailService emailService, UserRepository userRepository,
                                    NotificationService notificationService,
                                    RegistrationFeedbackService feedbackService,
-                                   IEmailService emailService, CourseService courseService) {
+                                   CourseService courseService) {
         this.registrationRepository = registrationRepository;
         this.registrationMapperFactory = registrationMapperFactory;
         this.registrationOverviewMapper = registrationOverviewMapper;
@@ -71,6 +87,9 @@ public class RegistrationServiceImpl implements RegistrationService {
         this.feedbackService = feedbackService;
         this.emailService = emailService;
         this.courseService = courseService;
+        this.userRepository = userRepository;
+        this.notificationRepository = notificationRepository;
+        this.registrationFeedbackRepository=registrationFeedbackRepository;
     }
 
     @Value("${course4u.vite.frontend.url}")
@@ -221,8 +240,8 @@ public class RegistrationServiceImpl implements RegistrationService {
         Page<Registration> registrations;
         PageRequest pageRequest = (
                 isAscending
-                ? PageRequest.of(page - 1, 8, Sort.by(orderBy).ascending())
-                : PageRequest.of(page - 1, 8, Sort.by(orderBy).descending())
+                        ? PageRequest.of(page - 1, 8, Sort.by(orderBy).ascending())
+                        : PageRequest.of(page - 1, 8, Sort.by(orderBy).descending())
         );
 
         if (status.isEmpty() || status.equalsIgnoreCase("all")) {
@@ -233,6 +252,24 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
 
         return registrations.map(registrationOverviewMapper::toDTO);
+    }
+    @Override
+    public Page<RegistrationOverviewDTO> getRegistrationByStatus(int page, String status) {
+        try {
+            PageRequest pageRequest = PageRequest.of(page - 1, 8);
+            RegistrationStatus registrationStatus = RegistrationStatus.valueOf(status.toUpperCase());
+            Page<Registration> registrations = registrationRepository.findAllByStatus(registrationStatus, pageRequest);
+
+            List<RegistrationOverviewDTO> modifiedResponseContent = registrations
+                    .getContent()
+                    .stream()
+                    .map(registrationOverviewMapper::toDTO)
+                    .toList();
+
+            return new PageImpl<>(modifiedResponseContent, pageRequest, registrations.getTotalElements());
+        } catch (IllegalArgumentException e) {
+            throw new RegistrationStatusNotFoundException("Status not found");
+        }
     }
 
 
@@ -341,6 +378,79 @@ public class RegistrationServiceImpl implements RegistrationService {
         registration.setStatus(RegistrationStatus.DISCARDED);
         registrationRepository.save(registration);
     }
+
+    @Override
+    public void verifyApprovalRegistration(Long id) {
+        var registration = registrationRepository.findById(id).orElseThrow(() -> new BadRequestRuntimeException("Registration not found"));
+        if (registration.getStatus() == null || registration.getStatus() != RegistrationStatus.VERIFYING)
+            throw new BadRequestRuntimeException("This registration must be verifying.");
+        registration.setStatus(VERIFIED);
+        registrationRepository.save(registration);
+        notifyDocumentCommitted(registration,"");
+    }
+
+
+    @Override
+    public void verifyDeclineRegistration(Long id, FeedbackRequest feedbackRequest) {
+        var registration = registrationRepository.findById(id).orElseThrow(() -> new BadRequestRuntimeException("Registration not found"));
+        if (registration.getStatus() == null || registration.getStatus() != RegistrationStatus.VERIFYING)
+            throw new BadRequestRuntimeException("This registration must be verifying.");
+        registration.setStatus(RegistrationStatus.DOCUMENT_DECLINED);
+        var registrationFeedback = RegistrationFeedback.builder()
+                .comment(feedbackRequest.getComment())
+                .createdDate(LocalDateTime.now())
+                .user(getCurrentUser())
+                .registration(registration)
+                .build();
+        registrationFeedbackRepository.save(registrationFeedback);
+        registrationRepository.save(registration);
+        notifyDocumentCommitted(registration,feedbackRequest.getComment());
+    }
+
+
+    private void notifyDocumentCommitted(Registration registration, String feedback) {
+        var accountant = getCurrentUser();
+        if(registration.getStatus().equals(VERIFIED)){
+            var admins=userRepository.findAllByRole(Role.ADMIN);
+            var user = registration.getUser();
+            //send to admin
+            admins.forEach(admin->{
+                String courseName = registration.getCourse().getName();
+
+                String message = String.format(
+                        "The course titled '%s' that user %s registered has been successfully verified by our accountant %s",
+                        courseName, user.getUsername(), accountant.getUsername()
+                );
+                notificationRepository.save(NotificationUtil.createNotification(INFORMATION, admin, message));
+                sendEmail(registration, admin, message);
+            });
+
+            //send to user
+            var message="Congratulations! Your course titled"+registration.getCourse().getName()+" has been verified successfully.";
+            sendEmail(registration, user, message);
+        }
+        if(registration.getStatus().equals(DOCUMENT_DECLINED)){
+            var message="We regret to inform you that your submitted documents for the course"+registration.getCourse().getName()+" have been rejected."+feedback;
+            notificationRepository.save(NotificationUtil.createNotification(INFORMATION, registration.getUser(), message));
+            sendEmail(registration, registration.getUser(), message);
+        }
+
+    }
+
+    private void sendEmail(Registration registration, User user, String message) {
+        var status=registration.getStatus();
+        log.info(status.name());
+        List<MailContentUnit> mailContentUnits = List.of(
+                MailContentUnit.builder().id("user_greeting").content("Dear "+user.getUsername()).tag("div").build(),
+                MailContentUnit.builder().id("content").content(message).tag("div").build(),
+                MailContentUnit.builder().id("title").content(status==DOCUMENT_DECLINED?"Document Decline":"Document Approval").tag("div").build(),
+                MailContentUnit.builder().id("client_url").href(clientUrl).content("LOGIN NOW").tag("a").build()
+        );
+        emailService.sendMessage(registration.getUser().getEmail(), status==DOCUMENT_DECLINED?"Document Decline":"Document Approval",
+                status==VERIFIED?APPROVE_REGISTRATION_EMAIL_TEMPLATE:DECLINE_REGISTRATION_EMAIL_TEMPLATE, mailContentUnits);
+    }
+
+
 
     @Override
     public boolean startLearningCourse(Long registrationId) {

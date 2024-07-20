@@ -51,7 +51,7 @@ INSERT INTO "Course" ("Name", "Link", "Platform", "ThumbnailUrl", "TeacherName",
 INSERT INTO "Course" ("Name", "Link", "Platform", "ThumbnailUrl", "TeacherName", "CreatedDate", "Status", "Level") VALUES ( 'Rowena Twiddell', 'example.com', 'UDEMY', 'http://dummyimage.com/111x100.png/ff4444/ffffff', 'Rod Oakshott', '2024-05-29', 'AVAILABLE', 'BEGINNER');
 INSERT INTO "Course" ("Name", "Link", "Platform", "ThumbnailUrl", "TeacherName", "CreatedDate", "Status", "Level") VALUES ( 'Edith Hender', 'netvibes.com', 'UDEMY', 'https://tuoitre.vn/lee-min-ho.html', 'Florette Calrow', '2023-12-04', 'AVAILABLE', 'ADVANCED');
 
-INSERT INTO "User" ("Username", "Password", "FullName", "AvatarUrl", "Email", "Role", "DateOfBirth", "Gender", "Telephone") VALUES ( 'user', '$2a$10$8O/b4SGusmdgMuZFIv7JaOQXx1sQ.ISrffmXjGgC2b10S1ML.4ity', 'User Phan', 'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/119071457/original/438d9ccddf743c8bc8f23e1b9971be1b8d8613e5/create-super-nice-avatar-from-your-photo.png', 'user@mgm-tp.com', 'USER', '2003-07-08', 'FEMALE', '012345678');
+INSERT INTO "User" ("Username", "Password", "FullName", "AvatarUrl", "Email", "Role", "DateOfBirth", "Gender", "Telephone") VALUES ( 'user', '$2a$10$8O/b4SGusmdgMuZFIv7JaOQXx1sQ.ISrffmXjGgC2b10S1ML.4ity', 'User Phan', 'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/119071457/original/438d9ccddf743c8bc8f23e1b9971be1b8d8613e5/create-super-nice-avatar-from-your-photo.png', 'huan.phuoc.phan@mgm-tp.com', 'USER', '2003-07-08', 'FEMALE', '012345678');
 INSERT INTO "User" ("Username", "Password", "FullName", "AvatarUrl", "Email", "Role", "DateOfBirth", "Gender", "Telephone") VALUES ( 'admin', '$2a$10$bhBp0hDRVdW1A6RMKt0k0.m4709.So5X8.3GhmSOwNzcptfJOm0FW', 'Admin Phan', null, 'admin@mgm-tp.com', 'ADMIN', '1998-07-08', 'FEMALE', null);
 INSERT INTO "User" ("Username", "Password", "FullName", "AvatarUrl", "Email", "Role", "DateOfBirth", "Gender", "Telephone") VALUES ( 'intern', '$2a$10$bhBp0hDRVdW1A6RMKt0k0.m4709.So5X8.3GhmSOwNzcptfJOm0FW', 'New intern', null, 'intern@mgm-tp.com', 'USER', null, null, null);
 INSERT INTO "User" ("Username", "Password", "FullName", "AvatarUrl", "Email", "Role", "DateOfBirth", "Gender", "Telephone") VALUES ('intern1', '$2a$10$bhBp0hDRVdW1A6RMKt0k0.m4709.So5X8.3GhmSOwNzcptfJOm0FW', null, null, 'intern@mgm-tp.com', 'ADMIN', null, null, null);
@@ -202,3 +202,6 @@ INSERT INTO "Category_Course"("CourseId", "CategoryId")
 VALUES (1, 1), (1, 2), (1, 3),(2, 1), (3, 2), (3, 3),(4, 1), (4, 2), (5, 3),
        (5, 1), (6, 2), (6, 3),(7, 1), (7, 2), (8, 3),(8, 1), (8, 2), (9, 3),
        (9, 1), (9, 2), (10, 3),(10, 1), (10, 2), (11, 3),(12, 1), (13, 2), (13, 3);
+
+INSERT INTO "Document"("RegistrationId", "Url","Status","Type")
+VALUES (1,'api/demo','APPROVED','CERTIFICATE'),(1,'api/demo','APPROVED','CERTIFICATE'),(1,'api/demo','APPROVED','PAYMENT');
