@@ -46,7 +46,7 @@ const HeaderHomepage: React.FC = () => {
     };
 
   const handleSearch = () => {
-    if (window.location.pathname !== "/") {
+    if (window.location.pathname !== basePath) {
       goToHomePage();
     }
     dispatch(updateSearch(searchTerm));
@@ -71,56 +71,31 @@ const HeaderHomepage: React.FC = () => {
           <span className="text-2xl font-semibold text-black select-none">ourse4U</span>
         </div>
 
-                <div className='relative flex items-center flex-grow px-16 mx-4'>
-                    <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        width='2rem'
-                        height='2rem'
-                        viewBox='0 0 24 24'
-                        fill='none'
-                        style={{
-                            position: "absolute",
-                            zIndex: 10,
-                            paddingLeft: "10px",
-                        }}
-                    >
-                        <path
-                            d='M10.875 18.75C15.2242 18.75 18.75 15.2242 18.75 10.875C18.75 6.52576 15.2242 3 10.875 3C6.52576 3 3 6.52576 3 10.875C3 15.2242 6.52576 18.75 10.875 18.75Z'
-                            stroke='#1D2026'
-                            strokeWidth='1.5'
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                        />
-                        <path
-                            d='M16.4431 16.4434L20.9994 20.9997'
-                            stroke='#1D2026'
-                            strokeWidth='1.5'
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                        />
-                    </svg>
-                    <input
-                        type='search'
-                        placeholder='Explore courses...'
-                        className='w-full p-2 px-10 border border-gray-300 rounded-md hover:border-#cccccc-500 focus:border-blue-500 focus:shadow-lg focus:outline-none'
-                        style={{
-                            color: "black",
-                            position: "relative",
-                            outline: "none",
-                            backgroundColor: "#f5f7fa",
-                        }}
-                        value={searchTerm}
-                        onChange={(e) => {
-                            dispatch(updateSearch(e.target.value));
-                        }}
-                        onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                                handleSearch();
-                            }
-                        }}
-                        autoFocus
-                    ></input>
-                </div>
+        <div className='relative flex-grow mx-6'>
+          <SearchIcon className="absolute z-50 -translate-y-1/2 left-2 top-1/2" />
+          <input
+            type='search'
+            placeholder='Explore courses...'
+            className='w-full p-2 px-10 border border-gray-300 rounded-md hover:border-#cccccc-500 focus:border-blue-500 focus:shadow-lg focus:outline-none'
+            style={{
+              color: "black",
+              position: "relative",
+              outline: "none",
+              width: "100%",
+              backgroundColor: "#f5f7fa",
+            }}
+            value={searchTerm}
+            onChange={(e) => {
+              dispatch(updateSearch(e.target.value));
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSearch();
+              }
+            }}
+            autoFocus
+          ></input>
+        </div>
 
                 <div className='flex items-center space-x-4'>
                     <div className='flex items-center justify-center gap-5'>

@@ -64,10 +64,10 @@ const Registrations = ({ className, id }: Props) => {
             </h2>
             <div className='flex items-center justify-between w-full'>
                 <RegistrationUser
-                    fullName={registration?.user?.fullName || userData.fullName}
-                    avatarUrl={registration?.user?.avatarUrl || userData.avatarUrl}
-                    email={registration?.user?.email || userData.email}
-                    telephone={registration?.user?.telephone || userData.telephone}
+                    fullName={registration?.user?.fullName || ""}
+                    avatarUrl={`${import.meta.env.VITE_BACKEND_URL}${registration?.user?.avatarUrl}` || ""}
+                    email={registration?.user?.email || ""}
+                    telephone={registration?.user?.telephone || ""}
                 />
                 <RegistrationStatus status={registration?.status} />
             </div>
