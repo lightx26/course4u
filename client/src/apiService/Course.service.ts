@@ -88,13 +88,13 @@ const fetchDataReviewsCourseById = async (
   }
 };
 
+//@ts-ignore
 const fetchDataRelatedCourseById = async (id: string | undefined) => {
   try {
     // const response = await instance.get(
     //   `/courses/${id}/relation`
     // );
     // return response;
-    console.log("check id", id);
     return [
       {
         id: 3,

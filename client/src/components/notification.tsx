@@ -18,7 +18,6 @@ export function Notification({ children }: { children: React.ReactNode }) {
         const getAllNotification = async () => {
             setIsLoading(true);
             const res = await getAllNotificationsByCurrUser();
-            console.log(res);
             setNotifications(res);
             await setTimeout(() => {
                 setIsLoading(false);
@@ -33,7 +32,7 @@ export function Notification({ children }: { children: React.ReactNode }) {
                 className='w-[400px]'
                 onOpenAutoFocus={(e) => e.preventDefault()}
             >
-                <div className='flex justify-between items-center'>
+                <div className='flex items-center justify-between'>
                     <h3 className='text-lg font-semibold'>Notifications</h3>
                     <Button variant='link'>Mark all as read</Button>
                 </div>
@@ -80,7 +79,7 @@ export function Notification({ children }: { children: React.ReactNode }) {
                                     <p className='text-sm line-clamp-2 w-[80%]'>
                                         {notification.content}
                                     </p>
-                                    <p className='text-xs text-gray-300 absolute bottom-0 right-2'>
+                                    <p className='absolute bottom-0 text-xs text-gray-300 right-2'>
                                         {getTimeDifference(
                                             notification.createdDate
                                         )}
