@@ -1,5 +1,4 @@
 import * as React from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
 import { DayPicker } from "react-day-picker"
 import { cn } from "../../utils"
 import { buttonVariants } from "./button"
@@ -24,7 +23,7 @@ function Calendar({
         nav: "space-x-1 flex items-center",
         nav_button: cn(
           buttonVariants({ variant: "outline" }),
-          "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
+          "h-7 w-7 bg-transparent p-0 opacity-0 hover:opacity-0"
         ),
         nav_button_previous: "absolute left-1",
         nav_button_next: "absolute right-1",
@@ -50,10 +49,10 @@ function Calendar({
         day_hidden: "invisible",
         ...classNames,
       }}
-      components={{
-        IconLeft: () => <ChevronLeft className="w-4 h-4" />,
-        IconRight: () => <ChevronRight className="w-4 h-4" />,
-      }}
+      // components={{
+      //   IconLeft: () => <ChevronLeft className="w-4 h-4" />,
+      //   IconRight: () => <ChevronRight className="w-4 h-4" />,
+      // }}
       {...props}
     />
   )
@@ -61,3 +60,49 @@ function Calendar({
 Calendar.displayName = "Calendar"
 
 export { Calendar }
+
+export function CustomCalendar({ ...props }: CalendarProps) {
+  const [selectedMonth, setSelectedMonth] = React.useState<number>(new Date().getMonth());
+  const [selectedYear, setSelectedYear] = React.useState<number>(new Date().getFullYear());
+
+  const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedMonth(parseInt(e.target.value, 10));
+  };
+
+  const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedYear(parseInt(e.target.value, 10));
+  };
+
+  const months = Array.from({ length: 12 }, (_, i) => new Date(0, i).toLocaleString('en-US', { month: 'long' }));
+  const years = Array.from({ length: new Date().getFullYear() - 1900 + 1 }, (_, i) => 1900 + i);
+
+  return (
+    <div className="relative p-4 bg-white border rounded-md">
+      <div className="flex items-center justify-center mb-4 space-x-2">
+        <select
+          value={selectedMonth}
+          onChange={handleMonthChange}
+          className="p-2 text-sm text-gray-700 bg-white border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          {months.map((month, index) => (
+            <option key={index} value={index}>
+              {month}
+            </option>
+          ))}
+        </select>
+        <select
+          value={selectedYear}
+          onChange={handleYearChange}
+          className="p-2 text-sm text-gray-700 bg-white border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          {years.map((year, index) => (
+            <option key={index} value={year}>
+              {year}
+            </option>
+          ))}
+        </select>
+      </div>
+      <Calendar {...props} month={new Date(selectedYear, selectedMonth)} />
+    </div>
+  );
+}

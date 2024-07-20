@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,12 +38,12 @@ public class UserServiceImpl implements IUserService {
 
         User user = AuthUtils.getCurrentUser();
 
-        user.setFullName(userDto.getFullName());
-        user.setTelephone(userDto.getTelephone());
-        user.setDateOfBirth(userDto.getDateOfBirth());
-        user.setGender(userDto.getGender());
+        user.setFullName(Optional.ofNullable(userDto.getFullName()).orElse(""));
+        user.setTelephone(Optional.ofNullable(userDto.getTelephone()).orElse(""));
+        user.setDateOfBirth(Optional.ofNullable(userDto.getDateOfBirth()).orElse(null));
+        user.setGender(Optional.ofNullable(userDto.getGender()).orElse(null));
 
-        if (!userDto.getImageFile().isEmpty()) {
+        if (userDto.getImageFile() != null && !userDto.getImageFile().isEmpty()) {
             String uniqueFileName;
             try {
                 uniqueFileName = uploadService.uploadThumbnail(userDto.getImageFile(), uploadProfileDir);
@@ -50,6 +51,8 @@ public class UserServiceImpl implements IUserService {
                 throw new RuntimeException(e);
             }
             user.setAvatarUrl("/profile/" + uniqueFileName);
+        } else {
+            user.setAvatarUrl("");
         }
 
         userRepository.save(user);

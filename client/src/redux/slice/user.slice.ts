@@ -90,6 +90,9 @@ export const userSlice = createSlice({
       };
       localStorage.removeItem("access_token");
     },
+    updateUser: (state, payload) => {
+      state.user = { ...state.user, ...payload.payload };
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -126,6 +129,6 @@ export const userSlice = createSlice({
       });
   },
 });
-export const { handleLogout } = userSlice.actions;
+export const { handleLogout, updateUser } = userSlice.actions;
 // Export the reducer
 export default userSlice.reducer;

@@ -1,11 +1,14 @@
+import { toast } from "sonner";
 import instance from "../utils/customizeAxios";
 
-export async function fetchListOfMyRegistration(page: number = 1, status: String = "Submited") {
-    try{
+export async function fetchListOfMyRegistration(page: number = 1, status: string = "Submited") {
+    try {
         const response = await instance.get(`/registrations/my-registration?page=${page}&status=${status}`);
         return response;
     } catch (error) {
-        throw error;
+        toast.error("_", {
+            style: { color: "red" }
+        });
     }
 
 }

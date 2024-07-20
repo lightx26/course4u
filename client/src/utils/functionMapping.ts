@@ -1,8 +1,8 @@
 import React from "react";
-import {handleLogout} from "../redux/slice/user.slice.ts";
-import {Dispatch} from "@reduxjs/toolkit";
-import {UnknownAction} from "redux-saga";
-import {NavigateFunction} from "react-router-dom";
+import { handleLogout } from "../redux/slice/user.slice.ts";
+import { Dispatch } from "@reduxjs/toolkit";
+import { UnknownAction } from "redux-saga";
+import { NavigateFunction } from "react-router-dom";
 
 const handleRegistrationListClick = (e: React.MouseEvent, navigate: NavigateFunction) => {
     e.preventDefault();
@@ -16,7 +16,6 @@ const handleCourseListClick = (e: React.MouseEvent, navigate: NavigateFunction) 
 
 const handleEditProfileClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    alert("Edit Profile has been clicked!");
 }
 
 const handleSignOutClick = (e: React.MouseEvent, navigate: NavigateFunction, dispatch: Dispatch<UnknownAction>) => {
@@ -26,7 +25,7 @@ const handleSignOutClick = (e: React.MouseEvent, navigate: NavigateFunction, dis
 }
 
 const functionMapping = (e: React.MouseEvent, navigate: NavigateFunction, dispatch: Dispatch<UnknownAction>, itemAlt: string) => {
-    switch (itemAlt){
+    switch (itemAlt) {
         case "registration_list":
             handleRegistrationListClick(e, navigate);
             break;

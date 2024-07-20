@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FilterItemComponent from "./FilterItemComponent";
 import { FilterItemType } from "./MainContent";
 
 type PropsType = {
-    list: Array<FilterItemType>;
-    setList: (list: Array<FilterItemType>) => void;
+    list: FilterItemType[];
+    setList: (list: FilterItemType[]) => void;
     isMultipleChoice?: boolean;
 }
 
@@ -13,6 +13,11 @@ export default function ListFilterItem(props: PropsType) {
     const additionalDisplayCount = 3;
     const [displayCount, setDisplayCount] = useState(initialDisplayCount);
     const [isExpanded, setIsExpanded] = useState(false);
+
+    useEffect(() => {
+        setDisplayCount(initialDisplayCount);
+        setIsExpanded(false);
+    }, [props.list]);
 
     const handleShowMore = () => {
         if (isExpanded && displayCount >= props.list.length) {

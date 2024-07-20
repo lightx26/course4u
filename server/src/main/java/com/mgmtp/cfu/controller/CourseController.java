@@ -42,7 +42,7 @@ public class CourseController {
                     .body("Invalid page size. Page size must be between 1" + " and " + CoursePageUtil.getMaxPageSize());
         }
         try {
-            Page<CourseOverviewDTO> coursePageDTO = courseService.getAvailableCoursesPage(request.getSearch(), request.getFilter(), request.getSortBy(), request.getPage(), request.getPageSize());
+            Page<CourseOverviewDTO> coursePageDTO = courseService.getAvailableCoursesPage(request.getSearch().trim(), request.getFilter(), request.getSortBy(), request.getPage(), request.getPageSize());
             return ResponseEntity.ok(coursePageDTO);
         } catch (MapperNotFoundException e) {
             return ResponseEntity.internalServerError().body(null);

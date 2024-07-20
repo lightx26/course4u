@@ -76,7 +76,7 @@ const LeaderBoard: React.FC = () => {
                 <img
                   src={data.avatarUrl}
                   alt=""
-                  className="absolute w-full h-full object-cover object-center rounded-full"
+                  className="absolute object-cover object-center w-full h-full rounded-full"
                 />
               </div>
               <div className="font-normal">
@@ -107,7 +107,6 @@ const LeaderBoard: React.FC = () => {
 
   const fetchDataLeaderBoard = async (valueYear: string) => {
     const result = await getDataLeaderBoard(valueYear);
-    console.log(result.leaderboardUserDTOs);
     if (result && result.leaderboardUserDTOs) {
       const dataTmp: DataType[] = result.leaderboardUserDTOs.map(
         (item: IDataResponse, index: number) => ({
@@ -166,14 +165,14 @@ const LeaderBoard: React.FC = () => {
 
   return (
     <>
-      <div className="bg-gray-100 pb-12">
-        <div className="max-w-screen-2xl mx-auto px-5 pt-6">
+      <div className="pb-12 bg-gray-100">
+        <div className="px-5 pt-6 mx-auto max-w-screen-2xl">
           <div className="flex items-center justify-between px-2.5">
             <div>
               <span className="text-4xl font-semibold">Ranking</span>
             </div>
             <div className="flex items-center justify-center gap-6">
-              <div className="text-gray-600 text-lg">Year</div>
+              <div className="text-lg text-gray-600">Year</div>
               <div>
                 <Select
                   defaultValue={valueYear}
@@ -184,7 +183,7 @@ const LeaderBoard: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="flex justify-center gap-8 mt-10 items-end">
+          <div className="flex items-end justify-center gap-8 mt-10">
             {dataCardLeaderBoard &&
               dataCardLeaderBoard.length > 0 &&
               dataCardLeaderBoard.map((item: DataType, index: number) => {
