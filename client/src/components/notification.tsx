@@ -29,7 +29,10 @@ export function Notification({ children }: { children: React.ReactNode }) {
     return (
         <Popover>
             <PopoverTrigger asChild>{children}</PopoverTrigger>
-            <PopoverContent className='w-[400px]'>
+            <PopoverContent
+                className='w-[400px]'
+                onOpenAutoFocus={(e) => e.preventDefault()}
+            >
                 <div className='flex justify-between items-center'>
                     <h3 className='text-lg font-semibold'>Notifications</h3>
                     <Button variant='link'>Mark all as read</Button>
@@ -41,41 +44,43 @@ export function Notification({ children }: { children: React.ReactNode }) {
                         notifications.map((notification) => (
                             <div
                                 key={notification.id}
-                                className='flex items-center gap-2'
+                                className='flex items-center gap-2 h-[50px]'
                             >
-                                {notification.type === "SUCCESS" && (
-                                    <CircleCheck
-                                        width={40}
-                                        height={40}
-                                        color='green'
-                                    />
-                                )}
-                                {notification.type === "ERROR" && (
-                                    <CircleX
-                                        width={40}
-                                        height={40}
-                                        color='red'
-                                    />
-                                )}
-                                {notification.type === "WARNING" && (
-                                    <CircleMinus
-                                        width={40}
-                                        height={40}
-                                        color='yellow'
-                                    />
-                                )}
-                                {notification.type === "INFORMATION" && (
-                                    <CircleAlert
-                                        width={40}
-                                        height={40}
-                                        color='blue'
-                                    />
-                                )}
                                 <div>
-                                    <p className='text-sm'>
+                                    {notification.type === "SUCCESS" && (
+                                        <CircleCheck
+                                            width={30}
+                                            height={30}
+                                            color='green'
+                                        />
+                                    )}
+                                    {notification.type === "ERROR" && (
+                                        <CircleX
+                                            width={30}
+                                            height={30}
+                                            color='red'
+                                        />
+                                    )}
+                                    {notification.type === "WARNING" && (
+                                        <CircleMinus
+                                            width={30}
+                                            height={30}
+                                            color='yellow'
+                                        />
+                                    )}
+                                    {notification.type === "INFORMATION" && (
+                                        <CircleAlert
+                                            width={30}
+                                            height={30}
+                                            color='blue'
+                                        />
+                                    )}
+                                </div>
+                                <div className='relative'>
+                                    <p className='text-sm line-clamp-2 w-[80%]'>
                                         {notification.content}
                                     </p>
-                                    <p className='text-xs text-gray-400'>
+                                    <p className='text-xs text-gray-300 absolute bottom-0 right-2'>
                                         {getTimeDifference(
                                             notification.createdDate
                                         )}
