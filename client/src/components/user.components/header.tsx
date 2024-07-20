@@ -9,7 +9,7 @@ import {
   updateSearch,
 } from "../../redux/slice/course.slice";
 import { Notification } from "../notification";
-import { BarChartIcon, BellIcon, PieChartIcon, SearchIcon, UserIcon } from "lucide-react";
+import { BarChart3Icon, BarChartIcon, BellIcon, PieChartIcon, SearchIcon, UserIcon } from "lucide-react";
 const HeaderHomepage: React.FC = () => {
   const [isDropdownAvatarOpen, setIsDropdownAvatarOpen] =
     useState<boolean>(false);
@@ -107,14 +107,17 @@ const HeaderHomepage: React.FC = () => {
               Create a registration
             </button>
             <div className='flex items-center gap-6'>
-              <BarChartIcon className="cursor-pointer" onClick={() => navigate("/leaderboard")} />
+              <div title="Leader Board">
+                <BarChart3Icon className="cursor-pointer hover:text-purple" onClick={() => navigate("/leaderboard")} />
+              </div>
               <Notification>
                 <div
                   style={{
                     position: "relative",
                   }}
+                  title="Notification"
                 >
-                  <BellIcon />
+                  <BellIcon className="cursor-pointer hover:text-purple" />
                 </div>
               </Notification>
             </div>
