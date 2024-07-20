@@ -5,21 +5,22 @@ import { AppDispatch, RootState } from "../../redux/store/store";
 import { handleLogout } from "../../redux/slice/user.slice";
 import { useNavigate } from "react-router-dom";
 import {
-    searchCoursesByFilterNameAndSortBy,
-    updateSearch,
+  searchCoursesByFilterNameAndSortBy,
+  updateSearch,
 } from "../../redux/slice/course.slice";
 import { Notification } from "../notification";
+import { SearchIcon } from "lucide-react";
 const HeaderHomepage: React.FC = () => {
-    const [isDropdownAvatarOpen, setIsDropdownAvatarOpen] =
-        useState<boolean>(false);
+  const [isDropdownAvatarOpen, setIsDropdownAvatarOpen] =
+    useState<boolean>(false);
 
-    const searchTerm = useSelector(
-        (state: RootState) => state.courses.searchTerm
-    );
+  const searchTerm = useSelector(
+    (state: RootState) => state.courses.searchTerm
+  );
 
-    const toggleDropdown = () => {
-        setIsDropdownAvatarOpen(!isDropdownAvatarOpen);
-    };
+  const toggleDropdown = () => {
+    setIsDropdownAvatarOpen(!isDropdownAvatarOpen);
+  };
 
   const userData = useSelector((state: RootState) => state.user.user);
   const navigate = useNavigate();
@@ -33,17 +34,17 @@ const HeaderHomepage: React.FC = () => {
     }
   };
 
-    const goToMyProfilePage = () => {
-        navigate("/personal/account");
-    };
+  const goToMyProfilePage = () => {
+    navigate("/personal/account");
+  };
 
-    const goToMyRegistrationPage = () => {
-        navigate("/personal/registration");
-    };
+  const goToMyRegistrationPage = () => {
+    navigate("/personal/registration");
+  };
 
-    const goToMyScorePage = () => {
-        navigate("/personal/score");
-    };
+  const goToMyScorePage = () => {
+    navigate("/personal/score");
+  };
 
   const handleSearch = () => {
     if (window.location.pathname !== basePath) {
@@ -97,139 +98,139 @@ const HeaderHomepage: React.FC = () => {
           ></input>
         </div>
 
-                <div className='flex items-center space-x-4'>
-                    <div className='flex items-center justify-center gap-5'>
-                        <button
-                            className='font-semibold text-white border border-gray-300 rounded-lg w-44 h-11 bg-violet-700'
-                            style={{ backgroundColor: "purple" }}
-                        >
-                            Create a registration
-                        </button>
-                        <div className='flex items-center gap-6'>
-                            <svg
-                                xmlns='http://www.w3.org/2000/svg'
-                                width='2rem'
-                                height='1.8rem'
-                                viewBox='0 0 55 41'
-                                fill='none'
-                                style={{ cursor: "pointer" }}
-                                onClick={() => navigate("/leaderboard")}
-                            >
-                                <path
-                                    d='M23.9273 14.5666C23.8511 14.3345 23.8207 14.0893 23.8378 13.8451C23.8548 13.601 23.919 13.3627 24.0267 13.1437C24.1344 12.9248 24.2834 12.7296 24.4653 12.5693C24.6473 12.4089 24.8584 12.2865 25.0869 12.2091L27.8369 11.2773C28.1125 11.1839 28.406 11.1585 28.6932 11.203C28.9803 11.2475 29.253 11.3608 29.4887 11.5335C29.7243 11.7062 29.9163 11.9333 30.0486 12.1962C30.181 12.4591 30.25 12.7501 30.25 13.0455V22.3636C30.25 22.8579 30.0568 23.3319 29.713 23.6814C29.3692 24.0309 28.9029 24.2273 28.4167 24.2273C27.9304 24.2273 27.4641 24.0309 27.1203 23.6814C26.7765 23.3319 26.5833 22.8579 26.5833 22.3636V15.6312L26.2465 15.7454C26.018 15.8228 25.7769 15.8537 25.5367 15.8364C25.2965 15.819 25.0621 15.7538 24.8467 15.6443C24.6313 15.5349 24.4393 15.3834 24.2815 15.1984C24.1238 15.0135 24.0034 14.7989 23.9273 14.5666ZM55 39.1364C55 39.6306 54.8068 40.1047 54.463 40.4542C54.1192 40.8037 53.6529 41 53.1667 41H1.83333C1.3471 41 0.880787 40.8037 0.536971 40.4542C0.193154 40.1047 0 39.6306 0 39.1364C0 38.6421 0.193154 38.1681 0.536971 37.8186C0.880787 37.4691 1.3471 37.2727 1.83333 37.2727H3.66667V14.9091C3.66667 13.9206 4.05297 12.9725 4.74061 12.2735C5.42824 11.5745 6.36087 11.1818 7.33333 11.1818H16.5V3.72727C16.5 2.73874 16.8863 1.79069 17.5739 1.09169C18.2616 0.392694 19.1942 0 20.1667 0H34.8333C35.8058 0 36.7384 0.392694 37.4261 1.09169C38.1137 1.79069 38.5 2.73874 38.5 3.72727V20.5H47.6667C48.6391 20.5 49.5718 20.8927 50.2594 21.5917C50.947 22.2907 51.3333 23.2387 51.3333 24.2273V37.2727H53.1667C53.6529 37.2727 54.1192 37.4691 54.463 37.8186C54.8068 38.1681 55 38.6421 55 39.1364ZM38.5 24.2273V37.2727H47.6667V24.2273H38.5ZM20.1667 37.2727H34.8333V3.72727H20.1667V37.2727ZM7.33333 37.2727H16.5V14.9091H7.33333V37.2727Z'
-                                    fill='black'
-                                />
-                            </svg>
-                            <Notification>
-                                <div
-                                    style={{
-                                        position: "relative",
-                                    }}
-                                >
-                                    <svg
-                                        xmlns='http://www.w3.org/2000/svg'
-                                        width='1.8rem'
-                                        height='1.8rem'
-                                        viewBox='0 0 34 40'
-                                        fill='none'
-                                        style={{
-                                            cursor: "pointer",
-                                        }}
-                                    >
-                                        <path
-                                            d='M19.5089 35.583C19.5089 35.9223 19.444 36.2582 19.3179 36.5716C19.1918 36.885 19.007 37.1698 18.774 37.4097C18.5411 37.6496 18.2645 37.8399 17.9601 37.9697C17.6557 38.0995 17.3295 38.1663 17 38.1663'
-                                            stroke='black'
-                                            strokeWidth='3'
-                                            strokeLinecap='round'
-                                            strokeLinejoin='round'
-                                        />
-                                        <path
-                                            d='M14.4911 35.583C14.4911 35.9223 14.556 36.2582 14.6821 36.5716C14.8082 36.885 14.993 37.1698 15.226 37.4097C15.4589 37.6496 15.7355 37.8399 16.0399 37.9697C16.3443 38.0995 16.6705 38.1663 17 38.1663'
-                                            stroke='black'
-                                            strokeWidth='3'
-                                            strokeLinecap='round'
-                                            strokeLinejoin='round'
-                                        />
-                                        <path
-                                            d='M14.4912 33V35.5833'
-                                            stroke='black'
-                                            strokeWidth='3'
-                                            strokeLinecap='round'
-                                            strokeLinejoin='round'
-                                        />
-                                        <path
-                                            d='M19.5089 33L19.5089 35.5833'
-                                            stroke='black'
-                                            strokeWidth='3'
-                                            strokeLinecap='round'
-                                            strokeLinejoin='round'
-                                        />
-                                        <path
-                                            d='M32.0531 30.417C27.0354 33.0003 19.5089 33.0003 17 33.0003'
-                                            stroke='black'
-                                            strokeWidth='3'
-                                            strokeLinecap='round'
-                                            strokeLinejoin='round'
-                                        />
-                                        <path
-                                            d='M32.0532 30.4171C32.0532 25.2505 27.0355 27.8338 27.0355 14.9171C27.0355 9.14061 22.0178 4.58398 19.5089 4.58398'
-                                            stroke='black'
-                                            strokeWidth='3'
-                                            strokeLinecap='round'
-                                            strokeLinejoin='round'
-                                        />
-                                        <path
-                                            d='M1.9469 30.417C6.9646 33.0003 14.4912 33.0003 17 33.0003'
-                                            stroke='black'
-                                            strokeWidth='3'
-                                            strokeLinecap='round'
-                                            strokeLinejoin='round'
-                                        />
-                                        <path
-                                            d='M1.9469 30.4161C1.9469 25.2495 6.9646 27.8328 6.9646 14.9161C6.9646 9.13964 11.9823 4.58301 14.4912 4.58301'
-                                            stroke='black'
-                                            strokeWidth='3'
-                                            strokeLinecap='round'
-                                            strokeLinejoin='round'
-                                        />
-                                        <path
-                                            d='M14.4911 4.58301C14.4911 3.89787 14.7555 3.24078 15.226 2.75632C15.6965 2.27185 16.3346 1.99967 17 1.99967'
-                                            stroke='black'
-                                            strokeWidth='3'
-                                            strokeLinecap='round'
-                                            strokeLinejoin='round'
-                                        />
-                                        <path
-                                            d='M19.5089 4.58301C19.5089 3.89787 19.2445 3.24078 18.774 2.75632C18.3035 2.27185 17.6654 1.99967 17 1.99967'
-                                            stroke='black'
-                                            strokeWidth='3'
-                                            strokeLinecap='round'
-                                            strokeLinejoin='round'
-                                        />
-                                    </svg>
-                                    <div
-                                        style={{
-                                            width: "15px",
-                                            height: "15px",
-                                            borderRadius: "50%",
-                                            backgroundColor: "#e55353",
-                                            color: "white",
-                                            fontSize: "0.7rem",
-                                            position: "absolute",
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            top: 0,
-                                            left: "50%",
-                                            zIndex: 10,
-                                        }}
-                                    >
-                                        <div>6</div>
-                                    </div>
-                                </div>
-                            </Notification>
-                        </div>
-                    </div>
+        <div className='flex items-center space-x-4'>
+          <div className='flex items-center justify-center gap-5'>
+            <button
+              className='font-semibold text-white border border-gray-300 rounded-lg w-44 h-11 bg-violet-700'
+              style={{ backgroundColor: "purple" }}
+            >
+              Create a registration
+            </button>
+            <div className='flex items-center gap-6'>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                width='2rem'
+                height='1.8rem'
+                viewBox='0 0 55 41'
+                fill='none'
+                style={{ cursor: "pointer" }}
+                onClick={() => navigate("/leaderboard")}
+              >
+                <path
+                  d='M23.9273 14.5666C23.8511 14.3345 23.8207 14.0893 23.8378 13.8451C23.8548 13.601 23.919 13.3627 24.0267 13.1437C24.1344 12.9248 24.2834 12.7296 24.4653 12.5693C24.6473 12.4089 24.8584 12.2865 25.0869 12.2091L27.8369 11.2773C28.1125 11.1839 28.406 11.1585 28.6932 11.203C28.9803 11.2475 29.253 11.3608 29.4887 11.5335C29.7243 11.7062 29.9163 11.9333 30.0486 12.1962C30.181 12.4591 30.25 12.7501 30.25 13.0455V22.3636C30.25 22.8579 30.0568 23.3319 29.713 23.6814C29.3692 24.0309 28.9029 24.2273 28.4167 24.2273C27.9304 24.2273 27.4641 24.0309 27.1203 23.6814C26.7765 23.3319 26.5833 22.8579 26.5833 22.3636V15.6312L26.2465 15.7454C26.018 15.8228 25.7769 15.8537 25.5367 15.8364C25.2965 15.819 25.0621 15.7538 24.8467 15.6443C24.6313 15.5349 24.4393 15.3834 24.2815 15.1984C24.1238 15.0135 24.0034 14.7989 23.9273 14.5666ZM55 39.1364C55 39.6306 54.8068 40.1047 54.463 40.4542C54.1192 40.8037 53.6529 41 53.1667 41H1.83333C1.3471 41 0.880787 40.8037 0.536971 40.4542C0.193154 40.1047 0 39.6306 0 39.1364C0 38.6421 0.193154 38.1681 0.536971 37.8186C0.880787 37.4691 1.3471 37.2727 1.83333 37.2727H3.66667V14.9091C3.66667 13.9206 4.05297 12.9725 4.74061 12.2735C5.42824 11.5745 6.36087 11.1818 7.33333 11.1818H16.5V3.72727C16.5 2.73874 16.8863 1.79069 17.5739 1.09169C18.2616 0.392694 19.1942 0 20.1667 0H34.8333C35.8058 0 36.7384 0.392694 37.4261 1.09169C38.1137 1.79069 38.5 2.73874 38.5 3.72727V20.5H47.6667C48.6391 20.5 49.5718 20.8927 50.2594 21.5917C50.947 22.2907 51.3333 23.2387 51.3333 24.2273V37.2727H53.1667C53.6529 37.2727 54.1192 37.4691 54.463 37.8186C54.8068 38.1681 55 38.6421 55 39.1364ZM38.5 24.2273V37.2727H47.6667V24.2273H38.5ZM20.1667 37.2727H34.8333V3.72727H20.1667V37.2727ZM7.33333 37.2727H16.5V14.9091H7.33333V37.2727Z'
+                  fill='black'
+                />
+              </svg>
+              <Notification>
+                <div
+                  style={{
+                    position: "relative",
+                  }}
+                >
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    width='1.8rem'
+                    height='1.8rem'
+                    viewBox='0 0 34 40'
+                    fill='none'
+                    style={{
+                      cursor: "pointer",
+                    }}
+                  >
+                    <path
+                      d='M19.5089 35.583C19.5089 35.9223 19.444 36.2582 19.3179 36.5716C19.1918 36.885 19.007 37.1698 18.774 37.4097C18.5411 37.6496 18.2645 37.8399 17.9601 37.9697C17.6557 38.0995 17.3295 38.1663 17 38.1663'
+                      stroke='black'
+                      strokeWidth='3'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    />
+                    <path
+                      d='M14.4911 35.583C14.4911 35.9223 14.556 36.2582 14.6821 36.5716C14.8082 36.885 14.993 37.1698 15.226 37.4097C15.4589 37.6496 15.7355 37.8399 16.0399 37.9697C16.3443 38.0995 16.6705 38.1663 17 38.1663'
+                      stroke='black'
+                      strokeWidth='3'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    />
+                    <path
+                      d='M14.4912 33V35.5833'
+                      stroke='black'
+                      strokeWidth='3'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    />
+                    <path
+                      d='M19.5089 33L19.5089 35.5833'
+                      stroke='black'
+                      strokeWidth='3'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    />
+                    <path
+                      d='M32.0531 30.417C27.0354 33.0003 19.5089 33.0003 17 33.0003'
+                      stroke='black'
+                      strokeWidth='3'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    />
+                    <path
+                      d='M32.0532 30.4171C32.0532 25.2505 27.0355 27.8338 27.0355 14.9171C27.0355 9.14061 22.0178 4.58398 19.5089 4.58398'
+                      stroke='black'
+                      strokeWidth='3'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    />
+                    <path
+                      d='M1.9469 30.417C6.9646 33.0003 14.4912 33.0003 17 33.0003'
+                      stroke='black'
+                      strokeWidth='3'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    />
+                    <path
+                      d='M1.9469 30.4161C1.9469 25.2495 6.9646 27.8328 6.9646 14.9161C6.9646 9.13964 11.9823 4.58301 14.4912 4.58301'
+                      stroke='black'
+                      strokeWidth='3'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    />
+                    <path
+                      d='M14.4911 4.58301C14.4911 3.89787 14.7555 3.24078 15.226 2.75632C15.6965 2.27185 16.3346 1.99967 17 1.99967'
+                      stroke='black'
+                      strokeWidth='3'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    />
+                    <path
+                      d='M19.5089 4.58301C19.5089 3.89787 19.2445 3.24078 18.774 2.75632C18.3035 2.27185 17.6654 1.99967 17 1.99967'
+                      stroke='black'
+                      strokeWidth='3'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    />
+                  </svg>
+                  <div
+                    style={{
+                      width: "15px",
+                      height: "15px",
+                      borderRadius: "50%",
+                      backgroundColor: "#e55353",
+                      color: "white",
+                      fontSize: "0.7rem",
+                      position: "absolute",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      top: 0,
+                      left: "50%",
+                      zIndex: 10,
+                    }}
+                  >
+                    <div>6</div>
+                  </div>
+                </div>
+              </Notification>
+            </div>
+          </div>
 
           <div className="relative w-[40px] h-[40px] rounded-[50%]">
             <img
