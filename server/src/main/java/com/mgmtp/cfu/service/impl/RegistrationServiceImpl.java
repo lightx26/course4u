@@ -16,12 +16,10 @@ import com.mgmtp.cfu.enums.CategoryStatus;
 import com.mgmtp.cfu.enums.CourseStatus;
 import com.mgmtp.cfu.enums.NotificationType;
 import com.mgmtp.cfu.enums.RegistrationStatus;
-import com.mgmtp.cfu.exception.MapperNotFoundException;
-import com.mgmtp.cfu.exception.RegistrationStatusNotFoundException;
+import com.mgmtp.cfu.exception.*;
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper;
 
 import com.mgmtp.cfu.entity.Registration;
-import com.mgmtp.cfu.exception.RegistrationNotFoundException;
 import com.mgmtp.cfu.mapper.DTOMapper;
 import com.mgmtp.cfu.mapper.factory.MapperFactory;
 
@@ -34,6 +32,7 @@ import com.mgmtp.cfu.util.AuthUtils;
 import com.mgmtp.cfu.util.NotificationUtil;
 import com.mgmtp.cfu.util.RegistrationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -46,8 +45,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
+import static com.mgmtp.cfu.util.AuthUtils.getCurrentUser;
 import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getRegistrationOverviewDTOS;
 import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getSortedRegistrations;
 
@@ -98,7 +99,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Override
     public PageResponse getMyRegistrationPage(int page, String status) {
         status = status.trim();
-        var userId = AuthUtils.getCurrentUser().getId();
+        var userId = getCurrentUser().getId();
 
         var myRegistrations = getSortedRegistrations(userId, registrationRepository);
 
@@ -165,7 +166,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         // save feedback
         var registrationFeedback = RegistrationFeedback.builder()
                 .comment(feedbackRequest.getComment())
-                .user(AuthUtils.getCurrentUser())
+                .user(getCurrentUser())
                 .registration(registration)
                 .createdDate(LocalDateTime.now())
                 .build();
@@ -187,6 +188,8 @@ public class RegistrationServiceImpl implements RegistrationService {
         );
         emailService.sendMessage(registration.getUser().getEmail(), "Registration declined!!","decline_registration_mail_template.xml", mailContentUnits);
     }
+
+
     @Override
     public Page<RegistrationOverviewDTO> getAllRegistrations(int page) {
         List<RegistrationStatus> excludedStatuses = List.of(RegistrationStatus.DRAFT);
@@ -222,7 +225,7 @@ public class RegistrationServiceImpl implements RegistrationService {
                 .duration(registrationRequest.getDuration())
                 .durationUnit(registrationRequest.getDurationUnit())
                 .lastUpdated(LocalDateTime.now())
-                .user(AuthUtils.getCurrentUser())
+                .user(getCurrentUser())
                 .build();
         Registration savedRegistration = registrationRepository.save(registration);
         if (savedRegistration == null) {
@@ -252,4 +255,21 @@ public class RegistrationServiceImpl implements RegistrationService {
             throw new RegistrationStatusNotFoundException("Status not found");
         }
     }
+
+    @Override
+    public void deleteRegistration(Long id) {
+        var registration = registrationRepository.findById(id)
+                .orElseThrow(() -> new BadRequestRunTimeException("Registration not found"));
+
+        if (!Objects.equals(getCurrentUser().getId(), registration.getUser().getId())) {
+            throw new ForbiddenException("You do not have permission to delete this registration.");
+        }
+
+        if (registration.getStatus() != RegistrationStatus.DRAFT && registration.getStatus() != RegistrationStatus.DISCARDED) {
+            throw new BadRequestRunTimeException("Registration must be in DRAFT or DISCARDED status to be deleted.");
+        }
+
+        registrationRepository.delete(registration);
+    }
+
 }

@@ -12,6 +12,8 @@ import com.mgmtp.cfu.entity.RegistrationFeedback
 import com.mgmtp.cfu.enums.CategoryStatus
 import com.mgmtp.cfu.entity.Category
 import com.mgmtp.cfu.enums.NotificationType
+import com.mgmtp.cfu.exception.BadRequestRunTimeException
+import com.mgmtp.cfu.exception.ForbiddenException
 import com.mgmtp.cfu.exception.MapperNotFoundException
 import com.mgmtp.cfu.exception.RegistrationNotFoundException
 import com.mgmtp.cfu.exception.RegistrationStatusNotFoundException
@@ -528,6 +530,58 @@ class RegistrationServiceImplSpec extends Specification {
         then:
         result == true
     }
+
+    def "should throw BadRequestRunTimeException if registration is not found"() {
+        given:
+        Long id = 1L
+        registrationRepository.findById(id)>>Optional.empty()
+
+        when:
+        registrationService.deleteRegistration(id)
+
+        then:
+        thrown(BadRequestRunTimeException)
+    }
+
+    def "should throw ForbiddenException if user is not the owner of the registration"() {
+        given:
+        Long id = 1L
+        Registration registration = Registration.builder().user(User.builder().id(2).build()).build()
+        registrationRepository.findById(id)>>Optional.of(registration)
+
+        when:
+        registrationService.deleteRegistration(id)
+
+        then:
+        thrown(ForbiddenException)
+    }
+
+    def "should throw BadRequestRunTimeException if registration status is not DRAFT or DISCARDED"() {
+        given:
+        Registration registration = Registration.builder().user(User.builder().id(1).build()).build()
+        Long id = 1L
+       registrationRepository.findById(id)>>Optional.of(registration)
+
+        when:
+        registrationService.deleteRegistration(id)
+
+        then:
+        thrown(BadRequestRunTimeException)
+    }
+
+    def "should delete registration if all conditions are met"() {
+        given:
+        Long id = 1L
+        Registration registration = Registration.builder().status(RegistrationStatus.DISCARDED).user(User.builder().id(1).build()).build()
+        registrationRepository.findById(id)>>Optional.of(registration)
+
+        when:
+        registrationService.deleteRegistration(id)
+
+        then:
+        1 * registrationRepository.delete(registration)
+    }
+
 
 
 }

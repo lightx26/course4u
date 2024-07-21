@@ -81,5 +81,13 @@ class RegistrationControllerSpec extends Specification {
         then:
             response.statusCode.value() == 200
     }
+    def 'test delete registration return ok response'() {
+        given:
+        registrationService.deleteRegistration(_ as Long)>>{}
+        when:
+        registrationController.deleteRegistration(1)
+        then:
+        noExceptionThrown()
+    }
 
 }

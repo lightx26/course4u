@@ -59,4 +59,11 @@ public class RegistrationController {
         registrationService.declineRegistration(id,feedbackRequest);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public void deleteRegistration(@PathVariable Long id) {
+        registrationService.deleteRegistration(id);
+    }
+
 }
