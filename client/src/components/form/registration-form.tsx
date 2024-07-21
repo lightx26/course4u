@@ -249,6 +249,7 @@ export const RegistrationsForm = ({
                 status={status!}
                 setIsEdit={setIsEdit}
                 isEdit={isEdit}
+                id={id}
               />
             </div>
           )}

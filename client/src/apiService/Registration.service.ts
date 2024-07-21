@@ -43,17 +43,17 @@ export const declineRegistration = async (
     }
 };
 
-export const deleteRegistration = async (id: number) => {
+export const removeRegistration = async (id: number) => {
     try {
         await instance.delete(`/registrations/${id}`);
-        toast.success("Registration deleted", {
+        toast.success("Registration removed", {
             style: { color: "green" },
-            description: "Registration deleted successfully",
+            description: "Registration removed successfully!!!",
         });
     } catch (error) {
-        toast.error("Failed to delete registration", {
+        toast.error("Failed to remove registration", {
             style: { color: "red" },
-            description: "Failed to delete registration",
+            description: "Something went wrong, please try again!!!",
         });
     }
 }
