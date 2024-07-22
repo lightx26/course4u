@@ -90,7 +90,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
           value: category.id + "",
         }));
         setCategories(categories);
-      } catch (error) { }
+      } catch (error) {}
     };
     getCategories();
   }, []);
@@ -168,8 +168,10 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
     try {
       const data = await fetchOpenGraphData(courseLink!);
       if (data) {
-        if (data.title != null) form?.setValue("name", data.title);
-        form?.trigger("name");
+        if (data.title != null) {
+          form?.setValue("name", data.title);
+          form?.trigger("name");
+        }
         if (data.url != null && data.url != "")
           form?.setValue("link", standardizeUrl(data.url));
         if (data.site_name != null) {
@@ -293,7 +295,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a platform to this course" />
+                        <SelectValue placeholder="Select a platform for this course" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -352,7 +354,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                     defaultOptions={categories}
                     options={categories}
                     value={field.value || []}
-                    placeholder="Select category you like..."
+                    placeholder="Select category..."
                     creatable={true}
                     disabled={!isEdit}
                     form={form}

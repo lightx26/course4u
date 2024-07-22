@@ -16,7 +16,7 @@ services:
     networks:
       - "cfu"
     labels:
-      - "traefik.http.routers.cfu-server-staging-cfu.rule=(PathPrefix(`/staging/api`) || PathPrefix(`/staging/swagger-ui`) || PathPrefix(`/staging/api-docs/`)"
+      - "traefik.http.routers.cfu-server-staging-cfu.rule=(PathPrefix(`/staging/api`) || PathPrefix(`/staging/swagger-ui`) || PathPrefix(`/staging/api-docs/`))"
       - "traefik.http.middlewares.cfu-server-staging-middleware.replacepathregex.regex=^/staging/api/(.*)"
       - "traefik.http.middlewares.cfu-server-staging-middleware.replacepathregex.replacement=/api/$$1"
       - "traefik.http.routers.cfu-server-staging-cfu.middlewares=cfu-server-staging-middleware"

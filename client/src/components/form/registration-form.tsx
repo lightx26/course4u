@@ -31,6 +31,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import RegistrationAdminSection from "../admin.components/registrations.components/registration-admin-section";
 import FeedbackList from "../feedback-list";
+import { useRegistrationModal } from "../../hooks/use-registration-modal";
 
 type RegistrationsFormProps = RegistrationsProps & {
   isEdit: boolean;
@@ -50,6 +51,7 @@ export const RegistrationsForm = ({
   const form = useForm<z.infer<typeof registrationSchema>>({
     resolver: zodResolver(registrationSchema),
     mode: "onBlur",
+    shouldFocusError: false,
     defaultValues: {
       name: "",
       teacherName: "",
@@ -62,6 +64,7 @@ export const RegistrationsForm = ({
       thumbnailUrl: "",
     },
   });
+  const { open } = useRegistrationModal((state) => state);
   const user = useSelector((state: RootState) => state.user);
   useEffect(() => {
     if (id) {
@@ -128,6 +131,9 @@ export const RegistrationsForm = ({
           fontWeight: "bold",
           textAlign: "center",
         },
+        onAutoClose: () => {
+          open(false);
+        },
       });
     } else if (status === 500) {
       toast.error("Thumbnail size should be smaller than 10MB", {
@@ -161,11 +167,11 @@ export const RegistrationsForm = ({
   }
 
   return (
-    <div className='flex flex-col'>
+    <div className="flex flex-col w-full">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className='w-full space-y-8 '
+          className="w-full space-y-8 "
         >
           <CourseForm
             //eslint-disable-next-line
@@ -175,27 +181,22 @@ export const RegistrationsForm = ({
             isEdit={isEdit}
             registrationStatus={status}
           />
-          <div className='flex w-[60%] pr-4 gap-2'>
+          <div className="flex w-[60%] pr-4 gap-2">
             <FormField
               control={form.control}
-              name='duration'
+              name="duration"
               render={({ field }) => (
-                <FormItem className='flex-1'>
+                <FormItem className="flex-1">
                   <FormLabel>
-                    Duration{" "}
-                    <span className='text-red-500'>*</span>
+                    Duration <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
                     <Input
-                      type='number'
-                      placeholder='Duration'
+                      type="number"
+                      placeholder="Duration"
                       {...field}
-                      onChange={(event) =>
-                        field.onChange(
-                          +event.target.value
-                        )
-                      }
-                      className=''
+                      onChange={(event) => field.onChange(+event.target.value)}
+                      className=""
                       disabled={!isEdit}
                     />
                   </FormControl>
@@ -205,32 +206,23 @@ export const RegistrationsForm = ({
             />
             <FormField
               control={form.control}
-              name='durationUnit'
+              name="durationUnit"
               render={({ field }) => (
-                <FormItem className='w-[100px] mt-8'>
+                <FormItem className="w-[100px] mt-8">
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={
-                      durationUnit ||
-                      form.watch("durationUnit")
-                    }
+                    defaultValue={durationUnit || form.watch("durationUnit")}
                     disabled={!isEdit}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder='Select a level for this course' />
+                        <SelectValue placeholder="Select a level for this course" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value='DAY'>
-                        Days
-                      </SelectItem>
-                      <SelectItem value='WEEK'>
-                        Weeks
-                      </SelectItem>
-                      <SelectItem value='MONTH'>
-                        Months
-                      </SelectItem>
+                      <SelectItem value="DAY">Days</SelectItem>
+                      <SelectItem value="WEEK">Weeks</SelectItem>
+                      <SelectItem value="MONTH">Months</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -239,11 +231,9 @@ export const RegistrationsForm = ({
             />
           </div>
           {user.user?.role === "USER" && (
-            <div className='space-y-5'>
+            <div className="space-y-5">
               {registrationFeedbacks.length > 0 && (
-                <FeedbackList
-                  feedbacks={registrationFeedbacks}
-                />
+                <FeedbackList feedbacks={registrationFeedbacks} />
               )}
               <RegistrationButton
                 status={status!}
@@ -256,7 +246,7 @@ export const RegistrationsForm = ({
         </form>
       </Form>
       {user.user?.role === "ADMIN" && (
-        <div className='space-y-5'>
+        <div className="space-y-5">
           {registrationFeedbacks.length > 0 && (
             <FeedbackList feedbacks={registrationFeedbacks} />
           )}

@@ -15,6 +15,7 @@ const CreateCourse = () => {
   const form = useForm<z.infer<typeof courseSchema>>({
     resolver: zodResolver(courseSchema),
     mode: "onBlur",
+    shouldFocusError: false,
     defaultValues: {
       name: "",
       teacherName: "",

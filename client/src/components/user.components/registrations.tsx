@@ -10,6 +10,8 @@ import { RegistrationStatus } from "./registration-status";
 import { Skeleton } from "../ui/skeleton";
 import { userRegistrationSchema } from "../../schemas/user-schema";
 import { Feedback } from "../feedback-list";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store/store";
 
 export type RegistrationsProps = {
   id?: number;
@@ -30,6 +32,8 @@ const Registrations = ({ className, id }: Props) => {
     null
   );
   const [isLoading, setIsLoading] = useState(false);
+  const user = useSelector((state: RootState) => state.user.user);
+
   useEffect(() => {
     const getDetailRegistration = async () => {
       if (!id) return;
@@ -49,10 +53,20 @@ const Registrations = ({ className, id }: Props) => {
     getDetailRegistration();
   }, [id]);
   if (isLoading) return <RegistrationSkeleton />;
-  let avatarPath = (`${import.meta.env.BASE_URL}/avatar/Default Avatar.svg`).replace('//', '/');
-  if (registration != null && registration != undefined && registration.user != null && registration.user != undefined && registration.user.avatarUrl != null && registration.user.avatarUrl != undefined && registration.user.avatarUrl != "") {
-    registration.user.avatarUrl.startsWith('data:') || registration.user.avatarUrl.startsWith('http') ? registration.user.avatarUrl : avatarPath = `${import.meta.env.VITE_BACKEND_URL}${registration?.user?.avatarUrl}`;
+  let avatarPath = `${
+    import.meta.env.BASE_URL
+  }/avatar/Default Avatar.svg`.replace("//", "/");
+  if (registration && registration.user && registration.user.avatarUrl) {
+    registration.user.avatarUrl.startsWith("data:") ||
+    registration.user.avatarUrl.startsWith("http")
+      ? registration.user.avatarUrl
+      : (avatarPath = `${import.meta.env.VITE_BACKEND_URL}${
+          registration?.user?.avatarUrl
+        }`);
+  } else if (user.role.toUpperCase() === "USER") {
+    avatarPath = `${import.meta.env.VITE_BACKEND_URL}${user.avatarUrl}`;
   }
+
   return (
     <div
       className={cn(
@@ -60,15 +74,15 @@ const Registrations = ({ className, id }: Props) => {
         className
       )}
     >
-      <h2 className='text-[#1E293B] text-[40px] tracking-tighter leading-8 font-semibold font-inter'>
-        Detail of registration
+      <h2 className="text-[#1E293B] text-[40px] tracking-tighter leading-8 font-semibold font-inter">
+        {id ? "Detail of registration" : "Create a registration"}
       </h2>
-      <div className='flex items-center justify-between w-full'>
+      <div className="flex items-center justify-between w-full">
         <RegistrationUser
           fullName={registration?.user?.fullName || ""}
           avatarUrl={avatarPath}
-          email={registration?.user?.email || ""}
-          telephone={registration?.user?.telephone || ""}
+          email={registration?.user?.email || user.email}
+          telephone={registration?.user?.telephone || user.telephone}
         />
         <RegistrationStatus status={registration?.status} />
       </div>
@@ -79,9 +93,7 @@ const Registrations = ({ className, id }: Props) => {
         status={id ? registration?.status : undefined}
         course={id ? registration?.course : undefined}
         isEdit={isEdit}
-        registrationFeedbacks={
-          registration?.registrationFeedbacks || []
-        }
+        registrationFeedbacks={registration?.registrationFeedbacks || []}
         setIsEdit={setIsEdit}
       />
     </div>
@@ -90,7 +102,7 @@ const Registrations = ({ className, id }: Props) => {
 
 export const RegistrationSkeleton = () => {
   return (
-    <div className="w-[1352px] pt-5 px-10 pb-10 flex flex-col items-center gap-5 rounded-[30px] mx-auto my-8">
+    <div className="w-[1352px] pt-5 px-5 pb-10 flex flex-col items-center gap-5 rounded-[30px] mx-auto my-8">
       <Skeleton className="w-3/5 h-10 mb-4 skeleton-title"></Skeleton>
       <div className="flex items-center justify-between w-full mb-5">
         <div className="flex gap-3">

@@ -1,7 +1,7 @@
 export default function handleThumbnailUrl(url?:string) {
     try {
        if (url == undefined || url == "" ){
-            return "/course/default_course_thumbnail.png"
+            return "/course/Default Course thumnail 1.svg"
        } 
        if (url.startsWith("http")){
             return url;
