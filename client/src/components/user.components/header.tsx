@@ -11,8 +11,6 @@ import {
 import { Notification } from "../notification";
 import { BarChart3Icon, BellIcon, SearchIcon } from "lucide-react";
 import { deleteAllFilterItem } from "../../redux/slice/searchFilterItem.slice";
-import UserCard from "./UserCard";
-import AdminCard from "../admin.components/mainPage.components/AdminCard";
 import { useRegistrationModal } from "../../hooks/use-registration-modal";
 import AvatarDropdown from "./AvatarDropdown";
 
@@ -20,12 +18,7 @@ const HeaderHomepage: React.FC = () => {
   const searchTerm = useSelector(
     (state: RootState) => state.courses.searchTerm
   );
-  const [isDropdownAvatarOpen, setIsDropdownAvatarOpen] =
-    useState<boolean>(false);
   const { open } = useRegistrationModal((state) => state);
-  const toggleDropdown = () => {
-    setIsDropdownAvatarOpen(!isDropdownAvatarOpen);
-  };
   const userData = useSelector((state: RootState) => state.user.user);
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
@@ -50,7 +43,7 @@ const HeaderHomepage: React.FC = () => {
     } else if (
       userData.role.toUpperCase() == "ADMIN" &&
       window.location.pathname !=
-        (basePath + "/admin/courses").replace("//", "/")
+      (basePath + "/admin/courses").replace("//", "/")
     ) {
       goToAdminCoursesPage();
     }

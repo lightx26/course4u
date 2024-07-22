@@ -49,7 +49,7 @@ export default function MyRegistrationComponents({ registration }: PropsType) {
         onClick={() => open(true, +registration.id!)}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
-        className="pb-5 mb-3 w-full overflow-hidden text-sm leading-normal transition-shadow bg-white rounded-md shadow cursor-pointer duration-250"
+        className="w-full pb-5 mb-3 overflow-hidden text-sm leading-normal transition-shadow bg-white rounded-md shadow cursor-pointer duration-250"
       >
         <div>
           <img
@@ -71,7 +71,7 @@ export default function MyRegistrationComponents({ registration }: PropsType) {
                 <span>
                   {registration.status &&
                     registration.status.charAt(0).toUpperCase() +
-                      registration.status.slice(1).toLowerCase()}
+                    registration.status.slice(1).toLowerCase()}
                 </span>
               ) : (
                 <span>Declined (Document)</span>
@@ -91,20 +91,19 @@ export default function MyRegistrationComponents({ registration }: PropsType) {
                     {startDate === null
                       ? "Not started yet"
                       : `${String(startDate.getDate()).padStart(
-                          2,
-                          "0"
-                        )}/${String(startDate.getMonth() + 1).padStart(
-                          2,
-                          "0"
-                        )}/${startDate.getFullYear()}`}
+                        2,
+                        "0"
+                      )}/${String(startDate.getMonth() + 1).padStart(
+                        2,
+                        "0"
+                      )}/${startDate.getFullYear()}`}
                     {startDate === null || endDate === null
                       ? ""
-                      : `${
-                          " - " + String(endDate.getDate()).padStart(2, "0")
-                        }/${String(endDate.getMonth() + 1).padStart(
-                          2,
-                          "0"
-                        )}/${endDate.getFullYear()}`}
+                      : `${" - " + String(endDate.getDate()).padStart(2, "0")
+                      }/${String(endDate.getMonth() + 1).padStart(
+                        2,
+                        "0"
+                      )}/${endDate.getFullYear()}`}
                   </p>{" "}
                 </p>
               </div>
