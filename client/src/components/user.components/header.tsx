@@ -30,14 +30,9 @@ const HeaderHomepage: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const basePath = `${import.meta.env.VITE_BASE_URL}` || "/";
   const goToHomePage = () => {
-    const homepagePath =
-      userData.role.toUpperCase() == "ADMIN"
-        ? "/admin"
-        : userData.role.toUpperCase() == "ACCOUNTANT"
-        ? "/accountant"
-        : "/";
-    const homePathWithBasePath = (basePath + homepagePath).replace("//", "/");
-    if (window.location.pathname === homePathWithBasePath) {
+    const homepagePath = userData.role.toUpperCase() == 'ADMIN' ? '/admin' : userData.role.toUpperCase() == 'ACCOUNTANT' ? '/accountant' : "/";
+    const homePathWithBasePath = (basePath + homepagePath).replace('//', '/');
+    if (window.location.pathname.replace(/\/+$/, '') === homePathWithBasePath.replace(/\/+$/, '')) {
       window.location.reload();
     } else {
       navigate(homepagePath);
@@ -82,18 +77,9 @@ const HeaderHomepage: React.FC = () => {
 
   //For Role Accountant (TBU - To be Updated)
 
-  const avatarUrl =
-    userData.avatarUrl?.startsWith("http") ||
-    userData.avatarUrl?.startsWith("data")
-      ? userData.avatarUrl
-      : userData.avatarUrl != null &&
-        userData.avatarUrl != undefined &&
-        userData.avatarUrl != ""
-      ? `${import.meta.env.VITE_BACKEND_URL}${userData.avatarUrl}`
-      : `${import.meta.env.BASE_URL}/avatar/Default Avatar.svg`.replace(
-          "//",
-          "/"
-        );
+  const avatarUrl = userData.avatarUrl?.startsWith("http") || userData.avatarUrl?.startsWith("data")
+    ? userData.avatarUrl
+    : (userData.avatarUrl) ? `${import.meta.env.VITE_BACKEND_URL}${userData.avatarUrl}` : (`${import.meta.env.BASE_URL}/avatar/Default Avatar.svg`).replace('//', '/');
 
   return (
     <header
