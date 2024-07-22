@@ -211,13 +211,8 @@ public class RegistrationServiceImpl implements RegistrationService {
                 .lastUpdated(LocalDateTime.now())
                 .user(getCurrentUser())
                 .build();
-        Registration savedRegistration = registrationRepository.save(registration);
-        if (savedRegistration == null) {
-            throw new RuntimeException("Cannot create registration");
-        }
-        else {
-            return true;
-        }
+        registrationRepository.save(registration);
+        return true;
     }
 
     @Override
