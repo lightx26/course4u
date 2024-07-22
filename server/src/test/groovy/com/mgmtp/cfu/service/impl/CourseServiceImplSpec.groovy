@@ -91,6 +91,7 @@ class CourseServiceImplSpec extends Specification {
 
         categoryService.findCategoriesByIds(_) >> List.of(mockCategory)
         courseRepository.save(_) >> course
+        courseRepository.findFirstByLinkIgnoreCaseAndStatus(_, _) >> Optional.empty()
         when:
         CourseResponse courseResponse = courseService.createCourse(courseRequest)
 
@@ -139,7 +140,7 @@ class CourseServiceImplSpec extends Specification {
                 .build()
         categoryService.findCategoriesByIds(_) >> List.of(mockCategory)
         courseRepository.save(_) >> course
-
+        courseRepository.findFirstByLinkIgnoreCaseAndStatus(_, _) >> Optional.empty()
         when:
         CourseResponse courseResponse = courseService.createCourse(courseRequest)
 
