@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 @RestController
 @RequestMapping("/api/registrations")
 public class RegistrationController {
+
     private final RegistrationService registrationService;
 
     @GetMapping("/{id}")
@@ -41,7 +42,6 @@ public class RegistrationController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
     @GetMapping("/my-registration")
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -73,6 +73,12 @@ public class RegistrationController {
         registrationService.declineRegistration(id,feedbackRequest);
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/finish-learning")
+    public ResponseEntity<RegistrationDetailDTO> finishLearning(@RequestBody RegistrationDetailDTO registrationDetailDTO) {
+        return ResponseEntity.ok(registrationService.calculateScore(registrationDetailDTO));
+    }
+
 
     @PostMapping("/{id}/close")
     @PreAuthorize("hasRole('ROLE_ADMIN')")

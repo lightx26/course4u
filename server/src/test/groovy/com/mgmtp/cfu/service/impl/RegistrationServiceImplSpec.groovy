@@ -2,12 +2,17 @@ package com.mgmtp.cfu.service.impl
 
 import com.mgmtp.cfu.dto.coursedto.CourseResponse
 import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest
+import com.mgmtp.cfu.dto.coursedto.CourseRegistrationDTO
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO
 import com.mgmtp.cfu.exception.BadRequestRuntimeException
 import com.mgmtp.cfu.exception.ConflictRuntimeException
 import com.mgmtp.cfu.dto.MailContentUnit
-import com.mgmtp.cfu.enums.CourseLevel
 import com.mgmtp.cfu.enums.CoursePlatform
+import com.mgmtp.cfu.entity.Course
+import com.mgmtp.cfu.entity.User
+import com.mgmtp.cfu.enums.CourseLevel
+import com.mgmtp.cfu.enums.DurationUnit
+import com.mgmtp.cfu.exception.MapperNotFoundException
 import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO
 import com.mgmtp.cfu.enums.CategoryStatus
 import com.mgmtp.cfu.entity.Category
@@ -53,16 +58,19 @@ import java.time.LocalDateTime
 
 class RegistrationServiceImplSpec extends Specification {
 
-    RegistrationRepository registrationRepository = Mock(RegistrationRepository)
-    MapperFactory<Registration> registrationMapperFactory = Mock(MapperFactory)
-    RegistrationOverviewMapper registrationOverviewMapper = Mock(RegistrationOverviewMapper)
-    CourseRepository courseRepository = Mock(CourseRepository)
-    NotificationService notificationService = Mock(NotificationService)
-    RegistrationFeedbackService feedbackService = Mock(RegistrationFeedbackService)
-    IEmailService emailService = Mock(IEmailService)
-    def registrationDetailMapper = Mock(RegistrationDetailMapper)
-
+    RegistrationRepository registrationRepository = Mock()
+    MapperFactory<Registration> registrationMapperFactory = Mock()
+    RegistrationOverviewMapper registrationOverviewMapper = Mock()
+    CourseRepository courseRepository = Mock()
+    NotificationService notificationService = Mock()
+    RegistrationFeedbackService feedbackService = Mock()
+    IEmailService emailService = Mock()
+    RegistrationDetailMapper registrationDetailMapper = Mock()
+    NotificationRepository notificationRepository = Mock()
+    RegistrationFeedbackRepository registrationFeedbackRepository = Mock()
     CourseService courseService = Mock()
+    IEmailService emailService = Mock()
+
     @Subject
     RegistrationServiceImpl registrationService = new RegistrationServiceImpl(
             registrationRepository, registrationMapperFactory, registrationOverviewMapper,
@@ -185,7 +193,6 @@ class RegistrationServiceImplSpec extends Specification {
         SecurityContextHolder.context.authentication = authentication
         registrationRepository.getByUserId(userId,_) >> List.of(registrations)
         registrationMapperFactory.getDTOMapper(_)>> Optional.of(registrationOverviewMapper)
-
         when:
         def result = registrationService.getMyRegistrationPage(1, status)
         then:
@@ -289,7 +296,6 @@ class RegistrationServiceImplSpec extends Specification {
     /*
      * Test cases for getAllRegistrations and getRegistrationByStatus
      */
-
     def "getAllRegistrations should return registration list"() {
         given:
             def page = 1
@@ -394,6 +400,7 @@ class RegistrationServiceImplSpec extends Specification {
         def ex = thrown(RegistrationStatusNotFoundException)
         ex.message == "Status not found"
     }
+
     def "should approve registration when status is submitted and no duplicate course exists"() {
         given:
         Long registrationId = 1L
@@ -563,6 +570,35 @@ class RegistrationServiceImplSpec extends Specification {
 
         then:
         result == true
+    }
+
+    def "Calculate score and return RegistrationDetailDTO"() {
+        given:
+        CourseRegistrationDTO courseRegistrationDTO = CourseRegistrationDTO.builder().level(CourseLevel.ADVANCED).build()
+        RegistrationDetailDTO registrationDetailDTO = RegistrationDetailDTO.builder()
+                                                                           .id(1)
+                                                                           .status(RegistrationStatus.APPROVED)
+                                                                           .startDate(LocalDate.of(2022, 1, 31))
+                                                                           .endDate(LocalDate.of(2022, 2, 13))
+                                                                           .duration(1)
+                                                                           .durationUnit(DurationUnit.WEEK)
+                                                                           .course(courseRegistrationDTO)
+                                                                           .build()
+
+        Registration registration = Registration.builder()
+                                                .id(1)
+                                                .status(RegistrationStatus.DONE)
+                                                .score(1008)
+                                                .build()
+
+        when:
+        RegistrationDetailDTO result = registrationService.calculateScore(registrationDetailDTO)
+
+        then:
+        registrationDetailMapper.toEntity(_) >> new Registration()
+        1 * registrationRepository.save(_)
+        result.getStatus() == RegistrationStatus.DONE
+        result.score == registration.score
     }
 
     def "should close the registration without sending feedback"() {

@@ -12,6 +12,7 @@ import java.util.List;
 
 @Repository
 public interface RegistrationRepository extends JpaRepository<Registration, Long> {
+
     List<Registration> getByUserId(Long userId, Sort sort);
 
     @Query("SELECT r FROM Registration r WHERE r.status NOT IN ?1")

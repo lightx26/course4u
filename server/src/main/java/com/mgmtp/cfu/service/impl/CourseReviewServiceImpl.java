@@ -1,13 +1,18 @@
 package com.mgmtp.cfu.service.impl;
 
+import com.mgmtp.cfu.dto.coursereviewdto.CourseReviewDto;
 import com.mgmtp.cfu.dto.coursereviewdto.CourseReviewOverviewDTO;
 import com.mgmtp.cfu.dto.coursereviewdto.RatingsPage;
+import com.mgmtp.cfu.entity.Course;
 import com.mgmtp.cfu.entity.CourseReview;
+import com.mgmtp.cfu.exception.CourseNotFoundException;
 import com.mgmtp.cfu.exception.MapperNotFoundException;
 import com.mgmtp.cfu.mapper.factory.impl.CourseReviewMapperFactory;
+import com.mgmtp.cfu.repository.CourseRepository;
 import com.mgmtp.cfu.repository.CourseReviewRepository;
 import com.mgmtp.cfu.service.CourseReviewService;
 import com.mgmtp.cfu.specification.CourseReviewSpecifications;
+import com.mgmtp.cfu.util.AuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,37 +23,40 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.time.LocalDateTime;
 
 @Service
 public class CourseReviewServiceImpl implements CourseReviewService {
 
     private final CourseReviewRepository courseReviewRepository;
     private final CourseReviewMapperFactory courseReviewMapperFactory;
+    private final CourseRepository courseRepository;
 
     @Autowired
-    public CourseReviewServiceImpl(CourseReviewRepository courseReviewRepository, CourseReviewMapperFactory courseReviewMapperFactory) {
+    public CourseReviewServiceImpl(CourseReviewRepository courseReviewRepository, CourseReviewMapperFactory courseReviewMapperFactory, CourseRepository courseRepository) {
         this.courseReviewRepository = courseReviewRepository;
         this.courseReviewMapperFactory = courseReviewMapperFactory;
+        this.courseRepository = courseRepository;
     }
 
     @Override
     public RatingsPage getRatingsOfCourse(Long courseId) {
         RatingsPage ratingsPage = new RatingsPage();
-
+    
         Double avgRating = courseReviewRepository.calculateAvgRating(courseId);
         if (avgRating == null) {
             return ratingsPage;
         }
-
+    
         ratingsPage.setAverageRating(avgRating);
-
+    
         Map<Integer, Long> ratingsMap = ratingsPage.getDetailRatings();
-
+    
         List<Object[]> detailsRatings = courseReviewRepository.getRatingsInCourse(courseId);
         for (Object[] obj : detailsRatings) {
             ratingsMap.put((Integer) obj[0], ((Long) obj[1]));
         }
-
+    
         return ratingsPage;
     }
 
@@ -86,6 +94,23 @@ public class CourseReviewServiceImpl implements CourseReviewService {
         return reviewsPage;
     }
 
+    @Override
+    public CourseReview saveReview(CourseReviewDto courseReviewDto) {
+        CourseReview courseReview = new CourseReview();
+    
+        courseReview.setRating(courseReviewDto.getRating());
+        courseReview.setComment(courseReviewDto.getComment());
+        courseReview.setCreatedDate(LocalDateTime.now());
+        courseReview.setUser(AuthUtils.getCurrentUser());
+    
+        Course course = courseRepository.findById(courseReviewDto.getCourseId())
+                                        .orElseThrow(() -> new CourseNotFoundException("Course with id '" + courseReviewDto.getCourseId() + "' not found"));
+    
+        courseReview.setCourse(course);
+    
+        return courseReviewRepository.save(courseReview);
+    }
+
     private Page<CourseReview> geReviewsOfCourseBySpec(Long courseId, Integer starFilter, Pageable pageable) {
         Specification<CourseReview> spec = CourseReviewSpecifications.hasCourseId(courseId);
 
@@ -95,4 +120,5 @@ public class CourseReviewServiceImpl implements CourseReviewService {
 
         return courseReviewRepository.findAll(spec, pageable);
     }
+
 }

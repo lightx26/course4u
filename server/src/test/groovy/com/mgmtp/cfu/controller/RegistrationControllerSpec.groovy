@@ -2,12 +2,15 @@ package com.mgmtp.cfu.controller
 
 import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest
 import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO
+import com.mgmtp.cfu.enums.RegistrationStatus
 import com.mgmtp.cfu.exception.RegistrationNotFoundException
 import com.mgmtp.cfu.exception.UnknownErrorException
 import com.mgmtp.cfu.service.RegistrationService
 import org.springframework.http.ResponseEntity
 import spock.lang.Specification
 import spock.lang.Subject
+
+import java.time.LocalDate
 
 class RegistrationControllerSpec extends Specification {
     def registrationService = Mock(RegistrationService)
@@ -97,6 +100,30 @@ class RegistrationControllerSpec extends Specification {
         registrationController.deleteRegistration(1)
         then:
         noExceptionThrown()
+    }
+
+    def "finishLearning return RegistrationDetailDTO"() {
+        given:
+        RegistrationDetailDTO registrationDetailDTO = RegistrationDetailDTO.builder()
+                                                                           .id(1)
+                                                                           .status(RegistrationStatus.APPROVED)
+                                                                           .startDate(LocalDate.of(2022, 1, 31))
+                                                                           .endDate(LocalDate.of(2022, 2, 12))
+                                                                           .build()
+        RegistrationDetailDTO mockResult = RegistrationDetailDTO.builder()
+                                                                .id(1)
+                                                                .status(RegistrationStatus.APPROVED)
+                                                                .startDate(LocalDate.of(2022, 1, 31))
+                                                                .endDate(LocalDate.of(2022, 2, 12))
+                                                                .score(1008)
+                                                                .build()
+
+        when:
+        registrationService.calculateScore(registrationDetailDTO) >> mockResult
+        ResponseEntity<RegistrationDetailDTO> result = registrationController.finishLearning(registrationDetailDTO)
+
+        then:
+        result.body.getScore() == mockResult.getScore()
     }
 
     def "should return ok response when close registration successfully"() {

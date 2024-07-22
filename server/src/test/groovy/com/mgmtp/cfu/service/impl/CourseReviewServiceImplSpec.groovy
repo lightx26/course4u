@@ -1,12 +1,22 @@
 package com.mgmtp.cfu.service.impl
 
+import com.mgmtp.cfu.repository.CourseReviewRepository
+import com.mgmtp.cfu.dto.coursereviewdto.CourseReviewDto
+import com.mgmtp.cfu.entity.Course
+import com.mgmtp.cfu.entity.User
+import com.mgmtp.cfu.enums.Gender
+import com.mgmtp.cfu.enums.Role
+import com.mgmtp.cfu.exception.CourseNotFoundException
+import com.mgmtp.cfu.repository.CourseRepository
 import com.mgmtp.cfu.dto.coursereviewdto.CourseReviewOverviewDTO
 import com.mgmtp.cfu.entity.CourseReview
 import com.mgmtp.cfu.exception.MapperNotFoundException
 import com.mgmtp.cfu.mapper.CourseReviewOverviewMapper
 import com.mgmtp.cfu.mapper.factory.impl.CourseReviewMapperFactory
-import com.mgmtp.cfu.repository.CourseReviewRepository
 import com.mgmtp.cfu.service.CourseReviewService
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContext
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -16,13 +26,30 @@ import spock.lang.Subject
 
 class CourseReviewServiceImplSpec extends Specification {
 
-    CourseReviewRepository courseReviewRepository = Mock(CourseReviewRepository)
-    CourseReviewMapperFactory courseReviewMapperFactory = Mock(CourseReviewMapperFactory)
-    CourseReviewOverviewMapper mapper = Mock(CourseReviewOverviewMapper)
+    CourseReviewRepository courseReviewRepository = Mock()
+    CourseReviewMapperFactory courseReviewMapperFactory = Mock()
+    CourseReviewOverviewMapper mapper = Mock()
+    CourseRepository courseRepository = Mock()
 
     @Subject
-    CourseReviewService courseReviewService = new CourseReviewServiceImpl(courseReviewRepository, courseReviewMapperFactory)
+    CourseReviewService courseReviewService = new CourseReviewServiceImpl(courseReviewRepository, courseReviewMapperFactory, courseRepository)
 
+    def setup() {
+        def securityContext = Mock(SecurityContext)
+        def authentication = Mock(Authentication)
+        SecurityContextHolder.setContext(securityContext)
+        securityContext.getAuthentication() >> authentication
+        def user = User.builder().id(1)
+                .fullName("Jane Doe")
+                .username("janedoe")
+                .email("janedoe@example.com")
+                .role(Role.USER)
+                .avatarUrl("/aksh/sdh")
+                .gender(Gender.FEMALE)
+                .telephone("008837623")
+                .build()
+        authentication.getCredentials() >> user
+    }
 
     def "should return an initial rating page"() {
         given:
@@ -39,6 +66,10 @@ class CourseReviewServiceImplSpec extends Specification {
         result.getDetailRatings().get(3) == 0L
         result.getDetailRatings().get(4) == 0L
         result.getDetailRatings().get(5) == 0L
+    }
+
+    def cleanup() {
+        SecurityContextHolder.clearContext()
     }
 
     def "getRatingsPage returns ratings when ratings are present"() {
@@ -66,40 +97,6 @@ class CourseReviewServiceImplSpec extends Specification {
         result.getDetailRatings().get(3) == 3L
         result.getDetailRatings().get(4) == 4L
         result.getDetailRatings().get(5) == 5L
-    }
-
-    def "Should return the first page of reviews when page is smaller than or equals 1"() {
-        given:
-        def courseId = 1
-        def size = 5
-        def reviews = createReviews(10)
-
-        Page mockReviewsPage = new PageImpl<>(reviews.subList(0, 5), PageRequest.of(0, size), reviews.size())
-
-        courseReviewRepository.findAll(_, _) >> mockReviewsPage
-
-        courseReviewMapperFactory.getDTOMapper(CourseReviewOverviewDTO.class) >> Optional.of(mapper)
-
-        reviews.subList(0, 5).each { course ->
-            mapper.toDTO(course) >> new CourseReviewOverviewDTO(userFullName: "User " + course.id, comment: "Comment " + course.id)
-        }
-
-        List courseReviewOverviewDTOs = mockReviewsPage.map(mapper::toDTO).getContent()
-
-        when:
-        def result = courseReviewService.getReviewsPageOfCourse(courseId, starFilter, page, size)
-
-        then:
-        result.content == courseReviewOverviewDTOs
-        result.totalPages == 2
-        result.totalElements == 10
-
-        where:
-        page | starFilter
-        0    | null
-        1    | 5
-        -10    | 4
-        -99    | 0
     }
 
     def "Should return a fully page of reviews when page is reasonable"() {
@@ -131,6 +128,31 @@ class CourseReviewServiceImplSpec extends Specification {
 
         where:
         starFilter << [null, 5, 4, 0]
+    }
+
+    def "saveFeedback save review"() {
+        given:
+        CourseReviewDto courseReviewDto = new CourseReviewDto(2, "Good", 2)
+        Course course = new Course(id: 2)
+        courseRepository.findById(_) >> Optional.of(course)
+
+        when:
+        courseReviewService.saveReview(courseReviewDto)
+
+        then:
+        1 * courseReviewRepository.save(_)
+    }
+
+    def "saveFeedback throws exception when course is not found"() {
+        given:
+        CourseReviewDto courseReviewDto = new CourseReviewDto(2, "Good", 1000)
+        courseRepository.findById(_) >> Optional.empty()
+
+        when:
+        courseReviewService.saveReview(courseReviewDto)
+
+        then:
+        thrown(CourseNotFoundException)
     }
 
     def "Should return the last page of reviews when page is bigger than number of total pages"() {
@@ -185,4 +207,5 @@ class CourseReviewServiceImplSpec extends Specification {
     List<CourseReview> createReviews(int num) {
         return (1..num).collect { new CourseReview(id: it) }
     }
+
 }

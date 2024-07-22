@@ -9,13 +9,21 @@ import org.springframework.data.domain.Page;
 import com.mgmtp.cfu.dto.RegistrationRequest;
 
 public interface RegistrationService {
+
     RegistrationDetailDTO getDetailRegistration(Long id);
+
     PageResponse getMyRegistrationPage(int page, String status);
+
     Boolean createRegistration(RegistrationRequest registrationRequest);
 
+    RegistrationDetailDTO calculateScore(RegistrationDetailDTO registrationDetailDTO);
+
     Page<RegistrationOverviewDTO> getAllRegistrations(int page);
+
     Page<RegistrationOverviewDTO> getRegistrationByStatus(int page, String status);
+
     void approveRegistration(Long id);
+
     void declineRegistration(Long id , FeedbackRequest feedbackRequest);
     void closeRegistration(Long id, FeedbackRequest feedbackRequest);
     void deleteRegistration(Long id);

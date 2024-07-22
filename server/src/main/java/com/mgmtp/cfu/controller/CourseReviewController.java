@@ -1,19 +1,24 @@
 package com.mgmtp.cfu.controller;
 
+import com.mgmtp.cfu.dto.coursereviewdto.CourseReviewDto;
+import com.mgmtp.cfu.entity.CourseReview;
 import com.mgmtp.cfu.service.CourseReviewService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
 public class CourseReviewController {
 
     private final CourseReviewService courseReviewService;
 
-    @Autowired
-    public CourseReviewController(CourseReviewService courseReviewService) {
-        this.courseReviewService = courseReviewService;
+    @PostMapping("/submit-review")
+    public ResponseEntity<CourseReview> sendReview(@Valid @RequestBody CourseReviewDto courseReviewDto) {
+        CourseReview savedCourseReview = courseReviewService.saveReview(courseReviewDto);
+        return ResponseEntity.ok(savedCourseReview);
     }
 
     @GetMapping("/courses/{courseId}/ratings")
@@ -28,4 +33,5 @@ public class CourseReviewController {
                                                 @RequestParam(defaultValue = "3") int size) {
         return ResponseEntity.ok(courseReviewService.getReviewsPageOfCourse(courseId, starFilter, page, size));
     }
+
 }
