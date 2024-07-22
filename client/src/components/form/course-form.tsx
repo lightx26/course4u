@@ -90,7 +90,16 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
           value: category.id + "",
         }));
         setCategories(categories);
-      } catch (error) {}
+      } catch (error) {
+        toast.error("Oops something went wrong...", {
+          description: "Please refresh the page and try again!",
+          style: {
+            color: "red",
+            fontWeight: "bold",
+            textAlign: "center",
+          },
+        });
+      }
     };
     getCategories();
   }, []);

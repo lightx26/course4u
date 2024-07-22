@@ -69,7 +69,7 @@ public class CourseServiceImpl implements CourseService {
         var modelMapper = new ModelMapper();
         try {
             Course course = modelMapper.map(courseRequest, Course.class);
-            if (courseRepository.findFirstByLinkAndStatus(course.getLink())!=null){
+            if (courseRepository.findFirstByLinkIgnoreCaseAndStatus(course.getLink(), CourseStatus.AVAILABLE).isPresent()){
                 throw new DuplicateCourseException("Course with link " + course.getLink() + " already exists");
             }
             String thumbnailUrl = null;
