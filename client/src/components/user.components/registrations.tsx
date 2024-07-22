@@ -49,9 +49,9 @@ const Registrations = ({ className, id }: Props) => {
     getDetailRegistration();
   }, [id]);
   if (isLoading) return <RegistrationSkeleton />;
-  let avatarPath = "/avatar/Default Avatar.svg";
+  let avatarPath = (`${import.meta.env.BASE_URL}/avatar/Default Avatar.svg`).replace('//', '/');
   if (registration != null && registration != undefined && registration.user != null && registration.user != undefined && registration.user.avatarUrl != null && registration.user.avatarUrl != undefined && registration.user.avatarUrl != "") {
-    avatarPath = `${import.meta.env.VITE_BACKEND_URL}${registration?.user?.avatarUrl}`;
+    registration.user.avatarUrl.startsWith('data:') || registration.user.avatarUrl.startsWith('http') ? registration.user.avatarUrl : avatarPath = `${import.meta.env.VITE_BACKEND_URL}${registration?.user?.avatarUrl}`;
   }
   return (
     <div

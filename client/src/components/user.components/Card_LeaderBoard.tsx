@@ -16,7 +16,7 @@ const Card_LeaderBoard = (props: IProps) => {
         : "text-red-900";
   const avatar = avatarUrl?.startsWith("http") || avatarUrl?.startsWith("data")
     ? avatarUrl
-    : (avatarUrl != null && avatarUrl != undefined && avatarUrl != "") ? `${import.meta.env.VITE_BACKEND_URL}${avatarUrl}` : `/avatar/Default Avatar.svg`;
+    : (avatarUrl != null && avatarUrl != undefined && avatarUrl != "") ? `${import.meta.env.VITE_BACKEND_URL}${avatarUrl}` : (`${import.meta.env.BASE_URL}/avatar/Default Avatar.svg`).replace('//', '/');
   return (
     <>
       <div
