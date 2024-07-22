@@ -194,9 +194,8 @@ const Detail_Of_Course: React.FC = () => {
 
   const thumbnailUrl = courseData?.thumbnailUrl?.startsWith("http")
     ? courseData.thumbnailUrl
-    : `${import.meta.env.VITE_BACKEND_URL}/thumbnail/${
-        courseData?.thumbnailUrl
-      }`;
+    : `${import.meta.env.VITE_BACKEND_URL}/thumbnail/${courseData?.thumbnailUrl
+    }`;
 
   //Handle Click Button Edit For Admin Or Enroll Now For USER
 
@@ -282,9 +281,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                  (dataRatings.detailRatings["5"] * 100) /
-                                    totalRating
-                                )
+                                (dataRatings.detailRatings["5"] * 100) /
+                                totalRating
+                              )
                               : 0
                           }
                         />
@@ -294,9 +293,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                  (dataRatings.detailRatings["4"] * 100) /
-                                    totalRating
-                                )
+                                (dataRatings.detailRatings["4"] * 100) /
+                                totalRating
+                              )
                               : 0
                           }
                         />
@@ -306,9 +305,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                  (dataRatings.detailRatings["3"] * 100) /
-                                    totalRating
-                                )
+                                (dataRatings.detailRatings["3"] * 100) /
+                                totalRating
+                              )
                               : 0
                           }
                         />
@@ -318,9 +317,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                  (dataRatings.detailRatings["2"] * 100) /
-                                    totalRating
-                                )
+                                (dataRatings.detailRatings["2"] * 100) /
+                                totalRating
+                              )
                               : 0
                           }
                         />
@@ -330,9 +329,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                  (dataRatings.detailRatings["1"] * 100) /
-                                    totalRating
-                                )
+                                (dataRatings.detailRatings["1"] * 100) /
+                                totalRating
+                              )
                               : 0
                           }
                         />
@@ -340,7 +339,7 @@ const Detail_Of_Course: React.FC = () => {
                     </div>
                     <div className="flex justify-between items-center mt-[20px]">
                       <div className="text-[1.2rem] font-[600]">
-                        MGMies FeedBack
+                        mgmies FeedBack
                       </div>
                       <div className="w-[160px]">
                         <Dropdown
@@ -384,7 +383,7 @@ const Detail_Of_Course: React.FC = () => {
                     <img
                       src={thumbnailUrl}
                       alt=""
-                      className="absolute inset-0 w-full h-full object-cover object-center"
+                      className="absolute inset-0 object-cover object-center w-full h-full"
                     />
                   </div>
                   <div className="flex flex-col p-[10px] gap-[5px] bg-white border border-[#bdbdbd]">
@@ -566,13 +565,13 @@ const Detail_Of_Course: React.FC = () => {
               <hr />
 
               <div className="max-w-[1536px] mx-auto pl-[10%] pr-[5%] pt-[20px]">
-                <div className="flex justify-between items-center w-full">
+                <div className="flex items-center justify-between w-full">
                   <div className="text-[1.4rem] font-semibold">
                     Related Courses
                   </div>
                   <div className="flex items-center gap-[5px] cursor-pointer">
                     <div
-                      className="text-purple-600 font-medium"
+                      className="font-medium text-purple-600"
                       style={{ color: "purple" }}
                     >
                       View all

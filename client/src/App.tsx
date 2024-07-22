@@ -13,7 +13,6 @@ import { AppDispatch, RootState } from "./redux/store/store.ts";
 import { fetchUserDetails } from "./redux/slice/user.slice.ts";
 import NotPermitted from "./screens/user.screens/NotPermitted.tsx";
 import NotFound from "./screens/user.screens/NotFound.tsx";
-import HeaderAdminPage from "./components/admin.components/mainPage.components/HeaderAdminPage.tsx";
 import AdminHomePage from "./screens/admin.screens/AdminHome.tsx";
 
 import SignUp from "./screens/user.screens/SignUp.tsx";
@@ -46,102 +45,102 @@ export type CourseType = {
 };
 
 export type RegistrationType = {
-    id?: string;
-    startDate?: Date;
-    endDate?: Date;
-    registerDate?: Date;
-    lastUpdated?: Date;
-    courseId?: string;
-    courseName?: string;
-    courseThumbnailUrl?: string;
-    coursePlatform?: string;
-    userId?: string;
-    userName?: string;
-    userFullName?: string;
-    userAvatarUrl?: string;
-    duration?: number;
-    durationUnit?: string;
-    status?: string;
+  id?: string;
+  startDate?: Date;
+  endDate?: Date;
+  registerDate?: Date;
+  lastUpdated?: Date;
+  courseId?: string;
+  courseName?: string;
+  courseThumbnailUrl?: string;
+  coursePlatform?: string;
+  userId?: string;
+  userName?: string;
+  userFullName?: string;
+  userAvatarUrl?: string;
+  duration?: number;
+  durationUnit?: string;
+  status?: string;
 };
 
 const LayoutUser = ({ children }: { children?: ReactElement }) => {
-    const isUserRoute = window.location.pathname.startsWith(
-        `${import.meta.env.VITE_BASE_URL}`
-    );
-    const user = useSelector((state: RootState) => state.user.user);
-    const userRole = user.role;
-    return (
-        <div className='app-container bg-gray-50'>
-            {isUserRoute && userRole === "USER" && (
-                <>
-                    <HeaderHomepage />
-                    <RegistrationModal />
-                    {children}
-                    <Outlet />
-                </>
-            )}
+  const isUserRoute = window.location.pathname.startsWith(
+    `${import.meta.env.VITE_BASE_URL}`
+  );
+  const user = useSelector((state: RootState) => state.user.user);
+  const userRole = user.role;
+  return (
+    <div className='app-container bg-gray-50'>
+      {isUserRoute && userRole === "USER" && (
+        <>
+          <HeaderHomepage />
+          <RegistrationModal />
+          {children}
+          <Outlet />
+        </>
+      )}
 
-            {isUserRoute &&
-                (userRole === "ADMIN" || userRole === "ACCOUNTANT") && (
-                    <>
-                        <NotPermitted />
-                    </>
-                )}
-        </div>
-    );
+      {isUserRoute &&
+        (userRole === "ADMIN" || userRole === "ACCOUNTANT") && (
+          <>
+            <NotPermitted />
+          </>
+        )}
+    </div>
+  );
 };
 
 const LayoutAdmin = () => {
-    const isAdminRoute = window.location.pathname.startsWith(
-        `${import.meta.env.VITE_BASE_URL}/admin`
-    );
-    const user = useSelector((state: RootState) => state.user.user);
-    const userRole = user.role;
-    return (
-        <>
-            <div className='app-container '>
-                {isAdminRoute && userRole === "ADMIN" && (
-                    <>
-                        <HeaderAdminPage />
-                        <RegistrationModal />
-                        <Outlet />
-                    </>
-                )}
-                {isAdminRoute &&
-                    (userRole === "USER" || userRole === "ACCOUNTANT") && (
-                        <>
-                            <NotPermitted />
-                        </>
-                    )}
-            </div>
-        </>
-    );
+  const isAdminRoute = window.location.pathname.startsWith(
+    `${import.meta.env.VITE_BASE_URL}/admin`
+  );
+  const user = useSelector((state: RootState) => state.user.user);
+  const userRole = user.role;
+  return (
+    <>
+      <div className='app-container '>
+        {isAdminRoute && userRole === "ADMIN" && (
+          <>
+            <HeaderHomepage />
+            <RegistrationModal />
+            <Outlet />
+          </>
+        )}
+        {isAdminRoute &&
+          (userRole === "USER" || userRole === "ACCOUNTANT") && (
+            <>
+              <NotPermitted />
+            </>
+          )}
+      </div>
+    </>
+  );
 };
 
 const LayoutAccountant = () => {
-    const isAccountRoute = window.location.pathname.startsWith(
-        `${import.meta.env.VITE_BASE_URL}/accountant`
-    );
-    const user = useSelector((state: RootState) => state.user.user);
-    const userRole = user.role;
-    return (
-        <>
-            <div className='app-container'>
-                {isAccountRoute && userRole === "ACCOUNTANT" && (
-                    <>
-                        <div>this is accountant header</div>
-                        <Outlet />
-                    </>
-                )}
-                {isAccountRoute &&
-                    (userRole === "USER" || userRole === "ADMIN") && (
-                        <>
-                            <NotPermitted />
-                        </>
-                    )}
-            </div>
-        </>
-    );
+  const isAccountRoute = window.location.pathname.startsWith(
+    `${import.meta.env.VITE_BASE_URL}/accountant`
+  );
+  const user = useSelector((state: RootState) => state.user.user);
+  const userRole = user.role;
+  return (
+    <>
+      <div className='app-container'>
+        {isAccountRoute && userRole === "ACCOUNTANT" && (
+          <>
+            <div>this is accountant header</div>
+            <Outlet />
+          </>
+        )}
+        {isAccountRoute &&
+          (userRole === "USER" || userRole === "ADMIN") && (
+            <>
+              <NotPermitted />
+            </>
+          )}
+      </div>
+    </>
+  );
 };
 
 const router = createBrowserRouter(
@@ -213,13 +212,17 @@ const router = createBrowserRouter(
           element: <AdminCoursePageScreen />,
         },
         {
-          path: "course/create",
+          path: "courses/create",
           element: <CreateCoursesScreen />,
         },
         {
           path: "courses/:id",
           element: <Detail_Of_Course />,
         },
+        {
+          path: "profile",
+          element: <AccountSettingScreen />,
+        }
       ],
     },
     {

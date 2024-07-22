@@ -90,7 +90,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
           value: category.id + "",
         }));
         setCategories(categories);
-      } catch (error) {}
+      } catch (error) { }
     };
     getCategories();
   }, []);

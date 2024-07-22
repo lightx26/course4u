@@ -1,44 +1,39 @@
 import CardFunctionList from "./CardFunctionList";
-import AdminAvatar from "../../../assets/images/admin.images/AdminAvatar.png";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store/store";
 
-interface AdminCardProps {
-  username: string;
-  email: string;
-  avatarUrl: string;
-}
 
 function AdminCard() {
-  // Placeholder information
-  const adminInformation: AdminCardProps = {
-    username: "Admin",
-    email: "admin@mgm-tp.com",
-    avatarUrl: AdminAvatar,
-  };
+  const userData = useSelector((state: RootState) => state.user.user);
+
+  const avatarUrl = userData.avatarUrl?.startsWith("http") || userData.avatarUrl?.startsWith("data")
+    ? userData.avatarUrl
+    : (userData.avatarUrl != null && userData.avatarUrl != undefined && userData.avatarUrl != "") ? `${import.meta.env.VITE_BACKEND_URL}${userData.avatarUrl}` : `/avatar/Default Avatar.svg`;
 
   return (
     <div
-      className="bg-white h-[20rem] rounded-2xl pt-4"
+      className="bg-white h-[20rem] rounded-2xl pt-4 min-w-60"
       style={{ boxShadow: "0px 0px 4px 0px rgba(0, 0, 0, 0.25)" }}
     >
       <div className="personalizaion h-[49%] border-b-2">
         <div className="avatar h-[50%] w-full flex align-center justify-center mb-2.5">
-          <div className="flex align-center justify-center">
+          <div className="flex justify-center align-center">
             <img
               className="rounded-full"
-              src={adminInformation.avatarUrl}
+              src={avatarUrl}
               alt="adm_avt"
               style={{ backgroundColor: "gray", textAlign: "center" }}
             />
           </div>
         </div>
-        <div className="name w-full flex align-center justify-center mb-1 text-xl font-semibold">
-          {adminInformation.username}
+        <div className="flex justify-center w-full mb-1 text-xl font-semibold name align-center">
+          {userData.username}
         </div>
-        <div className="email w-full flex align-center justify-center mb-1 text-xs font-semibold">
-          {adminInformation.email}
+        <div className="flex justify-center w-full mb-1 text-xs font-semibold email align-center">
+          {userData.email}
         </div>
       </div>
-      <div className="function_list flex justify-start align-center ml-4 my-4">
+      <div className="flex justify-start my-4 ml-4 function_list align-center">
         <CardFunctionList />
       </div>
     </div>

@@ -12,30 +12,31 @@ const Card_LeaderBoard = (props: IProps) => {
     ranking === 1
       ? "text-yellow-500"
       : ranking === 2
-      ? "text-gray-500"
-      : "text-red-900";
+        ? "text-gray-500"
+        : "text-red-900";
+  const avatar = avatarUrl?.startsWith("http") || avatarUrl?.startsWith("data")
+    ? avatarUrl
+    : (avatarUrl != null && avatarUrl != undefined && avatarUrl != "") ? `${import.meta.env.VITE_BACKEND_URL}${avatarUrl}` : `/avatar/Default Avatar.svg`;
   return (
     <>
       <div
-        className={`card bg-white w-1/4 rounded-lg p-4 flex flex-col justify-between gap-5 ${
-          ranking === 1 ? "pb-10" : ranking === 2 ? "pb-5" : "pb-2.5"
-        }`}
+        className={`card bg-white w-1/4 rounded-lg p-4 flex flex-col justify-between gap-5 ${ranking === 1 ? "pb-10" : ranking === 2 ? "pb-5" : "pb-2.5"
+          }`}
       >
-        <div className="flex justify-start items-start gap-5">
+        <div className="flex items-start justify-start gap-5">
           <div className="relative w-[70px] h-[70px] rounded-full">
             <img
-              src={avatarUrl}
+              src={avatar}
               alt=""
-              className="absolute w-full h-full left-0 right-0 object-cover object-center rounded-full"
+              className="absolute left-0 right-0 object-cover object-center w-full h-full rounded-full"
             />
             <div
-              className={`w-9 h-9 rounded-full absolute bottom-0 right-0 ${
-                ranking === 1
-                  ? "bg-yellow-500"
-                  : ranking === 2
+              className={`w-9 h-9 rounded-full absolute bottom-0 right-0 ${ranking === 1
+                ? "bg-yellow-500"
+                : ranking === 2
                   ? "bg-gray-500"
                   : "bg-red-900"
-              } flex items-center justify-center`}
+                } flex items-center justify-center`}
             >
               <svg
                 width="22"
@@ -52,7 +53,7 @@ const Card_LeaderBoard = (props: IProps) => {
             </div>
           </div>
           <div>
-            <div className="text-xl font-medium mb-1">
+            <div className="mb-1 text-xl font-medium">
               {fullname ? `${fullname}` : "Anonymous"}
             </div>
             <div className="text-sm font-normal">{email}</div>

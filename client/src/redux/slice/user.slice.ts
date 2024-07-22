@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { handleRegister } from "../../apiService/user.service";
-import { handleLogin, getUserDetails } from "../../apiService/user.service";
+import { handleRegister, handleLogin, getUserDetails } from "../../apiService/user.service";
 
 export interface IUser {
   isAuthenticated: boolean;
@@ -18,6 +17,7 @@ export interface IUser {
   statusLogin: "idle" | "loading" | "failed";
   statusRegister: "idle" | "loading" | "failed";
 }
+
 interface ISignUpRequest {
   username: string;
   password: string;
@@ -63,6 +63,7 @@ export const fetchUserDetails = createAsyncThunk(
     return userDetails;
   }
 );
+
 export const userRegister = createAsyncThunk(
   "users/userRegister",
   async (payload: ISignUpRequest) => {
@@ -70,6 +71,7 @@ export const userRegister = createAsyncThunk(
     return response;
   }
 );
+
 // Create a slice
 export const userSlice = createSlice({
   name: "users",
@@ -92,6 +94,9 @@ export const userSlice = createSlice({
     },
     updateUser: (state, payload) => {
       state.user = { ...state.user, ...payload.payload };
+      if (!state.user.avatarUrl) {
+        state.user.avatarUrl = "";
+      }
     }
   },
   extraReducers: (builder) => {
@@ -116,6 +121,9 @@ export const userSlice = createSlice({
         if (action.payload) {
           state.isAuthenticated = true;
           state.user = { ...state.user, ...action.payload };
+          if (!state.user.avatarUrl) {
+            state.user.avatarUrl = "";
+          }
         }
       })
       .addCase(userRegister.pending, (state) => {
@@ -129,6 +137,7 @@ export const userSlice = createSlice({
       });
   },
 });
+
 export const { handleLogout, updateUser } = userSlice.actions;
 // Export the reducer
 export default userSlice.reducer;

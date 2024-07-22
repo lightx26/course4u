@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import axios from "axios";
 import cheerio from "cheerio";
+import { toast } from "sonner";
 
 interface FormData {
   name: string;
@@ -85,7 +86,9 @@ const CourseForm: React.FC = () => {
       const data = await response.json();
       setUploadedImage(data.thumbnail); // Assuming the response returns the URL of the uploaded image
     } catch (error) {
-      console.error("Error:", error);
+      toast.error(`Error: ${error}`, {
+        description: `Failed to create course`,
+      });
     }
   };
 

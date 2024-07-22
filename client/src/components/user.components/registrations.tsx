@@ -49,6 +49,10 @@ const Registrations = ({ className, id }: Props) => {
     getDetailRegistration();
   }, [id]);
   if (isLoading) return <RegistrationSkeleton />;
+  let avatarPath = "/avatar/Default Avatar.svg";
+  if (registration != null && registration != undefined && registration.user != null && registration.user != undefined && registration.user.avatarUrl != null && registration.user.avatarUrl != undefined && registration.user.avatarUrl != "") {
+    avatarPath = `${import.meta.env.VITE_BACKEND_URL}${registration?.user?.avatarUrl}`;
+  }
   return (
     <div
       className={cn(
@@ -62,7 +66,7 @@ const Registrations = ({ className, id }: Props) => {
       <div className='flex items-center justify-between w-full'>
         <RegistrationUser
           fullName={registration?.user?.fullName || ""}
-          avatarUrl={`${import.meta.env.VITE_BACKEND_URL}${registration?.user?.avatarUrl}` || ""}
+          avatarUrl={avatarPath}
           email={registration?.user?.email || ""}
           telephone={registration?.user?.telephone || ""}
         />

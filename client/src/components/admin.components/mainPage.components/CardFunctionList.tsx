@@ -1,14 +1,14 @@
 import RegistrationList from "../../../assets/images/admin.images/RegistrationList.svg";
 import functionList from "../../../utils/functionList";
 import functionMapping from "../../../utils/functionMapping.ts";
-import {AppDispatch} from "../../../redux/store/store.ts";
-import {useNavigate} from "react-router-dom";
-import {useDispatch} from "react-redux";
+import { AppDispatch } from "../../../redux/store/store.ts";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 function CardFunctionList() {
     const convertedFunctionList = functionList.map((item) => {
         return item.alt == "registration_list"
-            ? {...item, imgSrc: RegistrationList}
+            ? { ...item, imgSrc: RegistrationList }
             : item
     })
 
@@ -29,8 +29,8 @@ function CardFunctionList() {
 
     return (
         <div
-            className="function_list flex-col"
-            style={{justifyItems: "space-between", gap: "100px"}}
+            className="flex-col function_list"
+            style={{ justifyItems: "space-between", gap: "100px" }}
         >
             {convertedFunctionList.map((item) => (
                 <div
@@ -44,8 +44,8 @@ function CardFunctionList() {
                     key={item.key}
 
                 >
-                    <div className="icon flex items-center">
-                        <img className="h-[70%]" src={item.imgSrc} alt={item.alt}/>
+                    <div className="flex items-center icon">
+                        <img className="h-[70%]" src={item.imgSrc} alt={item.alt} />
                     </div>
                     <span>{item.message}</span>
                 </div>

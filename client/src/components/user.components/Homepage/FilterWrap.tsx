@@ -126,7 +126,7 @@ export default function FilterWrap() {
     }, []);
 
     return (
-        <div className='sticky max-h-[90vh] custom-scrollbar overflow-y-auto border-2 border-gray-100 border-solid p-1 rounded-md'>
+        <div className='sticky max-h-[90vh] custom-scrollbar overflow-y-auto border-2 border-gray-100 border-solid rounded-md'>
             <div className='flex flex-col w-64 max-w-full gap-5 pb-10 select-none'>
                 {/*Category need search*/}
                 <FilterComponent key={'Category'} isHaveSearch={true} title='Category' list={categoryList} />
