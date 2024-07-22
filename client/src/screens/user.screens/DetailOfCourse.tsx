@@ -12,11 +12,12 @@ import {
   fetchDataReviewsCourseById,
   fetchDataRelatedCourseById,
 } from "../../apiService/Course.service.ts";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Rate } from "antd";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store.ts";
 import ModalEditOrDeleteCourse from "../../components/user.components/ModalEditOrDeleteCourse.tsx";
+import { handleViewAllByDetailCousePage } from "../../redux/slice/filterItemCheckbox.slice.ts";
 
 interface IRatings {
   averageRating: number;
@@ -37,6 +38,7 @@ interface CourseType {
   createdDate: string;
   level: string;
   categories: {
+    id: string;
     value: string;
     name?: string | undefined;
     label?: string | undefined;
@@ -130,11 +132,11 @@ const Detail_Of_Course: React.FC = () => {
       setTotalRating(countRating);
     }
 
-    if (resultRelatedCourse) {
-      const convertedResult: CourseType[] = resultRelatedCourse.map(
-        (course) => ({
+    if (resultRelatedCourse && resultRelatedCourse.data) {
+      const convertedResult: CourseType[] = resultRelatedCourse.data.map(
+        (course: CourseType) => ({
           ...course,
-          id: course.id.toString(),
+          id: course?.id?.toString(),
           categories: [],
           link: "",
           teacherName: "",
@@ -208,6 +210,34 @@ const Detail_Of_Course: React.FC = () => {
     setCurrentOption(option);
   };
 
+  //Handle Click View All
+  type FilterItemSlice = {
+    id: string;
+    name: string;
+  };
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const userRole = useSelector((state: RootState) => state.user.user.role);
+  const handleClickViewAll = () => {
+    const listChoice: FilterItemSlice[] =
+      courseData?.categories?.map((item) => ({
+        id: item.id.toString(),
+        name: item.name?.toString() ?? "",
+      })) || [];
+    dispatch(
+      handleViewAllByDetailCousePage({
+        FilterComponentId: "Category",
+        listChoice,
+      })
+    );
+    if (userRole === "USER") {
+      navigate(`/`);
+    } else if (userRole === "ADMIN") {
+      navigate(`/admin/courses`);
+    }
+  };
+
   return (
     <>
       {courseData ? (
@@ -265,7 +295,7 @@ const Detail_Of_Course: React.FC = () => {
                         <div className="mb-[5px]">
                           <Rate
                             disabled
-                            defaultValue={dataRatings?.averageRating}
+                            value={dataRatings?.averageRating}
                             allowHalf
                             style={{ fontSize: "16px", color: "purple" }}
                           />
@@ -569,44 +599,49 @@ const Detail_Of_Course: React.FC = () => {
                   <div className="text-[1.4rem] font-semibold">
                     Related Courses
                   </div>
-                  <div className="flex items-center gap-[5px] cursor-pointer">
+                  {dataRelatedCourse.length > 0 && (
                     <div
-                      className="font-medium text-purple-600"
-                      style={{ color: "purple" }}
+                      className="flex items-center gap-[5px] cursor-pointer"
+                      onClick={handleClickViewAll}
                     >
-                      View all
-                    </div>
-                    <div className="text-purple-600">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
+                      <div
+                        className="text-purple-600 font-medium"
+                        style={{ color: "purple" }}
                       >
-                        <path
-                          d="M3.75 12H20.25"
-                          stroke="#861FA2"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                        <path
-                          d="M13.5 5.25L20.25 12L13.5 18.75"
-                          stroke="#861FA2"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
+                        View all
+                      </div>
+                      <div className="text-purple-600">
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M3.75 12H20.25"
+                            stroke="#861FA2"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                          <path
+                            d="M13.5 5.25L20.25 12L13.5 18.75"
+                            stroke="#861FA2"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
                 <div className="flex justify-between items-center w-full flex-wrap pb-[80px]">
                   {trackingIndex === 1 && (
                     <div className="w-[50px] h-[50px] rounded-full"></div>
                   )}
-                  {trackingIndex === 2 && (
+                  {trackingIndex === 2 && dataRelatedCourse.length > 0 && (
                     <div
                       className="previosBtn w-[50px] h-[50px] border border-[#ccc] rounded-full flex justify-center items-center cursor-pointer"
                       onClick={() => setTrackingIndex(1)}
@@ -629,22 +664,28 @@ const Detail_Of_Course: React.FC = () => {
                   <div className="itemCourseRelated flex justify-around items-center gap-[5px] flex-row py-[10px] w-[90%]">
                     {dataRelatedCourse &&
                       trackingIndex === 1 &&
+                      dataRelatedCourse.length > 0 &&
                       dataRelatedCourse.map((item, index) => {
                         if (index < 4)
-                          return <CourseCardComponent course={item} />;
+                          return (
+                            <CourseCardComponent key={item.id} course={item} />
+                          );
                       })}
 
                     {dataRelatedCourse &&
                       trackingIndex === 2 &&
+                      dataRelatedCourse.length > 0 &&
                       dataRelatedCourse.map((item, index) => {
                         if (index >= 4)
-                          return <CourseCardComponent course={item} />;
+                          return (
+                            <CourseCardComponent key={item.id} course={item} />
+                          );
                       })}
                   </div>
                   {trackingIndex === 2 && (
                     <div className="w-[50px] h-[50px] rounded-full"></div>
                   )}
-                  {trackingIndex === 1 && (
+                  {trackingIndex === 1 && dataRelatedCourse.length > 0 && (
                     <div
                       className="nextBtn w-[50px] h-[50px] border border-[#ccc] rounded-full flex justify-center items-center cursor-pointer"
                       onClick={() => setTrackingIndex(2)}

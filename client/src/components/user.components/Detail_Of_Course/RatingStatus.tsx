@@ -14,7 +14,7 @@ const RatingDetail: React.FC<RatingDetailProps> = (props) => {
       <div className="w-[30%] h-[100%]">
         <Rate
           disabled
-          defaultValue={rating}
+          value={rating}
           allowHalf
           style={{ fontSize: "12px", color: "purple" }}
         />

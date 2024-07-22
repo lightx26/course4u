@@ -53,10 +53,36 @@ const Card_LeaderBoard = (props: IProps) => {
             </div>
           </div>
           <div>
-            <div className="mb-1 text-xl font-medium">
+            <div className="w-[70%]">
+              <div
+                  className="text-xl font-medium mb-1 w-[100%] "
+                  style={{
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "normal",
+                    wordWrap: "break-word",
+                    overflow: "hidden",
+                  }}
+              >
               {fullname ? `${fullname}` : "Anonymous"}
             </div>
-            <div className="text-sm font-normal">{email}</div>
+
+            <div
+              className="text-sm font-normal w-[100%]"
+              style={{
+                display: "-webkit-box",
+                WebkitLineClamp: 1,
+                WebkitBoxOrient: "vertical",
+                textOverflow: "ellipsis",
+                whiteSpace: "normal",
+                wordWrap: "break-word",
+                overflow: "hidden",
+              }}
+            >
+              {email}
+            </div>
           </div>
         </div>
         <div className="flex items-center justify-between pr-2.5">
