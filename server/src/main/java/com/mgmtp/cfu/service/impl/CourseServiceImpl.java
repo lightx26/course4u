@@ -20,7 +20,6 @@ import com.mgmtp.cfu.service.CourseService;
 import com.mgmtp.cfu.service.UploadService;
 import com.mgmtp.cfu.specification.CourseSpecifications;
 import com.mgmtp.cfu.util.AuthUtils;
-import com.mgmtp.cfu.util.RegistrationStatusUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -105,7 +104,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Page<CourseOverviewDTO> getAvailableCoursesPage(String search, CoursePageFilter filter, CoursePageSortOption sortBy, int pageNo, int pageSize) {
+    public Page<CourseOverviewDTO> getAvailableCoursesPage(CourseSearchRequest searchRequest) {
         var courseMapperOpt = courseMapperFactory.getDTOMapper(CourseOverviewDTO.class);
 
         if (courseMapperOpt.isEmpty()) {
@@ -114,23 +113,23 @@ public class CourseServiceImpl implements CourseService {
 
         var courseMapper = courseMapperOpt.get();
 
-        Page<Course> coursePage = getAvailableCourses(search, filter, sortBy, pageNo, pageSize);
+        Page<Course> coursePage = getAvailableCourses(searchRequest);
         return coursePage.map(courseMapper::toDTO);
     }
 
-    private Page<Course> getAvailableCourses(String search, CoursePageFilter filter, CoursePageSortOption sortBy, int pageNo, int pageSize) {
+    private Page<Course> getAvailableCourses(CourseSearchRequest searchRequest) {
         // Make sure pageNo is valid: at least 1 and at most maxPageNum
-        pageNo = Math.max(pageNo, 1);
+        int pageNo = Math.max(searchRequest.getPage(), 1);
 
-        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        Pageable pageable = PageRequest.of(pageNo - 1, searchRequest.getPageSize());
 
-        Page<Course> coursePage = getAvailableCourseBySpec(search, filter, sortBy, pageable);
+        Page<Course> coursePage = getAvailableCourseBySpec(searchRequest.getSearch(), searchRequest.getFilter(), searchRequest.getSortBy(), pageable);
 
         // If pageNo is greater than the total number of pages, return the last page
         int totalPages = coursePage.getTotalPages();
         if (totalPages > 0 && pageNo > totalPages) {
-            pageable = PageRequest.of(totalPages - 1, pageSize);
-            return getAvailableCourseBySpec(search, filter, sortBy, pageable);
+            pageable = PageRequest.of(totalPages - 1, searchRequest.getPageSize());
+            return getAvailableCourseBySpec(searchRequest.getSearch().trim(), searchRequest.getFilter(), searchRequest.getSortBy(), pageable);
         }
 
         return coursePage;

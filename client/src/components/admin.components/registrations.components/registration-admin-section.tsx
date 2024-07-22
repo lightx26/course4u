@@ -16,7 +16,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store/store";
 import { Status } from "../../../utils/index";
 import { useRegistrationModal } from "../../../hooks/use-registration-modal";
-import { declineRegistration } from "../../../apiService/Registration.service";
+import { closeRegistration, declineRegistration } from "../../../apiService/Registration.service";
 
 type Props = {
     status?: Status;
@@ -31,8 +31,15 @@ const RegistrationAdminSection = ({ status }: Props) => {
             comment: "",
         },
     });
+
     async function onSubmit(values: z.infer<typeof feedbackSchema>) {
-        await declineRegistration(id!, values.comment, close);
+        if (status === "SUBMITTED") {
+            await declineRegistration(id!, values.comment, close);
+        }
+
+        else if (status === "DONE" || status === "VERIFYING" || status === "DOCUMENT_DECLINED") {
+            await closeRegistration(id!, values.comment, close);
+        }
     }
     return (
         <Form {...form}>
@@ -40,7 +47,7 @@ const RegistrationAdminSection = ({ status }: Props) => {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className='w-full space-y-8 mt-10'
             >
-                {status === "SUBMITTED" && (
+                {(status === Status.SUBMITTED || status === Status.DONE || status === Status.VERIFYING || status === Status.DOCUMENT_DECLINED) && (
                     <FormField
                         control={form.control}
                         name='comment'

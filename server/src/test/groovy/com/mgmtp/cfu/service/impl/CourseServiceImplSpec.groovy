@@ -5,6 +5,7 @@ import com.mgmtp.cfu.dto.coursedto.CoursePageDTO
 import com.mgmtp.cfu.dto.coursedto.CoursePageFilter
 import com.mgmtp.cfu.dto.coursedto.CourseRequest
 import com.mgmtp.cfu.dto.coursedto.CourseResponse
+import com.mgmtp.cfu.dto.coursedto.CourseSearchRequest
 import com.mgmtp.cfu.entity.Category
 import com.mgmtp.cfu.entity.Course
 import com.mgmtp.cfu.entity.Registration
@@ -159,12 +160,13 @@ class CourseServiceImplSpec extends Specification {
         String search = "java"
         CoursePageSortOption sortOption = CoursePageSortOption.NEWEST
         CoursePageFilter filter = new CoursePageFilter()
+        CourseSearchRequest searchRequest = new CourseSearchRequest(page: pageNo, pageSize: pageSize, search: search, sortBy: sortOption, filter: filter)
         List<Course> courses = createCourses(5)
 
         courseMapperFactory.getDTOMapper(CourseOverviewDTO.class) >> Optional.empty()
 
         when:
-        CoursePageDTO result = courseService.getAvailableCoursesPage(search, filter, sortOption, pageNo, pageSize)
+        CoursePageDTO result = courseService.getAvailableCoursesPage(searchRequest)
 
         then:
         thrown(MapperNotFoundException)
@@ -175,6 +177,7 @@ class CourseServiceImplSpec extends Specification {
         int pageSize = 5
         CoursePageSortOption sortOption = CoursePageSortOption.MOST_ENROLLED
         CoursePageFilter filter = new CoursePageFilter(categoryFilters: [1, 2, 3])
+        CourseSearchRequest searchRequest = new CourseSearchRequest(page: pageNo, pageSize: pageSize, search: search, sortBy: sortOption, filter: filter)
         List<Course> courses = createCourses(10)
 
         Page mockCoursePage = new PageImpl<>(courses.subList(0, 5), PageRequest.of(0, pageSize), courses.size())
@@ -190,7 +193,7 @@ class CourseServiceImplSpec extends Specification {
         List courseOverviewDTOs = mockCoursePage.map(courseOverviewMapper::toDTO).getContent()
 
         when:
-        def result = courseService.getAvailableCoursesPage(search, filter, sortOption, pageNo, pageSize)
+        def result = courseService.getAvailableCoursesPage(searchRequest)
 
         then:
         result.content == courseOverviewDTOs
@@ -207,6 +210,7 @@ class CourseServiceImplSpec extends Specification {
         int pageNo = 2
         int pageSize = 5
         CoursePageSortOption sortOption = CoursePageSortOption.RATING
+        CourseSearchRequest searchRequest = new CourseSearchRequest(page: pageNo, pageSize: pageSize, search: search, sortBy: sortOption, filter: filter)
         List<Course> courses = createCourses(15)
 
         Page mockCoursePage = new PageImpl<>(courses.subList(5, 10), PageRequest.of(1, pageSize), courses.size())
@@ -224,7 +228,7 @@ class CourseServiceImplSpec extends Specification {
 
 
         when:
-        def result = courseService.getAvailableCoursesPage(search, filter, sortOption, pageNo, pageSize)
+        def result = courseService.getAvailableCoursesPage(searchRequest)
 
         then:
         result.content == courseOverviewDTOs
@@ -249,6 +253,7 @@ class CourseServiceImplSpec extends Specification {
         String search = "123"
         CoursePageFilter filter = new CoursePageFilter()
         CoursePageSortOption sortOption = CoursePageSortOption.NEWEST
+        CourseSearchRequest searchRequest = new CourseSearchRequest(page: pageNo, pageSize: pageSize, search: search, sortBy: sortOption, filter: filter)
         List<Course> courses = createCourses(7)
         int callCount = 0
 
@@ -272,7 +277,7 @@ class CourseServiceImplSpec extends Specification {
         List courseOverviewDTOs = mockCoursePage.map(courseOverviewMapper::toDTO).getContent()
 
         when:
-        def result = courseService.getAvailableCoursesPage(search, filter, sortOption, pageNo, pageSize)
+        def result = courseService.getAvailableCoursesPage(searchRequest)
 
         then:
         result.content == courseOverviewDTOs

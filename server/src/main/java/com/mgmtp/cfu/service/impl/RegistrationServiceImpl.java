@@ -7,41 +7,30 @@ import com.mgmtp.cfu.dto.coursedto.CourseRequest;
 import com.mgmtp.cfu.dto.coursedto.CourseResponse;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO;
 import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest;
-
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO;
 import com.mgmtp.cfu.entity.Course;
-
-import com.mgmtp.cfu.entity.RegistrationFeedback;
 import com.mgmtp.cfu.enums.CategoryStatus;
 import com.mgmtp.cfu.enums.CourseStatus;
 import com.mgmtp.cfu.enums.NotificationType;
 import com.mgmtp.cfu.enums.RegistrationStatus;
 import com.mgmtp.cfu.exception.*;
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper;
-
 import com.mgmtp.cfu.entity.Registration;
 import com.mgmtp.cfu.mapper.DTOMapper;
 import com.mgmtp.cfu.mapper.factory.MapperFactory;
-
 import com.mgmtp.cfu.repository.RegistrationRepository;
-import com.mgmtp.cfu.service.CourseService;
+import com.mgmtp.cfu.service.*;
 import com.mgmtp.cfu.repository.*;
-import com.mgmtp.cfu.service.IEmailService;
-import com.mgmtp.cfu.service.RegistrationService;
-import com.mgmtp.cfu.util.AuthUtils;
-import com.mgmtp.cfu.util.NotificationUtil;
+import com.mgmtp.cfu.util.RegistrationStatusUtil;
 import com.mgmtp.cfu.util.RegistrationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -53,14 +42,15 @@ import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getRegistrationOvervi
 import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getSortedRegistrations;
 
 import java.util.ArrayList;
+
 @Service
 public class RegistrationServiceImpl implements RegistrationService {
     private final RegistrationRepository registrationRepository;
     private final MapperFactory<Registration> registrationMapperFactory;
     private final RegistrationOverviewMapper registrationOverviewMapper;
     private final CourseRepository courseRepository;
-    private final NotificationRepository notificationRepository;
-    private final RegistrationFeedbackRepository registrationFeedbackRepository;
+    private final NotificationService notificationService;
+    private final RegistrationFeedbackService feedbackService;
     private final IEmailService emailService;
     private final CourseService courseService;
 
@@ -69,15 +59,15 @@ public class RegistrationServiceImpl implements RegistrationService {
                                    MapperFactory<Registration> registrationMapperFactory,
                                    RegistrationOverviewMapper registrationOverviewMapper,
                                    CourseRepository courseRepository,
-                                   NotificationRepository notificationRepository,
-                                   RegistrationFeedbackRepository registrationFeedbackRepository,
+                                   NotificationService notificationService,
+                                   RegistrationFeedbackService feedbackService,
                                    IEmailService emailService, CourseService courseService) {
         this.registrationRepository = registrationRepository;
         this.registrationMapperFactory = registrationMapperFactory;
         this.registrationOverviewMapper = registrationOverviewMapper;
         this.courseRepository = courseRepository;
-        this.notificationRepository = notificationRepository;
-        this.registrationFeedbackRepository = registrationFeedbackRepository;
+        this.notificationService = notificationService;
+        this.feedbackService = feedbackService;
         this.emailService = emailService;
         this.courseService = courseService;
     }
@@ -139,15 +129,15 @@ public class RegistrationServiceImpl implements RegistrationService {
             }
         }
 
-        // save notification
-        var notification = NotificationUtil.createNotification(NotificationType.SUCCESS,
-                registration.getUser(),
-                "Your registration for course " + registration.getCourse().getName() + " has been approved");
-        notificationRepository.save(notification);
+        // Update registration
         registration.setLastUpdated(LocalDateTime.now());
         registration.setStatus(RegistrationStatus.APPROVED);
         registrationRepository.save(registration);
 
+        // send notification
+        notificationService.sendNotificationToUser(registration.getUser(), NotificationType.SUCCESS, "Your registration for course " + registration.getCourse().getName() + " has been approved");
+
+        // send email
         List<MailContentUnit> mailContentUnits=List.of(
                 MailContentUnit.builder().id("user_greeting").content("Your registration of course : "+ registration.getCourse().getName() +" has been approved!").tag("div").build(),
                 MailContentUnit.builder().id("client_url").href(clientUrl+"/personal/registration").tag("a").build()
@@ -163,32 +153,26 @@ public class RegistrationServiceImpl implements RegistrationService {
         if(registration.getStatus() != RegistrationStatus.SUBMITTED){
             throw new IllegalArgumentException("Registration must be in submitted status to be declined");
         }
-        // save feedback
-        var registrationFeedback = RegistrationFeedback.builder()
-                .comment(feedbackRequest.getComment())
-                .user(getCurrentUser())
-                .registration(registration)
-                .createdDate(LocalDateTime.now())
-                .build();
-        registrationFeedbackRepository.save(registrationFeedback);
+        // send feedback
+        if (feedbackRequest == null || feedbackRequest.getComment() == null || feedbackRequest.getComment().isBlank())
+            throw new BadRequestRunTimeException("Feedback comment is required");
+        feedbackService.sendFeedback(registration, feedbackRequest.getComment().trim());
 
-        // save notification
-        var notification = NotificationUtil.createNotification(NotificationType.ERROR,
-                registration.getUser(),
-                "Your registration for course " + registration.getCourse().getName() + " has been declined");
-        notificationRepository.save(notification);
-
+        // Update registration
         registration.setStatus(RegistrationStatus.DECLINED);
         registration.setLastUpdated(LocalDateTime.now());
         registrationRepository.save(registration);
 
+        // send notification
+        notificationService.sendNotificationToUser(registration.getUser(), NotificationType.ERROR, "Your registration for course " + registration.getCourse().getName() + " has been declined");
+
+        // send email
         List<MailContentUnit> mailContentUnits=List.of(
                 MailContentUnit.builder().id("user_greeting").content("Your registration of course : "+ registration.getCourse().getName() +" has been declined!").tag("div").build(),
                 MailContentUnit.builder().id("client_url").href(clientUrl+"/personal/registration").tag("a").build()
         );
         emailService.sendMessage(registration.getUser().getEmail(), "Registration declined!!","decline_registration_mail_template.xml", mailContentUnits);
     }
-
 
     @Override
     public Page<RegistrationOverviewDTO> getAllRegistrations(int page) {
@@ -254,6 +238,37 @@ public class RegistrationServiceImpl implements RegistrationService {
         catch (IllegalArgumentException e){
             throw new RegistrationStatusNotFoundException("Status not found");
         }
+    }
+
+    @Override
+    @Transactional
+    public void closeRegistration(Long id, FeedbackRequest feedbackRequest) {
+        Registration registration = registrationRepository.findById(id).orElseThrow(() -> new RegistrationNotFoundException("Registration not found"));
+
+        if (!RegistrationStatusUtil.isCloseableStatus(registration.getStatus())) {
+            throw new BadRequestRunTimeException("Registration status must be in [DONE, VERIFYING, DOCUMENT_DECLINED, VERIFIED]  to be closed");
+        }
+
+        // If the registration is not verified, send feedback
+        if (registration.getStatus() != RegistrationStatus.VERIFIED) {
+            if (feedbackRequest == null || feedbackRequest.getComment() == null || feedbackRequest.getComment().isBlank())
+                throw new BadRequestRunTimeException("Feedback comment is required");
+            feedbackService.sendFeedback(registration, feedbackRequest.getComment().trim());
+        }
+
+        registration.setStatus(RegistrationStatus.CLOSED);
+        registration.setLastUpdated(LocalDateTime.now());
+        registrationRepository.save(registration);
+
+        // send notification
+        notificationService.sendNotificationToUser(registration.getUser(), NotificationType.INFORMATION, "Your registration for course " + registration.getCourse().getName() + " has been closed");
+
+        // send email
+        List<MailContentUnit> mailContentUnits=List.of(
+                MailContentUnit.builder().id("user_greeting").content("Your registration of course : "+ registration.getCourse().getName() +" has been closed!").tag("div").build(),
+                MailContentUnit.builder().id("client_url").href(clientUrl+"/personal/registration").tag("a").build()
+        );
+        emailService.sendMessage(registration.getUser().getEmail(), "Registration closed","close_registration_mail_template.xml", mailContentUnits);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.mgmtp.cfu.service.impl
 import com.mgmtp.cfu.dto.notificationdto.NotificationUserDTO
 import com.mgmtp.cfu.entity.Notification
 import com.mgmtp.cfu.entity.User
+import com.mgmtp.cfu.enums.NotificationType
 import com.mgmtp.cfu.mapper.NotificationUserMapper
 import com.mgmtp.cfu.repository.NotificationRepository
 import org.springframework.security.core.Authentication
@@ -38,5 +39,17 @@ class NotificationServiceImplSpec extends Specification {
 
         then:
             result == notificationDTOs
+    }
+
+    def "should create a new record of notification"() {
+        given:
+        def user = new User(id: 1)
+        def message = "notification"
+
+        when:
+        notificationService.sendNotificationToUser(user, NotificationType.SUCCESS, message)
+
+        then:
+        1 * notificationRepository.save(_)
     }
 }

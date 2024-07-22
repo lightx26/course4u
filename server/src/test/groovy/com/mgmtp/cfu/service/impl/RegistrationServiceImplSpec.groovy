@@ -35,8 +35,9 @@ import com.mgmtp.cfu.repository.NotificationRepository
 import com.mgmtp.cfu.repository.RegistrationFeedbackRepository
 import com.mgmtp.cfu.repository.RegistrationRepository
 
-import com.mgmtp.cfu.service.IEmailService;
-
+import com.mgmtp.cfu.service.IEmailService
+import com.mgmtp.cfu.service.NotificationService
+import com.mgmtp.cfu.service.RegistrationFeedbackService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest
 import com.mgmtp.cfu.service.CourseService
@@ -57,8 +58,8 @@ class RegistrationServiceImplSpec extends Specification {
     MapperFactory<Registration> registrationMapperFactory = Mock(MapperFactory)
     RegistrationOverviewMapper registrationOverviewMapper = Mock(RegistrationOverviewMapper)
     CourseRepository courseRepository = Mock(CourseRepository)
-    NotificationRepository notificationRepository = Mock(NotificationRepository)
-    RegistrationFeedbackRepository registrationFeedbackRepository = Mock(RegistrationFeedbackRepository)
+    NotificationService notificationService = Mock(NotificationService)
+    RegistrationFeedbackService feedbackService = Mock(RegistrationFeedbackService)
     IEmailService emailService = Mock(IEmailService)
     def registrationDetailMapper = Mock(RegistrationDetailMapper)
 
@@ -66,7 +67,7 @@ class RegistrationServiceImplSpec extends Specification {
     @Subject
     RegistrationServiceImpl registrationService = new RegistrationServiceImpl(
             registrationRepository, registrationMapperFactory, registrationOverviewMapper,
-            courseRepository, notificationRepository, registrationFeedbackRepository,
+            courseRepository, notificationService, feedbackService,
             emailService, courseService
     );
 
@@ -350,17 +351,16 @@ class RegistrationServiceImplSpec extends Specification {
         User user = new User(email: "test@example.com")
         Course course = new Course(name: "Course Name", link: "course-link", categories: [new Category(status: CategoryStatus.PENDING)])
         Registration registration = new Registration(id: registrationId, status: RegistrationStatus.SUBMITTED, course: course, user: user)
-        Notification notification = new Notification(content: "Your registration for course " + course.name + " has been approved", createdDate: LocalDateTime.now(), seen: false, user: user, type: NotificationType.SUCCESS)
 
         registrationRepository.findById(registrationId) >> Optional.of(registration)
         courseRepository.findFirstByLinkIgnoreCase(course.link) >> null
-        notificationRepository.save(_) >> notification
 
         when:
         registrationService.approveRegistration(registrationId)
 
         then:
         1 * emailService.sendMessage(user.email, "Registration approved!!", "approve_registration_mail_template.xml", _)
+        1 * notificationService.sendNotificationToUser(user, NotificationType.SUCCESS, _)
         registration.status == RegistrationStatus.APPROVED
         registration.course.status == CourseStatus.AVAILABLE
         registration.course.categories.every { it.status == CategoryStatus.AVAILABLE }
@@ -380,7 +380,7 @@ class RegistrationServiceImplSpec extends Specification {
         def e = thrown(IllegalArgumentException)
         e.message == "Registration must be in submitted status to be approved"
         0 * courseRepository.findFirstByLinkIgnoreCase(_)
-        0 * notificationRepository.save(_)
+        0 * notificationService.sendNotificationToUser(_, _, _)
         0 * registrationRepository.save(_)
         0 * emailService.sendMessage(_, _, _, _)
     }
@@ -392,18 +392,16 @@ class RegistrationServiceImplSpec extends Specification {
         Course course = new Course(name: "Course Name", link: "course-link", categories: [new Category(status: CategoryStatus.PENDING)])
         Course duplicateCourse = new Course(link: "course-link")
         Registration registration = new Registration(id: registrationId, status: RegistrationStatus.SUBMITTED, course: course, user: user)
-        Notification notification = new Notification(content: "Your registration for course " + course.name + " has been approved", createdDate: LocalDateTime.now(), seen: false, user: user, type: NotificationType.SUCCESS)
 
         registrationRepository.findById(registrationId) >> Optional.of(registration)
         courseRepository.findFirstByLinkIgnoreCase(course.link) >> duplicateCourse
-        notificationRepository.save(_) >> notification
 
         when:
         registrationService.approveRegistration(registrationId)
 
         then:
         1 * courseRepository.findFirstByLinkIgnoreCase(course.link)
-        1 * notificationRepository.save(_)
+        1 * notificationService.sendNotificationToUser(user, NotificationType.SUCCESS, _)
         1 * registrationRepository.save(_)
         1 * emailService.sendMessage(user.email, "Registration approved!!", "approve_registration_mail_template.xml", _)
         registration.status == RegistrationStatus.APPROVED
@@ -417,27 +415,14 @@ class RegistrationServiceImplSpec extends Specification {
         def registration = new Registration(id: 1L, status: RegistrationStatus.SUBMITTED, course: new Course(name: "Course 101"), user: new User(email: "user@example.com"))
         def user = new User(id: 1L)
         registrationRepository.findById(1L) >> Optional.of(registration)
-        registrationFeedbackRepository.save(_ as RegistrationFeedback) >> { RegistrationFeedback feedback -> feedback }
-        notificationRepository.save(_ as Notification) >> { Notification notification -> notification }
         registrationRepository.save(_ as Registration) >> { Registration reg -> reg }
         when:
 
         registrationService.declineRegistration(1,feedbackRequest)
 
         then:
-        1 * registrationFeedbackRepository.save(_ as RegistrationFeedback) >> { RegistrationFeedback feedback ->
-            assert feedback.comment == "Not suitable"
-            assert feedback.user.id == user.id
-            assert feedback.registration == registration
-            assert feedback.createdDate != null
-        }
-        1 * notificationRepository.save(_ as Notification) >> { Notification notification ->
-            assert notification.content == "Your registration for course Course 101 has been declined"
-            assert notification.createdDate != null
-            assert !notification.seen
-            assert notification.user == registration.user
-            assert notification.type == NotificationType.ERROR
-        }
+        1 * feedbackService.sendFeedback(registration, feedbackRequest.getComment())
+        1 * notificationService.sendNotificationToUser(registration.user, NotificationType.ERROR, "Your registration for course Course 101 has been declined")
         1 * registrationRepository.save(_ as Registration) >> { Registration reg ->
             assert reg.status == RegistrationStatus.DECLINED
             assert reg.lastUpdated != null
@@ -531,6 +516,58 @@ class RegistrationServiceImplSpec extends Specification {
         result == true
     }
 
+    def "should close the registration without sending feedback"() {
+        given:
+        def user = new User(id: 1L, username: "User", email: "user@mgm-tp.com")
+        def registration = new Registration(id: 1L, status: RegistrationStatus.VERIFIED, course: new Course(name: "Course 101"), user: user)
+
+        registrationRepository.findById(1L) >> Optional.of(registration)
+
+        when:
+        registrationService.closeRegistration(1L, new FeedbackRequest())
+
+        then:
+        0 * feedbackService.sendFeedback(registration, _)
+        1 * registrationRepository.save(registration) >> { Registration reg ->
+            assert reg.status == RegistrationStatus.CLOSED
+            assert reg.lastUpdated != null
+        }
+        1 * notificationService.sendNotificationToUser(user, NotificationType.INFORMATION, "Your registration for course Course 101 has been closed")
+        1 * emailService.sendMessage(user.getEmail(), "Registration closed", _, _)
+    }
+
+    def "should close the registration with feedback"() {
+        given:
+        def user = new User(id: 1L, username: "User", email: "user@mgm-tp.com")
+        def registration = new Registration(id: 1L, status: RegistrationStatus.DONE, course: new Course(name: "Course 101"), user: user)
+        def feedback = new FeedbackRequest(comment: "Not suitable")
+
+        registrationRepository.findById(1L) >> Optional.of(registration)
+
+        when:
+        registrationService.closeRegistration(1L, feedback)
+
+        then:
+        1 * feedbackService.sendFeedback(registration, feedback.getComment())
+        1 * registrationRepository.save(registration) >> { Registration reg ->
+            assert reg.status == RegistrationStatus.CLOSED
+            assert reg.lastUpdated != null
+        }
+        1 * notificationService.sendNotificationToUser(user, NotificationType.INFORMATION, "Your registration for course Course 101 has been closed")
+        1 * emailService.sendMessage(user.getEmail(), "Registration closed", _, _)
+    }
+
+    def "should throw RegistrationNotFoundException if registration is not found"() {
+        given:
+        def feedbackRequest = new FeedbackRequest(comment: "Not suitable")
+        registrationRepository.findById(1L) >> Optional.empty()
+
+        when:
+        registrationService.closeRegistration(1L, feedbackRequest)
+
+        then:
+        thrown(RegistrationNotFoundException)
+    }
     def "should throw BadRequestRunTimeException if registration is not found"() {
         given:
         Long id = 1L
@@ -584,4 +621,16 @@ class RegistrationServiceImplSpec extends Specification {
 
 
 
+    def "should throw BadRequestRunTimeException if registration status is not closeable"() {
+        given:
+        def feedbackRequest = new FeedbackRequest(comment: "Not suitable")
+        def registration = new Registration(id: 1L, status: RegistrationStatus.APPROVED)
+        registrationRepository.findById(1L) >> Optional.of(registration)
+
+        when:
+        registrationService.closeRegistration(1L, feedbackRequest)
+
+        then:
+        thrown(BadRequestRunTimeException)
+    }
 }

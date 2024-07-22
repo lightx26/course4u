@@ -29,13 +29,13 @@ class CourseControllerSpec extends Specification {
         def filter = new CoursePageFilter()
         def request = new CourseSearchRequest(page: page, pageSize: pageSize, sortBy: sortBy, filter: filter, search: "")
         def coursesPage = new PageImpl([new CourseOverviewDTO()]) // Dữ liệu mẫu trả về từ service
-        courseServiceMock.getAvailableCoursesPage(request.getSearch(), request.getFilter(), request.getSortBy(), request.getPage(), request.getPageSize()) >> coursesPage
+        courseServiceMock.getAvailableCoursesPage(request) >> coursesPage
 
         when:
         ResponseEntity<?> response = courseController.getAvailableCourses(request)
 
         then:
-        1 * courseServiceMock.getAvailableCoursesPage(request.getSearch(), request.getFilter(), request.getSortBy(), request.getPage(), request.getPageSize()) >> coursesPage
+        1 * courseServiceMock.getAvailableCoursesPage(request) >> coursesPage
         response.getStatusCode().value() == 200
         response.getBody() == coursesPage
 
@@ -77,7 +77,7 @@ class CourseControllerSpec extends Specification {
         given:
         def filter = new CoursePageFilter()
         def request = new CourseSearchRequest(page: 1, pageSize: 8, sortBy: CoursePageSortOption.NEWEST, filter: filter, search: "")
-        courseServiceMock.getAvailableCoursesPage(request.getSearch(), request.getFilter(), request.getSortBy(), request.getPage(), request.getPageSize()) >> { throw new MapperNotFoundException() }
+        courseServiceMock.getAvailableCoursesPage(request) >> { throw new MapperNotFoundException() }
 
         when:
         ResponseEntity<?> response = courseController.getAvailableCourses(request)

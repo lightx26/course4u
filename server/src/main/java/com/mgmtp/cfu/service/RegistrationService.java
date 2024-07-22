@@ -8,8 +8,6 @@ import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO;
 import org.springframework.data.domain.Page;
 import com.mgmtp.cfu.dto.RegistrationRequest;
 
-
-
 public interface RegistrationService {
     RegistrationDetailDTO getDetailRegistration(Long id);
     PageResponse getMyRegistrationPage(int page, String status);
@@ -19,6 +17,6 @@ public interface RegistrationService {
     Page<RegistrationOverviewDTO> getRegistrationByStatus(int page, String status);
     void approveRegistration(Long id);
     void declineRegistration(Long id , FeedbackRequest feedbackRequest);
-
+    void closeRegistration(Long id, FeedbackRequest feedbackRequest);
     void deleteRegistration(Long id);
 }

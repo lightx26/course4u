@@ -43,6 +43,30 @@ export const declineRegistration = async (
     }
 };
 
+export const closeRegistration = async (
+    id: number,
+    comment: string,
+    close: VoidFunction
+) => {
+    try {
+        await instance.post(`/registrations/${id}/close`, {
+            comment,
+        });
+        toast.success("Registration closed", {
+            style: { color: "green" },
+            description: "Registration closed successfully",
+        });
+        setTimeout(() => {
+            close();
+        }, 1000);
+    } catch (error) {
+        toast.error("Failed to close registration", {
+            style: { color: "red" },
+            description: "Failed to close registration",
+        });
+    }
+};
+
 export const removeRegistration = async (id: number) => {
     try {
         await instance.delete(`/registrations/${id}`);

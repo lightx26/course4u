@@ -16,4 +16,15 @@ public class RegistrationStatusUtil {
     private RegistrationStatusUtil() {
         // Private constructor to prevent instantiation
     }
+
+    public static final List<RegistrationStatus> CLOSABLE_STATUSES = List.of(
+            RegistrationStatus.DONE,
+            RegistrationStatus.VERIFYING,
+            RegistrationStatus.DOCUMENT_DECLINED,
+            RegistrationStatus.VERIFIED
+    );
+
+    public static boolean isCloseableStatus(RegistrationStatus status) {
+        return CLOSABLE_STATUSES.contains(status);
+    }
 }

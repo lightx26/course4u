@@ -90,4 +90,25 @@ class RegistrationControllerSpec extends Specification {
         noExceptionThrown()
     }
 
+    def "should return ok response when close registration successfully"() {
+        given:
+            def registrationId = 1
+            def feedbackRequest = new FeedbackRequest(comment: "Close registration")
+        when:
+            def response = registrationController.closeRegistration(registrationId, feedbackRequest)
+        then:
+            response.statusCode.value() == 200
+    }
+
+    def "should throw exception when service throw exception"() {
+        given:
+            def registrationId = 1
+            def feedbackRequest = new FeedbackRequest(comment: "Close registration")
+            registrationService.closeRegistration(registrationId, feedbackRequest) >> { throw new RegistrationNotFoundException("Registration not found") }
+        when:
+            def response = registrationController.closeRegistration(registrationId, feedbackRequest)
+        then:
+            def e = thrown(RegistrationNotFoundException)
+            e.message == "Registration not found"
+    }
 }

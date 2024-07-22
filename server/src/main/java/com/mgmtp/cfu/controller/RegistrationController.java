@@ -60,6 +60,13 @@ public class RegistrationController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/{id}/close")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> closeRegistration(@PathVariable Long id, @RequestBody FeedbackRequest feedbackRequest) {
+        registrationService.closeRegistration(id, feedbackRequest);
+        return ResponseEntity.ok("Close registration successfully");
+    }
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public void deleteRegistration(@PathVariable Long id) {

@@ -22,7 +22,6 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-
     @GetMapping("/available")
     public ResponseEntity<?> getAvailableCategories() {
         try {
