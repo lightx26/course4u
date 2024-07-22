@@ -16,8 +16,9 @@ const handleCourseListClick = (e: React.MouseEvent, navigate: NavigateFunction) 
     navigate("/admin/courses");
 }
 
-const handleEditProfileClick = (e: React.MouseEvent) => {
+const handleEditProfileClick = (e: React.MouseEvent, navigate: NavigateFunction) => {
     e.preventDefault();
+    navigate("/admin/profile");
 }
 
 const handleSignOutClick = (e: React.MouseEvent, navigate: NavigateFunction, dispatch: Dispatch<UnknownAction>) => {
@@ -38,7 +39,7 @@ const functionMapping = (e: React.MouseEvent, navigate: NavigateFunction, dispat
             handleCourseListClick(e, navigate);
             break;
         case "edit_profile":
-            handleEditProfileClick(e);
+            handleEditProfileClick(e, navigate);
             break;
         case "sign_out":
             handleSignOutClick(e, navigate, dispatch);

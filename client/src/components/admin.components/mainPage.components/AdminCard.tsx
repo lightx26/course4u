@@ -1,11 +1,12 @@
 import CardFunctionList from "./CardFunctionList";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store/store";
+import { useNavigate } from "react-router-dom";
 
 
 function AdminCard() {
   const userData = useSelector((state: RootState) => state.user.user);
-
+  const navigate = useNavigate();
   const avatarUrl = userData.avatarUrl?.startsWith("http") || userData.avatarUrl?.startsWith("data")
     ? userData.avatarUrl
     : (userData.avatarUrl != null && userData.avatarUrl != undefined && userData.avatarUrl != "") ? `${import.meta.env.VITE_BACKEND_URL}${userData.avatarUrl}` : (`${import.meta.env.BASE_URL}/avatar/Default Avatar.svg`).replace('//', '/');
@@ -22,7 +23,10 @@ function AdminCard() {
               className="rounded-full"
               src={avatarUrl}
               alt="adm_avt"
-              style={{ backgroundColor: "gray", textAlign: "center" }}
+              style={{ backgroundColor: "gray", textAlign: "center", cursor: "pointer" }}
+              onClick={() => {
+                navigate("/admin/profile");
+              }}
             />
           </div>
         </div>
