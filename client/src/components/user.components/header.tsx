@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import imageLogo from "../../assets/images/logo_c4u.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store/store";
@@ -14,6 +14,7 @@ import { deleteAllFilterItem } from "../../redux/slice/searchFilterItem.slice";
 import UserCard from "./UserCard";
 import AdminCard from "../admin.components/mainPage.components/AdminCard";
 import { useRegistrationModal } from "../../hooks/use-registration-modal";
+import AvatarDropdown from "./AvatarDropdown";
 
 const HeaderHomepage: React.FC = () => {
   const searchTerm = useSelector(
@@ -170,24 +171,7 @@ const HeaderHomepage: React.FC = () => {
               </Notification>
             </div>
           </div>
-
-          <div className="relative w-[40px] h-[40px] rounded-[50%] group">
-            <img
-              src={avatarUrl}
-              alt="User Avatar"
-              className="absolute left-0 right-0 object-cover object-center w-full h-full cursor-pointer rounded-[50%]"
-              onClick={toggleDropdown}
-            />
-            <div className="absolute hidden group-hover:block right-2 top-10 z-[1000]">
-              {userData.role.toUpperCase() == "USER" ? (
-                <UserCard />
-              ) : userData.role.toUpperCase() == "ADMIN" ? (
-                <AdminCard />
-              ) : (
-                <></>
-              )}
-            </div>
-          </div>
+          <AvatarDropdown avatarUrl={avatarUrl} role={userData.role} />
         </div>
       </div>
     </header>

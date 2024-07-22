@@ -1,4 +1,5 @@
 import { removeRegistration } from "../../apiService/Registration.service";
+import { useRegistrationModal } from "../../hooks/use-registration-modal";
 import { Status } from "../../utils/index";
 import { Button } from "../ui/button";
 
@@ -14,6 +15,7 @@ export const RegistrationButton = ({
     isEdit,
     id
 }: Props) => {
+    const { close } = useRegistrationModal(state => state)
     const onEdit = () => {
         setIsEdit(true);
     };
@@ -22,7 +24,7 @@ export const RegistrationButton = ({
     const handleDeleteButtonClick = async () => {
         await removeRegistration(id!);
         setTimeout(() => {
-            window.location.reload(), 2000;
+            close(), 1000;
         });
     }
 

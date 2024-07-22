@@ -9,7 +9,7 @@ function AdminCard() {
   const navigate = useNavigate();
   const avatarUrl = userData.avatarUrl?.startsWith("http") || userData.avatarUrl?.startsWith("data")
     ? userData.avatarUrl
-    : (userData.avatarUrl != null && userData.avatarUrl != undefined && userData.avatarUrl != "") ? `${import.meta.env.VITE_BACKEND_URL}${userData.avatarUrl}` : (`${import.meta.env.BASE_URL}/avatar/Default Avatar.svg`).replace('//', '/');
+    : (userData.avatarUrl) ? `${import.meta.env.VITE_BACKEND_URL}${userData.avatarUrl}` : (`${import.meta.env.BASE_URL}/avatar/Default Avatar.svg`).replace('//', '/');
 
   return (
     <div
@@ -31,7 +31,7 @@ function AdminCard() {
           </div>
         </div>
         <div className="flex justify-center w-full mb-1 text-xl font-semibold name align-center">
-          {userData.username}
+          {(userData.fullName) ? userData.fullName : userData.username}
         </div>
         <div className="flex justify-center w-full mb-1 text-xs font-semibold email align-center">
           {userData.email}
