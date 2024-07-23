@@ -20,6 +20,7 @@ export default function CourseCardComponent({ course }: PropsType) {
       } else if (userRole === "USER") {
         navigate(`/courses/${id}`);
       }
+      window.scrollTo(0, 0);
     };
 
   const thumbnailUrl = handleThumbnailUrl(course.thumbnailUrl);
