@@ -3,21 +3,21 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registrationSchema } from "../../schemas/registration-schema";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { CourseForm } from "./course-form";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "../ui/select";
 
 import { useEffect } from "react";
@@ -35,23 +35,23 @@ import LearningProgress from "../user.components/learning-progress";
 import { useRegistrationModal } from "../../hooks/use-registration-modal";
 
 type RegistrationsFormProps = RegistrationsProps & {
-    isEdit: boolean;
-    setIsEdit: (isEdit: boolean) => void;
-    startDate?: string;
-    endDate?: string;
+  isEdit: boolean;
+  setIsEdit: (isEdit: boolean) => void;
+  startDate?: string;
+  endDate?: string;
 };
 
 export const RegistrationsForm = ({
-    id,
-    duration,
-    durationUnit,
-    status,
-    course,
-    isEdit,
-    setIsEdit,
-    startDate,
-    endDate,
-    registrationFeedbacks,
+  id,
+  duration,
+  durationUnit,
+  status,
+  course,
+  isEdit,
+  setIsEdit,
+  startDate,
+  endDate,
+  registrationFeedbacks,
 }: RegistrationsFormProps) => {
   const form = useForm<z.infer<typeof registrationSchema>>({
     resolver: zodResolver(registrationSchema),
@@ -93,43 +93,39 @@ export const RegistrationsForm = ({
     let isFile = false;
     let thumbnailFile;
 
-        if (values.thumbnailUrl.startsWith("blob:")) {
-            thumbnailFile = await blobToFile(values.thumbnailUrl, values.name);
-            isFile = true;
-        } else if (values.thumbnailUrl.startsWith("data:")) {
-            const thumbnailFromBase64 = base64ToBlob(values.thumbnailUrl);
-            thumbnailFile = new File(
-                [thumbnailFromBase64],
-                `${values.name}.jpg`,
-                {
-                    type: thumbnailFromBase64.type,
-                }
-            );
-            isFile = true;
-        } else {
-            isFile = false;
-        }
+    if (values.thumbnailUrl.startsWith("blob:")) {
+      thumbnailFile = await blobToFile(values.thumbnailUrl, values.name);
+      isFile = true;
+    } else if (values.thumbnailUrl.startsWith("data:")) {
+      const thumbnailFromBase64 = base64ToBlob(values.thumbnailUrl);
+      thumbnailFile = new File([thumbnailFromBase64], `${values.name}.jpg`, {
+        type: thumbnailFromBase64.type,
+      });
+      isFile = true;
+    } else {
+      isFile = false;
+    }
 
-        const requestBody = new FormData();
-        requestBody.append("name", values.name);
-        requestBody.append("teacherName", values.teacherName);
-        requestBody.append("link", values.link);
-        requestBody.append("level", values.level);
-        requestBody.append("platform", values.platform);
-        values.categories.forEach((category, index) => {
-            requestBody.append(`categories[${index}].label`, category.label!);
-            requestBody.append(`categories[${index}].value`, category.value);
-        });
-        requestBody.append("duration", values.duration.toString());
-        requestBody.append("durationUnit", values.durationUnit);
+    const requestBody = new FormData();
+    requestBody.append("name", values.name);
+    requestBody.append("teacherName", values.teacherName);
+    requestBody.append("link", values.link);
+    requestBody.append("level", values.level);
+    requestBody.append("platform", values.platform);
+    values.categories.forEach((category, index) => {
+      requestBody.append(`categories[${index}].label`, category.label!);
+      requestBody.append(`categories[${index}].value`, category.value);
+    });
+    requestBody.append("duration", values.duration.toString());
+    requestBody.append("durationUnit", values.durationUnit);
 
-        if (isFile) {
-            if (thumbnailFile) {
-                requestBody.append("thumbnailFile", thumbnailFile);
-            }
-        } else {
-            requestBody.append("thumbnailUrl", values.thumbnailUrl);
-        }
+    if (isFile) {
+      if (thumbnailFile) {
+        requestBody.append("thumbnailFile", thumbnailFile);
+      }
+    } else {
+      requestBody.append("thumbnailUrl", values.thumbnailUrl);
+    }
 
     const status = await createNewRegistration(requestBody);
     if (status === 201) {
@@ -145,8 +141,8 @@ export const RegistrationsForm = ({
         },
       });
     } else if (status === 500) {
-      toast.error("Thumbnail size should be smaller than 10MB", {
-        description: "Please crop thumbnail before submit again!",
+      toast.error("Oops! Something went wrong. Please try again later", {
+        description: "Contact the admin for further assistance!",
         style: {
           color: "red",
           fontWeight: "bold",
@@ -240,10 +236,7 @@ export const RegistrationsForm = ({
             />
           </div>
           {startDate && (
-              <LearningProgress
-                  startDate={startDate}
-                  endDate={endDate || ""}
-              />
+            <LearningProgress startDate={startDate} endDate={endDate || ""} />
           )}
           {user.user?.role === "USER" && (
             <div className="space-y-5">

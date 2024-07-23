@@ -78,8 +78,8 @@ const CreateCourse = () => {
         },
       });
     } else if (status === 500) {
-      toast.error("Thumbnail size should be smaller than 10MB", {
-        description: "Please crop thumbnail before submit again!",
+      toast.error("Oops! Something went wrong. Please try again later", {
+        description: "Contact the admin for further assistance!",
         style: {
           color: "red",
           fontWeight: "bold",

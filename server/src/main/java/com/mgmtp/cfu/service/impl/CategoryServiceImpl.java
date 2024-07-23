@@ -1,6 +1,7 @@
 package com.mgmtp.cfu.service.impl;
 
 import com.mgmtp.cfu.dto.categorydto.CategoryDTO;
+import com.mgmtp.cfu.dto.coursedto.CourseRequest;
 import com.mgmtp.cfu.entity.Category;
 import com.mgmtp.cfu.enums.CategoryStatus;
 import com.mgmtp.cfu.exception.MapperNotFoundException;
@@ -8,9 +9,11 @@ import com.mgmtp.cfu.mapper.DTOMapper;
 import com.mgmtp.cfu.mapper.factory.impl.CategoryMapperFactory;
 import com.mgmtp.cfu.repository.CategoryRepository;
 import com.mgmtp.cfu.service.CategoryService;
+import com.mgmtp.cfu.util.AuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,8 +44,36 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<Category> findCategoriesByIds(List<Long> categoryIds) {
-        return categoryRepository.findByIdIn(categoryIds);
+    public List<Category> findOrCreateNewCategory(List<CourseRequest.CategoryCourseRequestDTO> categoryRequests) {
+        List<Category> categories = new ArrayList<>();
+        try {
+            categoryRequests.forEach(categoryRequestDTO -> {
+                String value = categoryRequestDTO.getValue();
+                Optional<Category> existCategory;
+                // Check if value is a number (ID)
+                if (value.matches("\\d+")) {
+                    existCategory = categoryRepository.findById(Long.valueOf(value));
+                } else {
+                    existCategory = categoryRepository.findCategoryByNameIgnoreCase(value);
+                }
+                if (existCategory.isPresent()) {
+                    if (!categories.contains(existCategory.get())) {
+                        categories.add(existCategory.get());
+                    }
+                } else {
+                    if (!value.matches("\\d+")) { // Only create new category if value is not an ID
+                        Category newCategory = new Category();
+                        newCategory.setName(value);
+                        CategoryStatus status = AuthUtils.getCurrentUser().getRole().toString().equals("ADMIN") ? CategoryStatus.AVAILABLE : CategoryStatus.PENDING;
+                        newCategory.setStatus(status);
+                        categories.add(categoryRepository.save(newCategory));
+                    }
+                }
+            });
+            return categories;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

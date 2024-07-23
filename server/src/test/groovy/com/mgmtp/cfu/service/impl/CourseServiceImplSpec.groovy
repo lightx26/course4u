@@ -91,7 +91,7 @@ class CourseServiceImplSpec extends Specification {
                 .categories(Set.of(mockCategory))
                 .build()
 
-        categoryService.findCategoriesByIds(_) >> List.of(mockCategory)
+        categoryService.findOrCreateNewCategory(_) >> List.of(mockCategory)
         courseRepository.save(_) >> course
         courseRepository.findFirstByLinkIgnoreCaseAndStatus(_, _) >> Optional.empty()
         when:
@@ -140,7 +140,7 @@ class CourseServiceImplSpec extends Specification {
                 .level(CourseLevel.INTERMEDIATE)
                 .categories(Set.of(mockCategory))
                 .build()
-        categoryService.findCategoriesByIds(_) >> List.of(mockCategory)
+        categoryService.findOrCreateNewCategory(_) >> List.of(mockCategory)
         courseRepository.save(_) >> course
         courseRepository.findFirstByLinkIgnoreCaseAndStatus(_, _) >> Optional.empty()
         when:

@@ -8,9 +8,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long>, JpaSpecificationExecutor<Category> {
     List<Category> findCategoriesByStatus(CategoryStatus status);
     List<Category> findByIdIn(Collection<Long> id);
+
+    Optional<Category> findCategoryByNameIgnoreCase(String label);
 }

@@ -88,13 +88,11 @@ public class CourseServiceImpl implements CourseService {
             } else if (courseRequest.getThumbnailUrl() != null) {
                 thumbnailUrl = courseRequest.getThumbnailUrl();
             }
-//            Value receive from client is category id
-            List<Category> categories = categoryService.findCategoriesByIds(
-                    courseRequest.getCategories()
-                            .stream()
-                            .map(category -> Long.parseLong(category.getValue()))
-                            .toList()
+
+            List<Category> categories = categoryService.findOrCreateNewCategory(
+                   courseRequest.getCategories()
             );
+            log.info("categories: " + categories);
             course.setThumbnailUrl(thumbnailUrl);
             course.setCategories(Set.copyOf(categories));
             course.setCreatedDate(LocalDate.now());
@@ -108,7 +106,7 @@ public class CourseServiceImpl implements CourseService {
             return modelMapper.map(course, CourseResponse.class);
         } catch (IOException e) {
             log.error("Error while uploading thumbnail", e);
-            throw new RuntimeException("Error while uploading thumbnail");
+            throw new RuntimeException("Error while create a new course");
         }
     }
 

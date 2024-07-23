@@ -35,6 +35,7 @@ import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -113,12 +114,13 @@ public class RegistrationServiceImpl implements RegistrationService {
         var listOfMyRegistration = getRegistrationOverviewDTOS(page, myRegistrations, registrationMapperFactory.getDTOMapper(RegistrationOverviewDTO.class));
         return PageResponse.builder().list(listOfMyRegistration).totalElements(myRegistrations.size()).build();
     }
+
     @Override
     public void approveRegistration(Long id) {
         var registration = registrationRepository.findById(id).orElseThrow(() -> new RegistrationNotFoundException("Registration not found"));
 
         // check if registration has a submitted status
-        if(registration.getStatus() != RegistrationStatus.SUBMITTED){
+        if (registration.getStatus() != RegistrationStatus.SUBMITTED) {
             throw new IllegalArgumentException("Registration must be in submitted status to be approved");
         }
 
@@ -129,8 +131,8 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
 
         // change status category to available
-        for(var category : registration.getCourse().getCategories()){
-            if(category.getStatus() == CategoryStatus.PENDING) {
+        for (var category : registration.getCourse().getCategories()) {
+            if (category.getStatus() == CategoryStatus.PENDING) {
                 category.setStatus(CategoryStatus.AVAILABLE);
             }
         }
@@ -144,19 +146,19 @@ public class RegistrationServiceImpl implements RegistrationService {
         notificationService.sendNotificationToUser(registration.getUser(), NotificationType.SUCCESS, "Your registration for course " + registration.getCourse().getName() + " has been approved");
 
         // send email
-        List<MailContentUnit> mailContentUnits=List.of(
-                MailContentUnit.builder().id("user_greeting").content("Your registration of course : "+ registration.getCourse().getName() +" has been approved!").tag("div").build(),
-                MailContentUnit.builder().id("client_url").href(clientUrl+"/personal/registration").tag("a").build()
+        List<MailContentUnit> mailContentUnits = List.of(
+                MailContentUnit.builder().id("user_greeting").content("Your registration of course : " + registration.getCourse().getName() + " has been approved!").tag("div").build(),
+                MailContentUnit.builder().id("client_url").href(clientUrl + "/personal/registration").tag("a").build()
         );
-        emailService.sendMessage(registration.getUser().getEmail(), "Registration approved!!","approve_registration_mail_template.xml", mailContentUnits);
+        emailService.sendMessage(registration.getUser().getEmail(), "Registration approved!!", "approve_registration_mail_template.xml", mailContentUnits);
 
     }
 
     @Override
-    public void declineRegistration(Long id , FeedbackRequest feedbackRequest) {
+    public void declineRegistration(Long id, FeedbackRequest feedbackRequest) {
         var registration = registrationRepository.findById(id).orElseThrow(() -> new RegistrationNotFoundException("Registration not found"));
         // check if registration has been declined
-        if(registration.getStatus() != RegistrationStatus.SUBMITTED){
+        if (registration.getStatus() != RegistrationStatus.SUBMITTED) {
             throw new IllegalArgumentException("Registration must be in submitted status to be declined");
         }
         // send feedback
@@ -173,11 +175,11 @@ public class RegistrationServiceImpl implements RegistrationService {
         notificationService.sendNotificationToUser(registration.getUser(), NotificationType.ERROR, "Your registration for course " + registration.getCourse().getName() + " has been declined");
 
         // send email
-        List<MailContentUnit> mailContentUnits=List.of(
-                MailContentUnit.builder().id("user_greeting").content("Your registration of course : "+ registration.getCourse().getName() +" has been declined!").tag("div").build(),
-                MailContentUnit.builder().id("client_url").href(clientUrl+"/personal/registration").tag("a").build()
+        List<MailContentUnit> mailContentUnits = List.of(
+                MailContentUnit.builder().id("user_greeting").content("Your registration of course : " + registration.getCourse().getName() + " has been declined!").tag("div").build(),
+                MailContentUnit.builder().id("client_url").href(clientUrl + "/personal/registration").tag("a").build()
         );
-        emailService.sendMessage(registration.getUser().getEmail(), "Registration declined!!","decline_registration_mail_template.xml", mailContentUnits);
+        emailService.sendMessage(registration.getUser().getEmail(), "Registration declined!!", "decline_registration_mail_template.xml", mailContentUnits);
     }
 
     @Override
@@ -194,6 +196,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         return new PageImpl<>(modifiedResponseContent, pageRequest, registrations.getTotalElements());
     }
+
     @Transactional
     public Boolean createRegistration(RegistrationRequest registrationRequest) {
         // Create course if needed
@@ -223,7 +226,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     public Page<RegistrationOverviewDTO> getRegistrationByStatus(int page, String status) {
-        try{
+        try {
             PageRequest pageRequest = PageRequest.of(page - 1, 8);
             RegistrationStatus registrationStatus = RegistrationStatus.valueOf(status.toUpperCase());
             Page<Registration> registrations = registrationRepository.findAllByStatus(registrationStatus, pageRequest);
@@ -235,8 +238,7 @@ public class RegistrationServiceImpl implements RegistrationService {
                     .toList();
 
             return new PageImpl<>(modifiedResponseContent, pageRequest, registrations.getTotalElements());
-        }
-        catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             throw new RegistrationStatusNotFoundException("Status not found");
         }
     }
@@ -265,11 +267,11 @@ public class RegistrationServiceImpl implements RegistrationService {
         notificationService.sendNotificationToUser(registration.getUser(), NotificationType.INFORMATION, "Your registration for course " + registration.getCourse().getName() + " has been closed");
 
         // send email
-        List<MailContentUnit> mailContentUnits=List.of(
-                MailContentUnit.builder().id("user_greeting").content("Your registration of course : "+ registration.getCourse().getName() +" has been closed!").tag("div").build(),
-                MailContentUnit.builder().id("client_url").href(clientUrl+"/personal/registration").tag("a").build()
+        List<MailContentUnit> mailContentUnits = List.of(
+                MailContentUnit.builder().id("user_greeting").content("Your registration of course : " + registration.getCourse().getName() + " has been closed!").tag("div").build(),
+                MailContentUnit.builder().id("client_url").href(clientUrl + "/personal/registration").tag("a").build()
         );
-        emailService.sendMessage(registration.getUser().getEmail(), "Registration closed","close_registration_mail_template.xml", mailContentUnits);
+        emailService.sendMessage(registration.getUser().getEmail(), "Registration closed", "close_registration_mail_template.xml", mailContentUnits);
     }
 
     @Override

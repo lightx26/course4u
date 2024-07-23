@@ -223,7 +223,7 @@ const MultipleSelector = React.forwardRef<
 
     const handleUnselect = React.useCallback(
       (option: Option) => {
-        const newOptions = selected.filter((s) => s.value !== option.value);
+        const newOptions = selected.filter((s) => s.label !== option.label);
         setSelected(newOptions);
         onChange?.(newOptions);
       },
@@ -297,11 +297,11 @@ const MultipleSelector = React.forwardRef<
       if (!creatable) return undefined;
       if (
         isOptionsExist(options, [{ value: inputValue, label: inputValue }]) ||
-        selected.find((s) => s.value === inputValue)
+        selected.find((s) => s.label === inputValue)
       ) {
         return undefined;
       }
-
+      
       const Item = (
         <CommandItem
           value={inputValue}
