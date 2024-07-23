@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity
 import spock.lang.Specification
 import spock.lang.Subject
 
-import java.time.LocalDate
+import java.time.LocalDateTime
 
 class RegistrationControllerSpec extends Specification {
     def registrationService = Mock(RegistrationService)
@@ -107,14 +107,14 @@ class RegistrationControllerSpec extends Specification {
         RegistrationDetailDTO registrationDetailDTO = RegistrationDetailDTO.builder()
                                                                            .id(1)
                                                                            .status(RegistrationStatus.APPROVED)
-                                                                           .startDate(LocalDate.of(2022, 1, 31))
-                                                                           .endDate(LocalDate.of(2022, 2, 12))
+                                                                           .startDate(LocalDateTime.of(2022, 1, 31,0,0,0))
+                                                                           .endDate(LocalDateTime.of(2022, 2, 12,0,0,0))
                                                                            .build()
         RegistrationDetailDTO mockResult = RegistrationDetailDTO.builder()
                                                                 .id(1)
                                                                 .status(RegistrationStatus.APPROVED)
-                                                                .startDate(LocalDate.of(2022, 1, 31))
-                                                                .endDate(LocalDate.of(2022, 2, 12))
+                                                                .startDate(LocalDateTime.of(2022, 1, 31,0,0,0))
+                                                                .endDate(LocalDateTime.of(2022, 2, 12,0,0,0))
                                                                 .score(1008)
                                                                 .build()
 

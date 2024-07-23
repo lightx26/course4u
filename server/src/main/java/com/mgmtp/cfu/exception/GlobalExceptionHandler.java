@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(409).body(ErrorResponse.builder().message(e.getMessage()).status("409").build());
     }
 
-    @ExceptionHandler(BadRequestRunTimeException.class)
+    @ExceptionHandler(BadRequestRuntimeException.class)
     public ResponseEntity<?> handleBadRequestRunTimeException(final Exception e) {
         return ResponseEntity.status(400).body(ErrorResponse.builder().message(e.getMessage()).status("400").build());
     }

@@ -62,10 +62,7 @@ class RegistrationServiceImplSpec extends Specification {
     RegistrationFeedbackService feedbackService = Mock()
     IEmailService emailService = Mock()
     RegistrationDetailMapper registrationDetailMapper = Mock()
-    NotificationRepository notificationRepository = Mock()
-    RegistrationFeedbackRepository registrationFeedbackRepository = Mock()
     CourseService courseService = Mock()
-    IEmailService emailService = Mock()
 
     @Subject
     RegistrationServiceImpl registrationService = new RegistrationServiceImpl(
@@ -574,8 +571,8 @@ class RegistrationServiceImplSpec extends Specification {
         RegistrationDetailDTO registrationDetailDTO = RegistrationDetailDTO.builder()
                                                                            .id(1)
                                                                            .status(RegistrationStatus.APPROVED)
-                                                                           .startDate(LocalDate.of(2022, 1, 31))
-                                                                           .endDate(LocalDate.of(2022, 2, 13))
+                                                                           .startDate(LocalDateTime.of(2022, 1, 31,0,0,0))
+                                                                           .endDate(LocalDateTime.of(2022, 2, 13,0,0,0))
                                                                            .duration(1)
                                                                            .durationUnit(DurationUnit.WEEK)
                                                                            .course(courseRegistrationDTO)

@@ -239,6 +239,49 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     @Override
+    public RegistrationDetailDTO calculateScore(RegistrationDetailDTO registrationDetailDTO) {
+
+        LocalDateTime startDate = registrationDetailDTO.getStartDate();
+        LocalDateTime endDate = registrationDetailDTO.getEndDate();
+        Integer estimatedDuration = registrationDetailDTO.getDuration();
+        DurationUnit durationUnit = registrationDetailDTO.getDurationUnit(); // Day || Week || Month
+        CourseLevel level = registrationDetailDTO.getCourse().getLevel();
+
+        // Actual study hours
+        long actualDuration = ChronoUnit.DAYS.between(startDate, endDate.plusDays(1)) * 24;
+
+        long estimatedHour;
+        if (durationUnit.equals(DurationUnit.DAY))
+            estimatedHour = estimatedDuration * 24;
+        else if (durationUnit.equals(DurationUnit.WEEK))
+            estimatedHour = estimatedDuration * 168;
+        else
+            estimatedHour = estimatedDuration * 720;
+
+        long bonusPoints = Math.max(0, estimatedHour - actualDuration);
+
+        long score;
+        if (level.equals(CourseLevel.BEGINNER))
+            score = actualDuration + (bonusPoints * 2);
+        else if (level.equals(CourseLevel.INTERMEDIATE))
+            score = 2 * actualDuration + (bonusPoints * 2);
+        else
+            score = 3 * actualDuration + (bonusPoints * 2);
+
+        registrationDetailDTO.setStatus(RegistrationStatus.DONE);
+        registrationDetailDTO.setScore((int) score);
+
+        var optRegistrationEntityMapper = registrationMapperFactory.getEntityMapper(RegistrationDetailDTO.class);
+        if (optRegistrationEntityMapper.isEmpty())
+            throw new MapperNotFoundException("Mapper not found!");
+        Registration registration = optRegistrationEntityMapper.get().toEntity(registrationDetailDTO);
+
+        registrationRepository.save(registration);
+
+        return registrationDetailDTO;
+    }
+
+    @Override
     @Transactional
     public void closeRegistration(Long id, FeedbackRequest feedbackRequest) {
         Registration registration = registrationRepository.findById(id).orElseThrow(() -> new RegistrationNotFoundException("Registration not found"));
