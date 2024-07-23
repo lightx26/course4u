@@ -41,9 +41,9 @@ const AvatarDropdown = ({ avatarUrl, role }: { avatarUrl: string, role: string }
             {showCard && (
                 <div className="absolute right-2 top-10 z-[1000]">
                     {role.toUpperCase() === 'USER' ? (
-                        <UserCard />
+                        <UserCard avatarUrl={avatarUrl} />
                     ) : role.toUpperCase() === 'ADMIN' ? (
-                        <AdminCard />
+                        <AdminCard avatarUrl={avatarUrl} />
                     ) : null}
                 </div>
             )}

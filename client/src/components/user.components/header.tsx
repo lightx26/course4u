@@ -13,6 +13,7 @@ import { BarChart3Icon, BellIcon, SearchIcon } from "lucide-react";
 import { deleteAllFilterItem } from "../../redux/slice/searchFilterItem.slice";
 import { useRegistrationModal } from "../../hooks/use-registration-modal";
 import AvatarDropdown from "./AvatarDropdown";
+import { handleAvatarUrl } from "../../utils/handleAvatarUrl";
 
 const HeaderHomepage: React.FC = () => {
   const searchTerm = useSelector(
@@ -69,12 +70,7 @@ const HeaderHomepage: React.FC = () => {
     navigate("/admin/courses/create");
   };
 
-  //For Role Accountant (TBU - To be Updated)
-
-  const avatarUrl = userData.avatarUrl?.startsWith("http") || userData.avatarUrl?.startsWith("data")
-    ? userData.avatarUrl
-    : (userData.avatarUrl) ? `${import.meta.env.VITE_BACKEND_URL}${userData.avatarUrl}` : (`${import.meta.env.BASE_URL}/avatar/Default Avatar.svg`).replace('//', '/');
-
+  const avatarUrl = handleAvatarUrl(userData.avatarUrl);
   return (
     <header
       className="p-4 bg-white"

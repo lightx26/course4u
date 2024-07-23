@@ -12,6 +12,7 @@ import { userRegistrationSchema } from "../../schemas/user-schema";
 import { Feedback } from "../feedback-list";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
+import { handleAvatarUrl } from "../../utils/handleAvatarUrl";
 
 export type RegistrationsProps = {
   id?: number;
@@ -53,18 +54,11 @@ const Registrations = ({ className, id }: Props) => {
     getDetailRegistration();
   }, [id]);
   if (isLoading) return <RegistrationSkeleton />;
-  let avatarPath = `${
-    import.meta.env.BASE_URL
-  }/avatar/Default Avatar.svg`.replace("//", "/");
+  let avatarPath;
   if (registration && registration.user && registration.user.avatarUrl) {
-    registration.user.avatarUrl.startsWith("data:") ||
-    registration.user.avatarUrl.startsWith("http")
-      ? registration.user.avatarUrl
-      : (avatarPath = `${import.meta.env.VITE_BACKEND_URL}${
-          registration?.user?.avatarUrl
-        }`);
+    avatarPath = handleAvatarUrl(registration.user.avatarUrl);
   } else if (user.role.toUpperCase() === "USER") {
-    avatarPath = `${import.meta.env.VITE_BACKEND_URL}${user.avatarUrl}`;
+    avatarPath = handleAvatarUrl(user.avatarUrl);
   }
 
   return (
@@ -80,7 +74,7 @@ const Registrations = ({ className, id }: Props) => {
       <div className="flex items-center justify-between w-full">
         <RegistrationUser
           fullName={registration?.user?.fullName || ""}
-          avatarUrl={avatarPath}
+          avatarUrl={avatarPath!}
           email={registration?.user?.email || user.email}
           telephone={registration?.user?.telephone || user.telephone}
         />

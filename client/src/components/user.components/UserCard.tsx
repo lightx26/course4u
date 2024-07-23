@@ -6,7 +6,7 @@ import { handleLogout } from '../../redux/slice/user.slice';
 import { updateSearch, updateSort } from '../../redux/slice/course.slice';
 import { deleteAllFilterItem } from '../../redux/slice/searchFilterItem.slice';
 
-export default function UserCard() {
+export default function UserCard({ avatarUrl }: { avatarUrl: string }) {
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
     const userData = useSelector((state: RootState) => state.user.user);
@@ -28,10 +28,6 @@ export default function UserCard() {
     const goToMyScorePage = () => {
         navigate("/personal/score");
     };
-
-    const avatarUrl = userData.avatarUrl?.startsWith("http") || userData.avatarUrl?.startsWith("data")
-        ? userData.avatarUrl
-        : (userData.avatarUrl) ? `${import.meta.env.VITE_BACKEND_URL}${userData.avatarUrl}` : (`${import.meta.env.BASE_URL}/avatar/Default Avatar.svg`).replace('//', '/');
 
     return (
         <div

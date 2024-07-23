@@ -1,3 +1,5 @@
+import { handleAvatarUrl } from "../../utils/handleAvatarUrl";
+
 interface IProps {
   fullname: string | null;
   email: string;
@@ -15,9 +17,7 @@ const Card_LeaderBoard = (props: IProps) => {
       : ranking === 2
         ? "text-gray-500"
         : "text-red-900";
-  const avatar = avatarUrl?.startsWith("http") || avatarUrl?.startsWith("data")
-    ? avatarUrl
-    : (avatarUrl) ? `${import.meta.env.VITE_BACKEND_URL}${avatarUrl}` : (`${import.meta.env.BASE_URL}/avatar/Default Avatar.svg`).replace('//', '/');
+  const avatar = handleAvatarUrl(avatarUrl);
   return (
     <div
       className={`card bg-white w-1/4 rounded-lg p-4 flex flex-col justify-between gap-5 ${

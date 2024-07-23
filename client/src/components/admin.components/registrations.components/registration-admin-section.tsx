@@ -17,6 +17,7 @@ import { RootState } from "../../../redux/store/store";
 import { Status } from "../../../utils/index";
 import { useRegistrationModal } from "../../../hooks/use-registration-modal";
 import { closeRegistration, declineRegistration } from "../../../apiService/Registration.service";
+import { handleAvatarUrl } from "../../../utils/handleAvatarUrl";
 
 type Props = {
     status?: Status;
@@ -41,11 +42,13 @@ const RegistrationAdminSection = ({ status }: Props) => {
             await closeRegistration(id!, values.comment, close);
         }
     }
+
+    const avatarUrl = handleAvatarUrl(user.avatarUrl);
     return (
         <Form {...form}>
             <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className='w-full space-y-8 mt-10'
+                className='w-full mt-10 space-y-8'
             >
                 {(status === Status.SUBMITTED || status === Status.DONE || status === Status.VERIFYING || status === Status.DOCUMENT_DECLINED) && (
                     <FormField
@@ -55,7 +58,7 @@ const RegistrationAdminSection = ({ status }: Props) => {
                             <FormItem>
                                 <FormLabel className='flex items-center'>
                                     <img
-                                        src={user.avatarUrl}
+                                        src={avatarUrl}
                                         alt='avatar'
                                         className='rounded-full mr-2 w-[40px] h-[40px] border-2 border-violet-500 mb-1'
                                     />

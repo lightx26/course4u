@@ -4,6 +4,7 @@ import { Skeleton } from "../../ui/skeleton";
 // TBU when placeholder image is ready
 import RegistraionPlaceholder from "../../../assets/images/admin.images/RegistrationPlaceholder.png";
 import { useRegistrationModal } from "../../../hooks/use-registration-modal";
+import { handleAvatarUrl } from "../../../utils/handleAvatarUrl";
 
 type PropsType = {
   registration: RegistrationType;
@@ -83,10 +84,12 @@ function RegistrationCardComponent({ registration }: PropsType) {
   const handlePopup = () => {
     open(true, +registration.id!);
   };
+
+  const avatar = handleAvatarUrl(registration.userAvatarUrl);
   return (
     <>
       <div
-        className="w-full overflow-hidden text-sm rounded-xl leading-normal transition-shadow bg-white border border-gray-200 border-solid shadow cursor-pointer duration-250 hover:shadow-lg grow"
+        className="w-full overflow-hidden text-sm leading-normal transition-shadow bg-white border border-gray-200 border-solid shadow cursor-pointer rounded-xl duration-250 hover:shadow-lg grow"
         onClick={handlePopup}
       >
         <div className="course-information rounded-3xl">
@@ -100,22 +103,22 @@ function RegistrationCardComponent({ registration }: PropsType) {
             alt={registration.courseName}
           />
         </div>
-        <div className="informations px-4 py-3">
+        <div className="px-4 py-3 informations">
           <div className="flex flex-col gap-2 text-left">
             <h3 className="text-sm font-medium text-left line-clamp-2 h-11 overflow-ellipsis">
               {registration.courseName}
             </h3>
           </div>
-          <div className="user_information flex justify-between">
+          <div className="flex justify-between user_information">
             <div className="flex gap-1 align-center">
               <div className="my-auto">
                 <img
                   className="object-cover w-10 h-10 rounded-full"
-                  src={registration.userAvatarUrl}
+                  src={avatar}
                   alt="user-avatar"
                 />
               </div>
-              <div className="username flex flex-col">
+              <div className="flex flex-col username">
                 <span className="text-base">{registration.userName}</span>
                 <span className="text-xs">User</span>
               </div>
@@ -130,10 +133,10 @@ function RegistrationCardComponent({ registration }: PropsType) {
               {status}
             </div>
           </div>
-          <div className="platform mt-3 text-xs">
+          <div className="mt-3 text-xs platform">
             {registration.coursePlatform}
           </div>
-          <div className="period text-xs">{period}</div>
+          <div className="text-xs period">{period}</div>
         </div>
       </div>
     </>
