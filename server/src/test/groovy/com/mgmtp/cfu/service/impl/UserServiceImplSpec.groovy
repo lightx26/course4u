@@ -1,9 +1,12 @@
 package com.mgmtp.cfu.service.impl
 
+import com.mgmtp.cfu.dto.userdto.ScorePerYearDTO
 import com.mgmtp.cfu.dto.userdto.UserDto
+import com.mgmtp.cfu.dto.userdto.UserScore
 import com.mgmtp.cfu.entity.User
 import com.mgmtp.cfu.enums.Gender
 import com.mgmtp.cfu.enums.Role
+import com.mgmtp.cfu.repository.queries.ScoreQueryManager
 import com.mgmtp.cfu.service.UploadService
 import org.springframework.web.multipart.MultipartFile
 import com.mgmtp.cfu.repository.UserRepository
@@ -17,14 +20,18 @@ import org.springframework.security.core.context.SecurityContextHolder
 
 import java.time.LocalDate
 
+import static com.mgmtp.cfu.util.AuthUtils.getCurrentUser
+
 class UserServiceImplSpec extends Specification {
 
     def userRepository = Mock(UserRepository)
     def uploadService = Mock(UploadService)
     def passwordEncoder = Mock(PasswordEncoder)
+    ScoreQueryManager scoreQueryManager=Mock()
 
     @Subject
-    def userService = new UserServiceImpl(userRepository, uploadService, passwordEncoder)
+    def userService = new UserServiceImpl(userRepository, uploadService,
+            passwordEncoder,scoreQueryManager)
 
     def setup() {
         def securityContext = Mock(SecurityContext)
@@ -104,5 +111,31 @@ class UserServiceImplSpec extends Specification {
         then:
         result == 0
     }
+
+    def "Change user password failed and return 0"() {
+        given:
+        scoreQueryManager.getMyScoreStatistics(_ as Long)>>List.of(
+                new ScorePerYearDTO(2021,122L,122L),
+                new ScorePerYearDTO(2023,122L,122L),
+                new ScorePerYearDTO(2022,122L,122L)
+        )
+
+        when:
+        def result = userService.getMyScoreStatistics()
+
+        then:
+        result.label.size()==3
+    }
+    def "getMyScore"() {
+        given:
+        scoreQueryManager.getMyScore(_ as String, _ as Long)>> UserScore.builder().build()
+
+        when:
+        def result = userService.getMyScore("2021")
+
+        then:
+        noExceptionThrown()
+    }
+
 
 }

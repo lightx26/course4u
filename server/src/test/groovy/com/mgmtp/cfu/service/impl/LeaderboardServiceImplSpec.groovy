@@ -2,7 +2,7 @@ package com.mgmtp.cfu.service.impl
 
 import com.mgmtp.cfu.dto.leaderboarddto.LeaderboardUserDTO
 import com.mgmtp.cfu.entity.User
-import com.mgmtp.cfu.repository.queries.LeaderboardQueryManager
+import com.mgmtp.cfu.repository.queries.ScoreQueryManager
 import com.mgmtp.cfu.service.LeaderboardService
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
@@ -10,7 +10,7 @@ import spock.lang.Specification
 import spock.lang.Subject
 
 class LeaderboardServiceImplSpec extends Specification {
-    LeaderboardQueryManager leaderboardQueryManager = Mock()
+    ScoreQueryManager leaderboardQueryManager = Mock()
     @Subject
     LeaderboardService leaderboardService = new LeaderboardServiceImpl(leaderboardQueryManager)
 

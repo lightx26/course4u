@@ -1,7 +1,7 @@
 package com.mgmtp.cfu.service.impl;
 
 import com.mgmtp.cfu.dto.leaderboarddto.LeaderboardDTO;
-import com.mgmtp.cfu.repository.queries.LeaderboardQueryManager;
+import com.mgmtp.cfu.repository.queries.ScoreQueryManager;
 import com.mgmtp.cfu.service.LeaderboardService;
 import com.mgmtp.cfu.util.AuthUtils;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import static com.mgmtp.cfu.util.Constant.LEADERBOARD_RANK_LIMIT;
 @RequiredArgsConstructor
 @Slf4j
 public class LeaderboardServiceImpl implements LeaderboardService {
-    private final LeaderboardQueryManager leaderboardQueryManager;
+    private final ScoreQueryManager leaderboardQueryManager;
 
     @Override
     public LeaderboardDTO getLeaderboard(int year) {
