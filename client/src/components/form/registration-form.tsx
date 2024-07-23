@@ -34,7 +34,6 @@ import FeedbackList from "../feedback-list";
 import LearningProgress from "../user.components/learning-progress";
 import { useRegistrationModal } from "../../hooks/use-registration-modal";
 import type { UploadFile } from "antd";
-import { useState } from "react";
 import FormDocument from "../user.components/Document";
 type RegistrationsFormProps = RegistrationsProps & {
   isEdit: boolean;
@@ -218,7 +217,7 @@ export const RegistrationsForm = ({
                       onKeyDown={(e) => {
                         e.key === "." && e.preventDefault();
                       }}
-                      value={Number(inputDuration).toString()}
+                      value={duration || Number(inputDuration).toString()}
                     />
                   </FormControl>
                   <FormMessage />

@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -71,6 +72,7 @@ public class DocumentServiceImpl implements DocumentService {
         storageDocuments(payments, DocumentType.PAYMENT, registration, user);
         notifyAccountant(user,registration);
         registration.setStatus(RegistrationStatus.VERIFYING);
+        registration.setLastUpdated(LocalDateTime.now());
         registrationRepository.save(registration);
     }
 

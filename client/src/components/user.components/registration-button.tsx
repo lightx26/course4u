@@ -56,8 +56,8 @@ export const RegistrationButton = ({
         closeRegistration();
         close();
     };
-    
-    
+
+
 
     const handleDiscard = async () => {
         const res = await discardRegistration(id!);

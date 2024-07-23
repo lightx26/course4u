@@ -56,7 +56,7 @@ const Registrations = ({ className, id }: Props) => {
   }, [id]);
   if (isLoading) return <RegistrationSkeleton />;
   let avatarPath;
-  if (registration && registration.user && registration.user.avatarUrl) {
+  if (registration && registration.user) {
     avatarPath = handleAvatarUrl(registration.user.avatarUrl);
   } else if (user.role.toUpperCase() === "USER") {
     avatarPath = handleAvatarUrl(user.avatarUrl);
