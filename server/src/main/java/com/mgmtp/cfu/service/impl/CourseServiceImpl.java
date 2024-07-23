@@ -13,7 +13,6 @@ import com.mgmtp.cfu.enums.CourseStatus;
 import com.mgmtp.cfu.exception.DuplicateCourseException;
 import com.mgmtp.cfu.exception.MapperNotFoundException;
 import com.mgmtp.cfu.exception.ServerErrorRuntimeException;
-import com.mgmtp.cfu.mapper.CourseOverviewMapperImpl;
 import com.mgmtp.cfu.mapper.DTOMapper;
 import com.mgmtp.cfu.mapper.factory.MapperFactory;
 import com.mgmtp.cfu.repository.CourseRepository;
@@ -133,7 +132,7 @@ public class CourseServiceImpl implements CourseService {
 
         Pageable pageable = PageRequest.of(pageNo - 1, searchRequest.getPageSize());
 
-        Page<Course> coursePage = getAvailableCourseBySpec(searchRequest.getSearch(), searchRequest.getFilter(), searchRequest.getSortBy(), pageable);
+        Page<Course> coursePage = getAvailableCourseBySpec(searchRequest.getSearch().trim(), searchRequest.getFilter(), searchRequest.getSortBy(), pageable);
 
         // If pageNo is greater than the total number of pages, return the last page
         int totalPages = coursePage.getTotalPages();
