@@ -17,7 +17,7 @@ public class NotificationController {
     @GetMapping
     public ResponseEntity<List<NotificationUserDTO>> getAllNotificationByCurrUser(@RequestParam(defaultValue = "1") int batch,
                                                                                   @RequestParam(defaultValue = "25") int batchSize) {
-        return ResponseEntity.ok(notificationService.getAllNotificationByCurrUser(1, 20));
+        return ResponseEntity.ok(notificationService.getAllNotificationByCurrUser(batch, batchSize));
     }
 
     @PutMapping

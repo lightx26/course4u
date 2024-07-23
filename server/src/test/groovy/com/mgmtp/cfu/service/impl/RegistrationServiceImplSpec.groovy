@@ -522,8 +522,8 @@ class RegistrationServiceImplSpec extends Specification {
         authentication.getCredentials() >> currentUser
 
         // Mocking AuthUtils to return the current user
-        GroovyMock(AuthUtils, global: true)
-        AuthUtils.getCurrentUser() >> currentUser
+//        GroovyMock(AuthUtils, global: true)
+//        AuthUtils.getCurrentUser() >> currentUser
     }
 
     def "createRegistration should create and save a new registration"() {

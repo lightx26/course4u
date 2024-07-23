@@ -4,9 +4,16 @@ import com.mgmtp.cfu.dto.notificationdto.NotificationUserDTO
 import com.mgmtp.cfu.entity.Notification
 import com.mgmtp.cfu.entity.User
 import com.mgmtp.cfu.enums.NotificationType
+import com.mgmtp.cfu.exception.ForbiddenException
+import com.mgmtp.cfu.exception.NotificationNotFoundException
 import com.mgmtp.cfu.mapper.NotificationUserMapper
 import com.mgmtp.cfu.repository.NotificationRepository
+import com.mgmtp.cfu.util.AuthUtils
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
 import spock.lang.Specification
 import spock.lang.Subject
@@ -19,26 +26,35 @@ class NotificationServiceImplSpec extends Specification {
     @Subject
     def notificationService = new NotificationServiceImpl(notificationRepository, notificationUserMapper)
 
+    User currentUser = new User(id: 1L, username: "username")
+    def setup() {
+        // Mocking SecurityContext and Authentication
+        SecurityContext securityContext = Mock(SecurityContext)
+        Authentication authentication = Mock(Authentication)
+
+        // Setting up the SecurityContextHolder
+        SecurityContextHolder.setContext(securityContext)
+        securityContext.getAuthentication() >> authentication
+        authentication.getCredentials() >> currentUser
+    }
+
     def "should return notifications for the current user"() {
         given:
-            def user = Mock(User)
-            def userId = 123L
-            user.getId() >> userId
+        def notifications = [new Notification(), new Notification()]
+        def notificationDTOs = [new NotificationUserDTO(), new NotificationUserDTO()]
 
-            def notifications = [new Notification(), new Notification()]
-            def notificationDTOs = [new NotificationUserDTO(), new NotificationUserDTO()]
-            def authentication = Mock(Authentication) {
-                getCredentials() >> User.builder().id(userId).build()
-            }
-            SecurityContextHolder.context.authentication = authentication
-            notificationRepository.findAllByUserIdOrderByCreatedDateDesc(userId) >> notifications
-            notificationUserMapper.toListDTO(notifications) >> notificationDTOs
+
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdDate")
+        Pageable pageable = PageRequest.of(0, 10, sort)
+
+        notificationRepository.findAllByUserId(currentUser.id, pageable) >> notifications
+        notificationUserMapper.toListDTO(notifications) >> notificationDTOs
 
         when:
-            def result = notificationService.getAllNotificationByCurrUser()
+        def result = notificationService.getAllNotificationByCurrUser(1, 10)
 
         then:
-            result == notificationDTOs
+        result == notificationDTOs
     }
 
     def "should create a new record of notification"() {
@@ -51,5 +67,51 @@ class NotificationServiceImplSpec extends Specification {
 
         then:
         1 * notificationRepository.save(_)
+    }
+
+    def "markAllAsRead should call repository with current userId"() {
+        when:
+        notificationService.markAllAsRead()
+
+        then:
+        1 * notificationRepository.markAllAsRead(currentUser.id)
+    }
+
+    def "markAsReadById should throw NotificationNotFoundException for invalid ID"() {
+        given:
+        def invalidId = 10L
+        notificationRepository.findById(_) >> Optional.empty()
+
+        when:
+        notificationService.markAsReadById(invalidId)
+
+        then:
+        thrown(NotificationNotFoundException)
+    }
+
+    def "markAsReadById should throw ForbiddenException if user is not the owner"() {
+        given:
+        Notification notification = new Notification(user: new User(id: 2L))
+        notificationRepository.findById(1L) >> Optional.of(notification)
+
+        when:
+        notificationService.markAsReadById(1L)
+
+        then:
+        thrown(ForbiddenException)
+    }
+
+    def "markAsReadById should mark notification as read for valid ID and owner"() {
+        given:
+        Notification notification = new Notification(user: currentUser, seen: false)
+        notificationRepository.findById(1L) >> Optional.of(notification)
+
+        when:
+        notificationService.markAsReadById(1L)
+
+        then:
+        1 * notificationRepository.save(notification)
+        and:
+        notification.seen == true
     }
 }
