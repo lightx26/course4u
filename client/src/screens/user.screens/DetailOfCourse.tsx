@@ -196,8 +196,9 @@ const Detail_Of_Course: React.FC = () => {
 
   const thumbnailUrl = courseData?.thumbnailUrl?.startsWith("http")
     ? courseData.thumbnailUrl
-    : `${import.meta.env.VITE_BACKEND_URL}/thumbnail/${courseData?.thumbnailUrl
-    }`;
+    : `${import.meta.env.VITE_BACKEND_URL}/thumbnail/${
+        courseData?.thumbnailUrl
+      }`;
 
   //Handle Click Button Edit For Admin Or Enroll Now For USER
 
@@ -311,9 +312,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                (dataRatings.detailRatings["5"] * 100) /
-                                totalRating
-                              )
+                                  (dataRatings.detailRatings["5"] * 100) /
+                                    totalRating
+                                )
                               : 0
                           }
                         />
@@ -323,9 +324,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                (dataRatings.detailRatings["4"] * 100) /
-                                totalRating
-                              )
+                                  (dataRatings.detailRatings["4"] * 100) /
+                                    totalRating
+                                )
                               : 0
                           }
                         />
@@ -335,9 +336,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                (dataRatings.detailRatings["3"] * 100) /
-                                totalRating
-                              )
+                                  (dataRatings.detailRatings["3"] * 100) /
+                                    totalRating
+                                )
                               : 0
                           }
                         />
@@ -347,9 +348,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                (dataRatings.detailRatings["2"] * 100) /
-                                totalRating
-                              )
+                                  (dataRatings.detailRatings["2"] * 100) /
+                                    totalRating
+                                )
                               : 0
                           }
                         />
@@ -359,9 +360,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                (dataRatings.detailRatings["1"] * 100) /
-                                totalRating
-                              )
+                                  (dataRatings.detailRatings["1"] * 100) /
+                                    totalRating
+                                )
                               : 0
                           }
                         />
@@ -580,14 +581,24 @@ const Detail_Of_Course: React.FC = () => {
                     </div>
                     <hr />
                     <div className="p-[5px_10px_0_10px]">
-                      <ModalEditOrDeleteCourse courseData={courseData}>
+                      {role === "ADMIN" && (
+                        <ModalEditOrDeleteCourse courseData={courseData}>
+                          <button
+                            className="w-full h-[40px] border border-[#ccc] font-medium text-purple-600"
+                            style={{ color: "purple" }}
+                          >
+                            Edit
+                          </button>
+                        </ModalEditOrDeleteCourse>
+                      )}
+                      {role === "USER" && (
                         <button
                           className="w-full h-[40px] border border-[#ccc] font-medium text-purple-600"
                           style={{ color: "purple" }}
                         >
-                          {role === "USER" ? "Enroll Now" : "Edit"}
+                          Enroll Now
                         </button>
-                      </ModalEditOrDeleteCourse>
+                      )}
                     </div>
                   </div>
                 </div>

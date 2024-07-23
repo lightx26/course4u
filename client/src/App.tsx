@@ -22,6 +22,7 @@ import { ProtectedRouteLogin } from "./components/user.components/ProtectedRoute
 import { isTokenExpired } from "./utils/validateToken.ts";
 import { RegistrationModal } from "./components/modal/registration-modal.tsx";
 import LeaderBoard from "./screens/user.screens/LeaderBoard.tsx";
+import MyScore from "./screens/user.screens/MyScore.tsx";
 export type CourseType = {
   id: string | undefined;
   name: string;
@@ -70,7 +71,7 @@ const LayoutUser = ({ children }: { children?: ReactElement }) => {
   const user = useSelector((state: RootState) => state.user.user);
   const userRole = user.role;
   return (
-    <div className='app-container bg-gray-50'>
+    <div className="app-container bg-gray-50">
       {isUserRoute && userRole === "USER" && (
         <>
           <HeaderHomepage />
@@ -80,12 +81,11 @@ const LayoutUser = ({ children }: { children?: ReactElement }) => {
         </>
       )}
 
-      {isUserRoute &&
-        (userRole === "ADMIN" || userRole === "ACCOUNTANT") && (
-          <>
-            <NotPermitted />
-          </>
-        )}
+      {isUserRoute && (userRole === "ADMIN" || userRole === "ACCOUNTANT") && (
+        <>
+          <NotPermitted />
+        </>
+      )}
     </div>
   );
 };
@@ -98,7 +98,7 @@ const LayoutAdmin = () => {
   const userRole = user.role;
   return (
     <>
-      <div className='app-container '>
+      <div className="app-container ">
         {isAdminRoute && userRole === "ADMIN" && (
           <>
             <HeaderHomepage />
@@ -106,12 +106,11 @@ const LayoutAdmin = () => {
             <Outlet />
           </>
         )}
-        {isAdminRoute &&
-          (userRole === "USER" || userRole === "ACCOUNTANT") && (
-            <>
-              <NotPermitted />
-            </>
-          )}
+        {isAdminRoute && (userRole === "USER" || userRole === "ACCOUNTANT") && (
+          <>
+            <NotPermitted />
+          </>
+        )}
       </div>
     </>
   );
@@ -125,19 +124,18 @@ const LayoutAccountant = () => {
   const userRole = user.role;
   return (
     <>
-      <div className='app-container'>
+      <div className="app-container">
         {isAccountRoute && userRole === "ACCOUNTANT" && (
           <>
             <div>this is accountant header</div>
             <Outlet />
           </>
         )}
-        {isAccountRoute &&
-          (userRole === "USER" || userRole === "ADMIN") && (
-            <>
-              <NotPermitted />
-            </>
-          )}
+        {isAccountRoute && (userRole === "USER" || userRole === "ADMIN") && (
+          <>
+            <NotPermitted />
+          </>
+        )}
       </div>
     </>
   );
@@ -190,7 +188,7 @@ const router = createBrowserRouter(
         },
         {
           path: "score",
-          element: <div> My Score </div>,
+          element: <MyScore />,
         },
       ],
     },
@@ -222,7 +220,7 @@ const router = createBrowserRouter(
         {
           path: "profile",
           element: <AccountSettingScreen />,
-        }
+        },
       ],
     },
     {

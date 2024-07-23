@@ -15,8 +15,8 @@ const Card_LeaderBoard = (props: IProps) => {
     ranking === 1
       ? "text-yellow-500"
       : ranking === 2
-        ? "text-gray-500"
-        : "text-red-900";
+      ? "text-gray-500"
+      : "text-red-900";
   const avatar = handleAvatarUrl(avatarUrl);
   return (
     <div
@@ -33,7 +33,11 @@ const Card_LeaderBoard = (props: IProps) => {
           />
           <div
             className={`w-9 h-9 rounded-full absolute bottom-0 right-0 ${
-              ranking === 1 ? "bg-yellow-500" : ranking === 2 ? "bg-gray-500" : "bg-red-900"
+              ranking === 1
+                ? "bg-yellow-500"
+                : ranking === 2
+                ? "bg-gray-500"
+                : "bg-red-900"
             } flex items-center justify-center`}
           >
             <svg
@@ -50,8 +54,8 @@ const Card_LeaderBoard = (props: IProps) => {
             </svg>
           </div>
         </div>
-        <div>
-          <div className="w-[70%]">
+        <div className="w-[70%]">
+          <div>
             <div
               className="text-xl font-medium mb-1 w-[100%]"
               style={{

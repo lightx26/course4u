@@ -16,4 +16,27 @@ const getDataLeaderBoard = async (year: string) => {
     console.error(error);
   }
 };
-export { getDataLeaderBoard, getAllYearsLeadBoard };
+
+const getDataMyScore = async () => {
+  try {
+    const response = await instance.get(`/users/my-score/statistics`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const getDataScoreByYear = async (year: string) => {
+  try {
+    const response = await instance.get(`/users/my-score?year=${year}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+export {
+  getDataLeaderBoard,
+  getAllYearsLeadBoard,
+  getDataMyScore,
+  getDataScoreByYear,
+};

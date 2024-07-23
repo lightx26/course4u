@@ -20,6 +20,7 @@ import com.mgmtp.cfu.service.*;
 import com.mgmtp.cfu.repository.*;
 import com.mgmtp.cfu.util.RegistrationStatusUtil;
 import com.mgmtp.cfu.util.RegistrationValidator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -30,19 +31,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.List;
+import java.util.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.Optional;
 
 import static com.mgmtp.cfu.util.AuthUtils.getCurrentUser;
 import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getRegistrationOverviewDTOS;
 import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getSortedRegistrations;
 
-import java.util.ArrayList;
-
 @Service
+@Slf4j
 public class RegistrationServiceImpl implements RegistrationService {
     private final RegistrationRepository registrationRepository;
     private final MapperFactory<Registration> registrationMapperFactory;
@@ -355,6 +353,7 @@ public class RegistrationServiceImpl implements RegistrationService {
             }
             registration.setStartDate(LocalDateTime.now());
             registration.setLastUpdated(LocalDateTime.now());
+            log.info("Current date time:{} - Date: {}",LocalDateTime.now(), new Date());
             registrationRepository.save(registration);
             return true;
         }
