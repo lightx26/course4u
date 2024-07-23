@@ -13,7 +13,7 @@ function CardFunctionList() {
     })
 
     const setItemGap = (alt: string) => {
-        return alt == 'sign_out' ? '1.5' : '2.5'
+        return alt == 'sign_out' ? '1' : '2.5'
     }
 
     const setItemColor = (alt: string) => {

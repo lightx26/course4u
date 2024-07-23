@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import AdminCard from '../admin.components/mainPage.components/AdminCard';
 import UserCard from './UserCard';
+import AdminPersonalization from "../admin.components/mainPage.components/AdminPersonalization.tsx";
 
 const AvatarDropdown = ({ avatarUrl, role }: { avatarUrl: string, role: string }) => {
     const [showCard, setShowCard] = useState(false);
@@ -43,7 +43,7 @@ const AvatarDropdown = ({ avatarUrl, role }: { avatarUrl: string, role: string }
                     {role.toUpperCase() === 'USER' ? (
                         <UserCard avatarUrl={avatarUrl} />
                     ) : role.toUpperCase() === 'ADMIN' ? (
-                        <AdminCard avatarUrl={avatarUrl} />
+                        <AdminPersonalization avatarUrl={avatarUrl} />
                     ) : null}
                 </div>
             )}
