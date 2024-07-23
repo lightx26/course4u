@@ -92,6 +92,10 @@ class CategoryServiceImplSpec extends Specification {
     }
     def "findOrCreateNewCategory should handle empty categoryRequests"() {
         given:
+        def authentication = Mock(Authentication) {
+            getCredentials() >> User.builder().id(1).role(Role.USER).build()
+        }
+        SecurityContextHolder.context.authentication = authentication
         def categoryRequests = []
 
         when:
