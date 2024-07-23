@@ -8,11 +8,7 @@ import com.mgmtp.cfu.exception.BadRequestRuntimeException
 import com.mgmtp.cfu.exception.ConflictRuntimeException
 import com.mgmtp.cfu.dto.MailContentUnit
 import com.mgmtp.cfu.enums.CoursePlatform
-import com.mgmtp.cfu.entity.Course
-import com.mgmtp.cfu.entity.User
 import com.mgmtp.cfu.enums.CourseLevel
-import com.mgmtp.cfu.enums.DurationUnit
-import com.mgmtp.cfu.exception.MapperNotFoundException
 import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO
 import com.mgmtp.cfu.enums.CategoryStatus
 import com.mgmtp.cfu.entity.Category
@@ -40,17 +36,17 @@ import com.mgmtp.cfu.repository.RegistrationFeedbackRepository
 import com.mgmtp.cfu.repository.RegistrationRepository
 
 import com.mgmtp.cfu.service.IEmailService
-import com.mgmtp.cfu.service.NotificationService
+import com.mgmtp.cfu.service.NotificationService;
 import com.mgmtp.cfu.service.RegistrationFeedbackService;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import com.mgmtp.cfu.service.CourseService
 import com.mgmtp.cfu.util.AuthUtils
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
-import spock.lang.Specification;
-import spock.lang.Subject;
+import spock.lang.Specification
+import spock.lang.Subject
 
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -330,7 +326,7 @@ class RegistrationServiceImplSpec extends Specification {
             def registration2 = Registration.builder().id(2).status(RegistrationStatus.DRAFT).build()
 
             Page<Registration> registrations = Mock(){
-                getContent() >> [registration];
+                getContent() >> [registration]
             }
 
             registrationRepository.findAllExceptStatus(_, _) >>{
@@ -516,7 +512,7 @@ class RegistrationServiceImplSpec extends Specification {
         0 * _
     }
 
-    User currentUser;
+    User currentUser
     def setup() {
         // Mocking SecurityContext and Authentication
         SecurityContext securityContext = Mock(SecurityContext)
@@ -590,6 +586,9 @@ class RegistrationServiceImplSpec extends Specification {
                                                 .status(RegistrationStatus.DONE)
                                                 .score(1008)
                                                 .build()
+
+        registrationMapperFactory.getEntityMapper(RegistrationDetailDTO.class) >> Optional.of(registrationDetailMapper)
+        registrationDetailMapper.toEntity(registrationDetailDTO) >> registration
 
         when:
         RegistrationDetailDTO result = registrationService.calculateScore(registrationDetailDTO)

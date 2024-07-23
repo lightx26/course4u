@@ -15,7 +15,7 @@ public class CourseReviewController {
 
     private final CourseReviewService courseReviewService;
 
-    @PostMapping("/submit-review")
+    @PostMapping("/course-reviews")
     public ResponseEntity<CourseReview> sendReview(@Valid @RequestBody CourseReviewDto courseReviewDto) {
         CourseReview savedCourseReview = courseReviewService.saveReview(courseReviewDto);
         return ResponseEntity.ok(savedCourseReview);
