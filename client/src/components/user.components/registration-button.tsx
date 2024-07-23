@@ -2,23 +2,29 @@ import {
     discardRegistration,
     removeRegistration,
     startLearning,
+    submitDocument,
 } from "../../apiService/Registration.service";
 import { useRegistrationDetail } from "../../hooks/use-registration-detail";
 import { useRegistrationModal } from "../../hooks/use-registration-modal";
 import { Status } from "../../utils/index";
 import { Button } from "../ui/button";
-
+import type { UploadFile } from "antd";
+import { toast } from "sonner";
 type Props = {
-    status?: Status;
-    setIsEdit: (isEdit: boolean) => void;
-    isEdit: boolean;
-    id?: number;
+  status?: Status;
+  setIsEdit: (isEdit: boolean) => void;
+  isEdit: boolean;
+  id?: number;
+  listFileCertificate?: UploadFile[];
+  listFilePayment?: UploadFile[];
 };
 export const RegistrationButton = ({
-    status = Status.NONE,
-    setIsEdit,
-    isEdit,
-    id,
+  status = Status.NONE,
+  setIsEdit,
+  isEdit,
+  id,
+  listFileCertificate,
+  listFilePayment,
 }: Props) => {
     const { registration, closeRegistration } = useRegistrationDetail();
     const { close } = useRegistrationModal((state) => state);
@@ -55,6 +61,26 @@ export const RegistrationButton = ({
         setTimeout(() => {
             closeRegistration(), close(), 1000;
         });
+    };
+
+    //Submit Document
+    const handleSubmitDocument = async () => {
+        const response = await submitDocument(
+            listFileCertificate!,
+            listFilePayment!,
+            id?.toString()
+        );
+        if (response && response.status === 200) {
+            toast.success("Document Submitted Successfully", {
+                style: { color: "green" },
+                description: "Your registration has been completed successfully.",
+            });
+        } else {
+            toast.error("Document Submission Failed", {
+                style: { color: "red" },
+                description: `${response?.data.message}`,
+            });
+        }
     };
     return (
         <div className='flex justify-end gap-4'>
@@ -120,7 +146,7 @@ export const RegistrationButton = ({
                 </Button>
             )}
             {status === Status.DONE && (
-                <Button size='lg' variant='blue'>
+                <Button size='lg' variant='blue' onClick={handleSubmitDocument}>
                     ASSIGN TO REVIEW
                 </Button>
             )}

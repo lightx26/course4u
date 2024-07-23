@@ -33,7 +33,9 @@ import RegistrationAdminSection from "../admin.components/registrations.componen
 import FeedbackList from "../feedback-list";
 import LearningProgress from "../user.components/learning-progress";
 import { useRegistrationModal } from "../../hooks/use-registration-modal";
-
+import type { UploadFile } from "antd";
+import { useState } from "react";
+import FormDocument from "../user.components/Document";
 type RegistrationsFormProps = RegistrationsProps & {
   isEdit: boolean;
   setIsEdit: (isEdit: boolean) => void;
@@ -172,6 +174,12 @@ export const RegistrationsForm = ({
     }
   }
 
+  //Submit Document
+  const [listFileCertificate, setListFileCertificate] = useState<UploadFile[]>(
+    []
+  );
+  const [listFilePayment, setListFilePayment] = useState<UploadFile[]>([]);
+
   return (
     <div className="flex flex-col w-full">
       <Form {...form}>
@@ -248,6 +256,14 @@ export const RegistrationsForm = ({
           )}
           {user.user?.role === "USER" && (
             <div className="space-y-5">
+              {status === "DONE" && (
+                <FormDocument
+                  listFileCertificate={listFileCertificate}
+                  setListFileCertificate={setListFileCertificate}
+                  listFilePayment={listFilePayment}
+                  setListFilePayment={setListFilePayment}
+                />
+              )}
               {registrationFeedbacks.length > 0 && (
                 <FeedbackList feedbacks={registrationFeedbacks} />
               )}
@@ -256,6 +272,8 @@ export const RegistrationsForm = ({
                 setIsEdit={setIsEdit}
                 isEdit={isEdit}
                 id={id}
+                listFileCertificate={listFileCertificate}
+                listFilePayment={listFilePayment}
               />
             </div>
           )}
