@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { handleAvatarUrl } from "../../../utils/handleAvatarUrl";
 
 
-function AdminCard({ avatarUrl }: { avatarUrl: string }) {
+function AdminCard({ avatarUrl }: { avatarUrl?: string }) {
   const userData = useSelector((state: RootState) => state.user.user);
   const navigate = useNavigate();
 
