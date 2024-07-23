@@ -32,7 +32,7 @@ public class RegistrationController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
-    public ResponseEntity<Registration> createRegistration(@ModelAttribute RegistrationRequest registrationRequest     ) {
+    public ResponseEntity<Registration> createRegistration(@ModelAttribute RegistrationRequest registrationRequest) {
         try {
             registrationService.createRegistration(registrationRequest);
             return new ResponseEntity<>(HttpStatus.CREATED);
