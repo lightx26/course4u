@@ -284,8 +284,6 @@ class RegistrationServiceImplSpec extends Specification {
 
     }
 
-
-
     /*
      * Test cases for getAllRegistrations and getRegistrationByStatus
      */
@@ -565,36 +563,28 @@ class RegistrationServiceImplSpec extends Specification {
         result == true
     }
 
-    def "Calculate score and return RegistrationDetailDTO"() {
+    def "Calculate score and update Registration"() {
         given:
-        CourseRegistrationDTO courseRegistrationDTO = CourseRegistrationDTO.builder().level(CourseLevel.ADVANCED).build()
-        RegistrationDetailDTO registrationDetailDTO = RegistrationDetailDTO.builder()
-                                                                           .id(1)
-                                                                           .status(RegistrationStatus.APPROVED)
-                                                                           .startDate(LocalDateTime.of(2022, 1, 31,0,0,0))
-                                                                           .endDate(LocalDateTime.of(2022, 2, 13,0,0,0))
-                                                                           .duration(1)
-                                                                           .durationUnit(DurationUnit.WEEK)
-                                                                           .course(courseRegistrationDTO)
-                                                                           .build()
+        Long id = 1
+        Course course = Course.builder().level(CourseLevel.ADVANCED).build()
 
         Registration registration = Registration.builder()
                                                 .id(1)
-                                                .status(RegistrationStatus.DONE)
+                                                .status(RegistrationStatus.APPROVED)
+                                                .startDate(LocalDateTime.of(2024, 7, 22, 18, 0, 0))
                                                 .score(1008)
+                                                .course(course)
+                                                .duration(1)
+                                                .durationUnit(DurationUnit.DAY)
                                                 .build()
 
-        registrationMapperFactory.getEntityMapper(RegistrationDetailDTO.class) >> Optional.of(registrationDetailMapper)
-        registrationDetailMapper.toEntity(registrationDetailDTO) >> registration
+        registrationRepository.findById(_) >> Optional.of(registration)
 
         when:
-        RegistrationDetailDTO result = registrationService.calculateScore(registrationDetailDTO)
+        registrationService.calculateScore(id)
 
         then:
-        registrationDetailMapper.toEntity(_) >> new Registration()
         1 * registrationRepository.save(_)
-        result.getStatus() == RegistrationStatus.DONE
-        result.score == registration.score
     }
 
     def "should close the registration without sending feedback"() {
@@ -699,8 +689,6 @@ class RegistrationServiceImplSpec extends Specification {
         then:
         1 * registrationRepository.delete(registration)
     }
-
-
 
     def "should throw BadRequestRunTimeException if registration status is not closeable"() {
         given:

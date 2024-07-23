@@ -19,8 +19,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleCourseNotFoundException(CourseNotFoundException cnfe) {
-        ErrorResponse response = new ErrorResponse(HttpStatus.NOT_FOUND.value()+"", cnfe.getMessage());
+    public ResponseEntity<ErrorResponse> handleCourseNotFoundException(CourseNotFoundException courseNotFoundException) {
+        ErrorResponse response = new ErrorResponse(HttpStatus.NOT_FOUND.value() + "", courseNotFoundException.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
@@ -38,6 +38,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleAccessDeniedException(final Exception e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ErrorResponse.builder().message(e.getMessage()).status("403").build());
     }
+
     @ExceptionHandler(AccountExistByEmailException.class)
     public ResponseEntity<?> handleAccountExistByEmailException (AccountExistByEmailException e) {
         return ResponseEntity.status(409).body(ErrorResponse.builder().message(e.getMessage()).status("409").build());
@@ -57,9 +58,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleMaxSizeException(MaxUploadSizeExceededException exc) {
         return ResponseEntity.status(413).body(ErrorResponse.builder().message(exc.getMessage()).status("413").build());
     }
+
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<?> handleMethodArgumentTypeMismatchException(Exception e){
         return ResponseEntity.status(400).body(ErrorResponse.builder().message(e.getMessage()).status("400").build());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleInvalidRegistrationStatusException(InvalidRegistrationStatusException invalidRegistrationStatusException) {
+        ErrorResponse response = new ErrorResponse(HttpStatus.BAD_REQUEST.value() + "", invalidRegistrationStatusException.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
 }

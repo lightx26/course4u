@@ -16,7 +16,7 @@ public interface RegistrationService {
 
     Boolean createRegistration(RegistrationRequest registrationRequest);
 
-    RegistrationDetailDTO calculateScore(RegistrationDetailDTO registrationDetailDTO);
+    void calculateScore(Long id);
 
     Page<RegistrationOverviewDTO> getAllRegistrations(int page);
 

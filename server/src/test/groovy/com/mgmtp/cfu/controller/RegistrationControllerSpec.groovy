@@ -6,6 +6,7 @@ import com.mgmtp.cfu.enums.RegistrationStatus
 import com.mgmtp.cfu.exception.RegistrationNotFoundException
 import com.mgmtp.cfu.exception.UnknownErrorException
 import com.mgmtp.cfu.service.RegistrationService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import spock.lang.Specification
 import spock.lang.Subject
@@ -85,7 +86,8 @@ class RegistrationControllerSpec extends Specification {
         then:
             response.statusCode.value() == 200
     }
-    def'startLearningCourse return exception'(){
+
+    def 'startLearningCourse return exception'(){
         given:
         registrationService.startLearningCourse(_ as Long)>> false
         when:
@@ -93,6 +95,7 @@ class RegistrationControllerSpec extends Specification {
         then:
         def ex=thrown(UnknownErrorException)
     }
+
     def 'test delete registration return ok response'() {
         given:
         registrationService.deleteRegistration(_ as Long)>>{}
@@ -102,28 +105,16 @@ class RegistrationControllerSpec extends Specification {
         noExceptionThrown()
     }
 
-    def "finishLearning return RegistrationDetailDTO"() {
+    def "finishLearning calculates and updates Registration"() {
         given:
-        RegistrationDetailDTO registrationDetailDTO = RegistrationDetailDTO.builder()
-                                                                           .id(1)
-                                                                           .status(RegistrationStatus.APPROVED)
-                                                                           .startDate(LocalDateTime.of(2022, 1, 31,0,0,0))
-                                                                           .endDate(LocalDateTime.of(2022, 2, 12,0,0,0))
-                                                                           .build()
-        RegistrationDetailDTO mockResult = RegistrationDetailDTO.builder()
-                                                                .id(1)
-                                                                .status(RegistrationStatus.APPROVED)
-                                                                .startDate(LocalDateTime.of(2022, 1, 31,0,0,0))
-                                                                .endDate(LocalDateTime.of(2022, 2, 12,0,0,0))
-                                                                .score(1008)
-                                                                .build()
+        Long id = 1
 
         when:
-        registrationService.calculateScore(registrationDetailDTO) >> mockResult
-        ResponseEntity<RegistrationDetailDTO> result = registrationController.finishLearning(registrationDetailDTO)
+        def result = registrationController.finishLearning(id)
 
         then:
-        result.body.getScore() == mockResult.getScore()
+        1 * registrationService.calculateScore(id)
+        result.statusCode == HttpStatus.OK
     }
 
     def "should return ok response when close registration successfully"() {

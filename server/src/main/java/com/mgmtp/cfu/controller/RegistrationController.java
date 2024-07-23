@@ -46,9 +46,8 @@ public class RegistrationController {
     @GetMapping("/my-registration")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<?> getListOfMyRegistration(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "status", defaultValue = "ALL") String status) {
-        if (page <= 0) {
+        if (page <= 0)
             page = 1;
-        }
         return ResponseEntity.ok(registrationService.getMyRegistrationPage(page, status));
     }
     @PostMapping("/start-learning/{id}")
@@ -57,7 +56,6 @@ public class RegistrationController {
         boolean isStarted=registrationService.startLearningCourse(registrationId);
         if(!isStarted)
             throw new UnknownErrorException("Server arise problem.");
-
     }
 
     @PostMapping("/{id}/approve")
@@ -74,11 +72,12 @@ public class RegistrationController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/finish-learning")
-    public ResponseEntity<RegistrationDetailDTO> finishLearning(@RequestBody RegistrationDetailDTO registrationDetailDTO) {
-        return ResponseEntity.ok(registrationService.calculateScore(registrationDetailDTO));
+    @PutMapping("/{id}/finish-learning")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<?> finishLearning(@PathVariable Long id) {
+        registrationService.calculateScore(id);
+        return ResponseEntity.status(HttpStatus.OK).body("Saved score successfully!");
     }
-
 
     @PostMapping("/{id}/close")
     @PreAuthorize("hasRole('ROLE_ADMIN')")

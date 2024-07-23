@@ -60,7 +60,7 @@ INSERT INTO "User" ("Username", "Password", "FullName", "AvatarUrl", "Email", "R
 INSERT INTO "User" ("Username", "Password", "FullName", "AvatarUrl", "Email", "Role", "DateOfBirth", "Gender", "Telephone") VALUES ('avvduong', '$2a$10$bhBp0hDRVdW1A6RMKt0k0.m4709.So5X8.3GhmSOwNzcptfJOm0FW', 'Le Huu Triet', 'https://cdnphoto.dantri.com.vn/COm1qksauO2sqAC-gVVI2DdH_1I=/thumb_w/1020/2023/01/24/khoa-hocdocx-1674520013659.png', 'rankill52@gmail.com', 'USER', null, null, '0912345674');
 
 
-INSERT INTO "Registration" ( "Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdated", "DurationUnit", "UserId") VALUES ('APPROVED', null, null, 40, '2021-01-04', 200, 3, null, null, 1);
+INSERT INTO "Registration" ( "Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdated", "DurationUnit", "UserId") VALUES ('APPROVED', '2024-07-22 18:00:00', null, 40, '2021-01-04', 2, 3, null, 'DAY', 1);
 INSERT INTO "Registration" ( "Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdated", "DurationUnit", "UserId") VALUES ('DOCUMENT_DECLINED', '2021-01-01', '2021-01-31', 20, '2021-01-01', 15, 4, null, null, 1);
 INSERT INTO "Registration" ( "Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdated", "DurationUnit", "UserId") VALUES ('VERIFYING', '2021-01-01', '2021-01-31', 30, '2021-01-02', 13, 5, null, null, 1);
 INSERT INTO "Registration" ( "Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdated", "DurationUnit", "UserId") VALUES ('DOCUMENT_DECLINED', '2021-01-01', '2021-01-31', 40, '2021-01-04', 200, 6, null, null, 1);

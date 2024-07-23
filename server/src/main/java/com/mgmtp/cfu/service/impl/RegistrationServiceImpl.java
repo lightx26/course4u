@@ -14,9 +14,7 @@ import com.mgmtp.cfu.enums.CourseStatus;
 import com.mgmtp.cfu.enums.NotificationType;
 import com.mgmtp.cfu.enums.RegistrationStatus;
 import com.mgmtp.cfu.exception.*;
-import com.mgmtp.cfu.exception.MapperNotFoundException;
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper;
-import com.mgmtp.cfu.exception.RegistrationStatusNotFoundException;
 import com.mgmtp.cfu.entity.Registration;
 import com.mgmtp.cfu.mapper.DTOMapper;
 import com.mgmtp.cfu.mapper.factory.MapperFactory;
@@ -33,6 +31,8 @@ import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.time.Duration;
 import java.util.List;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -239,46 +239,48 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     @Override
-    public RegistrationDetailDTO calculateScore(RegistrationDetailDTO registrationDetailDTO) {
+    public void calculateScore(Long id) {
 
-        LocalDateTime startDate = registrationDetailDTO.getStartDate();
-        LocalDateTime endDate = registrationDetailDTO.getEndDate();
-        Integer estimatedDuration = registrationDetailDTO.getDuration();
-        DurationUnit durationUnit = registrationDetailDTO.getDurationUnit(); // Day || Week || Month
-        CourseLevel level = registrationDetailDTO.getCourse().getLevel();
+        Registration registration = registrationRepository.findById(id).orElseThrow(() -> new RegistrationNotFoundException("Registration with id " + id + " not found"));
 
-        // Actual study hours
-        long actualDuration = ChronoUnit.DAYS.between(startDate, endDate.plusDays(1)) * 24;
+        if (registration.getStatus().equals(RegistrationStatus.APPROVED)) {
 
-        long estimatedHour;
-        if (durationUnit.equals(DurationUnit.DAY))
-            estimatedHour = estimatedDuration * 24;
-        else if (durationUnit.equals(DurationUnit.WEEK))
-            estimatedHour = estimatedDuration * 168;
-        else
-            estimatedHour = estimatedDuration * 720;
+            LocalDateTime startDate = registration.getStartDate();
+            LocalDateTime endDate = LocalDateTime.now();
+            Integer estimatedDuration = registration.getDuration();
+            DurationUnit durationUnit = registration.getDurationUnit(); // Day || Week || Month
+            CourseLevel level = registration.getCourse().getLevel();
 
-        long bonusPoints = Math.max(0, estimatedHour - actualDuration);
+            // Actual study hours
+            Duration duration = Duration.between(startDate, endDate);
+            long actualDuration = duration.toHours();
 
-        long score;
-        if (level.equals(CourseLevel.BEGINNER))
-            score = actualDuration + (bonusPoints * 2);
-        else if (level.equals(CourseLevel.INTERMEDIATE))
-            score = 2 * actualDuration + (bonusPoints * 2);
-        else
-            score = 3 * actualDuration + (bonusPoints * 2);
+            long estimatedHour;
+            if (durationUnit.equals(DurationUnit.DAY))
+                estimatedHour = estimatedDuration * 24;
+            else if (durationUnit.equals(DurationUnit.WEEK))
+                estimatedHour = estimatedDuration * 168;
+            else
+                estimatedHour = estimatedDuration * 720;
 
-        registrationDetailDTO.setStatus(RegistrationStatus.DONE);
-        registrationDetailDTO.setScore((int) score);
+            long bonusPoints = Math.max(0, estimatedHour - actualDuration);
 
-        var optRegistrationEntityMapper = registrationMapperFactory.getEntityMapper(RegistrationDetailDTO.class);
-        if (optRegistrationEntityMapper.isEmpty())
-            throw new MapperNotFoundException("Mapper not found!");
-        Registration registration = optRegistrationEntityMapper.get().toEntity(registrationDetailDTO);
+            long score;
+            if (level.equals(CourseLevel.BEGINNER))
+                score = actualDuration + (bonusPoints * 2);
+            else if (level.equals(CourseLevel.INTERMEDIATE))
+                score = 2 * actualDuration + (bonusPoints * 2);
+            else
+                score = 3 * actualDuration + (bonusPoints * 2);
 
-        registrationRepository.save(registration);
+            registration.setStatus(RegistrationStatus.DONE);
+            registration.setEndDate(endDate);
+            registration.setScore((int) score);
+            registration.setLastUpdated(LocalDateTime.now());
 
-        return registrationDetailDTO;
+            registrationRepository.save(registration);
+        } else
+            throw new InvalidRegistrationStatusException("The status of the Registration is not APPROVED");
     }
 
     @Override
