@@ -47,6 +47,7 @@ public class CategoryServiceImpl implements CategoryService {
     public List<Category> findOrCreateNewCategory(List<CourseRequest.CategoryCourseRequestDTO> categoryRequests) {
         List<Category> categories = new ArrayList<>();
         try {
+            boolean isAdmin = AuthUtils.getCurrentUser().getRole().toString().equals("ADMIN");
             categoryRequests.forEach(categoryRequestDTO -> {
                 String value = categoryRequestDTO.getValue();
                 Optional<Category> existCategory;
@@ -58,13 +59,18 @@ public class CategoryServiceImpl implements CategoryService {
                 }
                 if (existCategory.isPresent()) {
                     if (!categories.contains(existCategory.get())) {
-                        categories.add(existCategory.get());
+                        Category category = existCategory.get();
+                        if (isAdmin){
+                            category.setStatus(CategoryStatus.AVAILABLE);
+                            categoryRepository.save(category);
+                        }
+                        categories.add(category);
                     }
                 } else {
                     if (!value.matches("\\d+")) { // Only create new category if value is not an ID
                         Category newCategory = new Category();
                         newCategory.setName(value);
-                        CategoryStatus status = AuthUtils.getCurrentUser().getRole().toString().equals("ADMIN") ? CategoryStatus.AVAILABLE : CategoryStatus.PENDING;
+                        CategoryStatus status = isAdmin ? CategoryStatus.AVAILABLE : CategoryStatus.PENDING;
                         newCategory.setStatus(status);
                         categories.add(categoryRepository.save(newCategory));
                     }
