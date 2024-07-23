@@ -119,7 +119,7 @@ function RegistrationCardComponent({registration}: PropsType) {
                             </div>
                             <div className="username flex flex-col">
                                 <span
-                                    className="text-base max-w-[85px] line-clamp-1 text-left overflow-hidden overflow-ellipsis">{userFullname}</span>
+                                    className="text-base max-w-[85px] text-left overflow-hidden overflow-ellipsis">{userFullname}</span>
                                 <span className="text-xs">User</span>
                             </div>
                         </div>
