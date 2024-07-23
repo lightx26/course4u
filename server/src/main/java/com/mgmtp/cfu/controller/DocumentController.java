@@ -1,6 +1,6 @@
 package com.mgmtp.cfu.controller;
 
-import com.mgmtp.cfu.exception.BadRequestRunTimeException;
+import com.mgmtp.cfu.exception.BadRequestRuntimeException;
 import com.mgmtp.cfu.service.DocumentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,14 +30,14 @@ public class DocumentController {
                     if (multipartFile.getSize() > DOCUMENT_SIZE_LIMIT)
                         throw new MaxUploadSizeExceededException(DOCUMENT_SIZE_LIMIT);
                     if(!isAllowedExtension(multipartFile.getOriginalFilename()))
-                        throw new BadRequestRunTimeException("File extension can be uploaded: PDF, DOCX, JPG, JPEG, PNG");
+                        throw new BadRequestRuntimeException("File extension can be uploaded: PDF, DOCX, JPG, JPEG, PNG");
         }
 
         );
         if(id==null)
-            throw new BadRequestRunTimeException("Id must be not null");
+            throw new BadRequestRuntimeException("Id must be not null");
         if (certificates.length == 0 || payments.length == 0) {
-            throw new BadRequestRunTimeException("User must submit document completely.");
+            throw new BadRequestRuntimeException("User must submit document completely.");
         }
         documentService.submitDocument(certificates, payments,id);
 

@@ -1,6 +1,6 @@
 package com.mgmtp.cfu.controller
 
-import com.mgmtp.cfu.exception.BadRequestRunTimeException
+import com.mgmtp.cfu.exception.BadRequestRuntimeException
 import com.mgmtp.cfu.service.DocumentService
 import com.mgmtp.cfu.service.impl.DocumentServiceImpl
 import org.springframework.mock.web.MockMultipartFile

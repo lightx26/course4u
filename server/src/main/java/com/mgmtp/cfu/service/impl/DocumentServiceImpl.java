@@ -9,7 +9,7 @@ import com.mgmtp.cfu.entity.Registration;
 import com.mgmtp.cfu.enums.NotificationType;
 import com.mgmtp.cfu.enums.RegistrationStatus;
 import com.mgmtp.cfu.enums.Role;
-import com.mgmtp.cfu.exception.BadRequestRunTimeException;
+import com.mgmtp.cfu.exception.BadRequestRuntimeException;
 import com.mgmtp.cfu.exception.ForbiddenException;
 import com.mgmtp.cfu.repository.DocumentRepository;
 import com.mgmtp.cfu.repository.NotificationRepository;
@@ -57,7 +57,7 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public void submitDocument(MultipartFile[] certificates, MultipartFile[] payments, Long id) {
         var registration = registrationRepository.findById(id).orElseThrow(() ->
-                new BadRequestRunTimeException("Registration is not found.")
+                new BadRequestRuntimeException("Registration is not found.")
         );
 
         var user = getCurrentUser();
@@ -65,7 +65,7 @@ public class DocumentServiceImpl implements DocumentService {
             throw new ForbiddenException("You don't have permission.");
         }
         if (!registration.getStatus().equals(RegistrationStatus.DONE)) {
-            throw new BadRequestRunTimeException("Registration must be done.");
+            throw new BadRequestRuntimeException("Registration must be done.");
         }
         storageDocuments(certificates, DocumentType.CERTIFICATE, registration, user);
         storageDocuments(payments, DocumentType.PAYMENT, registration, user);

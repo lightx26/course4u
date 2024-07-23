@@ -5,7 +5,7 @@ import com.mgmtp.cfu.entity.User
 import com.mgmtp.cfu.enums.DocumentType
 import com.mgmtp.cfu.enums.RegistrationStatus
 import com.mgmtp.cfu.enums.Role
-import com.mgmtp.cfu.exception.BadRequestRunTimeException
+import com.mgmtp.cfu.exception.BadRequestRuntimeException
 import com.mgmtp.cfu.exception.ForbiddenException
 import com.mgmtp.cfu.repository.DocumentRepository
 import com.mgmtp.cfu.repository.NotificationRepository
@@ -99,7 +99,7 @@ class DocumentServiceImplSpec extends Specification {
         documentService.submitDocument(certificates, payments, id)
 
         then:
-        thrown(BadRequestRunTimeException)
+        thrown(BadRequestRuntimeException)
     }
 
     def "test submitDocument when user has no permission"() {
@@ -140,6 +140,6 @@ class DocumentServiceImplSpec extends Specification {
         documentService.submitDocument(certificates, payments, id)
 
         then:
-        thrown(BadRequestRunTimeException)
+        thrown(BadRequestRuntimeException)
     }
 }

@@ -1,3 +1,4 @@
+import { useDispatch, useSelector } from "react-redux";
 import {
     discardRegistration,
     removeRegistration,
@@ -10,6 +11,9 @@ import { Status } from "../../utils/index";
 import { Button } from "../ui/button";
 import type { UploadFile } from "antd";
 import { toast } from "sonner";
+import { RootState } from "../../redux/store/store";
+import { fetchListOfMyRegistration } from "../../apiService/MyRegistration.service";
+import { saveDataListRegistration } from "../../redux/slice/registration.slice";
 type Props = {
   status?: Status;
   setIsEdit: (isEdit: boolean) => void;
@@ -52,6 +56,8 @@ export const RegistrationButton = ({
         closeRegistration();
         close();
     };
+    
+    
 
     const handleDiscard = async () => {
         const res = await discardRegistration(id!);
@@ -64,6 +70,11 @@ export const RegistrationButton = ({
     };
 
     //Submit Document
+    const currentPage = useSelector(
+        (state: RootState) => state.registration.currentPage
+    );
+    const filterBy = useSelector((state: RootState) => state.registration.status);
+    const dispatch = useDispatch();
     const handleSubmitDocument = async () => {
         const response = await submitDocument(
             listFileCertificate!,
@@ -75,10 +86,17 @@ export const RegistrationButton = ({
                 style: { color: "green" },
                 description: "Your registration has been completed successfully.",
             });
+            const result = await fetchListOfMyRegistration(currentPage, filterBy);
+            if (result && result.data) {
+                dispatch(saveDataListRegistration(result.data));
+            }
+            close();
         } else {
             toast.error("Document Submission Failed", {
                 style: { color: "red" },
-                description: `${response?.data.message}`,
+                description: response?.data.message
+                    ? response.data.message
+                    : "There was an error submitting your documents. Please try again later.",
             });
         }
     };
@@ -146,7 +164,8 @@ export const RegistrationButton = ({
                 </Button>
             )}
             {status === Status.DONE && (
-                <Button size='lg' variant='blue' onClick={handleSubmitDocument}>
+                <Button size='lg' variant='blue' onClick={handleSubmitDocument}
+                        type="button">
                     ASSIGN TO REVIEW
                 </Button>
             )}

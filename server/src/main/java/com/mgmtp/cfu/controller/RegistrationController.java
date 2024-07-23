@@ -1,8 +1,7 @@
 package com.mgmtp.cfu.controller;
 
 import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest;
-import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO;
-import com.mgmtp.cfu.exception.BadRequestRunTimeException;
+import com.mgmtp.cfu.exception.BadRequestRuntimeException;
 import com.mgmtp.cfu.exception.UnknownErrorException;
 import com.mgmtp.cfu.exception.DuplicateCourseException;
 import com.mgmtp.cfu.service.RegistrationService;
@@ -26,7 +25,7 @@ public class RegistrationController {
     private final RegistrationService registrationService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<RegistrationDetailDTO> getDetailRegistration(@PathVariable Long id) {
+    public ResponseEntity<?> getDetailRegistration(@PathVariable Long id) {
         return ResponseEntity.ok(registrationService.getDetailRegistration(id));
     }
 

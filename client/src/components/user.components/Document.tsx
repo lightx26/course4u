@@ -23,9 +23,6 @@ const Document: React.FC<IProps> = (props) => {
 
   const handleChange1: UploadProps["onChange"] = (info) => {
     const { status } = info.file;
-    if (status !== "uploading") {
-      console.log(info.file, info.fileList);
-    }
     if (status === "done") {
       message.success(`${info.file.name} file uploaded successfully.`);
       setListFileCertificate([...info.fileList]);
@@ -36,9 +33,6 @@ const Document: React.FC<IProps> = (props) => {
 
   const handleChange2: UploadProps["onChange"] = (info) => {
     const { status } = info.file;
-    if (status !== "uploading") {
-      console.log(info.file, info.fileList);
-    }
     if (status === "done") {
       message.success(`${info.file.name} file uploaded successfully.`);
       setListFilePayment([...info.fileList]);
@@ -185,9 +179,6 @@ const Document: React.FC<IProps> = (props) => {
     onChange: handleChange1,
     customRequest: customRequest,
     beforeUpload,
-    onDrop(e) {
-      console.log("Dropped files", e.dataTransfer.files);
-    },
     defaultFileList: [...listFileCertificate],
     itemRender(__, file, _, { remove }) {
       return ReactDOM.createPortal(
@@ -256,9 +247,6 @@ const Document: React.FC<IProps> = (props) => {
     onChange: handleChange2,
     customRequest: customRequest,
     beforeUpload,
-    onDrop(e) {
-      console.log("Dropped files", e.dataTransfer.files);
-    },
     defaultFileList: [...listFilePayment],
     itemRender(__, file, _, { remove }) {
       return ReactDOM.createPortal(
@@ -401,9 +389,6 @@ const Document: React.FC<IProps> = (props) => {
 };
 
 const FormDocument: React.FC<IProps> = (props) => {
-  const onChange = (key: string | string[]) => {
-    console.log(key);
-  };
   const {
     listFileCertificate,
     setListFileCertificate,
@@ -431,7 +416,7 @@ const FormDocument: React.FC<IProps> = (props) => {
   ];
   return (
     <>
-      <Collapse defaultActiveKey={["1"]} onChange={onChange} items={items} />
+      <Collapse defaultActiveKey={["1"]} items={items} />
     </>
   );
 };

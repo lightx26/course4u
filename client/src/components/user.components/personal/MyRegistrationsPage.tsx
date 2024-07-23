@@ -4,7 +4,13 @@ import { fetchListOfMyRegistration } from "../../../apiService/MyRegistration.se
 import ListMyRegistrationCardComponent from "./ListMyRegistrationCardComponent.tsx";
 import { Status, statusList } from "../../../utils/index.ts";
 import PaginationSection from "../Homepage/PaginationSection.tsx";
-
+import { useDispatch, useSelector } from "react-redux";
+import {
+  handleChangeCurrentPage,
+  handleChangeStatus,
+  saveDataListRegistration,
+} from "../../../redux/slice/registration.slice.ts";
+import { RootState } from "../../../redux/store/store.ts";
 
 export type OverviewMyRegistrationType = {
   id?: string;
@@ -17,20 +23,27 @@ export type OverviewMyRegistrationType = {
 };
 
 export default function MyRegistrationPage() {
-  const [totalItem, setTotalItem] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [listMyRegistration, setListMyRegistration] = useState<
-    OverviewMyRegistrationType[]
-  >([]);
-  const [filterBy, setFilter] = useState("SUBMITTED");
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+  const totalItem = useSelector(
+    (state: RootState) => state.registration.totalItem
+  );
+  const currentPage = useSelector(
+    (state: RootState) => state.registration.currentPage
+  );
+  const filterBy = useSelector((state: RootState) => state.registration.status);
+  const listMyRegistration = useSelector(
+    (state: RootState) => state.registration.data
+  );
 
-  const fetchData = async (page: number = 1, status: string = "SUBMITTED") => {
+  const fetchData = async (
+    page: number = currentPage,
+    status: string = filterBy
+  ) => {
     setIsLoading(true);
     const result = await fetchListOfMyRegistration(page, status);
-    if (result && result.data && result.data) {
-      setListMyRegistration(result.data.list);
-      setTotalItem(result.data.totalElements);
+    if (result && result.data) {
+      dispatch(saveDataListRegistration(result.data));
       setIsLoading(false);
     }
   };
@@ -40,12 +53,11 @@ export default function MyRegistrationPage() {
   }, [currentPage, filterBy]);
 
   const onPageNumberClick = (newPageNumber: number) => {
-    setCurrentPage(newPageNumber);
+    dispatch(handleChangeCurrentPage(newPageNumber));
   };
 
   const onFilterByChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFilter(e.target.value);
-    setCurrentPage(1);
+    dispatch(handleChangeStatus(e.target.value));
   };
 
   return (
