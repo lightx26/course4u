@@ -127,6 +127,9 @@ const HeaderHomepage: React.FC = () => {
             ></input>
           </div>
         )}
+        {userData.role.toUpperCase() === "ACCOUNTANT" && (
+          <div className="relative flex-grow mx-6"></div>
+        )}
 
         <div className="flex items-center space-x-4">
           <div className="flex items-center justify-center gap-5">

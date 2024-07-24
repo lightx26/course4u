@@ -127,7 +127,8 @@ const LayoutAccountant = () => {
       <div className="app-container">
         {isAccountRoute && userRole === "ACCOUNTANT" && (
           <>
-            <div>this is accountant header</div>
+            <HeaderHomepage />
+            <RegistrationModal />
             <Outlet />
           </>
         )}
@@ -234,7 +235,7 @@ const router = createBrowserRouter(
       children: [
         {
           index: true,
-          element: <>this is accountant homepage</>,
+          element: <AdminHomePage />,
         },
       ],
     },

@@ -16,7 +16,7 @@ public class AdminRegistrationController {
     private final RegistrationService registrationService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole({'ROLE_ADMIN','ROLE_ACCOUNTANT'})")
     public ResponseEntity<?> getRegistrationForAdmin(
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "status", defaultValue = "all") String status)

@@ -61,8 +61,6 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .headers(header -> header.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(authorize -> {
-                    authorize.requestMatchers("api/admin/**", "api/admin").hasRole("ADMIN");
-                    authorize.requestMatchers("api/accountant/**", "api/accountant").hasRole("ACCOUNTANT");
                     authorize.requestMatchers(new AntPathRequestMatcher("/error")).permitAll() ;
                     authorize.requestMatchers(unsecuredPaths).permitAll();
                     authorize.requestMatchers(unsecuredSwaggerPaths).permitAll();
