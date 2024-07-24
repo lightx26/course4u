@@ -13,6 +13,7 @@ import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO
 import com.mgmtp.cfu.enums.CategoryStatus
 import com.mgmtp.cfu.entity.Category
 import com.mgmtp.cfu.enums.NotificationType
+import com.mgmtp.cfu.exception.DuplicateCourseException
 import com.mgmtp.cfu.exception.ForbiddenException
 import com.mgmtp.cfu.exception.MapperNotFoundException
 import com.mgmtp.cfu.exception.RegistrationNotFoundException
@@ -400,7 +401,7 @@ class RegistrationServiceImplSpec extends Specification {
         Registration registration = new Registration(id: registrationId, status: RegistrationStatus.SUBMITTED, course: course, user: user)
 
         registrationRepository.findById(registrationId) >> Optional.of(registration)
-        courseRepository.findFirstByLinkIgnoreCase(course.link) >> null
+        courseRepository.findFirstByLinkIgnoreCaseAndStatus(course.link,CourseStatus.AVAILABLE) >> Optional.empty()
 
         when:
         registrationService.approveRegistration(registrationId)
@@ -424,7 +425,7 @@ class RegistrationServiceImplSpec extends Specification {
         registrationService.approveRegistration(registrationId)
 
         then:
-        def e = thrown(IllegalArgumentException)
+        def e = thrown(BadRequestRuntimeException)
         e.message == "Registration must be in submitted status to be approved"
         0 * courseRepository.findFirstByLinkIgnoreCase(_)
         0 * notificationService.sendNotificationToUser(_, _, _)
@@ -441,19 +442,13 @@ class RegistrationServiceImplSpec extends Specification {
         Registration registration = new Registration(id: registrationId, status: RegistrationStatus.SUBMITTED, course: course, user: user)
 
         registrationRepository.findById(registrationId) >> Optional.of(registration)
-        courseRepository.findFirstByLinkIgnoreCase(course.link) >> duplicateCourse
+        courseRepository.findFirstByLinkIgnoreCaseAndStatus(_,_) >> Optional.of(duplicateCourse)
 
         when:
         registrationService.approveRegistration(registrationId)
 
         then:
-        1 * courseRepository.findFirstByLinkIgnoreCase(course.link)
-        1 * notificationService.sendNotificationToUser(user, NotificationType.SUCCESS, _)
-        1 * registrationRepository.save(_)
-        1 * emailService.sendMessage(user.email, "Registration approved!!", "approve_registration_mail_template.xml", _)
-        registration.status == RegistrationStatus.APPROVED
-        registration.course.status == CourseStatus.AVAILABLE
-        registration.course.categories.every { it.status == CategoryStatus.AVAILABLE }
+        thrown(DuplicateCourseException)
     }
 
     def "declineRegistration should decline a registration"() {
@@ -503,7 +498,7 @@ class RegistrationServiceImplSpec extends Specification {
         registrationService.declineRegistration(1,feedbackRequest)
 
         then:
-        thrown(IllegalArgumentException)
+        thrown(BadRequestRuntimeException)
         0 * _
     }
 

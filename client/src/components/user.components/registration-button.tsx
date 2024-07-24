@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
     finishLearning,
@@ -17,6 +18,8 @@ import { toast } from "sonner";
 import { RootState } from "../../redux/store/store";
 import { fetchListOfMyRegistration } from "../../apiService/MyRegistration.service";
 import { saveDataListRegistration } from "../../redux/slice/registration.slice";
+import { useRefreshState } from "../../hooks/use-refresh-state";
+
 type Props = {
     status?: Status;
     setIsEdit: (isEdit: boolean) => void;
@@ -36,44 +39,53 @@ export const RegistrationButton = ({
 }: Props) => {
     const { registration, closeRegistration } = useRegistrationDetail();
     const { close } = useRegistrationModal((state) => state);
+    const [isLoading, setIsLoading] = useState(false);
+    const { setRegistrationFlagAdmin } = useRefreshState((state) => state);
+    const closeModal = () => {
+        close();
+        closeRegistration();
+        setRegistrationFlagAdmin();
+    };
     const onEdit = () => {
         setIsEdit(true);
     };
 
     //Delete a registration
     const handleDeleteButtonClick = async () => {
+        setIsLoading(true);
         const res = await removeRegistration(id!);
-        if (res?.status !== 200) {
+        if (res !== 200) {
             return;
         }
-        setTimeout(() => {
-            closeRegistration(), close(), 1000;
-        });
+        closeModal();
+        setIsLoading(false);
     };
     const handleStartLearning = async () => {
+        setIsLoading(true);
         const res = await startLearning(id!);
-        //TODO: Redirect to learning page + return link to redirect
-        if (res?.status !== 200) {
+        if (res !== 200) {
             return;
         }
         window.open(registration?.course?.link);
-        closeRegistration();
-        close();
+        closeModal();
+        setIsLoading(false);
     };
 
     const handleFinishLearning = async () => {
+        setIsLoading(true)
         await finishLearning(id!);
         close();
+        setIsLoading(false)
     }
 
     const handleDiscard = async () => {
+        setIsLoading(true);
         const res = await discardRegistration(id!);
-        if (res?.status !== 200) {
+        if (res !== 200) {
             return;
         }
-        setTimeout(() => {
-            closeRegistration(), close(), 1000;
-        });
+        closeModal();
+        setIsLoading(false);
     };
 
     //Submit Document
@@ -115,6 +127,7 @@ export const RegistrationButton = ({
                         type='button'
                         size='lg'
                         variant='danger'
+                        disabled={isLoading}
                     >
                         DELETE
                     </Button>
@@ -129,6 +142,7 @@ export const RegistrationButton = ({
                         variant='outline'
                         type='button'
                         onClick={handleDiscard}
+                        disabled={isLoading}
                     >
                         DISCARD
                     </Button>
@@ -139,6 +153,7 @@ export const RegistrationButton = ({
                     variant='blue'
                     type='button'
                     onClick={handleStartLearning}
+                    disabled={isLoading}
                 >
                     START LEARNING
                 </Button>
@@ -148,7 +163,7 @@ export const RegistrationButton = ({
                     handleConfirm={handleFinishLearning}
                     title='Do you want to finish this course?'
                     description="Are you sure you have completed the course and want to confirm completion?">
-                    <Button className={'' + (!isStatrted && 'select-none pointer-events-none opacity-30')} size='lg' variant='success'>
+                    <Button className={'' + (!isStatrted && 'select-none pointer-events-none opacity-30')} size='lg' variant='success' disabled={isLoading}>
                         DONE
                     </Button>
                 </ModalConfirm>
@@ -167,20 +182,29 @@ export const RegistrationButton = ({
                     </Button>
                 )}
             {(status === Status.NONE || status === Status.DRAFT || isEdit) && (
-                <Button type='submit' size='lg' variant='success'>
+                <Button
+                    type='submit'
+                    size='lg'
+                    variant='success'
+                    disabled={isLoading}
+                >
                     {status === Status.DRAFT || status === Status.NONE
                         ? "SUBMIT"
                         : "RE-SUBMIT"}
                 </Button>
             )}
             {(status === Status.DONE || status === Status.VERIFIED) && (
-                <Button type='button' size='lg' variant='pink'>
+                <Button
+                    type='button'
+                    size='lg'
+                    variant='pink'
+                    disabled={isLoading}
+                >
                     SEND FEEDBACK
                 </Button>
             )}
             {status === Status.DONE && (
-                <Button size='lg' variant='blue' onClick={handleSubmitDocument}
-                        type="button">
+                <Button size='lg' variant='blue' disabled={isLoading} type="button" onClick={handleSubmitDocument}>
                     ASSIGN TO REVIEW
                 </Button>
             )}

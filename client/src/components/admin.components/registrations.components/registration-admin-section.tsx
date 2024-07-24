@@ -16,8 +16,13 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store/store";
 import { Status } from "../../../utils/index";
 import { useRegistrationModal } from "../../../hooks/use-registration-modal";
-import { closeRegistration, declineRegistration } from "../../../apiService/Registration.service";
+import {
+    closeRegistration,
+    declineRegistration,
+} from "../../../apiService/Registration.service";
 import { handleAvatarUrl } from "../../../utils/handleAvatarUrl";
+import { useRefreshState } from "../../../hooks/use-refresh-state";
+import { useRegistrationDetail } from "../../../hooks/use-registration-detail";
 
 type Props = {
     status?: Status;
@@ -25,6 +30,14 @@ type Props = {
 const RegistrationAdminSection = ({ status }: Props) => {
     const user = useSelector((state: RootState) => state.user.user);
     const { id, close } = useRegistrationModal((store) => store);
+    const { setRegistrationFlagAdmin } = useRefreshState((state) => state);
+    const { closeRegistration: clRegistration } = useRegistrationDetail(
+        (store) => store
+    );
+    const closeModal = () => {
+        clRegistration();
+        setRegistrationFlagAdmin();
+    };
     const form = useForm<z.infer<typeof feedbackSchema>>({
         resolver: zodResolver(feedbackSchema),
         mode: "onBlur",
@@ -36,10 +49,14 @@ const RegistrationAdminSection = ({ status }: Props) => {
     async function onSubmit(values: z.infer<typeof feedbackSchema>) {
         if (status === "SUBMITTED") {
             await declineRegistration(id!, values.comment, close);
-        }
-
-        else if (status === "DONE" || status === "VERIFYING" || status === "DOCUMENT_DECLINED") {
+            closeModal();
+        } else if (
+            status === "DONE" ||
+            status === "VERIFYING" ||
+            status === "DOCUMENT_DECLINED"
+        ) {
             await closeRegistration(id!, values.comment, close);
+            closeModal();
         }
     }
 
@@ -50,7 +67,10 @@ const RegistrationAdminSection = ({ status }: Props) => {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className='w-full mt-10 space-y-8'
             >
-                {(status === Status.SUBMITTED || status === Status.DONE || status === Status.VERIFYING || status === Status.DOCUMENT_DECLINED) && (
+                {(status === Status.SUBMITTED ||
+                    status === Status.DONE ||
+                    status === Status.VERIFYING ||
+                    status === Status.DOCUMENT_DECLINED) && (
                     <FormField
                         control={form.control}
                         name='comment'

@@ -111,14 +111,14 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         // check if registration has a submitted status
         if (registration.getStatus() != RegistrationStatus.SUBMITTED) {
-            throw new IllegalArgumentException("Registration must be in submitted status to be approved");
+            throw new BadRequestRuntimeException("Registration must be in submitted status to be approved");
         }
 
-        // check duplicate course
-        Optional<Course> duplicateCourse = Optional.ofNullable(courseRepository.findFirstByLinkIgnoreCase(registration.getCourse().getLink()));
-        if (duplicateCourse.isEmpty()) {
-            registration.getCourse().setStatus(CourseStatus.AVAILABLE);
+        // check if course with the same link already exists and available
+        if(courseRepository.findFirstByLinkIgnoreCaseAndStatus(registration.getCourse().getLink(), CourseStatus.AVAILABLE).isPresent()){
+            throw new DuplicateCourseException("Course with link " + registration.getCourse().getLink() + " already exists and available");
         }
+        registration.getCourse().setStatus(CourseStatus.AVAILABLE);
 
         // change status category to available
         for (var category : registration.getCourse().getCategories()) {
@@ -141,7 +141,6 @@ public class RegistrationServiceImpl implements RegistrationService {
                 MailContentUnit.builder().id("client_url").href(clientUrl + "/personal/registration").tag("a").build()
         );
         emailService.sendMessage(registration.getUser().getEmail(), "Registration approved!!", "approve_registration_mail_template.xml", mailContentUnits);
-
     }
 
     @Override
@@ -149,7 +148,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         var registration = registrationRepository.findById(id).orElseThrow(() -> new RegistrationNotFoundException("Registration not found"));
         // check if registration has been declined
         if (registration.getStatus() != RegistrationStatus.SUBMITTED) {
-            throw new IllegalArgumentException("Registration must be in submitted status to be declined");
+            throw new BadRequestRuntimeException("Registration must be in submitted status to be declined");
         }
         // send feedback
         if (feedbackRequest == null || feedbackRequest.getComment() == null || feedbackRequest.getComment().isBlank())
@@ -233,6 +232,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
     }
 
+
     @Override
     public void calculateScore(Long id) {
 
@@ -282,6 +282,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Transactional
     public void closeRegistration(Long id, FeedbackRequest feedbackRequest) {
         Registration registration = registrationRepository.findById(id).orElseThrow(() -> new RegistrationNotFoundException("Registration not found"));
+
 
         if (!RegistrationStatusUtil.isCloseableStatus(registration.getStatus())) {
             throw new BadRequestRuntimeException("Registration status must be in [DONE, VERIFYING, DOCUMENT_DECLINED, VERIFIED]  to be closed");

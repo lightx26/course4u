@@ -1,22 +1,23 @@
 import { toast } from "sonner";
 import instance from "../utils/customizeAxios";
+import { isStatusSuccesful } from "../utils/checkResStatus";
+
 import type { UploadFile } from "antd";
 export const approveRegistration = async (id: number, close: VoidFunction) => {
-    try {
-        await instance.post(`/registrations/${id}/approve`);
+    const res = await instance.post(`/registrations/${id}/approve`);
+    if (isStatusSuccesful(res.status)) {
         toast.success("Registration approved", {
             style: { color: "green" },
             description: "Registration approved successfully",
         });
-        setTimeout(() => {
-            close();
-        }, 1000);
-    } catch (error) {
-        toast.error("Failed to approve registration", {
-            style: { color: "red" },
-            description: "Failed to approve registration",
-        });
+        close();
+        return res.status;
     }
+
+    toast.error("Failed to approve registration", {
+        style: { color: "red" },
+        description: "Failed to approve registration",
+    });
 };
 
 export const declineRegistration = async (
@@ -24,38 +25,37 @@ export const declineRegistration = async (
     comment: string,
     close: VoidFunction
 ) => {
-    try {
-        await instance.post(`/registrations/${id}/decline`, {
-            comment,
-        });
+    const res = await instance.post(`/registrations/${id}/decline`, {
+        comment,
+    });
+    if (isStatusSuccesful(res.status)) {
         toast.success("Registration declined", {
             style: { color: "green" },
             description: "Registration declined successfully",
         });
-        setTimeout(() => {
-            close();
-        }, 1000);
-    } catch (error) {
-        toast.error("Failed to decline registration", {
-            style: { color: "red" },
-            description: "Failed to decline registration",
-        });
+        close();
+        return res.status;
     }
+
+    toast.error("Failed to decline registration", {
+        style: { color: "red" },
+        description: "Failed to decline registration",
+    });
 };
 export const startLearning = async (id: number) => {
-    try {
-        await instance.post(`/registrations/start-learning/${id}`);
+    const res = await instance.post(`/registrations/start-learning/${id}`);
+    if (isStatusSuccesful(res.status)) {
         toast.success("Start learning", {
             style: { color: "green" },
             description: "Start learning successfully",
         });
-        return { status: 200 };
-    } catch (error) {
-        toast.error("Failed to start learning", {
-            style: { color: "red" },
-            description: "Failed to start learning",
-        });
+        return res.status;
     }
+
+    toast.error("Failed to start learning", {
+        style: { color: "red" },
+        description: "Failed to start learning",
+    });
 };
 
 export const closeRegistration = async (
@@ -63,39 +63,38 @@ export const closeRegistration = async (
     comment: string,
     close: VoidFunction
 ) => {
-    try {
-        await instance.post(`/registrations/${id}/close`, {
-            comment,
-        });
+    const res = await instance.post(`/registrations/${id}/close`, {
+        comment,
+    });
+    if (isStatusSuccesful(res.status)) {
         toast.success("Registration closed", {
             style: { color: "green" },
             description: "Registration closed successfully",
         });
-        setTimeout(() => {
-            close();
-        }, 1000);
-    } catch (error) {
-        toast.error("Failed to close registration", {
-            style: { color: "red" },
-            description: "Failed to close registration",
-        });
+        close();
+        return res.status;
     }
+
+    toast.error("Failed to close registration", {
+        style: { color: "red" },
+        description: "Failed to close registration",
+    });
 };
 
 export const removeRegistration = async (id: number) => {
-    try {
-        const response = await instance.delete(`/registrations/${id}`);
+    const res = await instance.delete(`/registrations/${id}`);
+    if (isStatusSuccesful(res.status)) {
         toast.success("Registration removed", {
             style: { color: "green" },
             description: "Registration removed successfully!!!",
         });
-        return response;
-    } catch (error) {
-        toast.error("Failed to remove registration", {
-            style: { color: "red" },
-            description: "Something went wrong, please try again!!!",
-        });
+        return res.status;
     }
+
+    toast.error("Failed to remove registration", {
+        style: { color: "red" },
+        description: "Something went wrong, please try again!!!",
+    });
 };
 
 export const submitDocument = async (
@@ -135,7 +134,6 @@ export const submitDocument = async (
 };
 
 export const finishLearning = async (id: string | number) => {
-    try {
         const response = await instance.put(`/registrations/${id}/finish-learning`);
         response.status == 200 ? toast.success("Finish learning", {
             style: { color: "green" },
@@ -144,28 +142,21 @@ export const finishLearning = async (id: string | number) => {
             style: { color: "red" },
             description: "Opps.., some thing went wrong. Please, reload the page and try again",
         });
-        return response;
-    }
-    catch (error) {
-        toast.error("Failed to finish learning", {
-            style: { color: "red" },
-            description: "Opps.., some thing went wrong. Please, reload the page and try again",
-        });
-    }
+        return response
 }
 
 export const discardRegistration = async (id: number) => {
-    try {
-        await instance.post(`/registrations/${id}/discard`);
+    const res = await instance.post(`/registrations/${id}/discard`);
+    if (isStatusSuccesful(res.status)) {
         toast.success("Registration discarded", {
             style: { color: "green" },
             description: "Registration discarded successfully",
         });
-        return { status: 200 };
-    } catch (error) {
-        toast.error("Failed to discard registration", {
-            style: { color: "red" },
-            description: "Failed to discard registration",
-        });
+        return res.status;
     }
+
+    toast.error("Failed to discard registration", {
+        style: { color: "red" },
+        description: "Failed to discard registration",
+    });
 };

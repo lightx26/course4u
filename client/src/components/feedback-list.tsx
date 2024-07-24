@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { userRegistrationSchema } from "../schemas/user-schema";
 import { handleAvatarUrl } from "../utils/handleAvatarUrl";
+import { useEffect } from "react";
 
 export type Feedback = {
     id: number;
@@ -11,14 +12,24 @@ type Props = {
     feedbacks: Feedback[];
 };
 const FeedbackList = ({ feedbacks }: Props) => {
+    const formatText = (text) => {
+        return text.split("\n").map((line, index) => (
+            <span key={index}>
+                {line}
+                <br />
+            </span>
+        ));
+    };
     return (
         <div>
             <h4 className='mb-5 text-2xl text-bold'>Feedback</h4>
             <div className='flex flex-col gap-6'>
                 {feedbacks.map((feedback) => (
-                    <div key={feedback.id} className='flex items-center gap-4'>
+                    <div key={feedback.id} className='flex items-start gap-4'>
                         <img
-                            src={handleAvatarUrl(feedback.user?.avatarUrl ?? '')}
+                            src={handleAvatarUrl(
+                                feedback.user?.avatarUrl ?? ""
+                            )}
                             alt='avatar'
                             className='rounded-full w-[40px] h-[40px] border-2 border-violet-500'
                         />
@@ -27,7 +38,7 @@ const FeedbackList = ({ feedbacks }: Props) => {
                                 {feedback.user?.fullName}
                             </p>
                             <p className='text-[#64748B] max-w-[1000px] whitespace-normal'>
-                                {feedback.comment}
+                                {formatText(feedback.comment)}
                             </p>
                         </div>
                     </div>
