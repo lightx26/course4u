@@ -5,6 +5,8 @@ import com.mgmtp.cfu.service.NotificationService
 import spock.lang.Specification
 import spock.lang.Subject
 
+import java.time.LocalDateTime
+
 class NotificationControllerSpec extends Specification {
     def notificationService = Mock(NotificationService)
 
@@ -14,11 +16,12 @@ class NotificationControllerSpec extends Specification {
     def "should return notifications for the current user"() {
         given:
             def notifications = [new NotificationUserDTO(id: 1L,content: "content",seen:false)]
-            notificationService.getAllNotificationByCurrUser(1, 10) >> notifications
+            def timestamp = LocalDateTime.of(2024, 1, 1, 0, 0, 0)
+            notificationService.getAllNotificationByCurrUser(timestamp, 10) >> notifications
         when:
-            def result = notificationController.getAllNotificationByCurrUser(1, 10)
+            def result = notificationController.getAllNotificationByCurrUser(timestamp, 10)
         then:
-            1 * notificationService.getAllNotificationByCurrUser(1, 10) >> notifications
+            1 * notificationService.getAllNotificationByCurrUser(timestamp, 10) >> notifications
             result.statusCode.value() == 200
     }
 

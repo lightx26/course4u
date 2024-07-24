@@ -18,6 +18,8 @@ import org.springframework.security.core.context.SecurityContextHolder
 import spock.lang.Specification
 import spock.lang.Subject
 
+import java.time.LocalDateTime
+
 class NotificationServiceImplSpec extends Specification {
     def notificationRepository = Mock(NotificationRepository)
 
@@ -43,15 +45,15 @@ class NotificationServiceImplSpec extends Specification {
         def notifications = [new Notification(), new Notification()]
         def notificationDTOs = [new NotificationUserDTO(), new NotificationUserDTO()]
 
-
+        LocalDateTime timestamp = LocalDateTime.of(2024, 7, 24, 0, 0, 0)
         Sort sort = Sort.by(Sort.Direction.DESC, "createdDate")
         Pageable pageable = PageRequest.of(0, 10, sort)
 
-        notificationRepository.findAllByUserId(currentUser.id, pageable) >> notifications
+        notificationRepository.getBatchByUserId(currentUser.id, timestamp, pageable) >> notifications
         notificationUserMapper.toListDTO(notifications) >> notificationDTOs
 
         when:
-        def result = notificationService.getAllNotificationByCurrUser(1, 10)
+        def result = notificationService.getAllNotificationByCurrUser(timestamp, 10)
 
         then:
         result == notificationDTOs

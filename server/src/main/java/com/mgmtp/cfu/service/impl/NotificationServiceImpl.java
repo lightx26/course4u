@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -27,13 +28,13 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationUserMapper notificationUserMapper;
 
     @Override
-    public List<NotificationUserDTO> getAllNotificationByCurrUser(int batch, int batchSize) {
+    public List<NotificationUserDTO> getAllNotificationByCurrUser(LocalDateTime timestamp, int batchSize) {
         var user = AuthUtils.getCurrentUser();
 
         Sort sort = Sort.by(Sort.Order.desc("createdDate"));
-        Pageable pageable = PageRequest.of(batch - 1, batchSize, sort);
+        Pageable pageable = PageRequest.of(0, batchSize, sort);
 
-        var notifications = notificationRepository.findAllByUserId(user.getId(), pageable);
+        var notifications = notificationRepository.getBatchByUserId(user.getId(), timestamp, pageable);
         return notificationUserMapper.toListDTO(notifications);
     }
 

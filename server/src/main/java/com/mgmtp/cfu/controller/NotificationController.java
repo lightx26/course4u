@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -15,9 +16,12 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @GetMapping
-    public ResponseEntity<List<NotificationUserDTO>> getAllNotificationByCurrUser(@RequestParam(defaultValue = "1") int batch,
+    public ResponseEntity<List<NotificationUserDTO>> getAllNotificationByCurrUser(@RequestParam LocalDateTime timestamp,
                                                                                   @RequestParam(defaultValue = "25") int batchSize) {
-        return ResponseEntity.ok(notificationService.getAllNotificationByCurrUser(batch, batchSize));
+        if (timestamp == null) {
+            timestamp = LocalDateTime.now();
+        }
+        return ResponseEntity.ok(notificationService.getAllNotificationByCurrUser(timestamp, batchSize));
     }
 
     @PutMapping
