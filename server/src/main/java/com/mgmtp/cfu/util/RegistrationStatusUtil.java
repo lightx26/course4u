@@ -24,7 +24,15 @@ public class RegistrationStatusUtil {
             RegistrationStatus.VERIFIED
     );
 
+    public static final List<RegistrationStatus> DISCARDABLE_STATUSES = List.of(
+            RegistrationStatus.APPROVED,
+            RegistrationStatus.DECLINED,
+            RegistrationStatus.SUBMITTED
+    );
     public static boolean isCloseableStatus(RegistrationStatus status) {
         return CLOSABLE_STATUSES.contains(status);
+    }
+    public static boolean isDiscardableStatus(RegistrationStatus status) {
+        return DISCARDABLE_STATUSES.contains(status);
     }
 }

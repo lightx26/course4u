@@ -19,6 +19,6 @@ public interface RegistrationService {
     void declineRegistration(Long id , FeedbackRequest feedbackRequest);
     void closeRegistration(Long id, FeedbackRequest feedbackRequest);
     void deleteRegistration(Long id);
-
     boolean startLearningCourse(Long courseId);
+    void discardRegistration(Long id);
 }

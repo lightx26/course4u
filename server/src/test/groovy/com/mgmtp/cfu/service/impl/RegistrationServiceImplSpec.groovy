@@ -682,4 +682,29 @@ class RegistrationServiceImplSpec extends Specification {
         then:
         thrown(BadRequestRuntimeException)
     }
+
+    def "should throw RegistrationNotFoundException if discard, registration is not found"() {
+        given:
+            def registrationId = 1L
+            registrationRepository.findById(registrationId) >> Optional.empty()
+
+        when:
+            registrationService.discardRegistration(registrationId)
+
+        then:
+            thrown(RegistrationNotFoundException)
+    }
+
+    def "should throw BadRequestRunTimeException if discard, registration status is not correct"() {
+        given:
+            def registrationId = 1L
+            def registration = new Registration(id: registrationId, status: RegistrationStatus.CLOSED)
+            registrationRepository.findById(registrationId) >> Optional.of(registration)
+
+        when:
+            registrationService.discardRegistration(registrationId)
+
+        then:
+            thrown(BadRequestRunTimeException)
+    }
 }

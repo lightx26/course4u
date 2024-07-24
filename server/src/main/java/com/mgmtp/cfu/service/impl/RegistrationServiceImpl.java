@@ -13,10 +13,6 @@ import com.mgmtp.cfu.enums.CategoryStatus;
 import com.mgmtp.cfu.enums.CourseStatus;
 import com.mgmtp.cfu.enums.NotificationType;
 import com.mgmtp.cfu.enums.RegistrationStatus;
-import com.mgmtp.cfu.exception.BadRequestRuntimeException;
-import com.mgmtp.cfu.exception.ConflictRuntimeException;
-import com.mgmtp.cfu.exception.MapperNotFoundException;
-import com.mgmtp.cfu.exception.RegistrationStatusNotFoundException;
 import com.mgmtp.cfu.exception.*;
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper;
 import com.mgmtp.cfu.entity.Registration;
@@ -35,14 +31,11 @@ import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
-
-
 
 import static com.mgmtp.cfu.util.AuthUtils.getCurrentUser;
 import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getRegistrationOverviewDTOS;
@@ -290,7 +283,18 @@ public class RegistrationServiceImpl implements RegistrationService {
         registrationRepository.delete(registration);
     }
 
+    @Override
+    public void discardRegistration(Long id) {
+        var registration = registrationRepository.findById(id)
+                .orElseThrow(() -> new RegistrationNotFoundException("Registration not found"));
 
+        if (!RegistrationStatusUtil.isDiscardableStatus(registration.getStatus())) {
+            throw new BadRequestRunTimeException("Registration must be in correct status to be discarded.");
+        }
+
+        registration.setStatus(RegistrationStatus.DISCARDED);
+        registrationRepository.save(registration);
+    }
 
     @Override
     public boolean startLearningCourse(Long registrationId) {

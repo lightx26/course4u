@@ -82,4 +82,10 @@ public class RegistrationController {
         registrationService.deleteRegistration(id);
     }
 
+    @PostMapping("/{id}/discard")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<?> discardRegistration(@PathVariable Long id) {
+        registrationService.discardRegistration(id);
+        return ResponseEntity.ok().build();
+    }
 }

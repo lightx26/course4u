@@ -120,4 +120,23 @@ class RegistrationControllerSpec extends Specification {
             def e = thrown(RegistrationNotFoundException)
             e.message == "Registration not found"
     }
+    def 'test discard registration return ok response'() {
+        given:
+            registrationService.discardRegistration(_ as Long)>>{}
+        when:
+            registrationController.discardRegistration(1)
+        then:
+            noExceptionThrown()
+    }
+    def 'test discard registration failed'() {
+        given:
+            def registrationId = 1
+        when:
+            registrationService.discardRegistration(registrationId) >> { throw new RegistrationNotFoundException("Registration not found") }
+        and:
+            registrationController.discardRegistration(registrationId)
+        then:
+            def ex = thrown(RegistrationNotFoundException)
+            ex.message == "Registration not found"
+    }
 }
