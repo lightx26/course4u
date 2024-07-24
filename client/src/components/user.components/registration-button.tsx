@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import {
+    finishLearning,
     discardRegistration,
     removeRegistration,
     startLearning,
@@ -9,18 +10,21 @@ import { useRegistrationDetail } from "../../hooks/use-registration-detail";
 import { useRegistrationModal } from "../../hooks/use-registration-modal";
 import { Status } from "../../utils/index";
 import { Button } from "../ui/button";
+import ModalConfirm from "./ModalConfirm";
+
 import type { UploadFile } from "antd";
 import { toast } from "sonner";
 import { RootState } from "../../redux/store/store";
 import { fetchListOfMyRegistration } from "../../apiService/MyRegistration.service";
 import { saveDataListRegistration } from "../../redux/slice/registration.slice";
 type Props = {
-  status?: Status;
-  setIsEdit: (isEdit: boolean) => void;
-  isEdit: boolean;
-  id?: number;
-  listFileCertificate?: UploadFile[];
-  listFilePayment?: UploadFile[];
+    status?: Status;
+    setIsEdit: (isEdit: boolean) => void;
+    isEdit: boolean;
+    id?: number;
+    isStatrted?: boolean;
+    listFileCertificate?: UploadFile[];
+    listFilePayment?: UploadFile[];
 };
 export const RegistrationButton = ({
   status = Status.NONE,
@@ -28,7 +32,7 @@ export const RegistrationButton = ({
   isEdit,
   id,
   listFileCertificate,
-  listFilePayment,
+  listFilePayment,isStatrted
 }: Props) => {
     const { registration, closeRegistration } = useRegistrationDetail();
     const { close } = useRegistrationModal((state) => state);
@@ -57,7 +61,10 @@ export const RegistrationButton = ({
         close();
     };
 
-
+    const handleFinishLearning = async () => {
+        await finishLearning(id!);
+        close();
+    }
 
     const handleDiscard = async () => {
         const res = await discardRegistration(id!);
@@ -103,14 +110,15 @@ export const RegistrationButton = ({
     return (
         <div className='flex justify-end gap-4'>
             {(status === Status.DRAFT || status === Status.DISCARDED) && (
-                <Button
-                    onClick={handleDeleteButtonClick}
-                    type='button'
-                    size='lg'
-                    variant='danger'
-                >
-                    DELETE
-                </Button>
+                <ModalConfirm title="Delete this registration?" description="Are you sure you want to delete this form? This action cannot be undone." cancelButtonTitle="Cancel" acceptButtonTitle="Yes, Delete" handleConfirm={handleDeleteButtonClick}>
+                    <Button
+                        type='button'
+                        size='lg'
+                        variant='danger'
+                    >
+                        DELETE
+                    </Button>
+                </ModalConfirm>
             )}
             {(status === Status.SUBMITTED ||
                 status === Status.DECLINED ||
@@ -136,11 +144,18 @@ export const RegistrationButton = ({
                 </Button>
             )}
             {status === Status.APPROVED && (
-                <Button size='lg' variant='success'>
-                    DONE
-                </Button>
-            )}
-            {(status === Status.SUBMITTED || status === Status.DECLINED) &&
+                <ModalConfirm
+                    handleConfirm={handleFinishLearning}
+                    title='Do you want to finish this course?'
+                    description="Are you sure you have completed the course and want to confirm completion?">
+                    <Button className={'' + (!isStatrted && 'select-none pointer-events-none opacity-30')} size='lg' variant='success'>
+                        DONE
+                    </Button>
+                </ModalConfirm>
+            )
+            }
+            {
+                (status === Status.SUBMITTED || status === Status.DECLINED) &&
                 isEdit === false && (
                     <Button
                         size='lg'

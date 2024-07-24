@@ -218,7 +218,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     public Page<RegistrationOverviewDTO> getRegistrationByStatus(int page, String status) {
-        try {
+        try{
             PageRequest pageRequest = PageRequest.of(page - 1, 8);
             RegistrationStatus registrationStatus = RegistrationStatus.valueOf(status.toUpperCase());
             Page<Registration> registrations = registrationRepository.findAllByStatus(registrationStatus, pageRequest);

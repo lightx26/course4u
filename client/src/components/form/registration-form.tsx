@@ -271,6 +271,7 @@ export const RegistrationsForm = ({
                 setIsEdit={setIsEdit}
                 isEdit={isEdit}
                 id={id}
+                isStatrted={(startDate != undefined)}
                 listFileCertificate={listFileCertificate}
                 listFilePayment={listFilePayment}
               />

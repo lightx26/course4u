@@ -134,6 +134,27 @@ export const submitDocument = async (
   }
 };
 
+export const finishLearning = async (id: string | number) => {
+    try {
+        const response = await instance.put(`/registrations/${id}/finish-learning`);
+        response.status == 200 ? toast.success("Finish learning", {
+            style: { color: "green" },
+            description: "Congratulations! You have successfully completed the course.",
+        }) : toast.error("Failed to finish learning", {
+            style: { color: "red" },
+            description: "Opps.., some thing went wrong. Please, reload the page and try again",
+        });
+        console.log(response);
+        return response;
+    }
+    catch (error) {
+        toast.error("Failed to finish learning", {
+            style: { color: "red" },
+            description: "Opps.., some thing went wrong. Please, reload the page and try again",
+        });
+    }
+}
+
 export const discardRegistration = async (id: number) => {
     try {
         await instance.post(`/registrations/${id}/discard`);

@@ -605,7 +605,7 @@ const Detail_Of_Course: React.FC = () => {
                       onClick={handleClickViewAll}
                     >
                       <div
-                        className="text-purple-600 font-medium"
+                        className="font-medium text-purple-600"
                         style={{ color: "purple" }}
                       >
                         View all

@@ -19,8 +19,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleCourseNotFoundException(CourseNotFoundException courseNotFoundException) {
-        ErrorResponse response = new ErrorResponse(HttpStatus.NOT_FOUND.value() + "", courseNotFoundException.getMessage());
+    public ResponseEntity<ErrorResponse> handleCourseNotFoundException(CourseNotFoundException cnfe) {
+        ErrorResponse response = new ErrorResponse(HttpStatus.NOT_FOUND.value()+"", cnfe.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
