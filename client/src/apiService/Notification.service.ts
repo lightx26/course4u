@@ -9,3 +9,7 @@ export const getAllNotificationsByCurrUser = async (batchSize: number, timestamp
     const res = await instance.get("/notifications", { params });
     return res.data;
 };
+
+export const markAllNotificationsAsRead = async () => {
+    await instance.put("/notifications");
+}
