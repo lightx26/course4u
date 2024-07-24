@@ -8,6 +8,7 @@ import com.mgmtp.cfu.dto.coursedto.CourseResponse;
 import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewParams;
+import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO;
 import com.mgmtp.cfu.entity.Course;
 import com.mgmtp.cfu.enums.*;
 import com.mgmtp.cfu.exception.*;

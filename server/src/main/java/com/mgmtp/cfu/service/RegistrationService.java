@@ -27,4 +27,7 @@ public interface RegistrationService {
     // Admin Registration Services
     Page<RegistrationOverviewDTO> getRegistrations(RegistrationOverviewParams params, int page);
     void discardRegistration(Long id);
+
+    // Admin Registration Services
+    Page<RegistrationOverviewDTO> getRegistrations(RegistrationOverviewParams params, int page);
 }
