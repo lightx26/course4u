@@ -705,6 +705,6 @@ class RegistrationServiceImplSpec extends Specification {
             registrationService.discardRegistration(registrationId)
 
         then:
-            thrown(BadRequestRunTimeException)
+            thrown(BadRequestRuntimeException)
     }
 }

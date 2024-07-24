@@ -289,7 +289,7 @@ public class RegistrationServiceImpl implements RegistrationService {
                 .orElseThrow(() -> new RegistrationNotFoundException("Registration not found"));
 
         if (!RegistrationStatusUtil.isDiscardableStatus(registration.getStatus())) {
-            throw new BadRequestRunTimeException("Registration must be in correct status to be discarded.");
+            throw new BadRequestRuntimeException("Registration must be in correct status to be discarded.");
         }
 
         registration.setStatus(RegistrationStatus.DISCARDED);

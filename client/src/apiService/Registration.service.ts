@@ -97,3 +97,19 @@ export const removeRegistration = async (id: number) => {
         });
     }
 };
+
+export const discardRegistration = async (id: number) => {
+    try {
+        await instance.post(`/registrations/${id}/discard`);
+        toast.success("Registration discarded", {
+            style: { color: "green" },
+            description: "Registration discarded successfully",
+        });
+        return { status: 200 };
+    } catch (error) {
+        toast.error("Failed to discard registration", {
+            style: { color: "red" },
+            description: "Failed to discard registration",
+        });
+    }
+};

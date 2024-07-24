@@ -1,4 +1,5 @@
 import {
+    discardRegistration,
     removeRegistration,
     startLearning,
 } from "../../apiService/Registration.service";
@@ -20,7 +21,7 @@ export const RegistrationButton = ({
     id,
 }: Props) => {
     const { registration, closeRegistration } = useRegistrationDetail();
-    const { close } = useRegistrationModal(state => state)
+    const { close } = useRegistrationModal((state) => state);
     const onEdit = () => {
         setIsEdit(true);
     };
@@ -32,7 +33,7 @@ export const RegistrationButton = ({
             return;
         }
         setTimeout(() => {
-            close(), 1000;
+            closeRegistration(), close(), 1000;
         });
     };
     const handleStartLearning = async () => {
@@ -44,6 +45,16 @@ export const RegistrationButton = ({
         window.open(registration?.course?.link);
         closeRegistration();
         close();
+    };
+
+    const handleDiscard = async () => {
+        const res = await discardRegistration(id!);
+        if (res?.status !== 200) {
+            return;
+        }
+        setTimeout(() => {
+            closeRegistration(), close(), 1000;
+        });
     };
     return (
         <div className='flex justify-end gap-4'>
@@ -61,7 +72,12 @@ export const RegistrationButton = ({
                 status === Status.DECLINED ||
                 status === Status.APPROVED) &&
                 !isEdit && (
-                    <Button size='lg' variant='outline'>
+                    <Button
+                        size='lg'
+                        variant='outline'
+                        type='button'
+                        onClick={handleDiscard}
+                    >
                         DISCARD
                     </Button>
                 )}
@@ -73,11 +89,6 @@ export const RegistrationButton = ({
                     onClick={handleStartLearning}
                 >
                     START LEARNING
-                </Button>
-            )}
-            {status !== Status.DRAFT && status !== Status.NONE && isEdit && (
-                <Button size='lg' variant='outline' type='button'>
-                    DISCARD
                 </Button>
             )}
             {status === Status.APPROVED && (
