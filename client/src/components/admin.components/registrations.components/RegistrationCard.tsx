@@ -84,7 +84,7 @@ function RegistrationCardComponent({registration}: PropsType) {
     };
 
     const courseThumbnailUrl = registration.courseThumbnailUrl ? registration.courseThumbnailUrl : CourseImagePlaceholder;
-    const userFullname: string = registration.userFullName ? registration.userFullName : registration.userName ? registration.userName : "Anonymous";
+    const displayedFullname: string = registration.userFullname ? registration.userFullname : registration.userName ? registration.userName : "Anonymous";
     const status: string = convertStatus(registration.status ? registration.status : "");
     const period: string = handlePeriod(registration.startDate, registration.endDate);
     const userAvatar: string = handleAvatarUrl(registration.userAvatarUrl);
@@ -119,7 +119,7 @@ function RegistrationCardComponent({registration}: PropsType) {
                             </div>
                             <div className="username flex flex-col">
                                 <span
-                                    className="text-base max-w-[85px] text-left overflow-hidden overflow-ellipsis">{userFullname}</span>
+                                    className="text-base max-w-[85px] text-left overflow-hidden overflow-ellipsis">{displayedFullname}</span>
                                 <span className="text-xs">User</span>
                             </div>
                         </div>

@@ -56,7 +56,7 @@ export type RegistrationType = {
   coursePlatform?: string;
   userId?: string;
   userName?: string;
-  userFullName?: string;
+  userFullname?: string;
   userAvatarUrl?: string;
   duration?: number;
   durationUnit?: string;
