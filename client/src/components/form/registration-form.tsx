@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "../ui/select";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { RegistrationsProps } from "../user.components/registrations";
 import { RegistrationButton } from "../user.components/registration-button";
 import { toast } from "sonner";
@@ -71,6 +71,7 @@ export const RegistrationsForm = ({
   });
   const { open } = useRegistrationModal((state) => state);
   const user = useSelector((state: RootState) => state.user);
+  const [inputDuration, setInputDuration] = useState(1);
   useEffect(() => {
     if (id) {
       form.setValue("duration", duration!);
@@ -200,9 +201,16 @@ export const RegistrationsForm = ({
                       type="number"
                       placeholder="Duration"
                       {...field}
-                      onChange={(event) => field.onChange(+event.target.value)}
+                      onChange={(event) => {
+                        field.onChange(+event.target.value);
+                        setInputDuration(+event.target.value);
+                      }}
                       className=""
                       disabled={!isEdit}
+                      onKeyDown={(e) => {
+                        e.key === "." && e.preventDefault();
+                      }}
+                      value={Number(inputDuration).toString()}
                     />
                   </FormControl>
                   <FormMessage />
