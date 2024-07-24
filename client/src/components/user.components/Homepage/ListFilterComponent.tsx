@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import FilterItemComponent from "./FilterItemComponent";
 import { FilterItemType } from "./MainContent";
 import SeemoreButton from "./SeemoreButton";

@@ -40,8 +40,8 @@ public class UserServiceImpl implements IUserService {
 
         user.setFullName(Optional.ofNullable(userDto.getFullName()).orElse("").trim());
         user.setTelephone(Optional.ofNullable(userDto.getTelephone()).orElse("").trim());
-        user.setDateOfBirth(Optional.ofNullable(userDto.getDateOfBirth()).orElse(null));
-        user.setGender(Optional.ofNullable(userDto.getGender()).orElse(null));
+        user.setDateOfBirth(userDto.getDateOfBirth());
+        user.setGender(userDto.getGender());
 
         if (userDto.getImageFile() != null && !userDto.getImageFile().isEmpty()) {
             String uniqueFileName;
