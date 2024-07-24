@@ -6,5 +6,6 @@ export const registrationSchema = courseSchema.extend({
         .number()
         .int()
         .positive({ message: "Duration must be a positive integer!" }),
+        
     durationUnit: z.enum(["DAY", "WEEK", "MONTH"]),
 });

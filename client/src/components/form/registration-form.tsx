@@ -225,9 +225,9 @@ export const RegistrationsForm = ({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="DAY">Days</SelectItem>
-                      <SelectItem value="WEEK">Weeks</SelectItem>
-                      <SelectItem value="MONTH">Months</SelectItem>
+                      <SelectItem value="DAY">Day</SelectItem>
+                      <SelectItem value="WEEK">Week</SelectItem>
+                      <SelectItem value="MONTH">Month</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />

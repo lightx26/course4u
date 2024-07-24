@@ -57,6 +57,7 @@ public class CourseController {
         } catch (DuplicateCourseException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         } catch (RuntimeException e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }

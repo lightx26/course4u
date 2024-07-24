@@ -20,14 +20,23 @@ const HeaderHomepage: React.FC = () => {
     (state: RootState) => state.courses.searchTerm
   );
   const { open } = useRegistrationModal((state) => state);
+
   const userData = useSelector((state: RootState) => state.user.user);
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const basePath = `${import.meta.env.VITE_BASE_URL}` || "/";
   const goToHomePage = () => {
-    const homepagePath = userData.role.toUpperCase() == 'ADMIN' ? '/admin' : userData.role.toUpperCase() == 'ACCOUNTANT' ? '/accountant' : "/";
-    const homePathWithBasePath = (basePath + homepagePath).replace('//', '/');
-    if (window.location.pathname.replace(/\/+$/, '') === homePathWithBasePath.replace(/\/+$/, '')) {
+    const homepagePath =
+      userData.role.toUpperCase() == "ADMIN"
+        ? "/admin"
+        : userData.role.toUpperCase() == "ACCOUNTANT"
+        ? "/accountant"
+        : "/";
+    const homePathWithBasePath = (basePath + homepagePath).replace("//", "/");
+    if (
+      window.location.pathname.replace(/\/+$/, "") ===
+      homePathWithBasePath.replace(/\/+$/, "")
+    ) {
       window.location.reload();
     } else {
       navigate(homepagePath);
@@ -44,7 +53,7 @@ const HeaderHomepage: React.FC = () => {
     } else if (
       userData.role.toUpperCase() == "ADMIN" &&
       window.location.pathname !=
-      (basePath + "/admin/courses").replace("//", "/")
+        (basePath + "/admin/courses").replace("//", "/")
     ) {
       goToAdminCoursesPage();
     }

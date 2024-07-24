@@ -3,7 +3,7 @@ import { create } from "zustand";
 type RegistrationModalState = {
     isOpen: boolean;
     id: number | null;
-    open: (state: boolean, id?: number) => void;
+    open: (state: boolean, id?: number ) => void;
     close: () => void;
 };
 

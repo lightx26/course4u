@@ -85,10 +85,14 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
     const getCategories = async () => {
       try {
         const response = await instance.get("/categories/available");
-        const categories = response.data.map((category: Option) => ({
-          label: category.name,
-          value: category.id + "",
-        }));
+        const categories = response.data
+          .map((category: Option) => ({
+            label: category.name,
+            value: category.id + "",
+          }))
+          .sort((a: { label: string }, b: { label: any }) =>
+            a.label.localeCompare(b.label)
+          );
         setCategories(categories);
       } catch (error) {
         toast.error("Oops something went wrong...", {

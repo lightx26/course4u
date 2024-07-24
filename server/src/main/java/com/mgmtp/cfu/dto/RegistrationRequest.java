@@ -27,7 +27,6 @@ public class RegistrationRequest {
     private CourseLevel level;
     private Integer duration;
     private DurationUnit durationUnit;
-    private LocalDateTime lastUpdate;
     public void setName(String name) {
         this.name = name != null ? name.trim() : null;
     }
