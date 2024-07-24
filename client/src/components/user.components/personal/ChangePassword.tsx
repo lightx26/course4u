@@ -63,10 +63,6 @@ export default function ChangePassword() {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col items-end justify-between w-full h-full">
                     <h3 className="w-full text-xl font-semibold text-left">Change password</h3>
                     {/* Visually Hidden Username Field */}
-                    <div className="hidden">
-                        <label htmlFor="username" className="sr-only">Username</label>
-                        <input type="text" id="username" name="username" autoComplete="username" placeholder="Username" />
-                    </div>
                     <div className="w-full">
                         <FormField
                             control={form.control}
@@ -75,7 +71,8 @@ export default function ChangePassword() {
                                 <FormItem>
                                     <FormLabel>Old password</FormLabel>
                                     <FormControl>
-                                        <PasswordInput className="w-full" placeholder="Enter your old password" {...field} />
+                                        <PasswordInput className="w-full" placeholder="Enter your old password" {...field}
+                                        />
                                     </FormControl>
                                     <FormMessage className="text-[12px]" />
                                 </FormItem>
@@ -90,7 +87,7 @@ export default function ChangePassword() {
                                 <FormItem>
                                     <FormLabel>New password</FormLabel>
                                     <FormControl>
-                                        <PasswordInput placeholder="Enter you new password" {...field} />
+                                        <PasswordInput placeholder="Enter your new password" {...field} />
                                     </FormControl>
                                     <FormMessage className="text-[12px]" />
                                 </FormItem>

@@ -189,7 +189,7 @@ export default function UserProfileForm() {
                                     <FormItem>
                                         <FormLabel>Phone number</FormLabel>
                                         <FormControl>
-                                            <Input type="tel" readOnly={!isEditing} placeholder="Enter you phone number" {...field} onChange={(e) => {
+                                            <Input type="tel" readOnly={!isEditing} placeholder="Enter your phone number" {...field} onChange={(e) => {
                                                 // Chỉ cho phép nhập số, dấu cách, và dấu gạch nối
                                                 const value = e.target.value.replace(/[^\d]+/, '');
                                                 field.onChange(value); // Cập nhật giá trị vào form

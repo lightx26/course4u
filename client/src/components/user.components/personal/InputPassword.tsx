@@ -10,6 +10,9 @@ export default function PasswordInput({ ...props }) {
             <Input
                 type={showPassword ? 'text' : 'password'}
                 {...props}
+                autoComplete='off'
+                autoCorrect='off'
+                autoCapitalize='off'
             />
             <button
                 type="button"
