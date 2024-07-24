@@ -19,34 +19,36 @@ class RegistrationOverviewMapperSpec extends Specification {
     RegistrationOverviewMapper registrationOverviewMapper = Mappers.getMapper(RegistrationOverviewMapper.class)
     def "test ToDto"() {
         given:
-        def platform = CoursePlatform.LINKEDIN
-        def course = Course.builder()
-                .id(1)
-                .name("Java")
-                .status(CourseStatus.AVAILABLE)
-                .link("link")
-                .platform(platform)
-                .thumbnailUrl("thumbnail")
-                .createdDate(LocalDate.now())
-                .teacherName("Teacher Name")
-                .build()
-        def registration = Registration.builder()
-                .id(1)
-                .duration(15)
-                .endDate(LocalDateTime.now())
-                .registerDate(LocalDate.now())
-                .startDate(LocalDateTime.now())
-                .status(RegistrationStatus.DONE)
-                .score(10)
-                .course(course)
-                .build()
+            def platform = CoursePlatform.LINKEDIN
+            def course = Course.builder()
+                    .id(1)
+                    .name("Java")
+                    .status(CourseStatus.AVAILABLE)
+                    .link("link")
+                    .platform(platform)
+                    .thumbnailUrl("thumbnail")
+                    .createdDate(LocalDate.now())
+                    .teacherName("Teacher Name")
+                    .build()
+
+            def registration = Registration.builder()
+                    .id(1)
+                    .duration(15)
+                    .endDate(LocalDateTime.now())
+                    .registerDate(LocalDate.now())
+                    .startDate(LocalDateTime.now())
+                    .status(RegistrationStatus.DONE)
+                    .score(10)
+                    .course(course)
+                    .build()
         when:
-        RegistrationOverviewDTO registrationDto = registrationOverviewMapper.toDTO(registration)
+            RegistrationOverviewDTO registrationDto = registrationOverviewMapper.toDTO(registration)
+
         then:
-        registrationDto.endDate == registration.getEndDate().toLocalDate()
-        registrationDto.registerDate == registration.registerDate
-        registrationDto.startDate == registration.getStartDate().toLocalDate()
-        registrationDto.status == registration.status
-        registrationDto.courseId == registration.getCourse().getId()
+            registrationDto.endDate == registration.getEndDate().toLocalDate()
+            registrationDto.registerDate == registration.registerDate
+            registrationDto.startDate == registration.getStartDate().toLocalDate()
+            registrationDto.status == registration.status
+            registrationDto.courseId == registration.getCourse().getId()
     }
 }

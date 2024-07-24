@@ -4,6 +4,7 @@ import com.mgmtp.cfu.dto.coursedto.CourseResponse
 import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest
 import com.mgmtp.cfu.dto.coursedto.CourseRegistrationDTO
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO
+import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewParams
 import com.mgmtp.cfu.exception.BadRequestRuntimeException
 import com.mgmtp.cfu.exception.ConflictRuntimeException
 import com.mgmtp.cfu.dto.MailContentUnit
@@ -32,17 +33,18 @@ import com.mgmtp.cfu.enums.DurationUnit
 import com.mgmtp.cfu.enums.RegistrationStatus
 
 import com.mgmtp.cfu.repository.CourseRepository
-import com.mgmtp.cfu.repository.NotificationRepository
-import com.mgmtp.cfu.repository.RegistrationFeedbackRepository
 import com.mgmtp.cfu.repository.RegistrationRepository
 
 import com.mgmtp.cfu.service.IEmailService
 import com.mgmtp.cfu.service.NotificationService;
 import com.mgmtp.cfu.service.RegistrationFeedbackService;
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import com.mgmtp.cfu.service.CourseService
 import com.mgmtp.cfu.util.AuthUtils
+import org.springframework.data.domain.Sort
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
@@ -286,112 +288,322 @@ class RegistrationServiceImplSpec extends Specification {
     }
 
     /*
-     * Test cases for getAllRegistrations and getRegistrationByStatus
+     *  Test cases for getAllRegistrations,
      */
-    def "getAllRegistrations should return registration list"() {
+    def "getRegistrations should return registration list in the correct order"() {
         given:
-            def page = 1
-            def registration = Registration.builder().id(1).build()
-            def registration2 = Registration.builder().id(2).build()
-            Page<Registration> registrations = Mock(){
-                getContent() >> [registration, registration2]
-            }
-            registrationRepository.findAllExceptStatus(_, _) >> {args -> {
-                def input = args[1] as PageRequest
-                assert input.pageNumber == page - 1
-                assert input.pageSize == 8
+            def status = "all"
+            def search = ""
+            def orderBy = "id"
+            def isAscending = true
+            RegistrationOverviewParams params = RegistrationOverviewParams.builder()
+                    .status(status)
+                    .search(search)
+                    .orderBy(orderBy)
+                    .isAscending(isAscending)
+                    .build()
 
-                registrations
-            }}
-            registrationOverviewMapper.toDTO(registration) >> RegistrationOverviewDTO.builder().id(1).build()
+            def page = 1
+
+            def registration1 = Registration.builder().id(0).build()
+            def registration2 = Registration.builder().id(1).build()
+
+            Page<Registration> registrations = new PageImpl<>([registration1, registration2], PageRequest.of(page, 8), 2)
+
+            registrationRepository.getOptionalRegistrationsWithoutStatus(_, _) >> {
+                args -> {
+                    def pageRequest = args[1] as PageRequest
+                    assert pageRequest.pageNumber == page - 1
+                    assert pageRequest.pageSize == 8
+                    assert pageRequest.sort == Sort.by(orderBy).ascending()
+
+                    registrations
+                }
+            }
+
+            registrationOverviewMapper.toDTO(registration1) >> RegistrationOverviewDTO.builder().id(0).build()
+            registrationOverviewMapper.toDTO(registration2) >> RegistrationOverviewDTO.builder().id(1).build()
+
+        when:
+            Page<RegistrationOverviewDTO> result = registrationService.getRegistrations(params, page)
+
+        then:
+            result.size() == 2
+            result[0].id == 0
+            result[1].id == 1
+    }
+
+    def "getRegistrations should return registration list in descending order when configurated"(){
+        given:
+            def status = "all"
+            def search = ""
+            def orderBy = "id"
+            def isAscending = false
+            RegistrationOverviewParams params = RegistrationOverviewParams.builder()
+                    .status(status)
+                    .search(search)
+                    .orderBy(orderBy)
+                    .isAscending(isAscending)
+                    .build()
+
+            def page = 1
+
+            def registration1 = Registration.builder().id(1).build()
+            def registration2 = Registration.builder().id(2).build()
+
+            Page<Registration> registrations = new PageImpl<>([registration2, registration1], PageRequest.of(page - 1, 8), 2)
+
+            registrationRepository.getOptionalRegistrationsWithoutStatus(_, _) >> {
+                args -> {
+                    def pageRequest = args[1] as PageRequest
+                    assert pageRequest.pageNumber == page - 1
+                    assert pageRequest.pageSize == 8
+                    assert pageRequest.sort == Sort.by(orderBy).descending()
+
+                    registrations
+                }
+            }
+
+            registrationOverviewMapper.toDTO(registration1) >> RegistrationOverviewDTO.builder().id(1).build()
             registrationOverviewMapper.toDTO(registration2) >> RegistrationOverviewDTO.builder().id(2).build()
 
         when:
-            Page<RegistrationOverviewDTO> result = registrationService.getAllRegistrations(page)
+            Page<RegistrationOverviewDTO> response = registrationService.getRegistrations(params, page)
 
         then:
-            result.size() == 2
-            result[0].id == 1
-            result[1].id == 2
+            response.size() == 2
+            response[0].id == 2
+            response[1].id == 1
     }
 
-    def "getAllRegistration should return a registration list without DRAFT registrations"(){
+    def "getRegistrations should return registrations ordered by the provided input"(){
         given:
+            def status = "all"
+            def search = ""
+            def orderBy = "lastUpdated"
+            def isAscending = true
+            RegistrationOverviewParams params = RegistrationOverviewParams.builder()
+                    .status(status)
+                    .search(search)
+                    .orderBy(orderBy)
+                    .isAscending(isAscending)
+                    .build()
+
             def page = 1
-            def registration = Registration.builder().id(1).status(RegistrationStatus.APPROVED).build()
-            def registration2 = Registration.builder().id(2).status(RegistrationStatus.DRAFT).build()
 
-            Page<Registration> registrations = Mock(){
-                getContent() >> [registration]
-            }
+            def registration1 = Registration.builder().id(1).lastUpdated(LocalDateTime.now().plusDays(1)).build()
+            def registration2 = Registration.builder().id(2).lastUpdated(LocalDateTime.now()).build()
 
-            registrationRepository.findAllExceptStatus(_, _) >>{
+            Page<Registration> registrations = new PageImpl<>([registration2, registration1], PageRequest.of(page - 1, 8), 2)
+
+            registrationRepository.getOptionalRegistrationsWithoutStatus(_, _) >> {
                 args -> {
                     def pageRequest = args[1] as PageRequest
                     assert pageRequest.pageNumber == page - 1
                     assert pageRequest.pageSize == 8
+                    assert pageRequest.sort == Sort.by(orderBy).ascending()
 
                     registrations
                 }
             }
 
-            registrationOverviewMapper.toDTO(registration) >> RegistrationOverviewDTO.builder().id(1).status(RegistrationStatus.APPROVED).build()
-            registrationOverviewMapper.toDTO(registration2) >> RegistrationOverviewDTO.builder().id(2).status(RegistrationStatus.DRAFT).build()
+            registrationOverviewMapper.toDTO(registration1) >> RegistrationOverviewDTO.builder().id(1).build()
+            registrationOverviewMapper.toDTO(registration2) >> RegistrationOverviewDTO.builder().id(2).build()
 
         when:
-            Page<RegistrationOverviewDTO> result = registrationService.getAllRegistrations(page)
+            Page<RegistrationOverviewDTO> response = registrationService.getRegistrations(params, page)
 
         then:
-            result.size() == 1
-            result[0].id == 1
+            response.size() == 2
+            response[0].id == 2
+            response[1].id == 1
     }
 
-    def "getRegistrationByStatus should return the correct registration list"(){
+    def "getRegistrations should return the registrations with the provided status"(){
         given:
+            def status = "submitted"
+            def search = ""
+            def orderBy = "id"
+            def isAscending = true
+            RegistrationOverviewParams params = RegistrationOverviewParams.builder()
+                    .status(status)
+                    .search(search)
+                    .orderBy(orderBy)
+                    .isAscending(isAscending)
+                    .build()
+
             def page = 1
-            def status = "APPROVED"
 
-            def registration = Registration.builder().id(1).status(RegistrationStatus.APPROVED).build()
+            def registration1 = Registration.builder().id(1).status(RegistrationStatus.SUBMITTED).build()
             def registration2 = Registration.builder().id(2).status(RegistrationStatus.APPROVED).build()
-            Page<Registration> registrations = Mock(){
-                getContent() >> [registration, registration2]
-            }
 
-            registrationRepository.findAllByStatus(_, _) >> {
+            Page<Registration> registrations = new PageImpl<>([registration1], PageRequest.of(page - 1, 8), 1)
+
+            registrationRepository.getOptionalRegistrationsWithStatus(_, _, _) >> {
                 args -> {
-                    def pageRequest = args[1] as PageRequest
-
+                    def pageRequest = args[2] as PageRequest
                     assert pageRequest.pageNumber == page - 1
                     assert pageRequest.pageSize == 8
+                    assert pageRequest.sort == Sort.by(orderBy).ascending()
 
                     registrations
                 }
             }
 
-            registrationOverviewMapper.toDTO(registration) >> RegistrationOverviewDTO.builder().id(1).status(RegistrationStatus.APPROVED).build()
+            registrationOverviewMapper.toDTO(registration1) >> RegistrationOverviewDTO.builder().id(1).status(RegistrationStatus.SUBMITTED).build()
             registrationOverviewMapper.toDTO(registration2) >> RegistrationOverviewDTO.builder().id(2).status(RegistrationStatus.APPROVED).build()
 
         when:
-            Page<RegistrationOverviewDTO> result = registrationService.getRegistrationByStatus(page, status)
+            Page<RegistrationOverviewDTO> response = registrationService.getRegistrations(params, page)
 
         then:
-            result.size() == 2
-            result[0].id == 1
-            result[1].id == 2
+            response.size() == 1
+            response[0].status == RegistrationStatus.SUBMITTED
     }
 
-    def "getRegistrationByStatus with unavailable status should return an error message"(){
+    def "getRegistrations should return the registrations with the provided courseName"(){
         given:
-        def page = 1
-        def status = "NOT_EXISTING_STATUS"
+            def status = "all"
+            def search = "Machine"
+            def orderBy = "id"
+            def isAscending = true
+            RegistrationOverviewParams params = RegistrationOverviewParams.builder()
+                    .status(status)
+                    .search(search)
+                    .orderBy(orderBy)
+                    .isAscending(isAscending)
+                    .build()
+
+            def page = 1
+
+            Course course1 = Course.builder().id(1).name("machine learning & AI").build()
+            Course course2 = Course.builder().id(1).name("NodeJS").build()
+            def registration1 = Registration.builder().id(1).course(course1).build()
+            def registration2 = Registration.builder().id(2).course(course2).build()
+
+            Page<Registration> registrations = new PageImpl<>([registration1], PageRequest.of(page - 1, 8), 1)
+
+            registrationRepository.getOptionalRegistrationsWithoutStatus(_, _) >> {
+                args -> {
+                    def pageRequest = args[1] as PageRequest
+                    assert pageRequest.pageNumber == page - 1
+                    assert pageRequest.pageSize == 8
+                    assert pageRequest.sort == Sort.by(orderBy).ascending()
+
+                    def searchInput = args[0]
+                    assert searchInput.toLowerCase() == search.toLowerCase()
+
+                    registrations
+                }
+            }
+
+            registrationOverviewMapper.toDTO(registration1) >> RegistrationOverviewDTO.builder().id(1).courseName(course1.name).build()
+            registrationOverviewMapper.toDTO(registration2) >> RegistrationOverviewDTO.builder().id(2).courseName(course2.name).build()
 
         when:
-        registrationService.getRegistrationByStatus(page, status)
+        Page<RegistrationOverviewDTO> response = registrationService.getRegistrations(params, page)
 
         then:
-        def ex = thrown(RegistrationStatusNotFoundException)
-        ex.message == "Status not found"
+        response.size() == 1
+        response[0].courseName == course1.name
     }
+
+    def "getRegistrations should return the registrations with the provided userName"(){
+        given:
+            def status = "all"
+            def search = "Phan"
+            def orderBy = "id"
+            def isAscending = true
+            RegistrationOverviewParams params = RegistrationOverviewParams.builder()
+                    .status(status)
+                    .search(search)
+                    .orderBy(orderBy)
+                    .isAscending(isAscending)
+                    .build()
+
+            def page = 1
+
+            User user1 = User.builder().username("Phan Hoang").build()
+            User user2 = User.builder().username("SangTraan").build()
+            def registration1 = Registration.builder().id(1).user(user1).build()
+            def registration2 = Registration.builder().id(2).user(user2).build()
+
+            Page<Registration> registrations = new PageImpl<>([registration1], PageRequest.of(page - 1, 8), 1)
+
+            registrationRepository.getOptionalRegistrationsWithoutStatus(_, _) >> {
+                args -> {
+                    def pageRequest = args[1] as PageRequest
+                    assert pageRequest.pageNumber == page - 1
+                    assert pageRequest.pageSize == 8
+                    assert pageRequest.sort == Sort.by(orderBy).ascending()
+
+                    def searchInput = args[0]
+                    assert searchInput.toLowerCase() == search.toLowerCase()
+
+                    registrations
+                }
+            }
+
+            registrationOverviewMapper.toDTO(registration1) >> RegistrationOverviewDTO.builder().id(1).userName(user1.username).build()
+            registrationOverviewMapper.toDTO(registration2) >> RegistrationOverviewDTO.builder().id(2).userName(user2.username).build()
+
+        when:
+            Page<RegistrationOverviewDTO> response = registrationService.getRegistrations(params, page)
+
+        then:
+            response.size() == 1
+            response[0].userName == user1.username
+    }
+
+    def "getRegistrations should return all registrations if the searchInput is found in both course and user"(){
+        given:
+            def status = "all"
+            def search = "em"
+            def orderBy = "id"
+            def isAscending = true
+            RegistrationOverviewParams params = RegistrationOverviewParams.builder()
+                    .status(status)
+                    .search(search)
+                    .orderBy(orderBy)
+                    .isAscending(isAscending)
+                    .build()
+
+            def page = 1
+
+            User user = User.builder().username("Em Linh xinh gai").build()
+            Course course =  Course.builder().name("Em Duy dep gai").build()
+            def registration1 = Registration.builder().id(1).user(user).build()
+            def registration2 = Registration.builder().id(2).course(course).build()
+
+            Page<Registration> registrations = new PageImpl<>([registration1, registration2], PageRequest.of(page - 1, 8), 1)
+
+            registrationRepository.getOptionalRegistrationsWithoutStatus(_, _) >> {
+                args -> {
+                    def pageRequest = args[1] as PageRequest
+                    assert pageRequest.pageNumber == page - 1
+                    assert pageRequest.pageSize == 8
+                    assert pageRequest.sort == Sort.by(orderBy).ascending()
+
+                    def searchInput = args[0]
+                    assert searchInput == search
+
+                    registrations
+                }
+            }
+
+        registrationOverviewMapper.toDTO(registration1) >> RegistrationOverviewDTO.builder().id(1).userName(user.username).build()
+        registrationOverviewMapper.toDTO(registration2) >> RegistrationOverviewDTO.builder().id(2).courseName(course.name).build()
+
+        when:
+            Page<RegistrationOverviewDTO> response = registrationService.getRegistrations(params, page)
+
+        then:
+            response.size() == 2
+            response[0].userName == user.username
+            response[1].courseName == course.name
+    }
+
+
 
     def "should approve registration when status is submitted and no duplicate course exists"() {
         given:

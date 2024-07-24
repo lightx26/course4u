@@ -1,32 +1,31 @@
 package com.mgmtp.cfu.controller;
 
+import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewParams;
 import com.mgmtp.cfu.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import static com.mgmtp.cfu.util.RegistrationValidator.validateRegistrationOverviewParams;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/admin/registrations")
+@PreAuthorize("hasAnyRole({'ROLE_ADMIN','ROLE_ACCOUNTANT'})")
 public class AdminRegistrationController {
     private final RegistrationService registrationService;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole({'ROLE_ADMIN','ROLE_ACCOUNTANT'})")
     public ResponseEntity<?> getRegistrationForAdmin(
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "status", defaultValue = "all") String status)
+    public ResponseEntity<?> getRegistrationsForAdmin(
+        @ModelAttribute RegistrationOverviewParams params,
+        @RequestParam(value = "page", defaultValue = "1") int page
+    )
     {
-        if (page <= 0){
-            return ResponseEntity.badRequest().body("Page number must be greater than 0");
-        }
-
-        return (status.equalsIgnoreCase("all") || status.isEmpty()) ?
-                ResponseEntity.ok(registrationService.getAllRegistrations(page)):
-                ResponseEntity.ok(registrationService.getRegistrationByStatus(page, status));
+        validateRegistrationOverviewParams(params);
+        return ResponseEntity.ok(registrationService.getRegistrations(params, page));
     }
 }

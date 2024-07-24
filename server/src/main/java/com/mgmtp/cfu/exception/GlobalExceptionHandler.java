@@ -70,4 +70,26 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * Handle RegistrationStatusNotFoundException
+     * @param e: RegistrationStatusNotFoundException
+     * @return ResponseEntity
+     */
+
+    @ExceptionHandler(RegistrationFieldNotFoundException.class)
+    public ResponseEntity<?> handleRegistrationFieldNotFoundException(RegistrationFieldNotFoundException e){
+        return ResponseEntity.status(400).body(ErrorResponse.builder().message(e.getMessage()).status("400").build());
+    }
+
+    /**
+     * Handle RegistrationStatusNotFoundException
+     * @param e: RegistrationStatusNotFoundException
+     * @return ResponseEntity
+     */
+
+    @ExceptionHandler(RegistrationStatusNotFoundException.class)
+    public ResponseEntity<?> handleRegistrationStatusNotFoundException(RegistrationStatusNotFoundException e){
+        return ResponseEntity.status(400).body(ErrorResponse.builder().message(e.getMessage()).status("400").build());
+    }
+
 }

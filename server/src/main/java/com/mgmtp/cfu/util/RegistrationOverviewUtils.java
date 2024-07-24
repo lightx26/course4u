@@ -38,4 +38,6 @@ public class RegistrationOverviewUtils {
 
         return registrationRepository.getByUserId(userId, sort);
     }
+
+
 }

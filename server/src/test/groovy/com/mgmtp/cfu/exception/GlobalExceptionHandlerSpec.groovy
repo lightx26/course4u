@@ -117,5 +117,27 @@ class GlobalExceptionHandlerSpec extends Specification {
         response.statusCode.value() == 413
 
     }
+
+    def "should handle RegistrationStatusNotFoundException with 400 status"(){
+        given:
+            def exception = new RegistrationStatusNotFoundException("BadStatus")
+
+        when:
+            def response = globalExceptionHandler.handleRegistrationStatusNotFoundException(exception)
+
+        then:
+            response.statusCode.value() == 400
+    }
+
+    def "should handle RegistrationFieldNotFoundException with 400 status"(){
+        given:
+            def exception = new RegistrationFieldNotFoundException("BadOrderBy")
+
+        when:
+            def response = globalExceptionHandler.handleRegistrationFieldNotFoundException(exception)
+
+        then:
+            response.statusCode.value() == 400
+    }
 }
 

@@ -1,10 +1,12 @@
 package com.mgmtp.cfu.util
 
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO
+import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewParams
 import com.mgmtp.cfu.entity.Registration
 import com.mgmtp.cfu.enums.RegistrationStatus
 import com.mgmtp.cfu.repository.RegistrationRepository
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper
+import com.mgmtp.cfu.service.RegistrationService
 import spock.lang.Specification
 
 import java.time.LocalDate

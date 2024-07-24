@@ -5,6 +5,7 @@ import com.mgmtp.cfu.dto.PageResponse;
 import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO;
+import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewParams;
 import org.springframework.data.domain.Page;
 import com.mgmtp.cfu.dto.RegistrationRequest;
 
@@ -16,17 +17,14 @@ public interface RegistrationService {
 
     Boolean createRegistration(RegistrationRequest registrationRequest);
 
-    void calculateScore(Long id);
-
-    Page<RegistrationOverviewDTO> getAllRegistrations(int page);
-
-    Page<RegistrationOverviewDTO> getRegistrationByStatus(int page, String status);
-
     void approveRegistration(Long id);
 
     void declineRegistration(Long id , FeedbackRequest feedbackRequest);
     void closeRegistration(Long id, FeedbackRequest feedbackRequest);
     void deleteRegistration(Long id);
     boolean startLearningCourse(Long courseId);
+
+    // Admin Registration Services
+    Page<RegistrationOverviewDTO> getRegistrations(RegistrationOverviewParams params, int page);
     void discardRegistration(Long id);
 }

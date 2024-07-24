@@ -1,7 +1,9 @@
 package com.mgmtp.cfu.util
 
+import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewParams
+import com.mgmtp.cfu.exception.RegistrationFieldNotFoundException
+import com.mgmtp.cfu.exception.RegistrationStatusNotFoundException
 import spock.lang.Specification
-import com.mgmtp.cfu.util.RegistrationValidator
 
 class RegistrationValidatorSpec extends Specification {
 
@@ -24,5 +26,28 @@ class RegistrationValidatorSpec extends Specification {
         null           | true
         ""             | true
 
+    }
+
+    def "validateRegistrationOverviewParams should throw errors when status or orderBy is not found"(){
+        given:
+            def search = ""
+            def isAscending = true
+
+        when:
+            def params = RegistrationOverviewParams.builder()
+                    .status(status)
+                    .search(search)
+                    .orderBy(orderBy)
+                    .isAscending(isAscending)
+                    .build()
+            RegistrationValidator.validateRegistrationOverviewParams(params)
+
+        then:
+            thrown(expectedException)
+
+        where:
+            status            | orderBy           | expectedException
+            "NotFoundStatus"  | ""                | RegistrationStatusNotFoundException
+            ""                | "NotFoundOrderBy" | RegistrationFieldNotFoundException
     }
 }

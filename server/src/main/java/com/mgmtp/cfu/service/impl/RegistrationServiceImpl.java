@@ -7,7 +7,7 @@ import com.mgmtp.cfu.dto.coursedto.CourseRequest;
 import com.mgmtp.cfu.dto.coursedto.CourseResponse;
 import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO;
-import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO;
+import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewParams;
 import com.mgmtp.cfu.entity.Course;
 import com.mgmtp.cfu.enums.*;
 import com.mgmtp.cfu.exception.*;
@@ -23,17 +23,20 @@ import com.mgmtp.cfu.util.RegistrationValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.*;
+
+import java.util.List;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 
 import static com.mgmtp.cfu.util.AuthUtils.getCurrentUser;
 import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getRegistrationOverviewDTOS;
@@ -171,20 +174,6 @@ public class RegistrationServiceImpl implements RegistrationService {
         emailService.sendMessage(registration.getUser().getEmail(), "Registration declined!!", "decline_registration_mail_template.xml", mailContentUnits);
     }
 
-    @Override
-    public Page<RegistrationOverviewDTO> getAllRegistrations(int page) {
-        List<RegistrationStatus> excludedStatuses = List.of(RegistrationStatus.DRAFT);
-        PageRequest pageRequest = PageRequest.of(page - 1, 8);
-        Page<Registration> registrations = registrationRepository.findAllExceptStatus(excludedStatuses, pageRequest);
-
-        List<RegistrationOverviewDTO> modifiedResponseContent = registrations
-                .getContent()
-                .stream()
-                .map(registrationOverviewMapper::toDTO)
-                .toList();
-
-        return new PageImpl<>(modifiedResponseContent, pageRequest, registrations.getTotalElements());
-    }
 
     @Transactional
     public Boolean createRegistration(RegistrationRequest registrationRequest) {
@@ -213,23 +202,35 @@ public class RegistrationServiceImpl implements RegistrationService {
         return true;
     }
 
+    // Admin Registration Services
+    /**
+     * Get optional registrations by configuration of Admin
+     *
+     * @param params: parameters for searching, filtering and sorting
+     * @param page: page number
+     * @return Page<RegistrationOverviewDTO>
+     */
     @Override
-    public Page<RegistrationOverviewDTO> getRegistrationByStatus(int page, String status) {
-        try{
-            PageRequest pageRequest = PageRequest.of(page - 1, 8);
-            RegistrationStatus registrationStatus = RegistrationStatus.valueOf(status.toUpperCase());
-            Page<Registration> registrations = registrationRepository.findAllByStatus(registrationStatus, pageRequest);
+    public Page<RegistrationOverviewDTO> getRegistrations(RegistrationOverviewParams params, int page) {
+        String status = params.getStatus();
+        String search = params.getSearch();
+        String orderBy = (params.getOrderBy().isEmpty()) ? "id" : params.getOrderBy();
+        Boolean isAscending = params.getIsAscending();
 
-            List<RegistrationOverviewDTO> modifiedResponseContent = registrations
-                    .getContent()
-                    .stream()
-                    .map(registrationOverviewMapper::toDTO)
-                    .toList();
+        Page<Registration> registrations;
+        PageRequest pageRequest = (
+                isAscending
+                ? PageRequest.of(page - 1, 8, Sort.by(orderBy).ascending())
+                : PageRequest.of(page - 1, 8, Sort.by(orderBy).descending())
+        );
 
-            return new PageImpl<>(modifiedResponseContent, pageRequest, registrations.getTotalElements());
-        } catch (IllegalArgumentException e) {
-            throw new RegistrationStatusNotFoundException("Status not found");
+        if (status.isEmpty() || status.equalsIgnoreCase("all")) {
+            registrations = registrationRepository.getOptionalRegistrationsWithoutStatus(search, pageRequest);
+        } else {
+            registrations = registrationRepository.getOptionalRegistrationsWithStatus(status, search, pageRequest);
         }
+
+        return registrations.map(registrationOverviewMapper::toDTO);
     }
 
 
