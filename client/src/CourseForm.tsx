@@ -134,7 +134,10 @@ const CourseForm: React.FC = () => {
         ...ogData,
       });
     } catch (error) {
-      console.error("Error fetching Open Graph data:", error);
+      toast.error("Error fetching Open Graph data: ", {
+        style: { color: "red" },
+        description: "Failed to fetch Open Graph data from the Open Graph"
+      });
     }
   };
 
