@@ -16,7 +16,7 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @GetMapping
-    public ResponseEntity<List<NotificationUserDTO>> getAllNotificationByCurrUser(@RequestParam LocalDateTime timestamp,
+    public ResponseEntity<List<NotificationUserDTO>> getAllNotificationByCurrUser(@RequestParam(required = false) LocalDateTime timestamp,
                                                                                   @RequestParam(defaultValue = "25") int batchSize) {
         if (timestamp == null) {
             timestamp = LocalDateTime.now();
