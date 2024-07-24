@@ -291,7 +291,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         if (!RegistrationStatusUtil.isDiscardableStatus(registration.getStatus())) {
             throw new BadRequestRuntimeException("Registration must be in correct status to be discarded.");
         }
-
+        registration.setLastUpdated(LocalDateTime.now());
         registration.setStatus(RegistrationStatus.DISCARDED);
         registrationRepository.save(registration);
     }
