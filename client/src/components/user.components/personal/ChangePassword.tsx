@@ -72,6 +72,7 @@ export default function ChangePassword() {
                                     <FormLabel>Old password</FormLabel>
                                     <FormControl>
                                         <PasswordInput className="w-full" placeholder="Enter your old password" {...field}
+                                            name='old-password'
                                         />
                                     </FormControl>
                                     <FormMessage className="text-[12px]" />
@@ -87,7 +88,7 @@ export default function ChangePassword() {
                                 <FormItem>
                                     <FormLabel>New password</FormLabel>
                                     <FormControl>
-                                        <PasswordInput placeholder="Enter your new password" {...field} />
+                                        <PasswordInput placeholder="Enter your new password" {...field} name='new-password' />
                                     </FormControl>
                                     <FormMessage className="text-[12px]" />
                                 </FormItem>
@@ -102,7 +103,7 @@ export default function ChangePassword() {
                                 <FormItem>
                                     <FormLabel>Confirm password</FormLabel>
                                     <FormControl>
-                                        <PasswordInput placeholder="Confirm your new password" {...field} />
+                                        <PasswordInput placeholder="Confirm your new password" {...field} name='confirm-password' />
                                     </FormControl>
                                     <FormMessage className="text-[12px]" />
                                 </FormItem>

@@ -38,8 +38,8 @@ public class UserServiceImpl implements IUserService {
 
         User user = AuthUtils.getCurrentUser();
 
-        user.setFullName(Optional.ofNullable(userDto.getFullName()).orElse(""));
-        user.setTelephone(Optional.ofNullable(userDto.getTelephone()).orElse(""));
+        user.setFullName(Optional.ofNullable(userDto.getFullName()).orElse("").trim());
+        user.setTelephone(Optional.ofNullable(userDto.getTelephone()).orElse("").trim());
         user.setDateOfBirth(Optional.ofNullable(userDto.getDateOfBirth()).orElse(null));
         user.setGender(Optional.ofNullable(userDto.getGender()).orElse(null));
 
