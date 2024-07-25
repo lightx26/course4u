@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { getAllNotificationsByCurrUser, markAllNotificationsAsRead } from "../apiService/Notification.service";
-import { CircleAlert, CircleCheck, CircleMinus, CircleX } from "lucide-react";
+import { CircleAlert, CircleCheck, CircleX, TriangleAlert } from "lucide-react";
+import { timeAgo } from "../utils/convertTime";
 
 type Notification = {
     id: number;
@@ -28,11 +29,13 @@ export function Notification({ children }: { children: React.ReactNode }) {
         await markAllNotificationsAsRead();
         setNotifications((prev) =>
             prev.map((notification) => ({ ...notification, seen: true })))
+        setBuffer((prev) =>
+            prev.map((notification) => ({ ...notification, seen: true })))
     }
 
     // Fetch notifications from server to buffer
     const fetchNotifications = async () => {
-        let res: Notification[] = [];
+        let res: Notification[];
 
         // If there are no notifications in the buffer, fetch the first 10 notifications from server
         if (notifications.length === 0) {
@@ -51,14 +54,18 @@ export function Notification({ children }: { children: React.ReactNode }) {
         }
 
         else {
-            console.log("No more notifications");
             setIsLast(true);
         }
     }
 
-
     // Load notifications from buffer to notifications
     const loadNotifications = async (buffer: Notification[], loadNum: number) => {
+
+        if (loadNum === firstLoadNum) {
+            setNotifications(buffer.slice(0, loadNum));
+            return;
+        }
+
         setIsLoading(true);
         setTimeout(() => {
             setNotifications(prev => [...prev, ...buffer.slice(prev.length, prev.length + loadNum)]);
@@ -95,22 +102,18 @@ export function Notification({ children }: { children: React.ReactNode }) {
             return;
         }
 
-        else if (notifications.length === 0) {
+        else if (isOpen && notifications.length === 0) {
             loadNotifications(buffer, firstLoadNum);
         }
 
         const element = popoverContentRef.current; // Get PopoverContent element
 
-        console.log(element);
-
         if (!isLast && element) {
-            console.log("Add event listener");
             element.addEventListener("scroll", handleScroll);
         }
 
         return () => {
             if (element) {
-                console.log("Remove event listener");
                 element.removeEventListener("scroll", handleScroll);
             }
         };
@@ -121,21 +124,20 @@ export function Notification({ children }: { children: React.ReactNode }) {
             <PopoverTrigger asChild>{children}</PopoverTrigger>
             <PopoverContent id="notification-popover"
                 ref={popoverContentRef} // Attach ref
-                className='w-[400px] max-h-[400px] overflow-y-auto'
+                className='w-[420px] max-h-[400px] overflow-y-auto p-0'
                 onOpenAutoFocus={(e) => e.preventDefault()}
             >
-                <div className='flex items-center justify-between'>
+                <div className='flex items-center justify-between p-3'>
                     <h3 className='text-lg font-semibold'>Notifications</h3>
                     <Button variant='link' onClick={markAllAsRead}>Mark all as read</Button>
                 </div>
-                <div className='mt-4'>
-
+                <div className='mt-0'>
                     {notifications.map((notification) => (
                         <div
                             key={notification.id}
-                            className='flex items-center gap-2 h-[50px]'
+                            className={`flex items-start gap-3 py-2 hover:bg-gray-200 ${!notification.seen ? ' bg-gray-100' : ''}`}
                         >
-                            <div>
+                            <div className="ml-2 mt-2">
                                 {notification.type === "SUCCESS" && (
                                     <CircleCheck
                                         width={30}
@@ -151,10 +153,10 @@ export function Notification({ children }: { children: React.ReactNode }) {
                                     />
                                 )}
                                 {notification.type === "WARNING" && (
-                                    <CircleMinus
+                                    <TriangleAlert
                                         width={30}
                                         height={30}
-                                        color='yellow'
+                                        color='orange'
                                     />
                                 )}
                                 {notification.type === "INFORMATION" && (
@@ -165,31 +167,25 @@ export function Notification({ children }: { children: React.ReactNode }) {
                                     />
                                 )}
                             </div>
-                            <div className='relative'>
-                                <p className={`text-sm line-clamp-2 w-[75%] ${!notification.seen ? 'font-bold' : ''}`}
+                            <div className='flex flex-col gap-1'>
+                                <div className={'text-sm line-clamp-2 mt-1 mr-1' + (notification.seen ? ' text-gray-800' : ' text-black font-medium')}
                                     title={notification.content}>
                                     {notification.content}
-                                </p>
-                                <p className='absolute bottom-0 text-xs w-[20%] text-gray-300 right-1'>
-                                    {new Date(notification.createdDate).toLocaleString('en-US', {
-                                        month: '2-digit',
-                                        day: '2-digit',
-                                        year: 'numeric',
-                                        hour: '2-digit',
-                                        minute: '2-digit',
-                                    })}
-                                </p>
+                                </div>
+                                <div className='text-xs text-right mr-2 text-gray-400'>
+                                    {timeAgo(notification.createdDate)}
+                                </div>
                             </div>
                         </div>
                     ))
                     }
-                    {isLoading && notifications.length && (
-                        <div className='text-center text-gray-300 mt-2'>
-                            Loading more notifications...
+                    {isLoading && notifications.length > 0 && (
+                        <div className='text-center text-gray-300 mt-2 py-2'>
+                            Loading...
                         </div>
                     )}
                     {isLast && (
-                        <div className='text-center text-gray-300 mt-2'>
+                        <div className='text-center text-gray-400 mt-2 pb-2'>
                             You have reached the end of the notifications.
                         </div>
                     )}
