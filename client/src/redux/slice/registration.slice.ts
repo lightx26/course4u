@@ -64,5 +64,7 @@ export const {
   handleChangeCurrentPage,
   saveDataListRegistration,
 } = registrationSlice.actions;
+
+
 // Export the reducer
 export default registrationSlice.reducer;

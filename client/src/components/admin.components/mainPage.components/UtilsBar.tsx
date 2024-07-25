@@ -1,15 +1,58 @@
-import { useState } from "react";
 import SearchGlass from "../../../assets/images/admin.images/SearchGlass.svg";
-import Select from "../Select";
+import { useState } from "react";
+import { Select } from "antd";
 
 import registrationStatusList from "../../../utils/registrationStatusList";
-import orderByList from "../../../utils/orderByList.ts";
+import registrationOrderByList from "../../../utils/orderByList.ts";
+
+import { handleOptionsChange } from "../../../redux/slice/adminRegistration.slice.ts";
+import { useDispatch, useSelector } from "react-redux";
+import {RootState} from "../../../redux/store/store.ts";
+import {RegistrationParamsType} from "../../../redux/slice/adminRegistration.slice.ts";
+import {useState} from "react";
 
 import { registrationStatusListForAccountant } from "../../../utils/registrationStatusList";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store/store.ts";
 
 const UtilsBar = () => {
+    const dispatch = useDispatch();
+
+    const options: RegistrationParamsType = useSelector(
+        (state: RootState) => state.adminRegistration.options
+    );
+
+    const [searchContent, setSearchContent] = useState(options.search);
+    const status: string = options.status;
+    const sortOrder: string = options.orderBy.toLowerCase() == "id"
+        ? "Created Date" : options.orderBy;
+
+    const statusList = registrationStatusList.map(status => ({
+        label: status.content,
+        value: status.value
+    }));
+    const orderByList = registrationOrderByList.map(orderBy => ({
+        label: orderBy.content,
+        value: orderBy.value
+    }));
+
+    const statusValueMapping: string[] = registrationStatusList.map((status) => status.content);
+    const orderByValueMapping: string[] = registrationOrderByList.map(orderBy => orderBy.content);
+
+    const handleStatusChange = (newStatusId: string): void => {
+        const newOptions: RegistrationParamsType = {...options, status: statusValueMapping[parseInt(newStatusId)]};
+        dispatch(handleOptionsChange(newOptions));
+    }
+
+    const handleOrderChange = (newOrderById: string): void => {
+        const newOptions: RegistrationParamsType = {...options, orderBy: orderByValueMapping[parseInt(newOrderById)]};
+        dispatch(handleOptionsChange(newOptions));
+    }
+
+    const handleSearchConfirm = (newSearchContent: string): void => {
+        const newOptions: RegistrationParamsType = {...options, search: newSearchContent};
+        dispatch(handleOptionsChange(newOptions));
+    }
   const userRole = useSelector((state: RootState) => state.user.user.role);
   const [searchContent, setSearchContent] = useState("");
   const [sortStatusId, setSortStatusId] = useState(

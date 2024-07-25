@@ -7,6 +7,7 @@ import filterItemCheckboxSlice from "../slice/filterItemCheckbox.slice";
 import courseReducer from "../slice/course.slice";
 import categoryReducer from "../slice/category.slice";
 import registrationReducer from "../slice/registration.slice";
+import adminPageRegistrationReducer from "../slice/adminRegistration.slice.ts";
 const sagaMiddleware = createSagaMiddleware();
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     courses: courseReducer,
     category: categoryReducer,
     registration: registrationReducer,
+    adminRegistration: adminPageRegistrationReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(sagaMiddleware),

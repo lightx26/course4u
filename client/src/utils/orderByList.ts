@@ -1,8 +1,17 @@
-const orderByList = [
+type orderByType = {
+    value: string,
+    content: string,
+}
+
+const registrationOrderByList: orderByType[] = [
+    {
+        value: "0",
+        content: "Created Date",
+    },
     {
         value: "1",
-        content: "Last modified",
-    },
+        content: "Last modified"
+    }
 ]
 
-export default orderByList;
+export default registrationOrderByList
