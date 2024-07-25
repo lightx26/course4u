@@ -2,7 +2,10 @@ package com.mgmtp.cfu.controller
 
 import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest
 import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO
+import com.mgmtp.cfu.dto.registrationdto.RegistrationEnrollDTO
 import com.mgmtp.cfu.enums.RegistrationStatus
+import com.mgmtp.cfu.exception.BadRequestRuntimeException
+import com.mgmtp.cfu.exception.CourseNotFoundException
 import com.mgmtp.cfu.exception.RegistrationNotFoundException
 import com.mgmtp.cfu.exception.UnknownErrorException
 import com.mgmtp.cfu.service.RegistrationService
@@ -156,5 +159,43 @@ class RegistrationControllerSpec extends Specification {
         then:
             def ex = thrown(RegistrationNotFoundException)
             ex.message == "Registration not found"
+    }
+    def "createRegistrationFromExistingCourses should return 200 OK when inputs are valid"() {
+        given:
+        Long courseId = 1L
+        RegistrationEnrollDTO registrationEnrollDTO = new RegistrationEnrollDTO(duration: 10, durationUnit: "DAY")
+
+        when:
+        ResponseEntity<?> response = registrationController.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO)
+
+        then:
+        1 * registrationService.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO)
+        response.statusCode == HttpStatus.OK
+    }
+
+    def "createRegistrationFromExistingCourses should return 400 Bad Request when BadRequestRuntimeException is thrown"() {
+        given:
+        Long courseId = 1L
+        RegistrationEnrollDTO registrationEnrollDTO = new RegistrationEnrollDTO(duration: null, durationUnit: null)
+        registrationService.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO) >> { throw new BadRequestRuntimeException("Duration and Duration Unit must not be null") }
+
+        when:
+        ResponseEntity<?> response = registrationController.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO)
+
+        then:
+        thrown(BadRequestRuntimeException)
+    }
+
+    def "createRegistrationFromExistingCourses should return 404 Not Found when CourseNotFoundException is thrown"() {
+        given:
+        Long courseId = 1L
+        RegistrationEnrollDTO registrationEnrollDTO = new RegistrationEnrollDTO(duration: 10, durationUnit: "DAY")
+        registrationService.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO) >> { throw new CourseNotFoundException("Course not found") }
+
+        when:
+        ResponseEntity<?> response = registrationController.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO)
+
+        then:
+        thrown(CourseNotFoundException)
     }
 }

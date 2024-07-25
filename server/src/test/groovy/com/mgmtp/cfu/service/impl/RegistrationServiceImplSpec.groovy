@@ -3,6 +3,7 @@ package com.mgmtp.cfu.service.impl
 import com.mgmtp.cfu.dto.coursedto.CourseResponse
 import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest
 import com.mgmtp.cfu.dto.coursedto.CourseRegistrationDTO
+import com.mgmtp.cfu.dto.registrationdto.RegistrationEnrollDTO
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewParams
 import com.mgmtp.cfu.exception.BadRequestRuntimeException
@@ -14,6 +15,7 @@ import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO
 import com.mgmtp.cfu.enums.CategoryStatus
 import com.mgmtp.cfu.entity.Category
 import com.mgmtp.cfu.enums.NotificationType
+import com.mgmtp.cfu.exception.CourseNotFoundException
 import com.mgmtp.cfu.exception.DuplicateCourseException
 import com.mgmtp.cfu.exception.ForbiddenException
 import com.mgmtp.cfu.exception.MapperNotFoundException
@@ -933,5 +935,53 @@ class RegistrationServiceImplSpec extends Specification {
 
         then:
             thrown(BadRequestRuntimeException)
+    }
+    def "createRegistrationFromExistingCourses should throw BadRequestRuntimeException when duration or durationUnit is null"() {
+        given:
+        Long courseId = 1L
+        RegistrationEnrollDTO registrationEnrollDTO = new RegistrationEnrollDTO(duration: null, durationUnit: null)
+
+        when:
+        registrationService.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO)
+
+        then:
+        def e = thrown(BadRequestRuntimeException)
+        e.message == "Duration and Duration Unit must not be null"
+    }
+
+    def "createRegistrationFromExistingCourses should throw CourseNotFoundException when course is not found"() {
+        given:
+        Long courseId = 1L
+        RegistrationEnrollDTO registrationEnrollDTO = new RegistrationEnrollDTO(duration: 10, durationUnit: "DAY")
+        courseRepository.findById(courseId) >> Optional.empty()
+
+        when:
+        registrationService.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO)
+
+        then:
+        def e = thrown(CourseNotFoundException)
+        e.message == "Course not found"
+    }
+
+    def "createRegistrationFromExistingCourses should create and save a new registration when inputs are valid"() {
+        given:
+        Long courseId = 1L
+        RegistrationEnrollDTO registrationEnrollDTO = new RegistrationEnrollDTO(duration: 10, durationUnit: "DAY")
+        Course course = new Course(id: courseId)
+        courseRepository.findById(courseId) >> Optional.of(course)
+
+        when:
+        registrationService.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO)
+
+        then:
+        1 * registrationRepository.save(_ as Registration) >> { Registration registration ->
+            assert registration.course == course
+            assert registration.status == RegistrationStatus.SUBMITTED
+            assert registration.registerDate == LocalDate.now()
+            assert registration.duration == 10
+            assert registration.durationUnit == DurationUnit.DAY
+            assert registration.lastUpdated != null
+            assert registration.user != null
+        }
     }
 }

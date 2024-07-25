@@ -28,7 +28,6 @@ public interface RegistrationService {
     void deleteRegistration(Long id);
     boolean startLearningCourse(Long courseId);
     void discardRegistration(Long id);
-    void createRegistrationFromExistingCourses(RegistrationEnrollDTO registrationEnrollDTO);
 
     // Admin Registration Services
     Page<RegistrationOverviewDTO> getRegistrations(RegistrationOverviewParams params, int page);

@@ -343,23 +343,6 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     @Override
-    public void createRegistrationFromExistingCourses(Long courseId, RegistrationEnrollDTO registrationEnrollDTO) {
-        var course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new CourseNotFoundException("Course not found"));
-
-        Registration registration = Registration.builder()
-                .course(course)
-                .status(RegistrationStatus.SUBMITTED)
-                .registerDate(LocalDate.now())
-                .duration(registrationEnrollDTO.getDuration().intValue())
-                .durationUnit(registrationEnrollDTO.getDurationUnit())
-                .lastUpdated(LocalDateTime.now())
-                .user(getCurrentUser())
-                .build();
-        registrationRepository.save(registration);
-    }
-
-    @Override
     public boolean startLearningCourse(Long registrationId) {
         var userId = getCurrentUser().getId();
         if (!registrationRepository.existsByIdAndUserId(registrationId, userId))
@@ -379,5 +362,26 @@ public class RegistrationServiceImpl implements RegistrationService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void createRegistrationFromExistingCourses(Long courseId, RegistrationEnrollDTO registrationEnrollDTO) {
+        if (registrationEnrollDTO.getDuration() == null || registrationEnrollDTO.getDurationUnit() == null) {
+            throw new BadRequestRuntimeException("Duration and Duration Unit must not be null");
+        }
+
+        var course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new CourseNotFoundException("Course not found"));
+
+        Registration registration = Registration.builder()
+                .course(course)
+                .status(RegistrationStatus.SUBMITTED)
+                .registerDate(LocalDate.now())
+                .duration(registrationEnrollDTO.getDuration().intValue())
+                .durationUnit(registrationEnrollDTO.getDurationUnit())
+                .lastUpdated(LocalDateTime.now())
+                .user(getCurrentUser())
+                .build();
+        registrationRepository.save(registration);
     }
 }
