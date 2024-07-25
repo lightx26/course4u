@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -92,7 +93,10 @@ public class UserServiceImpl implements IUserService {
 
         // Populate the lists with data from each ScorePerYearDTO
         scoresPanel.forEach(scorePerYearDTO -> {
-            years.add(scorePerYearDTO.year()+"");
+            var year=scorePerYearDTO.year();
+            if(year> LocalDate.now().getYear())
+                return;
+            years.add(year+"");
             scores.add(scorePerYearDTO.score());
             days.add(scorePerYearDTO.days());
         });

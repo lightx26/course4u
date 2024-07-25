@@ -52,12 +52,14 @@ public class ScoreQueryManager {
         try {
             // Define the JPQL query to select year, total days, and total score per year
             var jpql = "SELECT new com.mgmtp.cfu.dto.userdto.ScorePerYearDTO(" +
-                    "EXTRACT(YEAR FROM r.endDate), " +
-                    "COALESCE(SUM(FUNCTION('DATEDIFF', day, r.startDate, r.endDate)), 0), " +
+                    "YEAR(r.endDate), " +
+                    "COALESCE(SUM(DATEDIFF(day,r.startDate, r.endDate)), 0), " +
                     "COALESCE(SUM(r.score), 0)) " +
-                    "FROM Registration r join User u on r.user.id = u.id " +
-                    "WHERE u.id = :userId and r.status in :acceptStatus " +
-                    "group by EXTRACT(YEAR FROM r.endDate)";
+                    "FROM Registration r " +
+                    "JOIN User u ON r.user.id = u.id " +
+                    "WHERE u.id = :userId AND r.status IN :acceptStatus AND r.endDate IS NOT NULL AND r.score IS NOT NULL " +
+                    "GROUP BY YEAR(r.endDate)" +
+                    " order by YEAR(r.endDate)";
 
             // Create a TypedQuery with the specified JPQL and result class
             TypedQuery<ScorePerYearDTO> query = entityManager.createQuery(jpql, ScorePerYearDTO.class);
@@ -70,7 +72,7 @@ public class ScoreQueryManager {
             return query.getResultList();
         }catch (Exception e){
             e.printStackTrace();
-            return null;
+            return new ArrayList<>();
         }
     }
 
