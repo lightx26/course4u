@@ -9,7 +9,7 @@ import {
   updateSort,
 } from "../../redux/slice/course.slice";
 import { Notification } from "../notification";
-import { BarChart3Icon, BellIcon, SearchIcon, Weight } from "lucide-react";
+import { BarChart3Icon, BellIcon, SearchIcon } from "lucide-react";
 import { deleteAllFilterItem } from "../../redux/slice/searchFilterItem.slice";
 import { useRegistrationModal } from "../../hooks/use-registration-modal";
 import AvatarDropdown from "./AvatarDropdown";
