@@ -1,6 +1,7 @@
 package com.mgmtp.cfu.controller;
 
 import com.mgmtp.cfu.dto.notificationdto.NotificationUserDTO;
+import com.mgmtp.cfu.dto.notificationdto.NotificationsResponse;
 import com.mgmtp.cfu.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +17,16 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @GetMapping
-    public ResponseEntity<List<NotificationUserDTO>> getAllNotificationByCurrUser(@RequestParam(required = false) LocalDateTime timestamp,
-                                                                                  @RequestParam(defaultValue = "25") int batchSize) {
+    public ResponseEntity<?> getAllNotificationByCurrUser(@RequestParam(required = false) LocalDateTime timestamp,
+                                                                              @RequestParam(defaultValue = "25") int batchSize) {
         if (timestamp == null) {
             timestamp = LocalDateTime.now();
         }
-        return ResponseEntity.ok(notificationService.getAllNotificationByCurrUser(timestamp, batchSize));
+        NotificationsResponse response = new NotificationsResponse();
+        response.setContent(notificationService.getAllNotificationByCurrUser(timestamp, batchSize));
+        response.setTotalUnread(notificationService.countUnreadNotification());
+
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping

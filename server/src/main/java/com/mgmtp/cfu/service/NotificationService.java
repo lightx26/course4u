@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface NotificationService {
     List<NotificationUserDTO> getAllNotificationByCurrUser(LocalDateTime timestamp, int size);
+    Integer countUnreadNotification();
     void sendNotificationToUser(User user, NotificationType type, String message);
     void markAllAsRead();
     void markAsReadById(Long id);

@@ -16,6 +16,8 @@ public interface NotificationRepository extends JpaRepository<Notification,Long>
     @Query("SELECT n FROM Notification n WHERE n.user.id = ?1 AND n.createdDate < ?2")
     List<Notification> getBatchByUserId(Long userId, LocalDateTime timestamp, Pageable pageable);
 
+    Integer countByUserIdAndSeen(Long userId, boolean seen);
+
     @Transactional
     @Modifying
     @Query("UPDATE Notification n SET n.seen = true WHERE n.user.id = ?1")

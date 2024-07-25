@@ -39,6 +39,12 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    public Integer countUnreadNotification() {
+        var user = AuthUtils.getCurrentUser();
+        return notificationRepository.countByUserIdAndSeen(user.getId(), false);
+    }
+
+    @Override
     public void sendNotificationToUser(User user, NotificationType type, String message) {
         Notification notification = NotificationUtil.createNotification(type, user, message);
         notificationRepository.save(notification);

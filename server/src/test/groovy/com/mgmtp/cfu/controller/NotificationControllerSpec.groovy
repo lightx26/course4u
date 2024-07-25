@@ -1,6 +1,7 @@
 package com.mgmtp.cfu.controller
 
 import com.mgmtp.cfu.dto.notificationdto.NotificationUserDTO
+import com.mgmtp.cfu.dto.notificationdto.NotificationsResponse
 import com.mgmtp.cfu.service.NotificationService
 import spock.lang.Specification
 import spock.lang.Subject
@@ -18,11 +19,14 @@ class NotificationControllerSpec extends Specification {
             def notifications = [new NotificationUserDTO(id: 1L,content: "content",seen:false)]
             def timestamp = LocalDateTime.of(2024, 1, 1, 0, 0, 0)
             notificationService.getAllNotificationByCurrUser(timestamp, 10) >> notifications
+            notificationService.countUnreadNotification() >> 1
         when:
             def result = notificationController.getAllNotificationByCurrUser(timestamp, 10)
         then:
             1 * notificationService.getAllNotificationByCurrUser(timestamp, 10) >> notifications
             result.statusCode.value() == 200
+            (result.body as NotificationsResponse).content == notifications
+            (result.body as NotificationsResponse).totalUnread == 1
     }
 
     def "should return ok status when mark all notification as seen"() {

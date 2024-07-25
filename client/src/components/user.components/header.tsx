@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import imageLogo from "../../assets/images/logo_c4u.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store/store";
@@ -9,7 +9,7 @@ import {
   updateSort,
 } from "../../redux/slice/course.slice";
 import { Notification } from "../notification";
-import { BarChart3Icon, BellIcon, SearchIcon } from "lucide-react";
+import { BarChart3Icon, BellIcon, SearchIcon, Weight } from "lucide-react";
 import { deleteAllFilterItem } from "../../redux/slice/searchFilterItem.slice";
 import { useRegistrationModal } from "../../hooks/use-registration-modal";
 import AvatarDropdown from "./AvatarDropdown";
@@ -21,6 +21,8 @@ const HeaderHomepage: React.FC = () => {
   );
   const { open } = useRegistrationModal((state) => state);
 
+  const [countUnread, setCountUnread] = useState(0);
+
   const userData = useSelector((state: RootState) => state.user.user);
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
@@ -30,8 +32,8 @@ const HeaderHomepage: React.FC = () => {
       userData.role.toUpperCase() == "ADMIN"
         ? "/admin"
         : userData.role.toUpperCase() == "ACCOUNTANT"
-        ? "/accountant"
-        : "/";
+          ? "/accountant"
+          : "/";
     const homePathWithBasePath = (basePath + homepagePath).replace("//", "/");
     if (
       window.location.pathname.replace(/\/+$/, "") ===
@@ -53,7 +55,7 @@ const HeaderHomepage: React.FC = () => {
     } else if (
       userData.role.toUpperCase() == "ADMIN" &&
       window.location.pathname !=
-        (basePath + "/admin/courses").replace("//", "/")
+      (basePath + "/admin/courses").replace("//", "/")
     ) {
       goToAdminCoursesPage();
     }
@@ -160,7 +162,7 @@ const HeaderHomepage: React.FC = () => {
                   />
                 </div>
               )}
-              <Notification>
+              <Notification setCountUnread={setCountUnread}>
                 <div
                   style={{
                     position: "relative",
@@ -168,6 +170,29 @@ const HeaderHomepage: React.FC = () => {
                   title="Notification"
                 >
                   <BellIcon className="cursor-pointer hover:text-purple" />
+                  <div>
+                    {countUnread > 0 && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          width: "20px",
+                          height: "20px",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          fontWeight: "semi-bold",
+                          fontSize: "12px",
+                          top: "-8px",
+                          right: "-8px",
+                          backgroundColor: 'rgb(128,0,128)',
+                          color: "white",
+                          borderRadius: "50%",
+                        }}
+                      >
+                        {countUnread}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </Notification>
             </div>

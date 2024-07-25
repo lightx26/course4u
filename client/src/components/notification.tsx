@@ -12,7 +12,14 @@ type Notification = {
     type: string;
     seen: boolean;
 };
-export function Notification({ children }: { children: React.ReactNode }) {
+
+type IProps = {
+    children: React.ReactNode;
+    setCountUnread: (count: number) => void;
+}
+
+export function Notification(props: IProps) {
+    const { children, setCountUnread } = props;
     const [isLoading, setIsLoading] = useState(false);
     const [notifications, setNotifications] = useState<Notification[] | []>([]);
     const [buffer, setBuffer] = useState<Notification[] | []>([]);
@@ -31,15 +38,18 @@ export function Notification({ children }: { children: React.ReactNode }) {
             prev.map((notification) => ({ ...notification, seen: true })))
         setBuffer((prev) =>
             prev.map((notification) => ({ ...notification, seen: true })))
+        setCountUnread(0);
     }
 
     // Fetch notifications from server to buffer
     const fetchNotifications = async () => {
-        let res: Notification[];
+        let res: any;
 
         // If there are no notifications in the buffer, fetch the first 10 notifications from server
         if (notifications.length === 0) {
             res = await getAllNotificationsByCurrUser(defaultBatchSize);
+            console.log(res)
+            setCountUnread(res.totalUnread);
         }
 
         // If there are notifications in the buffer, fetch the next 10 notifications from server, 
@@ -47,10 +57,11 @@ export function Notification({ children }: { children: React.ReactNode }) {
         else {
             const lastNotification = buffer[buffer.length - 1];
             res = await getAllNotificationsByCurrUser(defaultBatchSize, new Date(lastNotification.createdDate));
+            setCountUnread(res.totalUnread);
         }
 
-        if (res.length > 0) {
-            setBuffer([...buffer, ...res])
+        if (res.content.length > 0) {
+            setBuffer([...buffer, ...res.content])
         }
 
         else {
@@ -184,7 +195,7 @@ export function Notification({ children }: { children: React.ReactNode }) {
                             Loading...
                         </div>
                     )}
-                    {isLast && (
+                    {isLast && (notifications.length === buffer.length) && (
                         <div className='text-center text-gray-400 mt-2 pb-2'>
                             You have reached the end of the notifications.
                         </div>

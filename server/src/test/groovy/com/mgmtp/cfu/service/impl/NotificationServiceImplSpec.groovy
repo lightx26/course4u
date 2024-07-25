@@ -116,4 +116,15 @@ class NotificationServiceImplSpec extends Specification {
         and:
         notification.seen == true
     }
+
+    def "countUnreadNotification should return the number of unread notifications"() {
+        given:
+        notificationRepository.countByUserIdAndSeen(currentUser.id, false) >> 5
+
+        when:
+        def result = notificationService.countUnreadNotification()
+
+        then:
+        result == 5
+    }
 }
