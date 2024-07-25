@@ -228,7 +228,8 @@ public class RegistrationServiceImpl implements RegistrationService {
         if (status.isEmpty() || status.equalsIgnoreCase("all")) {
             registrations = registrationRepository.getOptionalRegistrationsWithoutStatus(search, pageRequest);
         } else {
-            registrations = registrationRepository.getOptionalRegistrationsWithStatus(status, search, pageRequest);
+            RegistrationStatus mappedStatus = RegistrationStatus.valueOf(status.toUpperCase());
+            registrations = registrationRepository.getOptionalRegistrationsWithStatus(mappedStatus, search, pageRequest);
         }
 
         return registrations.map(registrationOverviewMapper::toDTO);

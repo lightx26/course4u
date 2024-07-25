@@ -27,7 +27,7 @@ public class RegistrationValidator {
 
         try{
             if (!status.isEmpty() && !status.equalsIgnoreCase("all")){
-                RegistrationStatus.valueOf(status);
+                RegistrationStatus.valueOf(status.toUpperCase());
             }
         }
         catch (IllegalArgumentException err){

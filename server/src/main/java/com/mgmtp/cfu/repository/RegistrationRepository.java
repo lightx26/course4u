@@ -24,15 +24,15 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
 
     @Query("SELECT r FROM Registration r " +
            "WHERE r.status = :status " +
-           "AND LOWER(r.user.username) LIKE CONCAT('%', :search ,'%')  " +
+           "AND (LOWER(r.user.username) LIKE CONCAT('%', :search ,'%')  " +
            "OR LOWER(r.user.fullName) LIKE CONCAT('%', :search ,'%') " +
-           "OR LOWER(r.course.name) LIKE CONCAT('%', :search ,'%')")
-    Page<Registration> getOptionalRegistrationsWithStatus(@Param("status") String status, @Param("search") String search, PageRequest pageRequest);
+           "OR LOWER(r.course.name) LIKE CONCAT('%', :search ,'%'))")
+    Page<Registration> getOptionalRegistrationsWithStatus(@Param("status") RegistrationStatus status, @Param("search") String search, PageRequest pageRequest);
 
     @Query("SELECT r FROM Registration r " +
            "WHERE r.status != 'DRAFT' " +
-            "AND LOWER(r.user.username) LIKE CONCAT('%', :search ,'%')  " +
+            "AND (LOWER(r.user.username) LIKE CONCAT('%', :search ,'%')  " +
             "OR LOWER(r.user.fullName) LIKE CONCAT('%', :search ,'%') " +
-            "OR LOWER(r.course.name) LIKE CONCAT('%', :search ,'%')")
+            "OR LOWER(r.course.name) LIKE CONCAT('%', :search ,'%'))")
     Page<Registration> getOptionalRegistrationsWithoutStatus(@Param("search") String search, PageRequest pageRequest);
 }
