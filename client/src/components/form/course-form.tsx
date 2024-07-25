@@ -37,6 +37,7 @@ type Props = {
   course?: z.infer<typeof courseSchema>;
   isEdit: boolean;
   registrationStatus?: string;
+  isBlockedModifiedCourse?: boolean;
 };
 
 type Thumbnail = {
@@ -53,7 +54,7 @@ const initData: Thumbnail = {
   aspect: { value: 4 / 3, text: "4:3" },
 };
 
-export const CourseForm = ({ form, course, isEdit }: Props) => {
+export const CourseForm = ({ form, course, isEdit, isBlockedModifiedCourse = false }: Props) => {
   const [thumbnail, setThumbnail] = useState<Thumbnail>(initData);
   const [isOpen, setIsOpen] = useState(false);
   const [categories, setCategories] = useState<Option[]>([]);
@@ -76,7 +77,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
         value: category.name!,
       }));
       form?.setValue("categories", categoriesData || []);
-      form?.setValue("platform", course.platform);
+      form?.setValue("platform", course.platform.toUpperCase());
       form?.setValue("name", course.name);
     }
   }, [course]);
@@ -201,6 +202,10 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
         }
       }
     } catch (error) {
+      toast.error("Error fetching Open Graph data: ", {
+        style: { color: "red" },
+        description: "Failed to fetch Open Graph data from the Open Graph",
+      });
     } finally {
       setLoading(false);
     }
@@ -210,7 +215,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
     return <CourseSkeleton />;
   }
   return (
-    <div className="flex flex-col gap-6">
+    <div aria-readonly={isBlockedModifiedCourse} className={isBlockedModifiedCourse ? "pointer-events-none opacity-50" : "" + "flex flex-col gap-6 "}>
       <div className="space-y-4">
         <FormField
           control={form!.control}
@@ -226,7 +231,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                     placeholder="Course Link"
                     {...field}
                     className="flex-1 w-full"
-                    disabled={!isEdit}
+                    disabled={isBlockedModifiedCourse || !isEdit}
                   />
                   <Button
                     type="button"
@@ -234,7 +239,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                     size="sm"
                     variant="default"
                     className="absolute right-0 transform -translate-y-1/2 cursor-pointer top-1/2 text-violet-600 bg-violet-200 hover:bg-violet-600 hover:text-white"
-                    disabled={!isEdit}
+                    disabled={isBlockedModifiedCourse || !isEdit}
                   >
                     <ArrowRightToLine width={20} height={20} />
                   </Button>
@@ -257,7 +262,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                   placeholder="Course Name"
                   {...field}
                   className="w-full"
-                  disabled={!isEdit}
+                  disabled={isBlockedModifiedCourse || !isEdit}
                 />
               </FormControl>
               <FormMessage />
@@ -278,7 +283,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                   placeholder="Teacher Name"
                   {...field}
                   className="w-full"
-                  disabled={!isEdit}
+                  disabled={isBlockedModifiedCourse || !isEdit}
                 />
               </FormControl>
               <FormMessage />
@@ -300,11 +305,8 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                   </FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={
-                      course?.platform.toUpperCase() ||
-                      form?.watch("platform").toUpperCase()
-                    }
-                    disabled={!isEdit}
+                    value={field.value.toUpperCase()}
+                    disabled={isBlockedModifiedCourse || !isEdit}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -333,8 +335,8 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={""}
-                    value={field.value}
-                    disabled={!isEdit}
+                    value={field.value.toUpperCase()}
+                    disabled={isBlockedModifiedCourse || !isEdit}
                   >
                     <FormControl>
                       <SelectTrigger className="border-gray-300">
@@ -369,7 +371,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
                     value={field.value || []}
                     placeholder="Select category..."
                     creatable={true}
-                    disabled={!isEdit}
+                    disabled={isBlockedModifiedCourse || !isEdit}
                     form={form}
                   />
                 </FormControl>
@@ -388,7 +390,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
               isOpen={isOpen}
               setIsOpen={setIsOpen}
               setCroppedImageFor={setCroppedImageFor}
-              isEdit={isEdit && !thumbnail.imageUrl.startsWith("http")}
+              isEdit={!isBlockedModifiedCourse && isEdit && !thumbnail.imageUrl.startsWith("http")}
               isOval={false}
             >
               <div className="w-[228px] h-[192px] cursor-pointer">
@@ -445,7 +447,7 @@ export const CourseForm = ({ form, course, isEdit }: Props) => {
             </p>
             <Button
               className="text-[#861FA2] bg-violet-600/20 hover:bg-violet-100 translate-y-6"
-              disabled={!thumbnail.imageUrl || !isEdit}
+              disabled={isBlockedModifiedCourse && !thumbnail.imageUrl || !isEdit}
               type="button"
               onClick={onDeleteImage}
             >

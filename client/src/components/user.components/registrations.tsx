@@ -14,53 +14,66 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import { useRegistrationDetail } from "../../hooks/use-registration-detail";
 import { handleAvatarUrl } from "../../utils/handleAvatarUrl";
+import { useRegistrationModal } from "../../hooks/use-registration-modal";
 
 export type RegistrationsProps = {
-    id?: number;
-    duration?: number;
-    durationUnit?: "DAY" | "WEEK" | "MONTH";
-    status?: Status;
-    course?: z.infer<typeof courseSchema>;
-    user?: z.infer<typeof userRegistrationSchema>;
-    registrationFeedbacks?: Feedback[];
-    startDate?: string;
-    endDate?: string;
+  id?: number;
+  duration?: number;
+  durationUnit?: "DAY" | "WEEK" | "MONTH";
+  status?: Status;
+  course?: z.infer<typeof courseSchema>;
+  isBlockedModifiedCourse?: boolean;
+  user?: z.infer<typeof userRegistrationSchema>;
+  registrationFeedbacks: Feedback[];
+  startDate?: string;
+  endDate?: string;
 };
 type Props = {
     id?: number;
     className?: string;
 };
 const Registrations = ({ className, id }: Props) => {
-    const [isEdit, setIsEdit] = useState(true);
-    const { registration, setRegistration } = useRegistrationDetail();
-    const [isLoading, setIsLoading] = useState(false);
-    const user = useSelector((state: RootState) => state.user.user);
+  const [isEdit, setIsEdit] = useState(true);
+  const { course, isBlockedModifiedCourse } = useRegistrationModal((state) => state)
+  const { registration, setRegistration } = useRegistrationDetail();
+  const [isLoading, setIsLoading] = useState(false);
+  const user = useSelector((state: RootState) => state.user.user);
 
-    useEffect(() => {
-        const getDetailRegistration = async () => {
-            if (!id) return;
-            setIsLoading(true);
-            await instance.get(`/registrations/${id}`).then((res) => {
-                if (res.data.status === "DRAFT" || res.data.status === "NONE") {
-                    setIsEdit(true);
-                } else {
-                    setIsEdit(false);
-                }
-                setRegistration(res.data);
-            });
-            setTimeout(() => {
-                setIsLoading(false);
-            }, 1000);
-        };
-        getDetailRegistration();
-    }, [id]);
-    if (isLoading) return <RegistrationSkeleton />;
-    let avatarPath;
-    if (registration && registration.user) {
-        avatarPath = handleAvatarUrl(registration.user.avatarUrl);
-    } else if (user.role.toUpperCase() === "USER") {
-        avatarPath = handleAvatarUrl(user.avatarUrl);
-    }
+  useEffect(() => {
+    const getDetailRegistration = async () => {
+      if (course) {
+        setRegistration({
+          course: course,
+          status: Status.DRAFT,
+          registrationFeedbacks: [],
+          isBlockedModifiedCourse: (isBlockedModifiedCourse != undefined)
+        });
+        setIsEdit(true);
+        return;
+      }
+      if (!id) return;
+      setIsLoading(true);
+      await instance.get(`/registrations/${id}`).then((res) => {
+        if (res.data.status === "DRAFT" || res.data.status === "NONE") {
+          setIsEdit(true);
+        } else {
+          setIsEdit(false);
+        }
+        setRegistration(res.data);
+      });
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
+    };
+    getDetailRegistration();
+  }, [id]);
+  if (isLoading) return <RegistrationSkeleton />;
+  let avatarPath;
+  if (registration && registration.user) {
+    avatarPath = handleAvatarUrl(registration.user.avatarUrl);
+  } else if (user.role.toUpperCase() === "USER") {
+    avatarPath = handleAvatarUrl(user.avatarUrl);
+  }
 
     return (
         <div
@@ -110,6 +123,7 @@ const Registrations = ({ className, id }: Props) => {
                         registration?.registrationFeedbacks || []
                     }
                     setIsEdit={setIsEdit}
+                    isBlockedModifiedCourse={isBlockedModifiedCourse}
                 />
             ) : (
                 <RegistrationsForm isEdit={isEdit} setIsEdit={setIsEdit} />

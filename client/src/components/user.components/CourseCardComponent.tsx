@@ -29,8 +29,8 @@ export default function CourseCardComponent({ course }: PropsType) {
     course.level?.toLowerCase() === "beginner"
       ? "bg-green-200 text-green-600"
       : course.level?.toLowerCase() === "intermediate"
-      ? "bg-yellow-100 text-yellow-600"
-      : "bg-rose-100 text-rose-600";
+        ? "bg-yellow-100 text-yellow-600"
+        : "bg-rose-100 text-rose-600";
   return (
     <div
       onClick={handleClickCourseDetail(course.id)}
@@ -66,13 +66,7 @@ export default function CourseCardComponent({ course }: PropsType) {
         )}
         <div className="flex items-center gap-3">
           <p className="text-sm font-medium">
-            {course.platform === "COURSERA"
-              ? "Coursera"
-              : course.platform === "LINKEDIN"
-              ? "LinkedIn"
-              : course.platform === "UDEMY"
-              ? "Udemy"
-              : course.platform}
+            {course.platform}
           </p>
           {course.level && (
             <p className={cn("px-2 py-1 rounded text-xs font-medium", color)}>

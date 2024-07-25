@@ -18,6 +18,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store.ts";
 import ModalEditOrDeleteCourse from "../../components/user.components/ModalEditOrDeleteCourse.tsx";
 import { handleViewAllByDetailCousePage } from "../../redux/slice/filterItemCheckbox.slice.ts";
+import { useRegistrationModal } from "../../hooks/use-registration-modal.ts";
+import { Button } from "../../components/ui/button.tsx";
 import handleThumbnailUrl from "../../utils/handleThumbnailUrl.ts";
 
 interface IRatings {
@@ -31,7 +33,7 @@ interface IRatings {
   };
 }
 
-interface CourseType {
+export interface CourseType {
   id: string | undefined;
   name: string;
   thumbnailUrl: string;
@@ -103,6 +105,7 @@ const Detail_Of_Course: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [dataReviews, setDataReviews] = useState<IReview[]>([]);
   const [totalItemsReviews, setTotalItemsReviews] = useState<number>(20);
+  const { open } = useRegistrationModal();
 
   //Related Course
   const [dataRelatedCourse, setDataRelatedCourse] = useState<CourseType[]>([]);
@@ -212,7 +215,6 @@ const Detail_Of_Course: React.FC = () => {
     id: string;
     name: string;
   };
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userRole = useSelector((state: RootState) => state.user.user.role);
@@ -234,7 +236,6 @@ const Detail_Of_Course: React.FC = () => {
       navigate(`/admin/courses`);
     }
   };
-
   return (
     <>
       {courseData ? (
@@ -577,14 +578,21 @@ const Detail_Of_Course: React.FC = () => {
                     </div>
                     <hr />
                     <div className="p-[5px_10px_0_10px]">
-                      <ModalEditOrDeleteCourse courseData={courseData}>
+                      {role == 'ADMIN' && <ModalEditOrDeleteCourse courseData={courseData}>
                         <button
                           className="w-full h-[40px] border border-[#ccc] font-medium text-purple-600"
                           style={{ color: "purple" }}
                         >
-                          {role === "USER" ? "Enroll Now" : "Edit"}
+                          Edit
                         </button>
-                      </ModalEditOrDeleteCourse>
+                      </ModalEditOrDeleteCourse>}
+                      {role == 'USER' &&
+                        <Button
+                          className="w-full h-[40px] border bg-transparent border-[#ccc] hover:text-white font-medium text-purple"
+                          onClick={() => open(true, undefined, courseData, true)}
+                        >
+                          Enroll now
+                        </Button>}
                     </div>
                   </div>
                 </div>

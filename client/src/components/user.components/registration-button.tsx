@@ -6,6 +6,7 @@ import {
     removeRegistration,
     startLearning,
     submitDocument,
+    submitWithExistedCourse,
 } from "../../apiService/Registration.service";
 import { useRegistrationDetail } from "../../hooks/use-registration-detail";
 import { useRegistrationModal } from "../../hooks/use-registration-modal";
@@ -28,14 +29,16 @@ type Props = {
     isStatrted?: boolean;
     listFileCertificate?: UploadFile[];
     listFilePayment?: UploadFile[];
+    isBlockedMofiedCourse?: boolean;
 };
 export const RegistrationButton = ({
-  status = Status.NONE,
-  setIsEdit,
-  isEdit,
-  id,
-  listFileCertificate,
-  listFilePayment,isStatrted
+    status = Status.NONE,
+    setIsEdit,
+    isEdit,
+    id,
+    listFileCertificate,
+    listFilePayment, isStatrted,
+    isBlockedMofiedCourse
 }: Props) => {
     const { registration, closeRegistration } = useRegistrationDetail();
     const { close } = useRegistrationModal((state) => state);
@@ -87,6 +90,31 @@ export const RegistrationButton = ({
         closeModal();
         setIsLoading(false);
     };
+
+    const handleSubmitWithExistedCourse = async () => {
+        try {
+            const res = await submitWithExistedCourse(
+                {
+                    courseID: registration!.course!.id!,
+                    duration: registration!.duration!,
+                    durationUnit: registration!.durationUnit!
+                }
+            );
+            if (res && res.status === 200) {
+                toast.success("Create a registration successfully", {
+                    style: { color: "green" },
+                    description: "The registration was created successfully.",
+                });
+                close();
+            }
+        }
+        catch (error) {
+            toast.error("Failed to Create a registration", {
+                style: { color: "red" },
+                description: "Opps.., some thing went wrong. Please, reload the page and try again",
+            });
+        }
+    }
 
     //Submit Document
     const currentPage = useSelector(
@@ -182,16 +210,17 @@ export const RegistrationButton = ({
                     </Button>
                 )}
             {(status === Status.NONE || status === Status.DRAFT || isEdit) && (
-                <Button
-                    type='submit'
-                    size='lg'
-                    variant='success'
-                    disabled={isLoading}
-                >
-                    {status === Status.DRAFT || status === Status.NONE
-                        ? "SUBMIT"
-                        : "RE-SUBMIT"}
-                </Button>
+                isBlockedMofiedCourse
+                    ?
+                    <Button type='button' onClick={handleSubmitWithExistedCourse} size='lg' variant='success'>
+                        SUBMIT
+                    </Button>
+                    :
+                    <Button type='submit' size='lg' variant='success'>
+                        {status === Status.DRAFT || status === Status.NONE
+                            ? "SUBMIT"
+                            : "RE-SUBMIT"}
+                    </Button>
             )}
             {(status === Status.DONE || status === Status.VERIFIED) && (
                 <Button

@@ -43,16 +43,17 @@ type RegistrationsFormProps = RegistrationsProps & {
 };
 
 export const RegistrationsForm = ({
-    id,
-    duration,
-    durationUnit,
-    status,
-    course,
-    isEdit,
-    setIsEdit,
-    startDate,
-    endDate,
-    registrationFeedbacks,
+  id,
+  duration,
+  durationUnit,
+  status,
+  course,
+  isEdit,
+  setIsEdit,
+  startDate,
+  endDate,
+  registrationFeedbacks,
+  isBlockedModifiedCourse
 }: RegistrationsFormProps) => {
     const form = useForm<z.infer<typeof registrationSchema>>({
         resolver: zodResolver(registrationSchema),
@@ -197,6 +198,7 @@ export const RegistrationsForm = ({
                         course={course}
                         isEdit={isEdit}
                         registrationStatus={status}
+                        isBlockedModifiedCourse={isBlockedModifiedCourse}
                     />
                     <div className='flex w-[60%] pr-4 gap-2'>
                         <FormField
@@ -304,6 +306,7 @@ export const RegistrationsForm = ({
                                 isStatrted={startDate != undefined}
                                 listFileCertificate={listFileCertificate}
                                 listFilePayment={listFilePayment}
+                                isBlockedMofiedCourse={isBlockedModifiedCourse}
                             />
                         </div>
                     )}

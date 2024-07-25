@@ -160,3 +160,8 @@ export const discardRegistration = async (id: number) => {
         description: "Failed to discard registration",
     });
 };
+
+export const submitWithExistedCourse = async (data: { courseID: string, duration: number, durationUnit: string }) => {
+    const response = await instance.post(`/registrations`, data);
+    return response;
+}
