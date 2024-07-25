@@ -18,8 +18,8 @@ public class AdminRegistrationController {
 
     @GetMapping
     public ResponseEntity<?> getRegistrationsForAdmin(
-        @ModelAttribute RegistrationOverviewParams params,
-        @RequestParam(value = "page", defaultValue = "1") int page
+            @ModelAttribute RegistrationOverviewParams params,
+            @RequestParam(value = "page", defaultValue = "1") int page
     )
     {
         validateRegistrationOverviewParams(params);

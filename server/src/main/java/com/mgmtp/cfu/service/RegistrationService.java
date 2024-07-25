@@ -18,14 +18,15 @@ public interface RegistrationService {
     Boolean createRegistration(RegistrationRequest registrationRequest);
 
     void calculateScore(Long id);
+
     void approveRegistration(Long id);
 
     void declineRegistration(Long id , FeedbackRequest feedbackRequest);
     void closeRegistration(Long id, FeedbackRequest feedbackRequest);
     void deleteRegistration(Long id);
     boolean startLearningCourse(Long courseId);
+    void discardRegistration(Long id);
 
     // Admin Registration Services
     Page<RegistrationOverviewDTO> getRegistrations(RegistrationOverviewParams params, int page);
-    void discardRegistration(Long id);
 }
