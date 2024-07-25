@@ -8,7 +8,7 @@ import CourseList from "../../../assets/images/admin.images/CourseList.svg";
 function CardFunctionList() {
   const convertedFunctionList = functionList.map((item) => {
     if (
-      location.pathname === "/admin/courses/create" &&
+      location.pathname.includes("/admin/courses/create") &&
       item.alt === "registration_list"
     ) {
       return { ...item, imgSrc: CourseList };
@@ -23,7 +23,7 @@ function CardFunctionList() {
   };
 
   const setItemColor = (alt: string) => {
-    if (location.pathname === "/admin/courses/create") {
+    if (location.pathname.includes("/admin/courses/create")) {
       return;
     }
     return alt == "registration_list" ? "text-[#861FA2]" : "";
