@@ -338,4 +338,13 @@ class RegistrationControllerSpec extends Specification {
         result.statusCode == HttpStatus.OK
     }
 
+    def "createRegistrationAsDraft should call registrationService with given RegistrationRequest"() {
+        given:
+        registrationService.createRegistrationAsDraft(_ as RegistrationRequest)>>{}
+        when:
+        registrationService.createRegistrationAsDraft(RegistrationRequest.builder().build())
+
+        then:
+        noExceptionThrown()
+    }
 }

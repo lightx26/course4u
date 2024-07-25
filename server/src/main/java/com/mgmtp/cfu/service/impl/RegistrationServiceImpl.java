@@ -41,6 +41,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
 import java.util.*;
+
 import java.util.List;
 
 import java.io.IOException;
@@ -363,15 +364,16 @@ public class RegistrationServiceImpl implements RegistrationService {
         registrationRepository.save(registration);
     }
 
+
     @Override
     public boolean startLearningCourse(Long registrationId) {
         var userId = getCurrentUser().getId();
         if (!registrationRepository.existsByIdAndUserId(registrationId, userId))
-            throw new BadRequestRuntimeException("Not found any registration that id is "+registrationId);
+            throw new BadRequestRuntimeException("Not found any registration that id is " + registrationId);
         var registrationOpt = registrationRepository.findById(registrationId);
         if (registrationOpt.isPresent()) {
-            var registration=registrationOpt.get();
-            if(Objects.nonNull(registration.getStartDate()))
+            var registration = registrationOpt.get();
+            if (Objects.nonNull(registration.getStartDate()))
                 throw new ConflictRuntimeException("This course was started learning");
             if (!registration.getStatus().equals(RegistrationStatus.APPROVED)) {
                 throw new BadRequestRuntimeException("This registration requires approval by admin.");
@@ -608,6 +610,33 @@ public class RegistrationServiceImpl implements RegistrationService {
             throw new IllegalArgumentException("You are not owner of this Registration!");
     }
 
+
+    @Override
+    public void createRegistrationAsDraft(RegistrationRequest registrationRequest) {
+        log.info(String.valueOf(LocalDateTime.now()));
+        var modelMapper=new ModelMapper();
+        CourseRequest courseRequest = CourseRequest.builder()
+                .name(registrationRequest.getName()!=null?registrationRequest.getName():" ")
+                .link(registrationRequest.getLink()!=null?registrationRequest.getLink():" ")
+                .platform(registrationRequest.getPlatform())
+                .thumbnailFile(registrationRequest.getThumbnailFile())
+                .thumbnailUrl(registrationRequest.getThumbnailUrl()!=null?registrationRequest.getThumbnailUrl():" ")
+                .teacherName(registrationRequest.getTeacherName()!=null?registrationRequest.getTeacherName():" ")
+                .categories(registrationRequest.getCategories()!=null?registrationRequest.getCategories():new ArrayList<>())
+                .level(registrationRequest.getLevel())
+                .build();
+        CourseResponse course = courseService.createCourse(courseRequest);
+        Registration registration = Registration.builder()
+                .course(modelMapper.map(course, Course.class))
+                .status(RegistrationStatus.DRAFT)
+                .registerDate(null)
+                .duration(registrationRequest.getDuration())
+                .durationUnit(registrationRequest.getDurationUnit())
+                .lastUpdated(LocalDateTime.now())
+                .user(getCurrentUser())
+                .build();
+        registrationRepository.save(registration);
+    }
     @Override
     public Boolean isExistAvailableCourse(Long id) {
         Registration registration = registrationRepository.findById(id)

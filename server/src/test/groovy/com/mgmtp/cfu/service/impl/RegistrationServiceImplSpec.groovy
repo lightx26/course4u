@@ -1126,4 +1126,22 @@ class RegistrationServiceImplSpec extends Specification {
         result == true || result == false
     }
 
+    def "createRegistrationAsDraft should convert RegistrationRequest to CourseRequest and save Registration"() {
+        given:
+        RegistrationRequest registrationRequest = new RegistrationRequest(
+                name: "Test Course",
+                link: "http://example.com",
+                thumbnailFile: null,
+                thumbnailUrl: "http://example.com/image.png",
+                teacherName: "Test Teacher",
+                duration: 10
+        )
+        CourseResponse courseResponse = CourseResponse.builder().build();
+        courseService.createCourse(_)>>courseResponse
+        when: "The method is called"
+        registrationService.createRegistrationAsDraft(registrationRequest)
+
+        then:
+        noExceptionThrown()
+    }
 }

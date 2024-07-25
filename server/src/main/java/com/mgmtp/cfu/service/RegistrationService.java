@@ -45,4 +45,5 @@ public interface RegistrationService {
 
     Boolean isExistAvailableCourse(Long id);
 
+    void createRegistrationAsDraft(RegistrationRequest registrationRequest);
 }

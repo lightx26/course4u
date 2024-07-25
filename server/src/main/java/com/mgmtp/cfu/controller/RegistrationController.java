@@ -125,6 +125,13 @@ public class RegistrationController {
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @PostMapping("/draft")
+    public void createRegistrationAsDraft(@ModelAttribute RegistrationRequest registrationRequest ) {
+        registrationService.createRegistrationAsDraft(registrationRequest);
+
+    }
+
     @PostMapping("{id}/verify")
     @PreAuthorize("hasRole('ROLE_ACCOUNTANT')")
     public void verifyDeclineRegistration(@PathVariable Long id, @RequestBody Map<String, String> longDocumentStatusMap, @RequestParam(name = "status") String status) {

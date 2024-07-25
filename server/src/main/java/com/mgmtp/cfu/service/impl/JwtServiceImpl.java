@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.function.Function;
@@ -55,13 +57,16 @@ public class JwtServiceImpl implements IJwtService {
 
     @Override
     public String generatedClaim(String username, Collection<? extends GrantedAuthority> claims) {
+        Instant now = Instant.now();
+        Date issueDate = Date.from(now);
+        Date expirationDate = Date.from(now.plusSeconds(60 * 60));
         return Jwts.builder()
                 .claim("Authorization", claims)
                 .subject(username)
                 .issuer("course-for-you-backend-app")
                 .audience().add("course-for-you-client-app").and()
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration((new Date(System.currentTimeMillis() +60*60* 1000)))
+                .issuedAt(issueDate)
+                .expiration(expirationDate)
                 .signWith(secret).compact();
 
     }
