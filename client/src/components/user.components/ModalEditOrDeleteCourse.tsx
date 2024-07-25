@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { courseSchema } from "../../schemas/course-schema";
 import { Button } from "../ui/button";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CourseForm } from "../../components/form/course-form";
 import { Form } from "../ui/form";
 
