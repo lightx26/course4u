@@ -583,14 +583,13 @@ const Detail_Of_Course: React.FC = () => {
                       {role == "ADMIN" && (
                         <ModalEditOrDeleteCourse courseData={courseData}>
                           <button
-                            className="w-full h-[40px] border border-[#ccc] font-medium text-purple-600"
-                            style={{ color: "purple" }}
+                            className="w-full h-[40px] border border-[#ccc] font-medium text-purple"
                           >
                             Edit
                           </button>
                         </ModalEditOrDeleteCourse>
                       )}
-                      {role == "USER" && (
+                      {role == "USER" && courseData.id != undefined && (
                         <Button
                           className="w-full h-[40px] border bg-transparent border-[#ccc] hover:text-white font-medium text-purple"
                           onClick={() =>
@@ -617,7 +616,7 @@ const Detail_Of_Course: React.FC = () => {
                       onClick={handleClickViewAll}
                     >
                       <div
-                        className="text-purple-600 font-medium"
+                        className="font-medium text-purple-600"
                         style={{ color: "purple" }}
                       >
                         View all

@@ -100,10 +100,10 @@ public class RegistrationController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{id}/enroll")
+    @PostMapping("/{courseId}/enroll")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<?> createRegistrationFromExistingCourses(@RequestBody RegistrationEnrollDTO registrationEnrollDTO) {
-        registrationService.createRegistrationFromExistingCourses(registrationEnrollDTO);
+    public ResponseEntity<?> createRegistrationFromExistingCourses(@PathVariable Long courseId, @RequestBody RegistrationEnrollDTO registrationEnrollDTO) {
+        registrationService.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO);
         return ResponseEntity.ok().build();
     }
 }

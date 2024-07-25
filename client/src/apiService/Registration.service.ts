@@ -161,7 +161,11 @@ export const discardRegistration = async (id: number) => {
     });
 };
 
-export const submitWithExistedCourse = async (data: { courseId: string, duration: number, durationUnit: string }) => {
-    const response = await instance.post(`/${data}/enroll`);
+export const submitWithExistedCourse = async ({ courseId, duration, durationUnit }: { courseId: string, duration: number, durationUnit: string }) => {
+    const params = {
+        duration,
+        durationUnit,
+    }
+    const response = await instance.post(`/registrations/${courseId}/enroll`, params);
     return response;
 }

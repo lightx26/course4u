@@ -32,4 +32,5 @@ public interface RegistrationService {
 
     // Admin Registration Services
     Page<RegistrationOverviewDTO> getRegistrations(RegistrationOverviewParams params, int page);
+    void createRegistrationFromExistingCourses(Long courseId, RegistrationEnrollDTO registrationEnrollDTO);
 }

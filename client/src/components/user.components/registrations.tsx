@@ -48,6 +48,7 @@ const Registrations = ({ className, id }: Props) => {
                     registrationFeedbacks: [],
                     isBlockedModifiedCourse: isBlockedModifiedCourse
                 });
+                console.log(registration);
                 setIsEdit(true);
                 return;
             }
@@ -66,7 +67,7 @@ const Registrations = ({ className, id }: Props) => {
             }, 1000);
         };
         getDetailRegistration();
-    }, [id]);
+    }, [id, course]);
     if (isLoading) return <RegistrationSkeleton />;
     let avatarPath;
     if (registration && registration.user) {
@@ -99,7 +100,7 @@ const Registrations = ({ className, id }: Props) => {
                     />
                 ) : (
                     <RegistrationUser
-                        fullName={user.fullName}
+                        fullName={user.fullName || user.username || "Anonymous"}
                         avatarUrl={handleAvatarUrl(user.avatarUrl)}
                         email={user.email}
                         telephone={user.telephone}
@@ -109,7 +110,7 @@ const Registrations = ({ className, id }: Props) => {
                     status={id ? registration?.status : Status.DRAFT}
                 />
             </div>
-            {id ? (
+            {id && (
                 <RegistrationsForm
                     id={+id}
                     duration={registration?.duration}
@@ -125,7 +126,16 @@ const Registrations = ({ className, id }: Props) => {
                     setIsEdit={setIsEdit}
                     isBlockedModifiedCourse={isBlockedModifiedCourse}
                 />
-            ) : (
+            )}
+            {course &&
+                <RegistrationsForm
+                    course={registration?.course}
+                    isEdit={true}
+                    setIsEdit={setIsEdit}
+                    isBlockedModifiedCourse={isBlockedModifiedCourse}
+                />
+            }
+            {!id && !course && (
                 <RegistrationsForm isEdit={isEdit} setIsEdit={setIsEdit} />
             )}
         </div>

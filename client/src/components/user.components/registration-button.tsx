@@ -20,6 +20,7 @@ import { RootState } from "../../redux/store/store";
 import { fetchListOfMyRegistration } from "../../apiService/MyRegistration.service";
 import { saveDataListRegistration } from "../../redux/slice/registration.slice";
 import { useRefreshState } from "../../hooks/use-refresh-state";
+import { isStatusSuccesful } from "../../utils/checkResStatus";
 
 type Props = {
     status?: Status;
@@ -30,6 +31,8 @@ type Props = {
     listFileCertificate?: UploadFile[];
     listFilePayment?: UploadFile[];
     isBlockedMofiedCourse?: boolean;
+    duration: number,
+    durationUnit: string
 };
 export const RegistrationButton = ({
     status = Status.NONE,
@@ -37,8 +40,10 @@ export const RegistrationButton = ({
     isEdit,
     id,
     listFileCertificate,
-    listFilePayment,
-    isStatrted, isBlockedMofiedCourse
+    listFilePayment, isStatrted,
+    isBlockedMofiedCourse,
+    duration,
+    durationUnit,
 }: Props) => {
     const { registration, closeRegistration } = useRegistrationDetail();
     const { close } = useRegistrationModal((state) => state);
@@ -83,9 +88,9 @@ export const RegistrationButton = ({
     const handleFinishLearning = async () => {
         setIsLoading(true);
         await finishLearning(id!);
-        close();
-        setIsLoading(false);
-    };
+        closeModal();
+        setIsLoading(false)
+    }
 
     const handleDiscard = async () => {
         setIsLoading(true);
@@ -102,17 +107,18 @@ export const RegistrationButton = ({
         try {
             const res = await submitWithExistedCourse(
                 {
-                    courseID: registration!.course!.id!,
-                    duration: registration!.duration!,
-                    durationUnit: registration!.durationUnit!
+                    courseId: registration!.course!.id!,
+                    duration: duration,
+                    durationUnit: durationUnit,
                 }
             );
-            if (res && res.status === 200) {
+            if (isStatusSuccesful(res.status)) {
                 toast.success("Create a registration successfully", {
                     style: { color: "green" },
                     description: "The registration was created successfully.",
                 });
-                close();
+
+                closeModal();
             }
         }
         catch (error) {
@@ -150,7 +156,7 @@ export const RegistrationButton = ({
             if (result && result.data) {
                 dispatch(saveDataListRegistration(result.data));
             }
-            close();
+            closeModal();
         } else {
             toast.error("Document Submission Failed", {
                 style: { color: "red" },

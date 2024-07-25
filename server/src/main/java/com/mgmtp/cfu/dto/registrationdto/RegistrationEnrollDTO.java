@@ -9,8 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class RegistrationEnrollDTO {
-    private Long courseId;
     private Long duration;
     private DurationUnit durationUnit;
-
 }

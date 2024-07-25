@@ -343,8 +343,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     @Override
-    public void createRegistrationFromExistingCourses(RegistrationEnrollDTO registrationEnrollDTO) {
-        var courseId = registrationEnrollDTO.getCourseId();
+    public void createRegistrationFromExistingCourses(Long courseId, RegistrationEnrollDTO registrationEnrollDTO) {
         var course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new CourseNotFoundException("Course not found"));
 
