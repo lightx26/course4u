@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { userRegistrationSchema } from "../schemas/user-schema";
 import { handleAvatarUrl } from "../utils/handleAvatarUrl";
-import { useEffect } from "react";
 
 export type Feedback = {
     id: number;
@@ -12,8 +11,8 @@ type Props = {
     feedbacks: Feedback[];
 };
 const FeedbackList = ({ feedbacks }: Props) => {
-    const formatText = (text) => {
-        return text.split("\n").map((line, index) => (
+    const formatText = (text: string) => {
+        return text.split("\n").map((line: string, index: number) => (
             <span key={index}>
                 {line}
                 <br />
