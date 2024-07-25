@@ -23,6 +23,7 @@ import { isTokenExpired } from "./utils/validateToken.ts";
 import { RegistrationModal } from "./components/modal/registration-modal.tsx";
 import LeaderBoard from "./screens/user.screens/LeaderBoard.tsx";
 import MyScore from "./screens/user.screens/MyScore.tsx";
+import AccountantHomePage from "./screens/admin.screens/AccountantHome.tsx";
 export type CourseType = {
   id: string | undefined;
   name: string;
@@ -235,7 +236,7 @@ const router = createBrowserRouter(
       children: [
         {
           index: true,
-          element: <AdminHomePage />,
+          element: <AccountantHomePage/>
         },
         {
           path: "profile",

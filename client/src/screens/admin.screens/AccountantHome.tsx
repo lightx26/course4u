@@ -1,46 +1,42 @@
-import { useEffect, useState } from "react";
-import { RegistrationType } from "../../App";
-
-import AdminCard from "../../components/admin.components/mainPage.components/AdminCard.tsx";
-import PaginationSection from "../../components/user.components/Homepage/PaginationSection.tsx";
-
-import UtilsBar from "../../components/admin.components/mainPage.components/UtilsBar.tsx";
-import RegistrationList from "../../components/admin.components/registrations.components/RegistrationList.tsx";
-
-import { fetchAllRegistrations } from "../../apiService/Admin.service.ts";
-import { handleAvatarUrl } from "../../utils/handleAvatarUrl.ts";
-
-import { RootState } from "../../redux/store/store.ts";
 import {useDispatch, useSelector} from "react-redux";
-import { RegistrationParamsType} from "../../redux/slice/adminRegistration.slice.ts";
+import {RootState} from "../../redux/store/store.ts";
+import {RegistrationType} from "../../App.tsx";
 import {
     handleCurrentPageChange,
-    handleTotalItemChange,
     handleShowingMessageChange,
-    saveRegistrationsData,
-} from "../../redux/slice/adminRegistration.slice.ts";
+    handleTotalItemChange,
+    RegistrationParamsType,
+    saveRegistrationsData
+} from "../../redux/slice/accountantRegistration.slice.ts";
+import {useEffect, useState} from "react";
+import {handleAvatarUrl} from "../../utils/handleAvatarUrl.ts";
+import {fetchAllRegistrations} from "../../apiService/Admin.service.ts";
+import AdminCard from "../../components/admin.components/mainPage.components/AdminCard.tsx";
+import RegistrationList from "../../components/admin.components/registrations.components/RegistrationList.tsx";
+import PaginationSection from "../../components/user.components/Homepage/PaginationSection.tsx";
+import AccountantUtilsBar from "../../components/admin.components/mainPage.components/AccountantUtilsBar.tsx";
 
-function AdminHomePage() {
+const AccountantHomePage = () => {
     const dispatch = useDispatch();
 
     const currentPage: number = useSelector(
-        (state: RootState) => state.adminRegistration.currentPage
+        (state: RootState) => state.accountantRegistration.currentPage
     );
 
     const totalItem: number = useSelector(
-        (state: RootState) => state.adminRegistration.totalItem
+        (state: RootState) => state.accountantRegistration.totalItem
     );
 
     const registrationList: RegistrationType[] = useSelector(
-        (state: RootState) => state.adminRegistration.data
+        (state: RootState) => state.accountantRegistration.data
     );
 
     const showingMessage: string = useSelector(
-        (state: RootState) => state.adminRegistration.showingMessage
+        (state: RootState) => state.accountantRegistration.showingMessage
     )
 
     const options: RegistrationParamsType = useSelector(
-        (state: RootState) => state.adminRegistration.options
+        (state: RootState) => state.accountantRegistration.options
     );
 
     const [isLoading, setIsLoading] = useState(true);
@@ -67,14 +63,21 @@ function AdminHomePage() {
     };
 
     useEffect(() => {
-        handleFetchRegistrations(options, 1)
+        const initialOptions: RegistrationParamsType = {
+            status: "Verified",
+            search: "",
+            orderBy: "id",
+            isAscending: false
+        }
+        handleFetchRegistrations(initialOptions,1)
         dispatch(handleCurrentPageChange(1));
-    }, [options]);
+    }, []);
 
     useEffect(() => {
         handleFetchRegistrations(options, 1)
         dispatch(handleCurrentPageChange(1));
-    }, []);
+    }, [options]);
+
 
     useEffect(() => {
         handleFetchRegistrations(options, currentPage)
@@ -92,7 +95,7 @@ function AdminHomePage() {
                 </div>
                 <div className='registration-section flex flex-col gap-8 w-[80%]'>
                     <div className='filters'>
-                        <UtilsBar />
+                        <AccountantUtilsBar/>
                     </div>
                     <div className='registration-list min-h-[200px]'>
                         <div className='mb-2 showing-status'>
@@ -117,4 +120,4 @@ function AdminHomePage() {
     );
 }
 
-export default AdminHomePage;
+export default AccountantHomePage;

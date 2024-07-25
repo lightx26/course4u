@@ -8,6 +8,7 @@ import courseReducer from "../slice/course.slice";
 import categoryReducer from "../slice/category.slice";
 import registrationReducer from "../slice/registration.slice";
 import adminPageRegistrationReducer from "../slice/adminRegistration.slice.ts";
+import accountantPageRegistrationReducer from "../slice/accountantRegistration.slice.ts"
 const sagaMiddleware = createSagaMiddleware();
 export const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ export const store = configureStore({
     category: categoryReducer,
     registration: registrationReducer,
     adminRegistration: adminPageRegistrationReducer,
+    accountantRegistration: accountantPageRegistrationReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(sagaMiddleware),

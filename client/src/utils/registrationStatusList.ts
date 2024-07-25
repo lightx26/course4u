@@ -47,18 +47,18 @@ const registrationStatusList: statusProps[] = [
 ];
 
 export const registrationStatusListForAccountant = [
-  {
-    value: "5",
-    content: "Verifying",
-  },
-  {
-    value: "6",
-    content: "Declined (Document)",
-  },
-  {
-    value: "7",
-    content: "Verified",
-  },
+    {
+        value: "5",
+        content: "Verifying",
+    },
+    {
+        value: "6",
+        content: "Declined (Document)",
+    },
+    {
+        value: "7",
+        content: "Verified",
+    },
 ];
 
 export default registrationStatusList;
