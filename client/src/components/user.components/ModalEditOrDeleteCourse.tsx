@@ -57,12 +57,9 @@ const ModalEditOrDeleteCourse = ({ children, courseData }: Props) => {
       thumbnailUrl: "",
     },
   });
-  useEffect(() => {
-    if (courseData?.thumbnailUrl.includes("Default Course thumnail 1.svg")) {
-      courseData.thumbnailUrl = "";
-    }
-  }, [courseData]);
-
+  if (courseData?.thumbnailUrl.includes("Default Course thumnail 1.svg")) {
+    courseData.thumbnailUrl = "";
+  }
   const handleConfirm = async () => {
     setConfirmLoading(true);
     const response = await deleteCourseById(courseData?.id);
