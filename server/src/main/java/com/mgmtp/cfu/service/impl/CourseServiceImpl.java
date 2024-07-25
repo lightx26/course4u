@@ -200,7 +200,7 @@ public class CourseServiceImpl implements CourseService {
                 .map(courseMapper::toDTO)
                 .peek(courseOverviewDTO -> {
                     if (courseOverviewDTO.getRating() == null) {
-                        courseOverviewDTO.setRating(0.0);
+                        courseOverviewDTO.setRating(0.0);   
                     }
                 })
                 .sorted(Comparator.comparing(CourseOverviewDTO::getRating).reversed())
