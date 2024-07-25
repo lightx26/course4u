@@ -37,8 +37,8 @@ export const RegistrationButton = ({
     isEdit,
     id,
     listFileCertificate,
-    listFilePayment, isStatrted,
-    isBlockedMofiedCourse
+    listFilePayment,
+    isStatrted, isBlockedMofiedCourse
 }: Props) => {
     const { registration, closeRegistration } = useRegistrationDetail();
     const { close } = useRegistrationModal((state) => state);
@@ -58,15 +58,21 @@ export const RegistrationButton = ({
         setIsLoading(true);
         const res = await removeRegistration(id!);
         if (res !== 200) {
+            setIsLoading(false);
             return;
         }
         closeModal();
         setIsLoading(false);
     };
     const handleStartLearning = async () => {
+        if (registration?.startDate) {
+            window.open(registration?.course?.link);
+            return;
+        }
         setIsLoading(true);
         const res = await startLearning(id!);
         if (res !== 200) {
+            setIsLoading(false);
             return;
         }
         window.open(registration?.course?.link);
@@ -75,16 +81,17 @@ export const RegistrationButton = ({
     };
 
     const handleFinishLearning = async () => {
-        setIsLoading(true)
+        setIsLoading(true);
         await finishLearning(id!);
         close();
-        setIsLoading(false)
-    }
+        setIsLoading(false);
+    };
 
     const handleDiscard = async () => {
         setIsLoading(true);
         const res = await discardRegistration(id!);
         if (res !== 200) {
+            setIsLoading(false);
             return;
         }
         closeModal();
@@ -120,7 +127,9 @@ export const RegistrationButton = ({
     const currentPage = useSelector(
         (state: RootState) => state.registration.currentPage
     );
-    const filterBy = useSelector((state: RootState) => state.registration.status);
+    const filterBy = useSelector(
+        (state: RootState) => state.registration.status
+    );
     const dispatch = useDispatch();
     const handleSubmitDocument = async () => {
         const response = await submitDocument(
@@ -131,9 +140,13 @@ export const RegistrationButton = ({
         if (response && response.status === 200) {
             toast.success("Document Submitted Successfully", {
                 style: { color: "green" },
-                description: "Your registration has been completed successfully.",
+                description:
+                    "Your registration has been completed successfully.",
             });
-            const result = await fetchListOfMyRegistration(currentPage, filterBy);
+            const result = await fetchListOfMyRegistration(
+                currentPage,
+                filterBy
+            );
             if (result && result.data) {
                 dispatch(saveDataListRegistration(result.data));
             }
@@ -150,7 +163,13 @@ export const RegistrationButton = ({
     return (
         <div className='flex justify-end gap-4'>
             {(status === Status.DRAFT || status === Status.DISCARDED) && (
-                <ModalConfirm title="Delete this registration?" description="Are you sure you want to delete this form? This action cannot be undone." cancelButtonTitle="Cancel" acceptButtonTitle="Yes, Delete" handleConfirm={handleDeleteButtonClick}>
+                <ModalConfirm
+                    title='Delete this registration?'
+                    description='Are you sure you want to delete this form? This action cannot be undone.'
+                    cancelButtonTitle='Cancel'
+                    acceptButtonTitle='Yes, Delete'
+                    handleConfirm={handleDeleteButtonClick}
+                >
                     <Button
                         type='button'
                         size='lg'
@@ -175,7 +194,23 @@ export const RegistrationButton = ({
                         DISCARD
                     </Button>
                 )}
-            {status === Status.APPROVED && (
+            {status === Status.APPROVED && !registration?.startDate && (
+                <ModalConfirm
+                    handleConfirm={handleStartLearning}
+                    title='Do you want to start learning this course?'
+                    description='Start learning cannot undo !!! Are you sure you want to start learning this course?'
+                >
+                    <Button
+                        size='lg'
+                        variant='blue'
+                        type='button'
+                        disabled={isLoading}
+                    >
+                        START LEARNING
+                    </Button>
+                </ModalConfirm>
+            )}
+            {status === Status.APPROVED && registration?.startDate && (
                 <Button
                     size='lg'
                     variant='blue'
@@ -190,15 +225,23 @@ export const RegistrationButton = ({
                 <ModalConfirm
                     handleConfirm={handleFinishLearning}
                     title='Do you want to finish this course?'
-                    description="Are you sure you have completed the course and want to confirm completion?">
-                    <Button className={'' + (!isStatrted && 'select-none pointer-events-none opacity-30')} size='lg' variant='success' disabled={isLoading}>
+                    description='Are you sure you have completed the course and want to confirm completion?'
+                >
+                    <Button
+                        className={
+                            "" +
+                            (!isStatrted &&
+                                "select-none pointer-events-none opacity-30")
+                        }
+                        size='lg'
+                        variant='success'
+                        disabled={isLoading}
+                    >
                         DONE
                     </Button>
                 </ModalConfirm>
-            )
-            }
-            {
-                (status === Status.SUBMITTED || status === Status.DECLINED) &&
+            )}
+            {(status === Status.SUBMITTED || status === Status.DECLINED) &&
                 isEdit === false && (
                     <Button
                         size='lg'
@@ -233,7 +276,13 @@ export const RegistrationButton = ({
                 </Button>
             )}
             {status === Status.DONE && (
-                <Button size='lg' variant='blue' disabled={isLoading} type="button" onClick={handleSubmitDocument}>
+                <Button
+                    size='lg'
+                    variant='blue'
+                    disabled={isLoading}
+                    type='button'
+                    onClick={handleSubmitDocument}
+                >
                     ASSIGN TO REVIEW
                 </Button>
             )}
