@@ -1,6 +1,6 @@
 export default function handleThumbnailUrl(url?: string) {
      try {
-          if (!url) {
+          if (url != null && url === "") {
                return (`${import.meta.env.BASE_URL}/course/Default Course thumnail 1.svg`).replace('//', '/');
           }
           if (url!.startsWith("http")) {

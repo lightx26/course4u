@@ -4,9 +4,15 @@ import functionMapping from "../../../utils/functionMapping.ts";
 import { AppDispatch, RootState } from "../../../redux/store/store.ts";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-
+import CourseList from "../../../assets/images/admin.images/CourseList.svg";
 function CardFunctionList() {
   const convertedFunctionList = functionList.map((item) => {
+    if (
+      location.pathname === "/admin/courses/create" &&
+      item.alt === "registration_list"
+    ) {
+      return { ...item, imgSrc: CourseList };
+    }
     return item.alt == "registration_list"
       ? { ...item, imgSrc: RegistrationList }
       : item;
@@ -17,6 +23,9 @@ function CardFunctionList() {
   };
 
   const setItemColor = (alt: string) => {
+    if (location.pathname === "/admin/courses/create") {
+      return;
+    }
     return alt == "registration_list" ? "text-[#861FA2]" : "";
   };
 

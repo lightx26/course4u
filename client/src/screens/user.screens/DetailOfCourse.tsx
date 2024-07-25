@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store.ts";
 import ModalEditOrDeleteCourse from "../../components/user.components/ModalEditOrDeleteCourse.tsx";
 import { handleViewAllByDetailCousePage } from "../../redux/slice/filterItemCheckbox.slice.ts";
+import handleThumbnailUrl from "../../utils/handleThumbnailUrl.ts";
 
 interface IRatings {
   averageRating: number;
@@ -194,11 +195,7 @@ const Detail_Of_Course: React.FC = () => {
     return truncatedText.trim().slice(0, maxLines * 15) + "...";
   }
 
-  const thumbnailUrl = courseData?.thumbnailUrl?.startsWith("http")
-    ? courseData.thumbnailUrl
-    : `${import.meta.env.VITE_BACKEND_URL}/thumbnail/${
-        courseData?.thumbnailUrl
-      }`;
+  const thumbnailUrl = handleThumbnailUrl(courseData?.thumbnailUrl);
 
   //Handle Click Button Edit For Admin Or Enroll Now For USER
 
@@ -581,24 +578,14 @@ const Detail_Of_Course: React.FC = () => {
                     </div>
                     <hr />
                     <div className="p-[5px_10px_0_10px]">
-                      {role === "ADMIN" && (
-                        <ModalEditOrDeleteCourse courseData={courseData}>
-                          <button
-                            className="w-full h-[40px] border border-[#ccc] font-medium text-purple-600"
-                            style={{ color: "purple" }}
-                          >
-                            Edit
-                          </button>
-                        </ModalEditOrDeleteCourse>
-                      )}
-                      {role === "USER" && (
+                      <ModalEditOrDeleteCourse courseData={courseData}>
                         <button
                           className="w-full h-[40px] border border-[#ccc] font-medium text-purple-600"
                           style={{ color: "purple" }}
                         >
-                          Enroll Now
+                          {role === "USER" ? "Enroll Now" : "Edit"}
                         </button>
-                      )}
+                      </ModalEditOrDeleteCourse>
                     </div>
                   </div>
                 </div>
@@ -616,7 +603,7 @@ const Detail_Of_Course: React.FC = () => {
                       onClick={handleClickViewAll}
                     >
                       <div
-                        className="font-medium text-purple-600"
+                        className="text-purple-600 font-medium"
                         style={{ color: "purple" }}
                       >
                         View all
