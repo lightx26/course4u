@@ -24,12 +24,16 @@ export function getTimeDifference(createdTime: string): string {
     return result.trim();
 }
 
+export function toLocalTime(inputTime: string): Date {
+    const utcTime = new Date(inputTime);
+    return new Date(utcTime.getTime() - utcTime.getTimezoneOffset() * 60000);
+}
+
 
 export function timeAgo(inputTime: string): string {
     const localTimeNow = new Date();
 
-    const utcTime = new Date(inputTime);
-    const localTimeFromUTC = new Date(utcTime.getTime() - utcTime.getTimezoneOffset() * 60000);
+    const localTimeFromUTC = toLocalTime(inputTime);
 
     const timeDiff = localTimeNow.getTime() - localTimeFromUTC.getTime();
 
