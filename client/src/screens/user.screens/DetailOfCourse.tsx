@@ -57,7 +57,8 @@ interface Option {
 }
 
 interface IReview {
-  userFullName: string;
+  userFullname: string;
+  userUsername: string;
   userAvatar: string;
   comment: string;
   rating: number;
@@ -199,6 +200,8 @@ const Detail_Of_Course: React.FC = () => {
     return truncatedText.trim().slice(0, maxLines * 15) + "...";
   }
 
+  const thumbnailUrl = handleThumbnailUrl(courseData?.thumbnailUrl);
+
   //Handle Click Button Edit For Admin Or Enroll Now For USER
 
   const capitalizeFirstLetter = (text: string) => {
@@ -309,9 +312,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                  (dataRatings.detailRatings["5"] * 100) /
-                                    totalRating
-                                )
+                                (dataRatings.detailRatings["5"] * 100) /
+                                totalRating
+                              )
                               : 0
                           }
                         />
@@ -321,9 +324,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                  (dataRatings.detailRatings["4"] * 100) /
-                                    totalRating
-                                )
+                                (dataRatings.detailRatings["4"] * 100) /
+                                totalRating
+                              )
                               : 0
                           }
                         />
@@ -333,9 +336,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                  (dataRatings.detailRatings["3"] * 100) /
-                                    totalRating
-                                )
+                                (dataRatings.detailRatings["3"] * 100) /
+                                totalRating
+                              )
                               : 0
                           }
                         />
@@ -345,9 +348,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                  (dataRatings.detailRatings["2"] * 100) /
-                                    totalRating
-                                )
+                                (dataRatings.detailRatings["2"] * 100) /
+                                totalRating
+                              )
                               : 0
                           }
                         />
@@ -357,9 +360,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                  (dataRatings.detailRatings["1"] * 100) /
-                                    totalRating
-                                )
+                                (dataRatings.detailRatings["1"] * 100) /
+                                totalRating
+                              )
                               : 0
                           }
                         />
@@ -386,7 +389,8 @@ const Detail_Of_Course: React.FC = () => {
                             <CommentDetail
                               userAvatar={item.userAvatar}
                               rating={item.rating}
-                              userFullName={item.userFullName}
+                              userUsername={item.userUsername}
+                              userFullName={item.userFullname}
                               comment={item.comment}
                               createdDate={item.createdDate}
                             />
@@ -409,7 +413,7 @@ const Detail_Of_Course: React.FC = () => {
                     style={{ zIndex: "10" }}
                   >
                     <img
-                      src={courseData.thumbnailUrl}
+                      src={thumbnailUrl}
                       alt=""
                       className="absolute inset-0 object-cover object-center w-full h-full"
                     />

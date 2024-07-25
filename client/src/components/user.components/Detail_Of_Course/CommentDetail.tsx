@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Rate } from "antd";
 import { timeAgo } from "../../../utils/convertTime";
+import { handleAvatarUrl } from "../../../utils/handleAvatarUrl";
 interface IReview {
   userAvatar: string;
   userFullName: string;
   comment: string;
   createdDate: string;
   rating: number;
+  userUsername: string;
 }
 
 const CommentDetail: React.FC<IReview> = (props) => {
-  const { userAvatar, rating, userFullName, comment, createdDate } = props;
+  const { userAvatar, rating, userFullName, comment, userUsername, createdDate } = props;
   const [isExpanded, setIsExpanded] = useState(false);
   const [showSeeMore, setShowSeeMore] = useState(false);
   const commentRef = useRef<HTMLParagraphElement>(null);
@@ -46,15 +48,15 @@ const CommentDetail: React.FC<IReview> = (props) => {
     <div className="flex items-start gap-2.5">
       <div className="relative w-[50px] h-[50px] rounded-full">
         <img
-          src={userAvatar}
+          src={handleAvatarUrl(userAvatar)}
           alt=""
-          className="absolute w-full h-full object-cover object-center rounded-full"
+          className="absolute object-cover object-center w-full h-full rounded-full"
         />
       </div>
       <div className="flex flex-col items-start gap-1.25 max-w-[calc(100%-60px)] flex-wrap">
         <div className="flex flex-col">
           <div className="flex items-center h-[30px] gap-1.25">
-            <div className="text-[15px] font-medium">{userFullName}</div>
+            <div className="text-[15px] font-medium">{userFullName || userUsername || "Anonymous"}</div>
             <div>
               <svg
                 width="24"
@@ -95,7 +97,7 @@ const CommentDetail: React.FC<IReview> = (props) => {
           {showSeeMore && !isExpanded && (
             <button
               onClick={handleToggle}
-              className="text-blue-500 hover:underline absolute bottom-0 right-0"
+              className="absolute bottom-0 right-0 text-blue-500 hover:underline"
             >
               See More
             </button>
