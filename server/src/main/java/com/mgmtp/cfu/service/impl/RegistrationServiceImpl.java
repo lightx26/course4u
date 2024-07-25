@@ -41,7 +41,6 @@ import java.time.LocalDateTime;
 
 import static com.mgmtp.cfu.util.AuthUtils.getCurrentUser;
 import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getRegistrationOverviewDTOS;
-import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getSortedRegistrations;
 
 @Service
 @Slf4j
@@ -92,7 +91,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         status = status.trim();
         var userId = getCurrentUser().getId();
 
-        var myRegistrations = getSortedRegistrations(userId, registrationRepository);
+        var myRegistrations =registrationRepository.getSortedRegistrations(userId);
 
         if (!RegistrationValidator.isDefaultStatus(status)) {
             try {

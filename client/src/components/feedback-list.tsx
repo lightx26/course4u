@@ -21,7 +21,7 @@ const FeedbackList = ({ feedbacks }: Props) => {
     };
     return (
         <div>
-            <h4 className='mb-5 text-2xl text-bold'>Feedback</h4>
+            <h4 className='mb-5 text-xl font-semibold'>Feedback</h4>
             <div className='flex flex-col gap-6'>
                 {feedbacks.map((feedback) => (
                     <div key={feedback.id} className='flex items-start gap-4'>
@@ -33,10 +33,10 @@ const FeedbackList = ({ feedbacks }: Props) => {
                             className='rounded-full w-[40px] h-[40px] border-2 border-violet-500'
                         />
                         <div className=''>
-                            <p className='text-[#1E293B] font-semibold'>
+                            <p className='text-violet-600 font-semibold'>
                                 {feedback.user?.fullName}
                             </p>
-                            <p className='text-[#64748B] max-w-[1000px] whitespace-normal'>
+                            <p className='mt-2 w-[1000px] whitespace-normal max-h-[160px] overflow-y-scroll border-2 border-collapse border-violet-300 p-2 rounded-lg bg-violet-100 text-violet-600'>
                                 {formatText(feedback.comment)}
                             </p>
                         </div>

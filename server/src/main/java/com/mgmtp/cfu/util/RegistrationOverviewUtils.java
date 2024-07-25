@@ -26,18 +26,4 @@ public class RegistrationOverviewUtils {
                     }
                }).toList();
     }
-    public static List<Registration> getSortedRegistrations(Long userId, RegistrationRepository registrationRepository) {
-        Sort sort = Sort.by(
-                Sort.Order.desc("lastUpdated").nullsLast(),
-                Sort.Order.desc("endDate").nullsLast(),
-                Sort.Order.desc("startDate").nullsLast(),
-                Sort.Order.desc("registerDate").nullsLast(),
-                Sort.Order.desc("id").nullsLast()
-                //Not remove, please.
-        );
-
-        return registrationRepository.getByUserId(userId, sort);
-    }
-
-
 }

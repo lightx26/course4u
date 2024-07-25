@@ -22,8 +22,6 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
 
     boolean existsByIdAndUserId(Long registrationId, Long userId);
 
-    List<Registration> findAllByStatus(RegistrationStatus status);
-
     @Query("SELECT r FROM Registration r " +
            "WHERE r.status = :status " +
            "AND (LOWER(r.user.username) LIKE CONCAT('%', :search ,'%')  " +
@@ -37,4 +35,13 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
             "OR LOWER(r.user.fullName) LIKE CONCAT('%', :search ,'%') " +
             "OR LOWER(r.course.name) LIKE CONCAT('%', :search ,'%'))")
     Page<Registration> getOptionalRegistrationsWithoutStatus(@Param("search") String search, PageRequest pageRequest);
+    List<Registration> findAllByStatus(RegistrationStatus registrationStatus);
+
+    @Query("select r from Registration r " +
+            "where r.user.id = :userId " +
+            "order by " +
+            "case when r.lastUpdated is null then 1 else 0 end, " +
+            "r.lastUpdated desc, " +
+            "r.id desc")
+    List<Registration> getSortedRegistrations(Long userId);
 }
