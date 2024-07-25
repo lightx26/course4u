@@ -37,7 +37,9 @@ function AdminCard({ avatarUrl }: { avatarUrl?: string }) {
                 cursor: "pointer",
               }}
               onClick={() => {
-                navigate("/admin/profile");
+                if (userRole === "ADMIN") navigate("/admin/profile");
+                else if (userRole === "ACCOUNTANT")
+                  navigate("/accountant/profile");
               }}
             />
           </div>

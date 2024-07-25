@@ -26,7 +26,7 @@ function CardFunctionList() {
   const userRole = useSelector((state: RootState) => state.user.user.role);
 
   const handleFunctionMapping = (e: React.MouseEvent, itemAlt: string) => {
-    functionMapping(e, navigate, dispatch, itemAlt);
+    functionMapping(e, navigate, dispatch, itemAlt, userRole);
   };
 
   return (

@@ -237,6 +237,10 @@ const router = createBrowserRouter(
           index: true,
           element: <AdminHomePage />,
         },
+        {
+          path: "profile",
+          element: <AccountSettingScreen />,
+        },
       ],
     },
     {
