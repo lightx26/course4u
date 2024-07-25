@@ -6,6 +6,7 @@ import com.mgmtp.cfu.dto.RegistrationRequest;
 import com.mgmtp.cfu.dto.coursedto.CourseRequest;
 import com.mgmtp.cfu.dto.coursedto.CourseResponse;
 import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest;
+import com.mgmtp.cfu.dto.registrationdto.RegistrationEnrollDTO;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewParams;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO;
@@ -338,6 +339,24 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
         registration.setLastUpdated(LocalDateTime.now());
         registration.setStatus(RegistrationStatus.DISCARDED);
+        registrationRepository.save(registration);
+    }
+
+    @Override
+    public void createRegistrationFromExistingCourses(RegistrationEnrollDTO registrationEnrollDTO) {
+        var courseId = registrationEnrollDTO.getCourseId();
+        var course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new CourseNotFoundException("Course not found"));
+
+        Registration registration = Registration.builder()
+                .course(course)
+                .status(RegistrationStatus.SUBMITTED)
+                .registerDate(LocalDate.now())
+                .duration(registrationEnrollDTO.getDuration().intValue())
+                .durationUnit(registrationEnrollDTO.getDurationUnit())
+                .lastUpdated(LocalDateTime.now())
+                .user(getCurrentUser())
+                .build();
         registrationRepository.save(registration);
     }
 

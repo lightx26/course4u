@@ -4,8 +4,10 @@ import com.mgmtp.cfu.dto.PageResponse;
 
 import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO;
+import com.mgmtp.cfu.dto.registrationdto.RegistrationEnrollDTO;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewParams;
+import com.mgmtp.cfu.enums.DurationUnit;
 import org.springframework.data.domain.Page;
 import com.mgmtp.cfu.dto.RegistrationRequest;
 
@@ -26,6 +28,7 @@ public interface RegistrationService {
     void deleteRegistration(Long id);
     boolean startLearningCourse(Long courseId);
     void discardRegistration(Long id);
+    void createRegistrationFromExistingCourses(RegistrationEnrollDTO registrationEnrollDTO);
 
     // Admin Registration Services
     Page<RegistrationOverviewDTO> getRegistrations(RegistrationOverviewParams params, int page);

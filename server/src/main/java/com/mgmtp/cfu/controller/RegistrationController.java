@@ -1,6 +1,7 @@
 package com.mgmtp.cfu.controller;
 
 import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest;
+import com.mgmtp.cfu.dto.registrationdto.RegistrationEnrollDTO;
 import com.mgmtp.cfu.exception.BadRequestRuntimeException;
 import com.mgmtp.cfu.exception.UnknownErrorException;
 import com.mgmtp.cfu.exception.DuplicateCourseException;
@@ -96,6 +97,13 @@ public class RegistrationController {
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<?> discardRegistration(@PathVariable Long id) {
         registrationService.discardRegistration(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/enroll")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<?> createRegistrationFromExistingCourses(@RequestBody RegistrationEnrollDTO registrationEnrollDTO) {
+        registrationService.createRegistrationFromExistingCourses(registrationEnrollDTO);
         return ResponseEntity.ok().build();
     }
 }
