@@ -24,9 +24,14 @@ export function getTimeDifference(createdTime: string): string {
     return result.trim();
 }
 
+
 export function timeAgo(inputTime: string): string {
-    const now = new Date();
-    const timeDiff = now.getTime() - new Date(inputTime).getTime();
+    const localTimeNow = new Date();
+
+    const utcTime = new Date(inputTime);
+    const localTimeFromUTC = new Date(utcTime.getTime() - utcTime.getTimezoneOffset() * 60000);
+
+    const timeDiff = localTimeNow.getTime() - localTimeFromUTC.getTime();
 
     const seconds = Math.floor(timeDiff / 1000);
     const minutes = Math.floor(seconds / 60);
