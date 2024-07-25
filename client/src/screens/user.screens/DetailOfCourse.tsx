@@ -200,8 +200,6 @@ const Detail_Of_Course: React.FC = () => {
     return truncatedText.trim().slice(0, maxLines * 15) + "...";
   }
 
-  const thumbnailUrl = handleThumbnailUrl(courseData?.thumbnailUrl);
-
   //Handle Click Button Edit For Admin Or Enroll Now For USER
 
   const capitalizeFirstLetter = (text: string) => {
@@ -312,9 +310,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                (dataRatings.detailRatings["5"] * 100) /
-                                totalRating
-                              )
+                                  (dataRatings.detailRatings["5"] * 100) /
+                                    totalRating
+                                )
                               : 0
                           }
                         />
@@ -324,9 +322,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                (dataRatings.detailRatings["4"] * 100) /
-                                totalRating
-                              )
+                                  (dataRatings.detailRatings["4"] * 100) /
+                                    totalRating
+                                )
                               : 0
                           }
                         />
@@ -336,9 +334,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                (dataRatings.detailRatings["3"] * 100) /
-                                totalRating
-                              )
+                                  (dataRatings.detailRatings["3"] * 100) /
+                                    totalRating
+                                )
                               : 0
                           }
                         />
@@ -348,9 +346,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                (dataRatings.detailRatings["2"] * 100) /
-                                totalRating
-                              )
+                                  (dataRatings.detailRatings["2"] * 100) /
+                                    totalRating
+                                )
                               : 0
                           }
                         />
@@ -360,9 +358,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                (dataRatings.detailRatings["1"] * 100) /
-                                totalRating
-                              )
+                                  (dataRatings.detailRatings["1"] * 100) /
+                                    totalRating
+                                )
                               : 0
                           }
                         />
@@ -413,7 +411,7 @@ const Detail_Of_Course: React.FC = () => {
                     style={{ zIndex: "10" }}
                   >
                     <img
-                      src={thumbnailUrl}
+                      src={courseData.thumbnailUrl}
                       alt=""
                       className="absolute inset-0 object-cover object-center w-full h-full"
                     />
@@ -582,21 +580,26 @@ const Detail_Of_Course: React.FC = () => {
                     </div>
                     <hr />
                     <div className="p-[5px_10px_0_10px]">
-                      {role == 'ADMIN' && <ModalEditOrDeleteCourse courseData={courseData}>
-                        <button
-                          className="w-full h-[40px] border border-[#ccc] font-medium text-purple-600"
-                          style={{ color: "purple" }}
-                        >
-                          Edit
-                        </button>
-                      </ModalEditOrDeleteCourse>}
-                      {role == 'USER' &&
+                      {role == "ADMIN" && (
+                        <ModalEditOrDeleteCourse courseData={courseData}>
+                          <button
+                            className="w-full h-[40px] border border-[#ccc] font-medium text-purple-600"
+                            style={{ color: "purple" }}
+                          >
+                            Edit
+                          </button>
+                        </ModalEditOrDeleteCourse>
+                      )}
+                      {role == "USER" && (
                         <Button
                           className="w-full h-[40px] border bg-transparent border-[#ccc] hover:text-white font-medium text-purple"
-                          onClick={() => open(true, undefined, courseData, true)}
+                          onClick={() =>
+                            open(true, undefined, courseData, true)
+                          }
                         >
                           Enroll now
-                        </Button>}
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -724,4 +727,5 @@ const Detail_Of_Course: React.FC = () => {
     </>
   );
 };
+
 export default Detail_Of_Course;
