@@ -134,15 +134,15 @@ export const submitDocument = async (
 };
 
 export const finishLearning = async (id: string | number) => {
-        const response = await instance.put(`/registrations/${id}/finish-learning`);
-        response.status == 200 ? toast.success("Finish learning", {
-            style: { color: "green" },
-            description: "Congratulations! You have successfully completed the course.",
-        }) : toast.error("Failed to finish learning", {
-            style: { color: "red" },
-            description: "Opps.., some thing went wrong. Please, reload the page and try again",
-        });
-        return response
+    const response = await instance.put(`/registrations/${id}/finish-learning`);
+    response.status == 200 ? toast.success("Finish learning", {
+        style: { color: "green" },
+        description: "Congratulations! You have successfully completed the course.",
+    }) : toast.error("Failed to finish learning", {
+        style: { color: "red" },
+        description: "Opps.., some thing went wrong. Please, reload the page and try again",
+    });
+    return response
 }
 
 export const discardRegistration = async (id: number) => {
@@ -161,7 +161,7 @@ export const discardRegistration = async (id: number) => {
     });
 };
 
-export const submitWithExistedCourse = async (data: { courseID: string, duration: number, durationUnit: string }) => {
-    const response = await instance.post(`/registrations`, data);
+export const submitWithExistedCourse = async (data: { courseId: string, duration: number, durationUnit: string }) => {
+    const response = await instance.post(`/${data}/enroll`);
     return response;
 }
