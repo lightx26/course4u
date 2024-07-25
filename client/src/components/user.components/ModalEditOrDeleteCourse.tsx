@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { courseSchema } from "../../schemas/course-schema";
 import { Button } from "../ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CourseForm } from "../../components/form/course-form";
 import { Form } from "../ui/form";
 
@@ -57,6 +57,11 @@ const ModalEditOrDeleteCourse = ({ children, courseData }: Props) => {
       thumbnailUrl: "",
     },
   });
+  useEffect(() => {
+    if (courseData?.thumbnailUrl.includes("Default Course thumnail 1.svg")) {
+      courseData.thumbnailUrl = "";
+    }
+  }, [courseData]);
 
   const handleConfirm = async () => {
     setConfirmLoading(true);

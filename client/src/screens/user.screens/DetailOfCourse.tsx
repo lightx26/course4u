@@ -122,6 +122,7 @@ const Detail_Of_Course: React.FC = () => {
       fetchDataRelatedCourseById(id),
     ]);
     if (result && result.data) {
+      result.data.thumbnailUrl = handleThumbnailUrl(result.data.thumbnailUrl);
       setCourseData(result.data);
     }
     if (resultRatings && resultRatings.data) {
@@ -194,8 +195,6 @@ const Detail_Of_Course: React.FC = () => {
     // If all words fit, truncate at character limit
     return truncatedText.trim().slice(0, maxLines * 15) + "...";
   }
-
-  const thumbnailUrl = handleThumbnailUrl(courseData?.thumbnailUrl);
 
   //Handle Click Button Edit For Admin Or Enroll Now For USER
 
@@ -409,7 +408,7 @@ const Detail_Of_Course: React.FC = () => {
                     style={{ zIndex: "10" }}
                   >
                     <img
-                      src={thumbnailUrl}
+                      src={courseData.thumbnailUrl}
                       alt=""
                       className="absolute inset-0 object-cover object-center w-full h-full"
                     />
