@@ -10,6 +10,8 @@ import RegistrationList from "../../components/admin.components/registrations.co
 import { fetchAllRegistrations } from "../../apiService/Admin.service.ts";
 import { handleAvatarUrl } from "../../utils/handleAvatarUrl.ts";
 
+import { useRefreshState } from "../../hooks/use-refresh-state.ts";
+
 import { RootState } from "../../redux/store/store.ts";
 import {useDispatch, useSelector} from "react-redux";
 import { RegistrationParamsType} from "../../redux/slice/adminRegistration.slice.ts";
@@ -21,6 +23,8 @@ import {
 } from "../../redux/slice/adminRegistration.slice.ts";
 
 function AdminHomePage() {
+    const { registrationFlagAdmin } = useRefreshState((state) => state);
+
     const dispatch = useDispatch();
 
     const currentPage: number = useSelector(
@@ -78,7 +82,7 @@ function AdminHomePage() {
 
     useEffect(() => {
         handleFetchRegistrations(options, currentPage)
-    }, [currentPage]);
+    }, [currentPage, registrationFlagAdmin]);
 
     const handlePageNumberClick = (newPageNumber: number) => {
         dispatch(handleCurrentPageChange(newPageNumber));
