@@ -40,6 +40,7 @@ public class RegistrationValidator {
             for (Field field : Registration.class.getDeclaredFields()) {
                 if (field.getName().equalsIgnoreCase(orderBy.toLowerCase())) {
                     foundField = Boolean.TRUE;
+                    break;
                 }
             }
 

@@ -17,9 +17,6 @@ public class AdminRegistrationController {
     private final RegistrationService registrationService;
 
     @GetMapping
-    public ResponseEntity<?> getRegistrationForAdmin(
-            @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "status", defaultValue = "all") String status)
     public ResponseEntity<?> getRegistrationsForAdmin(
         @ModelAttribute RegistrationOverviewParams params,
         @RequestParam(value = "page", defaultValue = "1") int page

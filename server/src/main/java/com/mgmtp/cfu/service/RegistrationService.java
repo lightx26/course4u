@@ -17,6 +17,7 @@ public interface RegistrationService {
 
     Boolean createRegistration(RegistrationRequest registrationRequest);
 
+    void calculateScore(Long id);
     void approveRegistration(Long id);
 
     void declineRegistration(Long id , FeedbackRequest feedbackRequest);
@@ -27,7 +28,4 @@ public interface RegistrationService {
     // Admin Registration Services
     Page<RegistrationOverviewDTO> getRegistrations(RegistrationOverviewParams params, int page);
     void discardRegistration(Long id);
-
-    // Admin Registration Services
-    Page<RegistrationOverviewDTO> getRegistrations(RegistrationOverviewParams params, int page);
 }

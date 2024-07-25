@@ -22,6 +22,8 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
 
     boolean existsByIdAndUserId(Long registrationId, Long userId);
 
+    List<Registration> findAllByStatus(RegistrationStatus status);
+
     @Query("SELECT r FROM Registration r " +
            "WHERE r.status = :status " +
            "AND (LOWER(r.user.username) LIKE CONCAT('%', :search ,'%')  " +
