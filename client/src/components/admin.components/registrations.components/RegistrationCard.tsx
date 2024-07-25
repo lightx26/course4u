@@ -109,7 +109,7 @@ function RegistrationCardComponent({registration}: PropsType) {
                         </h3>
                     </div>
                     <div className="user_information flex justify-between">
-                        <div className="flex gap-0.5 align-center">
+                        <div className="flex gap-1 align-center">
                             <div className="my-auto">
                                 <img
                                     className="object-cover w-10 h-10 rounded-full"
@@ -119,13 +119,13 @@ function RegistrationCardComponent({registration}: PropsType) {
                             </div>
                             <div className="username flex flex-col">
                                 <span
-                                    className="text-base max-w-[85px] text-left overflow-hidden overflow-ellipsis">{displayedFullname}</span>
+                                    className="text-base max-w-[85px] text-left truncate">{displayedFullname}</span>
                                 <span className="text-xs">User</span>
                             </div>
                         </div>
                         <div
                             className={`status my-auto text-[11px] font-normal 
-                                        ${registration.status === "DOCUMENT_DECLINED" ? 'py-0.5 px-1 leading-6' : 'py-2 px-4'}
+                                        ${registration.status === "DOCUMENT_DECLINED" ? 'py-0.5 px-1 leading-6' : 'py-1.5 px-4'}
                                         rounded-lg min-h-[30px] min-w-[90px] text-center`}
                             style={{
                                 backgroundColor: `${backgroundColor}`,
