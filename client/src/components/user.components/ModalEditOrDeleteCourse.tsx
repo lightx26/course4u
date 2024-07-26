@@ -18,6 +18,7 @@ import { deleteCourseById } from "../../apiService/Course.service";
 import { useNavigate } from "react-router-dom";
 
 import { toast } from "sonner";
+
 interface CourseType {
   id: string | undefined;
   name: string;
@@ -48,6 +49,7 @@ const ModalEditOrDeleteCourse = ({ children, courseData }: Props) => {
     resolver: zodResolver(courseSchema),
     mode: "onBlur",
     defaultValues: {
+      id: "",
       name: "",
       teacherName: "",
       link: "",
@@ -57,9 +59,11 @@ const ModalEditOrDeleteCourse = ({ children, courseData }: Props) => {
       thumbnailUrl: "",
     },
   });
+
   if (courseData?.thumbnailUrl.includes("Default Course thumnail 1.svg")) {
     courseData.thumbnailUrl = "";
   }
+
   const handleConfirm = async () => {
     setConfirmLoading(true);
     const response = await deleteCourseById(courseData?.id);
@@ -86,13 +90,18 @@ const ModalEditOrDeleteCourse = ({ children, courseData }: Props) => {
     }
   };
 
+  async function onSubmit(values: z.infer<typeof courseSchema>) {
+    values.id = courseData?.id;
+    console.log(values);
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="max-w-[1100px] w-full px-3 rounded-xl min-h-[600px]">
         <DialogTitle></DialogTitle>
         <Form {...form}>
-          <form className="w-full">
+          <form className="w-full" onSubmit={form.handleSubmit(onSubmit)}>
             <CourseForm form={form} isEdit={true} course={courseData} />
             <div className="flex justify-end gap-2 mt-8">
               <Button
@@ -131,7 +140,7 @@ const ModalEditOrDeleteCourse = ({ children, courseData }: Props) => {
                 </p>
               </Modal>
               <Button
-                type="button"
+                type="submit"
                 className="bg-green-600 text-white w-32 h-9"
               >
                 Save
