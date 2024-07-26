@@ -1,9 +1,9 @@
 import { RegistrationType } from "../../../App";
 import { Skeleton } from "../../ui/skeleton";
 
-import CourseImagePlaceholder from "../../../../public/course/Default Course thumnail 1.svg";
 import {useRegistrationModal} from "../../../hooks/use-registration-modal";
 import { handleAvatarUrl } from "../../../utils/handleAvatarUrl";
+import handleThumbnailUrl from "../../../utils/handleThumbnailUrl.ts";
 
 type PropsType = {
     registration: RegistrationType;
@@ -83,7 +83,7 @@ function RegistrationCardComponent({registration}: PropsType) {
         open(true, +registration.id!);
     };
 
-    const courseThumbnailUrl = registration.courseThumbnailUrl ? registration.courseThumbnailUrl : CourseImagePlaceholder;
+    const courseThumbnailUrl = handleThumbnailUrl(registration.courseThumbnailUrl);
     const displayedFullname: string = registration.userFullname ? registration.userFullname : registration.userName ? registration.userName : "Anonymous";
     const status: string = convertStatus(registration.status ? registration.status : "");
     const period: string = handlePeriod(registration.startDate, registration.endDate);
@@ -119,7 +119,7 @@ function RegistrationCardComponent({registration}: PropsType) {
                             </div>
                             <div className="username flex flex-col">
                                 <span
-                                    className="text-base max-w-[85px] text-left truncate">{displayedFullname}</span>
+                                    className="text-base max-w-[75px] text-left truncate">{displayedFullname}</span>
                                 <span className="text-xs">User</span>
                             </div>
                         </div>
