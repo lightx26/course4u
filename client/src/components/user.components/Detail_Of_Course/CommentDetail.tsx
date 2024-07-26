@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Rate } from "antd";
 import { timeAgo } from "../../../utils/convertTime";
 import { handleAvatarUrl } from "../../../utils/handleAvatarUrl";
+import { v4 as uuidv4 } from "uuid";
 interface IReview {
   userAvatar: string;
   userFullName: string;
@@ -12,7 +13,14 @@ interface IReview {
 }
 
 const CommentDetail: React.FC<IReview> = (props) => {
-  const { userAvatar, rating, userFullName, comment, userUsername, createdDate } = props;
+  const {
+    userAvatar,
+    rating,
+    userFullName,
+    comment,
+    userUsername,
+    createdDate,
+  } = props;
   const [isExpanded, setIsExpanded] = useState(false);
   const [showSeeMore, setShowSeeMore] = useState(false);
   const commentRef = useRef<HTMLParagraphElement>(null);
@@ -56,7 +64,9 @@ const CommentDetail: React.FC<IReview> = (props) => {
       <div className="flex flex-col items-start gap-1.25 max-w-[calc(100%-60px)] flex-wrap">
         <div className="flex flex-col">
           <div className="flex items-center h-[30px] gap-1.25">
-            <div className="text-[15px] font-medium">{userFullName || userUsername || "Anonymous"}</div>
+            <div className="text-[15px] font-medium">
+              {userFullName || userUsername || "Anonymous"}
+            </div>
             <div>
               <svg
                 width="24"
@@ -87,9 +97,11 @@ const CommentDetail: React.FC<IReview> = (props) => {
         <div className="relative">
           <p
             ref={commentRef}
-            className={`text-[15px] mt-2 ${isExpanded ? "line-clamp-none" : "line-clamp-6"
-              } text-justify`}
+            className={`text-[15px] mt-2 ${
+              isExpanded ? "line-clamp-none" : "line-clamp-6"
+            } text-justify`}
             style={{ marginBottom: showSeeMore ? "20px" : "0px" }}
+            key={uuidv4()}
           >
             {comment}
           </p>

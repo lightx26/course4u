@@ -104,5 +104,6 @@ export {
   deleteCourseById,
   fetchDataRatingsCourseById,
   fetchDataReviewsCourseById,
-  fetchDataRelatedCourseById, createNewCourse
+  fetchDataRelatedCourseById,
+  createNewCourse,
 };

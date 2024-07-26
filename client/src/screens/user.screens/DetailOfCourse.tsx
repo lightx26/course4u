@@ -21,7 +21,8 @@ import { handleViewAllByDetailCousePage } from "../../redux/slice/filterItemChec
 import { useRegistrationModal } from "../../hooks/use-registration-modal.ts";
 import { Button } from "../../components/ui/button.tsx";
 import handleThumbnailUrl from "../../utils/handleThumbnailUrl.ts";
-
+import defaultThumbnail from "../../../public/course/Default Course thumnail 1.svg";
+import { v4 as uuidv4 } from "uuid";
 interface IRatings {
   averageRating: number;
   detailRatings: {
@@ -209,6 +210,7 @@ const Detail_Of_Course: React.FC = () => {
 
   const handleChangeOptionStar = (option: Option) => {
     setCurrentOption(option);
+    setCurrentPage(1);
   };
 
   //Handle Click View All
@@ -237,6 +239,7 @@ const Detail_Of_Course: React.FC = () => {
       navigate(`/admin/courses`);
     }
   };
+
   return (
     <>
       {courseData ? (
@@ -391,9 +394,13 @@ const Detail_Of_Course: React.FC = () => {
                               userFullName={item.userFullname}
                               comment={item.comment}
                               createdDate={item.createdDate}
+                              key={uuidv4()}
                             />
                           );
                         })}
+                      {dataReviews && dataReviews.length === 0 && (
+                        <div>There are no results with the selected rating</div>
+                      )}
                     </div>
                   </div>
                   <div className="w-full h-[50px] flex justify-center items-center mt-[20px]">
@@ -411,7 +418,7 @@ const Detail_Of_Course: React.FC = () => {
                     style={{ zIndex: "10" }}
                   >
                     <img
-                      src={courseData.thumbnailUrl}
+                      src={courseData?.thumbnailUrl || defaultThumbnail}
                       alt=""
                       className="absolute inset-0 object-cover object-center w-full h-full"
                     />
