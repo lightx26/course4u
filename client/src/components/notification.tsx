@@ -135,7 +135,7 @@ export function Notification(props: IProps) {
             <PopoverTrigger asChild>{children}</PopoverTrigger>
             <PopoverContent id="notification-popover"
                 ref={popoverContentRef} // Attach ref
-                className='w-[420px] max-h-[400px] overflow-y-auto p-0'
+                className='w-[420px] max-h-[400px] overflow-y-auto p-0 mt-2'
                 onOpenAutoFocus={(e) => e.preventDefault()}
             >
                 <div className='flex items-center justify-between p-3'>

@@ -92,7 +92,7 @@ const HeaderHomepage: React.FC = () => {
           onClick={goToHomePage}
           className="flex items-center cursor-pointer"
         >
-          <img src={imageLogo} alt="Logo" className="h-10" />
+          <img src={imageLogo} alt="Logo" className="h-10 select-none" />
           <span className="text-2xl font-semibold text-black select-none">
             ourse4U
           </span>

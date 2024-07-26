@@ -35,7 +35,7 @@ const AvatarDropdown = ({
 
   return (
     <div
-      className="relative w-[40px] h-[40px] rounded-[50%] group"
+      className="relative w-[40px] h-[40px] rounded-[50%] group select-none"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
