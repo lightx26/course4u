@@ -52,6 +52,11 @@ export default function MyRegistrationPage() {
     fetchData(currentPage, filterBy);
   }, [currentPage, filterBy]);
 
+  useEffect(() => {
+    dispatch(handleChangeStatus("SUBMITTED"));
+    fetchData(1, "SUBMITTED");
+  }, []);
+
   const onPageNumberClick = (newPageNumber: number) => {
     dispatch(handleChangeCurrentPage(newPageNumber));
   };
