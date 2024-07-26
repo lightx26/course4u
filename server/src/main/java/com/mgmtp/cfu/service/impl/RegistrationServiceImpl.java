@@ -253,25 +253,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         return registrations.map(registrationOverviewMapper::toDTO);
     }
-    @Override
-    public Page<RegistrationOverviewDTO> getRegistrationByStatus(int page, String status) {
-        try {
-            PageRequest pageRequest = PageRequest.of(page - 1, 8);
-            RegistrationStatus registrationStatus = RegistrationStatus.valueOf(status.toUpperCase());
-            Page<Registration> registrations = registrationRepository.findAllByStatus(registrationStatus, pageRequest);
-
-            List<RegistrationOverviewDTO> modifiedResponseContent = registrations
-                    .getContent()
-                    .stream()
-                    .map(registrationOverviewMapper::toDTO)
-                    .toList();
-
-            return new PageImpl<>(modifiedResponseContent, pageRequest, registrations.getTotalElements());
-        } catch (IllegalArgumentException e) {
-            throw new RegistrationStatusNotFoundException("Status not found");
-        }
-    }
-
 
     @Override
     public void calculateScore(Long id) {

@@ -37,6 +37,8 @@ import com.mgmtp.cfu.enums.DurationUnit
 import com.mgmtp.cfu.enums.RegistrationStatus
 
 import com.mgmtp.cfu.repository.CourseRepository
+import com.mgmtp.cfu.repository.NotificationRepository
+import com.mgmtp.cfu.repository.RegistrationFeedbackRepository
 import com.mgmtp.cfu.repository.RegistrationRepository
 
 import com.mgmtp.cfu.service.IEmailService
