@@ -9,12 +9,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification,Long> {
-    @Query("SELECT n FROM Notification n WHERE n.user.id = ?1 AND n.createdDate < ?2")
-    List<Notification> getBatchByUserId(Long userId, LocalDateTime timestamp, Pageable pageable);
+    @Query("SELECT n FROM Notification n WHERE n.user.id = ?1 AND n.createdAt < ?2")
+    List<Notification> getBatchByUserId(Long userId, ZonedDateTime timestamp, Pageable pageable);
 
     Integer countByUserIdAndSeen(Long userId, boolean seen);
 

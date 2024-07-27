@@ -34,8 +34,4 @@ public class Document {
     @Column(name = "`Type`")
     @Enumerated(EnumType.STRING)
     private DocumentType type;
-
-
-
-
 }

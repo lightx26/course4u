@@ -7,8 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.ZonedDateTime;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,13 +16,13 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @GetMapping
-    public ResponseEntity<?> getAllNotificationByCurrUser(@RequestParam(required = false) LocalDateTime timestamp,
+    public ResponseEntity<?> getNotificationsByCurrUser(@RequestParam(required = false) ZonedDateTime timestamp,
                                                                               @RequestParam(defaultValue = "25") int batchSize) {
         if (timestamp == null) {
-            timestamp = LocalDateTime.now();
+            timestamp = ZonedDateTime.now();
         }
         NotificationsResponse response = new NotificationsResponse();
-        response.setContent(notificationService.getAllNotificationByCurrUser(timestamp, batchSize));
+        response.setContent(notificationService.getNotificationsByCurrUser(timestamp, batchSize));
         response.setTotalUnread(notificationService.countUnreadNotification());
 
         return ResponseEntity.ok(response);

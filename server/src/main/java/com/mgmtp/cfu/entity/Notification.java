@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Entity
 @Getter
@@ -25,8 +26,8 @@ public class Notification {
     @Column(name = "`Content`")
     String content;
 
-    @Column(name = "`CreatedDate`")
-    LocalDateTime createdDate;
+    @Column(name = "`CreatedAt`")
+    ZonedDateTime createdAt;
 
     @Column(name = "`Type`")
     @Enumerated(EnumType.STRING)

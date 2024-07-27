@@ -4,6 +4,7 @@ import com.mgmtp.cfu.enums.NotificationType;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 public class NotificationUserDTO {
     private Long id;
     private String content;
-    private LocalDateTime createdDate;
+    private ZonedDateTime createdAt;
     private NotificationType type;
     private Boolean seen;
 }

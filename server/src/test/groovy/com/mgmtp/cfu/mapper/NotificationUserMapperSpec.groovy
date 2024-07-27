@@ -7,20 +7,21 @@ import org.mapstruct.factory.Mappers
 import spock.lang.Specification
 
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 class NotificationUserMapperSpec extends Specification {
     def notificationUserMapper = Mappers.getMapper(NotificationUserMapper.class)
 
     def "ToListDTO"() {
         given:
-            def notifications = [new Notification(id: 1L,content: "content",createdDate: LocalDateTime.now(),seen: false,type: NotificationType.ERROR)]
+            def notifications = [new Notification(id: 1L,content: "content",createdAt: ZonedDateTime.now(),seen: false,type: NotificationType.ERROR)]
         when:
             def result = notificationUserMapper.toListDTO(notifications)
         then:
             result.size() == 1
             result[0].id == notifications[0].id
             result[0].content == notifications[0].content
-            result[0].createdDate == notifications[0].createdDate
+            result[0].createdAt == notifications[0].createdAt
             result[0].seen == notifications[0].seen
             result[0].type == notifications[0].type
     }

@@ -7,6 +7,8 @@ import spock.lang.Specification
 import spock.lang.Subject
 
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 class NotificationControllerSpec extends Specification {
     def notificationService = Mock(NotificationService)
@@ -16,14 +18,14 @@ class NotificationControllerSpec extends Specification {
 
     def "should return notifications for the current user"() {
         given:
-            def notifications = [new NotificationUserDTO(id: 1L,content: "content",seen:false)]
-            def timestamp = LocalDateTime.of(2024, 1, 1, 0, 0, 0)
-            notificationService.getAllNotificationByCurrUser(timestamp, 10) >> notifications
+            def notifications = [new NotificationUserDTO(id: 1L, content: "content", seen:false)]
+            def timestamp = ZonedDateTime.of(LocalDateTime.of(2024, 1, 1, 0, 0, 0), ZoneId.of("UTC"))
+            notificationService.getNotificationsByCurrUser(timestamp, 10) >> notifications
             notificationService.countUnreadNotification() >> 1
         when:
-            def result = notificationController.getAllNotificationByCurrUser(timestamp, 10)
+            def result = notificationController.getNotificationsByCurrUser(timestamp, 10)
         then:
-            1 * notificationService.getAllNotificationByCurrUser(timestamp, 10) >> notifications
+            1 * notificationService.getNotificationsByCurrUser(timestamp, 10) >> notifications
             result.statusCode.value() == 200
             (result.body as NotificationsResponse).content == notifications
             (result.body as NotificationsResponse).totalUnread == 1

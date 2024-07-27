@@ -8,7 +8,7 @@ import { timeAgo } from "../utils/convertTime";
 type Notification = {
     id: number;
     content: string;
-    createdDate: string;
+    createdAt: string;
     type: string;
     seen: boolean;
 };
@@ -56,7 +56,7 @@ export function Notification(props: IProps) {
         // starting from the last notification in the buffer
         else {
             const lastNotification = buffer[buffer.length - 1];
-            res = await getAllNotificationsByCurrUser(defaultBatchSize, new Date(lastNotification.createdDate));
+            res = await getAllNotificationsByCurrUser(defaultBatchSize, new Date(lastNotification.createdAt));
             setCountUnread(res.totalUnread);
         }
 
@@ -184,7 +184,7 @@ export function Notification(props: IProps) {
                                     {notification.content}
                                 </div>
                                 <div className='text-xs text-right mr-2 text-gray-400'>
-                                    {timeAgo(notification.createdDate)}
+                                    {timeAgo(notification.createdAt)}
                                 </div>
                             </div>
                         </div>
