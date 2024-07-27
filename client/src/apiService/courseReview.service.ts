@@ -11,6 +11,6 @@ export const sendReview = async (rating: number, comment: string, courseId: stri
 }
 
 export const checkExistReview = async (courseId: string) => {
-    const result = await instance.post(`/courses/${courseId}/checkReviewed`);
+    const result = await instance.post(`/courses/${courseId}/check-reviewed`);
     return result;
 }
