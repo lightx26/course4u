@@ -21,9 +21,9 @@ export const approveRegistration = async (id: number, close: VoidFunction) => {
 };
 
 export const declineRegistration = async (
-    id: number,
-    comment: string,
-    close: VoidFunction
+  id: number,
+  comment: string,
+  close: VoidFunction
 ) => {
     const res = await instance.post(`/registrations/${id}/decline`, {
         comment,
@@ -59,9 +59,9 @@ export const startLearning = async (id: number) => {
 };
 
 export const closeRegistration = async (
-    id: number,
-    comment: string,
-    close: VoidFunction
+  id: number,
+  comment: string,
+  close: VoidFunction
 ) => {
     const res = await instance.post(`/registrations/${id}/close`, {
         comment,
@@ -98,39 +98,39 @@ export const removeRegistration = async (id: number) => {
 };
 
 export const submitDocument = async (
-    listFileCertificate: UploadFile[],
-    listFilePayment: UploadFile[],
-    id: string | undefined
+  listFileCertificate: UploadFile[],
+  listFilePayment: UploadFile[],
+  id: string | undefined
 ) => {
-    try {
-        const formData = new FormData();
-        // Append payment files
-        listFilePayment.forEach((file) => {
-            if (file.originFileObj) {
-                formData.append("payment", file.originFileObj);
-            }
-        });
+  try {
+    const formData = new FormData();
+    // Append payment files
+    listFilePayment.forEach((file) => {
+      if (file.originFileObj) {
+        formData.append("payment", file.originFileObj);
+      }
+    });
 
-        // Append certificate files
-        listFileCertificate.forEach((file) => {
-            if (file.originFileObj) {
-                formData.append("certificate", file.originFileObj);
-            }
-        });
+    // Append certificate files
+    listFileCertificate.forEach((file) => {
+      if (file.originFileObj) {
+        formData.append("certificate", file.originFileObj);
+      }
+    });
 
-        const response = await instance.post(
-            `/documents/registrations/${id}`,
-            formData
-        );
+    const response = await instance.post(
+      `/documents/registrations/${id}`,
+      formData
+    );
 
-        return response;
-    } catch (error) {
-        toast.error("Document Submission Failed", {
-            style: { color: "red" },
-            description:
-                "There was an error submitting your documents. Please try again later.",
-        });
-    }
+    return response;
+  } catch (error) {
+    toast.error("Document Submission Failed", {
+      style: { color: "red" },
+      description:
+        "There was an error submitting your documents. Please try again later.",
+    });
+  }
 };
 
 export const finishLearning = async (id: string | number) => {
@@ -169,3 +169,43 @@ export const submitWithExistedCourse = async ({ courseId, duration, durationUnit
     const response = await instance.post(`/registrations/${courseId}/enroll`, params);
     return response;
 }
+
+type DocumentType = {
+  id: number;
+  registrationId: number;
+  url: string;
+  status: string;
+  type: string;
+};
+
+type DataFormType = {
+  feedbackRequest?: string;
+  [key: number]: string;
+};
+
+export const approve_Decline_Document_Registration = async (
+  id: number | undefined,
+  feedback: string | undefined,
+  data: DocumentType[],
+  type: string
+) => {
+  try {
+    const dataForm: DataFormType = {};
+
+    if (feedback && feedback !== "") {
+      dataForm.feedbackRequest = feedback;
+    }
+
+    data.forEach((item) => {
+      dataForm[item.id] = item.status;
+    });
+
+    const response = await instance.post(
+      `/registrations/${id}/verify?status=${type}`,
+      dataForm
+    );
+    return response;
+  } catch (error) {
+    console.log("Error while approving documents", error);
+  }
+};

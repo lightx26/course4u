@@ -29,29 +29,6 @@ class DocumentControllerSpec extends Specification {
 
     }
 
-    def "should approve document"() {
-        given:
-        Long registrationId = 1L
-        def document = DocumentDTO.builder().id(1).build()
-        documentService.approveDocument(_ as Long)>>document
-        when:
-        def response=documentController.approveDocument(registrationId)
-        then:
-        response.statusCode.value()==200
-        response.body.id==1
-    }
-
-    def "should decline document"() {
-        given:
-        Long registrationId = 1L
-        def document = DocumentDTO.builder().id(1).build()
-        documentService.declineDocument(_ as Long)>>document
-        when:
-        def response=documentController.declineDocument(registrationId)
-        then:
-        response.statusCode.value()==200
-        response.body.id==1
-    }
     def "should throw MaxUploadSizeExceededException if file size exceeds limit"() {
         given:
         MultipartFile file = new MockMultipartFile("file", "filename.txt", "text/plain",new byte[Constant.DOCUMENT_SIZE_LIMIT + 100])
@@ -107,4 +84,7 @@ class DocumentControllerSpec extends Specification {
         then:
         1 * documentService.submitDocument([certFile] as MultipartFile[], [payFile] as MultipartFile[], 1L)
     }
+
+
+
 }

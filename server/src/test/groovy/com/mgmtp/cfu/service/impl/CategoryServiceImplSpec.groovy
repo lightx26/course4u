@@ -79,7 +79,6 @@ class CategoryServiceImplSpec extends Specification {
         }
         SecurityContextHolder.context.authentication = authentication
 
-        and:
         categoryRepository.findById(_ as Long) >> Optional.ofNullable(category)
         categoryRepository.findCategoryByNameIgnoreCase(_ as String) >> Optional.ofNullable(null)
 

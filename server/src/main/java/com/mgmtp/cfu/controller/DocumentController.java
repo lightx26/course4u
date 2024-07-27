@@ -57,19 +57,19 @@ public class DocumentController {
         return ResponseEntity.ok(documentService.getDocumentsByRegistrationId(registrationId));
     }
 
-    @PostMapping("/{id}/approval")
-    @PreAuthorize("hasRole(ROLE_ACCOUNTANT)")
-    public ResponseEntity<DocumentDTO> approveDocument(@PathVariable("id") Long id) {
-        validateId(id, "document id");
-        return ResponseEntity.ok(documentService.approveDocument(id));
-    }
-
-    @PostMapping("/{id}/decline")
-    @PreAuthorize("hasRole(ROLE_ACCOUNTANT)")
-    public ResponseEntity<DocumentDTO> declineDocument(@PathVariable("id") Long id) {
-        validateId(id, "document id");
-        return ResponseEntity.ok(documentService.declineDocument(id));
-    }
+//    @PostMapping("/{id}/approval")
+//    @PreAuthorize("hasRole(ROLE_ACCOUNTANT)")
+//    public ResponseEntity<DocumentDTO> approveDocument(@PathVariable("id") Long id) {
+//        validateId(id, "document id");
+//        return ResponseEntity.ok(documentService.approveDocument(id));
+//    }
+//
+//    @PostMapping("/{id}/decline")
+//    @PreAuthorize("hasRole(ROLE_ACCOUNTANT)")
+//    public ResponseEntity<DocumentDTO> declineDocument(@PathVariable("id") Long id) {
+//        validateId(id, "document id");
+//        return ResponseEntity.ok(documentService.declineDocument(id));
+//    }
 
 
 }

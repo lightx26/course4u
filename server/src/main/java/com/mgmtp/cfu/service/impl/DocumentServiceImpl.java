@@ -89,15 +89,7 @@ public class DocumentServiceImpl implements DocumentService {
         registrationRepository.save(registration);
     }
 
-    @Override
-    public DocumentDTO approveDocument(Long id) {
-        return verifyDocument(id, DocumentStatus.APPROVED);
-    }
 
-    @Override
-    public DocumentDTO declineDocument(Long id) {
-        return verifyDocument(id, DocumentStatus.REFUSED);
-    }
 
     private void notifyAccountant(User user, Registration registration) {
         // TODO: Implement notification logic
@@ -118,11 +110,11 @@ public class DocumentServiceImpl implements DocumentService {
 
     }
 
-    protected DocumentDTO verifyDocument(Long id, DocumentStatus documentStatus) {
+    protected Document verifyDocument(Long id, DocumentStatus documentStatus) {
         var document = documentRepository.findById(id)
                 .orElseThrow(() -> new BadRequestRuntimeException("Document not found."));
         document.setStatus(documentStatus);
-        return getMapper().toDTO(documentRepository.save(document));
+        return document;
     }
 
     private void sendNoticedMail(User accountant, String content) {

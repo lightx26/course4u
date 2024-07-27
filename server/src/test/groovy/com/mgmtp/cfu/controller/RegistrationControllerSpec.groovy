@@ -198,4 +198,17 @@ class RegistrationControllerSpec extends Specification {
         then:
         thrown(CourseNotFoundException)
     }
+    def "verifyDeclineRegistration should call registrationService with correct parameters"() {
+        given:
+        Long id = 1L
+        Map<String, String> longDocumentStatusMap = ["key": "value"]
+        String status = "declined"
+
+        when:
+        registrationController.verifyDeclineRegistration(id, longDocumentStatusMap, status)
+
+        then:
+        1*registrationService.verifyRegistration(id, longDocumentStatusMap, status)
+    }
+
 }

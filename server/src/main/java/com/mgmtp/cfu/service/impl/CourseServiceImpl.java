@@ -32,14 +32,11 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -186,14 +183,14 @@ public class CourseServiceImpl implements CourseService {
     public List<CourseOverviewDTO> getRelatedCourses(Long courseId) {
         var course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new CourseNotFoundException("The course with ID " + courseId + " isn't found."));
-        Pageable pageable = PageRequest.of(0, 8);
         // Find related courses based on categories and course status
+        var categoryOfThisCourse=course.getCategories();
         var relatedCourses = courseRepository.findTop8RelatedCourse(
-                course.getCategories().stream().map(Category::getName).collect(Collectors.toSet()),
-                pageable,
+                categoryOfThisCourse,
                 courseId,
                 CourseStatus.AVAILABLE
         );
+        relatedCourses=relatedCourses!=null?relatedCourses:new ArrayList<>();
         var courseMapper = getOverviewCourseMapper();
         // Map to DTO, set null ratings to 0.0, and sort by rating in descending order
         return relatedCourses.stream()

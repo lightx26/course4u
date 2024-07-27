@@ -1,12 +1,14 @@
 package com.mgmtp.cfu.controller;
 
 import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest;
+import com.mgmtp.cfu.enums.DocumentStatus;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationEnrollDTO;
 import com.mgmtp.cfu.exception.BadRequestRuntimeException;
 import com.mgmtp.cfu.exception.UnknownErrorException;
 import com.mgmtp.cfu.exception.DuplicateCourseException;
 import com.mgmtp.cfu.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -19,11 +21,14 @@ import com.mgmtp.cfu.dto.RegistrationRequest;
 import com.mgmtp.cfu.entity.Registration;
 import org.springframework.http.HttpStatus;
 
+import java.util.Map;
+
 import static com.mgmtp.cfu.util.RequestValidator.validateId;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/registrations")
+@Slf4j
 public class RegistrationController {
 
     private final RegistrationService registrationService;
@@ -101,30 +106,18 @@ public class RegistrationController {
         registrationService.discardRegistration(id);
         return ResponseEntity.ok().build();
     }
+    @PostMapping("{id}/verify")
+    @PreAuthorize("hasRole('ROLE_ACCOUNTANT')")
+    public void verifyDeclineRegistration(@PathVariable Long id, @RequestBody Map<String, String> longDocumentStatusMap, @RequestParam(name = "status") String status) {
+        validateId(id,"registration id");
+        registrationService.verifyRegistration(id,longDocumentStatusMap, status);
 
+    }
     @PostMapping("/{courseId}/enroll")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<?> createRegistrationFromExistingCourses(@PathVariable Long courseId, @RequestBody RegistrationEnrollDTO registrationEnrollDTO) {
         registrationService.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO);
         return ResponseEntity.ok().build();
     }
-
-    @PostMapping("{id}/verify/approval")
-    @PreAuthorize("hasRole('ROLE_ACCOUNTANT')")
-    public void verifyApprovalRegistration(@PathVariable Long id) {
-        validateId(id,"Registration");
-        registrationService.verifyApprovalRegistration(id);
-
-    }
-    @PostMapping("{id}/verify/decline")
-    @PreAuthorize("hasRole('ROLE_ACCOUNTANT')")
-    public void verifyDeclineRegistration(@PathVariable Long id, @RequestBody FeedbackRequest feedbackRequest) {
-        validateId(id,"registration id");
-        registrationService.verifyDeclineRegistration(id,feedbackRequest);
-
-    }
-
-
-
 
 }

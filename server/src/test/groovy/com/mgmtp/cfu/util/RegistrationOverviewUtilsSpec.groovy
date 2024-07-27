@@ -32,4 +32,6 @@ class RegistrationOverviewUtilsSpec extends Specification {
         then:
         result.size() == 4
     }
+
+
 }

@@ -35,6 +35,17 @@ import LearningProgress from "../user.components/learning-progress";
 import { useRegistrationModal } from "../../hooks/use-registration-modal";
 import type { UploadFile } from "antd";
 import FormDocument from "../user.components/Document";
+import VerifyDocumentForAccountant from "../accountant.components/VerifyDocumentForAccoutant";
+import { RegistrationButtonForAccountant } from "../admin.components/registrations.components/registration-button-accountant";
+import FeedBackFromAccountant from "../FeedBackFromAccountant";
+import { getListDocumentByRegistrationId } from "../../apiService/Document.service";
+type DocumentType = {
+  id: number;
+  registrationId: number;
+  url: string;
+  status: string;
+  type: string;
+};
 type RegistrationsFormProps = RegistrationsProps & {
   isEdit: boolean;
   setIsEdit: (isEdit: boolean) => void;
@@ -53,7 +64,7 @@ export const RegistrationsForm = ({
   startDate,
   endDate,
   registrationFeedbacks,
-  isBlockedModifiedCourse
+  isBlockedModifiedCourse,
 }: RegistrationsFormProps) => {
   const form = useForm<z.infer<typeof registrationSchema>>({
     resolver: zodResolver(registrationSchema),
@@ -101,13 +112,9 @@ export const RegistrationsForm = ({
       isFile = true;
     } else if (values.thumbnailUrl.startsWith("data:")) {
       const thumbnailFromBase64 = base64ToBlob(values.thumbnailUrl);
-      thumbnailFile = new File(
-        [thumbnailFromBase64],
-        `${values.name}.jpg`,
-        {
-          type: thumbnailFromBase64.type,
-        }
-      );
+      thumbnailFile = new File([thumbnailFromBase64], `${values.name}.jpg`, {
+        type: thumbnailFromBase64.type,
+      });
       isFile = true;
     } else {
       isFile = false;
@@ -179,17 +186,35 @@ export const RegistrationsForm = ({
   }
 
   //Submit Document
-  const [listFileCertificate, setListFileCertificate] = useState<
-    UploadFile[]
-  >([]);
+  const [listFileCertificate, setListFileCertificate] = useState<UploadFile[]>(
+    []
+  );
   const [listFilePayment, setListFilePayment] = useState<UploadFile[]>([]);
 
+  //Accoutant
+  const [documentRegistration, setDocumentRegistration] = useState<
+    DocumentType[]
+  >([]);
+
+  const [feedBackFromAccountant, setFeedBackFromAccountant] =
+    useState<string>("");
+
+  const fetchListDocument = async () => {
+    const result = await getListDocumentByRegistrationId(id);
+    if (result && result.data) {
+      setDocumentRegistration(result.data);
+    }
+  };
+  useEffect(() => {
+    fetchListDocument();
+  }, [id]);
+
   return (
-    <div className='flex flex-col w-full'>
+    <div className="flex flex-col w-full">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className='w-full space-y-8 '
+          className="w-full space-y-8 "
         >
           <CourseForm
             //eslint-disable-next-line
@@ -200,39 +225,30 @@ export const RegistrationsForm = ({
             registrationStatus={status}
             isBlockedModifiedCourse={isBlockedModifiedCourse}
           />
-          <div className='flex w-[60%] pr-4 gap-2'>
+          <div className="flex w-[60%] pr-4 gap-2">
             <FormField
               control={form.control}
-              name='duration'
+              name="duration"
               render={({ field }) => (
-                <FormItem className='flex-1'>
+                <FormItem className="flex-1">
                   <FormLabel>
-                    Duration{" "}
-                    <span className='text-red-500'>*</span>
+                    Duration <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
                     <Input
-                      type='number'
-                      placeholder='Duration'
+                      type="number"
+                      placeholder="Duration"
                       {...field}
                       onChange={(event) => {
-                        field.onChange(
-                          +event.target.value
-                        );
-                        setInputDuration(
-                          +event.target.value
-                        );
+                        field.onChange(+event.target.value);
+                        setInputDuration(+event.target.value);
                       }}
-                      className=''
+                      className=""
                       disabled={!isEdit}
                       onKeyDown={(e) => {
-                        e.key === "." &&
-                          e.preventDefault();
+                        e.key === "." && e.preventDefault();
                       }}
-                      value={
-                        duration ||
-                        Number(inputDuration).toString()
-                      }
+                      value={duration || Number(inputDuration).toString()}
                     />
                   </FormControl>
                   <FormMessage />
@@ -241,32 +257,23 @@ export const RegistrationsForm = ({
             />
             <FormField
               control={form.control}
-              name='durationUnit'
+              name="durationUnit"
               render={({ field }) => (
-                <FormItem className='w-[100px] mt-8'>
+                <FormItem className="w-[100px] mt-8">
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={
-                      durationUnit ||
-                      form.watch("durationUnit")
-                    }
+                    defaultValue={durationUnit || form.watch("durationUnit")}
                     disabled={!isEdit}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder='Select a level for this course' />
+                        <SelectValue placeholder="Select a level for this course" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value='DAY'>
-                        Day
-                      </SelectItem>
-                      <SelectItem value='WEEK'>
-                        Week
-                      </SelectItem>
-                      <SelectItem value='MONTH'>
-                        Month
-                      </SelectItem>
+                      <SelectItem value="DAY">Day</SelectItem>
+                      <SelectItem value="WEEK">Week</SelectItem>
+                      <SelectItem value="MONTH">Month</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -275,29 +282,21 @@ export const RegistrationsForm = ({
             />
           </div>
           {startDate && (
-            <LearningProgress
-              startDate={startDate}
-              endDate={endDate || ""}
-            />
+            <LearningProgress startDate={startDate} endDate={endDate || ""} />
           )}
           {user.user?.role === "USER" && (
-            <div className='space-y-5'>
+            <div className="space-y-5">
               {status === "DONE" && (
                 <FormDocument
                   listFileCertificate={listFileCertificate}
-                  setListFileCertificate={
-                    setListFileCertificate
-                  }
+                  setListFileCertificate={setListFileCertificate}
                   listFilePayment={listFilePayment}
                   setListFilePayment={setListFilePayment}
                 />
               )}
-              {registrationFeedbacks &&
-                registrationFeedbacks.length > 0 && (
-                  <FeedbackList
-                    feedbacks={registrationFeedbacks}
-                  />
-                )}
+              {registrationFeedbacks && registrationFeedbacks.length > 0 && (
+                <FeedbackList feedbacks={registrationFeedbacks} />
+              )}
               <RegistrationButton
                 status={status!}
                 setIsEdit={setIsEdit}
@@ -312,14 +311,61 @@ export const RegistrationsForm = ({
               />
             </div>
           )}
+
+          {user.user?.role === "ACCOUNTANT" && (
+            <div className="space-y-5">
+              {}
+
+              {status === "VERIFYING" && (
+                <>
+                  <VerifyDocumentForAccountant
+                    documentRegistration={documentRegistration}
+                    setDocumentRegistration={setDocumentRegistration}
+                    status={status}
+                  />
+                  {registrationFeedbacks &&
+                    registrationFeedbacks.length > 0 && (
+                      <FeedbackList feedbacks={registrationFeedbacks} />
+                    )}
+                  {registrationFeedbacks &&
+                    registrationFeedbacks.length === 0 && (
+                      <h4 className="mb-5 text-xl font-semibold">Feedback</h4>
+                    )}
+                  <FeedBackFromAccountant
+                    setFeedBackFromAccountant={setFeedBackFromAccountant}
+                  />
+                  <RegistrationButtonForAccountant
+                    status={status!}
+                    id={id}
+                    feedBackFromAccountant={feedBackFromAccountant}
+                    document={documentRegistration}
+                  />
+                </>
+              )}
+              {(status === "VERIFIED" ||
+                status === "CLOSED" ||
+                status === "DOCUMENT_DECLINED") && (
+                <>
+                  <VerifyDocumentForAccountant
+                    documentRegistration={documentRegistration}
+                    setDocumentRegistration={setDocumentRegistration}
+                    status={status}
+                  />
+                  {registrationFeedbacks &&
+                    registrationFeedbacks.length > 0 && (
+                      <FeedbackList feedbacks={registrationFeedbacks} />
+                    )}
+                </>
+              )}
+            </div>
+          )}
         </form>
       </Form>
       {user.user?.role === "ADMIN" && (
-        <div className='space-y-5'>
-          {registrationFeedbacks &&
-            registrationFeedbacks?.length > 0 && (
-              <FeedbackList feedbacks={registrationFeedbacks!} />
-            )}
+        <div className="space-y-5">
+          {registrationFeedbacks && registrationFeedbacks?.length > 0 && (
+            <FeedbackList feedbacks={registrationFeedbacks!} />
+          )}
           <RegistrationAdminSection status={status} />
         </div>
       )}

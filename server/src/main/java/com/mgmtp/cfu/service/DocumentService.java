@@ -10,7 +10,5 @@ public interface DocumentService {
 
     List<DocumentDTO> getDocumentsByRegistrationId(Long registrationId);
 
-    DocumentDTO approveDocument(Long id);
 
-    DocumentDTO declineDocument(Long id);
 }
