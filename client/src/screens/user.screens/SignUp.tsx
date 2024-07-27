@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { RootState } from "../../redux/store/store";
 import "../../assets/css/login.css";
 import { useAppDispatch } from "../../redux/store/hook";
-import { DatePicker } from "antd";
+import { DatePicker, Input } from "antd";
 import type { DatePickerProps } from "antd";
 interface ISignUpRequest {
   username: string;
@@ -352,7 +352,7 @@ const SignUp: React.FC = () => {
                   Your password<span className="text-red-500">*</span>
                 </label>
 
-                <input
+                {/* <input
                   type="password"
                   id="password"
                   name="password"
@@ -365,6 +365,18 @@ at least one uppercase letter, one special character, and one number."
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
                   }
+                /> */}
+                <Input.Password
+                  id="password"
+                  name="password"
+                  placeholder="Your password"
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
+                  className="h-10 pl-3 text-sm font-normal"
+                  title="Password requirements: must be at least 8 characters long and include 
+at least one uppercase letter, one special character, and one number."
                 />
               </div>
               <div className="flex flex-col gap-1 w-1/2">
@@ -375,7 +387,7 @@ at least one uppercase letter, one special character, and one number."
                   Confirm password<span className="text-red-500">*</span>
                 </label>
 
-                <input
+                {/* <input
                   type="password"
                   id="confirm_password"
                   name="confirm_password"
@@ -388,6 +400,19 @@ at least one uppercase letter, one special character, and one number."
                       confirmPassword: e.target.value,
                     })
                   }
+                /> */}
+                <Input.Password
+                  id="confirm_password"
+                  name="confirm_password"
+                  placeholder="Confirm your password"
+                  value={formData.confirmPassword}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      confirmPassword: e.target.value,
+                    })
+                  }
+                  className="h-10 pl-3 text-sm font-normal"
                 />
               </div>
             </div>

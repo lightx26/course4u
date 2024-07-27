@@ -9,18 +9,10 @@ interface IReview {
   comment: string;
   createdDate: string;
   rating: number;
-  userUsername: string;
 }
 
 const CommentDetail: React.FC<IReview> = (props) => {
-  const {
-    userAvatar,
-    rating,
-    userFullName,
-    comment,
-    userUsername,
-    createdDate,
-  } = props;
+  const { userAvatar, rating, userFullName, comment, createdDate } = props;
   const [isExpanded, setIsExpanded] = useState(false);
   const [showSeeMore, setShowSeeMore] = useState(false);
   const commentRef = useRef<HTMLParagraphElement>(null);
@@ -65,7 +57,7 @@ const CommentDetail: React.FC<IReview> = (props) => {
         <div className="flex flex-col">
           <div className="flex items-center h-[30px] gap-1.25">
             <div className="text-[15px] font-medium">
-              {userFullName || userUsername || "Anonymous"}
+              {userFullName || "Anonymous"}
             </div>
             <div>
               <svg

@@ -65,14 +65,16 @@ public class AuthServiceImpl implements IAuthService {
 
         List<User> existingUsers = userRepository.findAllByEmail(signUpRequest.getEmail());
 
+        if(userRepository.existsByUsername(signUpRequest.getUsername()))
+            throw new AccountExistByEmailException("Username is already in use.");
+
         boolean emailInUseWithInvalidRole = existingUsers.stream()
                 .anyMatch(user -> !user.getRole().equals(Role.ACCOUNTANT) && !user.getRole().equals(Role.ADMIN));
 
         if (emailInUseWithInvalidRole) {
             throw new AccountExistByEmailException("Email is already in use.");
         }
-        if(userRepository.existsByUsername(signUpRequest.getUsername()))
-            throw new AccountExistByEmailException("Username is already in use.");
+
         // Hash the password
         String hashedPassword = passwordEncoder.encode(signUpRequest.getPassword());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
@@ -88,7 +90,7 @@ public class AuthServiceImpl implements IAuthService {
 
         user = userRepository.save(user);
         List<MailContentUnit> mailContentUnits=List.of(
-                MailContentUnit.builder().id("user_greeting").content("Welcome to "+ user.getUsername()).tag("div").build(),
+                MailContentUnit.builder().id("user_greeting").content("Welcome"+ user.getUsername()).tag("div").build(),
                 MailContentUnit.builder().id("client_url").href(clientUrl).tag("a").build()
         );
         emailService.sendMessage(user.getEmail(), "Welcome to course4U!","successful_account_registration_mail_template.xml", mailContentUnits);

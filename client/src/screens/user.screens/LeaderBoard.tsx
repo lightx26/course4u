@@ -9,6 +9,8 @@ import {
 } from "../../apiService/Score.service";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
+import { handleAvatarUrl } from "../../utils/handleAvatarUrl";
+
 interface DataType {
   key: string;
   rank: number;
@@ -74,7 +76,7 @@ const LeaderBoard: React.FC = () => {
             <div className="flex items-center gap-2.5">
               <div className="relative w-8 h-8 rounded-full">
                 <img
-                  src={data.avatarUrl}
+                  src={handleAvatarUrl(data.avatarUrl)}
                   alt=""
                   className="absolute object-cover object-center w-full h-full rounded-full"
                 />

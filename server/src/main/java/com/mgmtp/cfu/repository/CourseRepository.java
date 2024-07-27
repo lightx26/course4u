@@ -3,9 +3,7 @@ package com.mgmtp.cfu.repository;
 import com.mgmtp.cfu.entity.Category;
 import com.mgmtp.cfu.entity.Course;
 import com.mgmtp.cfu.enums.CourseStatus;
-import com.mgmtp.cfu.enums.RegistrationStatus;
 import org.springframework.data.domain.Pageable;
-import com.mgmtp.cfu.enums.CourseStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -40,7 +38,7 @@ public interface CourseRepository extends JpaRepository<Course, Long>, JpaSpecif
                     ") "
 
     )
-    List<Course> findTop8RelatedCourse(@Param("categories") Set<Category> categories,  @Param("courseId") Long courseId, @Param("status") CourseStatus courseStatus
+    List<Course> findTop8RelatedCourse(@Param("categories") Set<Category> categories, Pageable pageable, @Param("courseId") Long courseId, @Param("status") CourseStatus courseStatus
     );
     Optional<Course> findFirstByLinkIgnoreCaseAndStatus(String link, CourseStatus courseStatus);
 

@@ -183,10 +183,11 @@ public class CourseServiceImpl implements CourseService {
     public List<CourseOverviewDTO> getRelatedCourses(Long courseId) {
         var course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new CourseNotFoundException("The course with ID " + courseId + " isn't found."));
+        Pageable pageable = PageRequest.of(0, 8);
         // Find related courses based on categories and course status
-        var categoryOfThisCourse=course.getCategories();
         var relatedCourses = courseRepository.findTop8RelatedCourse(
-                categoryOfThisCourse,
+                course.getCategories(),
+                pageable,
                 courseId,
                 CourseStatus.AVAILABLE
         );

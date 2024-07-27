@@ -94,3 +94,13 @@
 select > option {
   font-size: 1rem;
 }
+.ant-input-affix-wrapper:hover {
+  border-color: rgb(209, 213, 219) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+.ant-input-affix-wrapper:focus-within {
+  border-color: rgb(209, 213, 219) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}

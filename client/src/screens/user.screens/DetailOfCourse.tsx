@@ -58,8 +58,7 @@ interface Option {
 }
 
 interface IReview {
-  userFullname: string;
-  userUsername: string;
+  userFullName: string;
   userAvatar: string;
   comment: string;
   rating: number;
@@ -171,6 +170,10 @@ const Detail_Of_Course: React.FC = () => {
   };
   useEffect(() => {
     getDataDetailCourse(id);
+    setCurrentOption({
+      value: "0",
+      label: "All",
+    });
   }, [id]);
 
   useEffect(() => {
@@ -245,12 +248,14 @@ const Detail_Of_Course: React.FC = () => {
       {courseData ? (
         <>
           <div>
-            <div className="w-full h-[280px] bg-[#333333]">
+            <div className="w-full h-[250px] bg-[#333333]">
               <div className="max-w-[1536px] mx-auto pl-[10%] pr-[5%] pt-[30px] flex justify-center items-start">
                 <div className="w-[70%] p-[10px]">
                   <div className="flex flex-col gap-[10px] h-[260px]">
-                    <h1
-                      className="text-white text-[1.7rem] font-[700] leading-tight"
+                    <a
+                      href={courseData?.link}
+                      target="_blank"
+                      className="text-[#3a7fed] text-[1.7rem] font-[700] leading-tight w-[90%] courseName"
                       style={{
                         display: "-webkit-box",
                         WebkitLineClamp: 2,
@@ -258,12 +263,13 @@ const Detail_Of_Course: React.FC = () => {
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         whiteSpace: "normal",
+                        textDecoration: "underline",
                       }}
                     >
                       {courseData?.name}
-                    </h1>
+                    </a>
 
-                    <div>
+                    {/* <div>
                       <span className="text-white text-[1.2rem] font-[500]">
                         Course link:{" "}
                       </span>
@@ -275,14 +281,22 @@ const Detail_Of_Course: React.FC = () => {
                       >
                         {courseData?.link}
                       </a>
-                    </div>
-                    <div>
-                      <div className="text-white text-[1.2rem] font-[500]">
+                    </div> */}
+                    <div style={{ display: "flex", gap: "10px" }}>
+                      <span className="text-white text-[1.3rem] font-[500] h-full">
                         Teacher name:
-                      </div>
-                      <div className="text-white text-[1.1rem] font-[400]">
+                      </span>
+                      <span className="text-white text-[1.3rem] font-[400] h-full ">
                         {courseData?.teacherName}
-                      </div>
+                      </span>
+                    </div>
+                    <div style={{ display: "flex", gap: "10px" }}>
+                      <span className="text-white text-[1.3rem] font-[500] h-full">
+                        Platform:
+                      </span>
+                      <span className="text-white text-[1.3rem] font-[400] h-full ">
+                        {courseData?.platform}
+                      </span>
                     </div>
                   </div>
                   <div className="w-full">
@@ -370,9 +384,7 @@ const Detail_Of_Course: React.FC = () => {
                       </div>
                     </div>
                     <div className="flex justify-between items-center mt-[20px]">
-                      <div className="text-[1.2rem] font-[600]">
-                        mgmies FeedBack
-                      </div>
+                      <div className="text-[1.2rem] font-[600]">Feedback</div>
                       <div className="w-[160px]">
                         <Dropdown
                           options={options}
@@ -390,8 +402,7 @@ const Detail_Of_Course: React.FC = () => {
                             <CommentDetail
                               userAvatar={item.userAvatar}
                               rating={item.rating}
-                              userUsername={item.userUsername}
-                              userFullName={item.userFullname}
+                              userFullName={item.userFullName}
                               comment={item.comment}
                               createdDate={item.createdDate}
                               key={uuidv4()}
@@ -589,9 +600,7 @@ const Detail_Of_Course: React.FC = () => {
                     <div className="p-[5px_10px_0_10px]">
                       {role == "ADMIN" && (
                         <ModalEditOrDeleteCourse courseData={courseData}>
-                          <button
-                            className="w-full h-[40px] border border-[#ccc] font-medium text-purple"
-                          >
+                          <button className="w-full h-[40px] border border-[#ccc] font-medium text-purple">
                             Edit
                           </button>
                         </ModalEditOrDeleteCourse>
