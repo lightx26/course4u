@@ -62,7 +62,7 @@ export default function MyRegistrationComponents({ registration }: PropsType) {
               {registration.courseName}
             </h2>
             <p
-              className="text-white text-lg overflow-hidden bg-statusColor px-3 py-1 rounded-full w-[200px] text-center"
+              className="text-white text-lg overflow-hidden bg-statusColor px-3 py-1 rounded-full w-[200px] text-center  text-[15px]"
               style={{
                 backgroundColor: getStatusColor(registration.status),
               }}
@@ -71,7 +71,7 @@ export default function MyRegistrationComponents({ registration }: PropsType) {
                 <span>
                   {registration.status &&
                     registration.status.charAt(0).toUpperCase() +
-                    registration.status.slice(1).toLowerCase()}
+                      registration.status.slice(1).toLowerCase()}
                 </span>
               ) : (
                 <span>Declined (Document)</span>
@@ -88,23 +88,28 @@ export default function MyRegistrationComponents({ registration }: PropsType) {
                 <i className="fas fa-calendar-alt"></i>
                 <p className="text-gray-600" style={{}}>
                   <p className="text-gray-600">
+                    Period:
                     {startDate === null
-                      ? "Not started yet"
-                      : `${String(startDate.getDate()).padStart(
-                        2,
-                        "0"
-                      )}/${String(startDate.getMonth() + 1).padStart(
-                        2,
-                        "0"
-                      )}/${startDate.getFullYear()}`}
-                    {startDate === null || endDate === null
-                      ? ""
-                      : `${" - " + String(endDate.getDate()).padStart(2, "0")
-                      }/${String(endDate.getMonth() + 1).padStart(
-                        2,
-                        "0"
-                      )}/${endDate.getFullYear()}`}
-                  </p>{" "}
+                      ? " Not started yet"
+                      : ` ${String(startDate.getDate()).padStart(
+                          2,
+                          "0"
+                        )}/${String(startDate.getMonth() + 1).padStart(
+                          2,
+                          "0"
+                        )}/${startDate.getFullYear()}`}
+                    {endDate === null
+                      ? startDate === null
+                        ? ""
+                        : " - unknown"
+                      : ` - ${String(endDate.getDate()).padStart(
+                          2,
+                          "0"
+                        )}/${String(endDate.getMonth() + 1).padStart(
+                          2,
+                          "0"
+                        )}/${endDate.getFullYear()}`}
+                  </p>
                 </p>
               </div>
             </div>

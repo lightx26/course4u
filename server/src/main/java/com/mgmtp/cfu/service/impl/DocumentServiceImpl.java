@@ -146,7 +146,7 @@ public class DocumentServiceImpl implements DocumentService {
                             .registration(registration)
                             .status(PENDING)
                             .type(type)
-                            .url(fileUrl.substring(13))
+                            .url("/api/document-storage")
                             .build();
                 })
                 .toList();

@@ -26,9 +26,7 @@ const FeedBackFromAccountant = (props: IProps) => {
       >
         <img
           src={
-            userData.avatarUrl !== "" && userData.avatarUrl !== null
-              ? userData.avatarUrl
-              : handleAvatarUrl(userData.avatarUrl)
+  handleAvatarUrl(userData.avatarUrl)
           }
           alt=""
           style={{
@@ -45,7 +43,7 @@ const FeedBackFromAccountant = (props: IProps) => {
       </div>
       <div style={{ width: "100%" }}>
         <div style={{ marginBottom: "10px", fontWeight: 500 }}>
-          {userData.fullName}
+          {userData.fullName || "Accountant"}
         </div>
         <TextArea
           onChange={onChange}

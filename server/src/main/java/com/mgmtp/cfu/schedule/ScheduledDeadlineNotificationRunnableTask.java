@@ -78,7 +78,7 @@ public class ScheduledDeadlineNotificationRunnableTask implements Runnable {
         List<MailContentUnit> mailContentUnits = List.of(
                 MailContentUnit.builder().content(remindMessage).id("content").tag("div").build(),
                 MailContentUnit.builder().id("user_greeting").tag("div").content("Dear " + destination.getUsername()).build(),
-                MailContentUnit.builder().id("deadline").tag("div").content("The due time:" + stringDeadline).build(),
+                MailContentUnit.builder().id("deadline").tag("div").content("Deadline: " + stringDeadline).build(),
                 MailContentUnit.builder().id("client_url").tag("a").href(clientUrl).build()
         );
         emailService.sendMessage(destination.getEmail(), "Important Deadline", DEADLINE_WARNING_EMAIL, mailContentUnits);
