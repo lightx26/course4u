@@ -178,10 +178,12 @@ export function Notification(props: IProps) {
                                     />
                                 )}
                             </div>
-                            <div className='flex flex-col gap-1'>
-                                <div className={'text-sm line-clamp-2 mt-1 mr-1' + (notification.seen ? ' text-gray-800' : ' text-black font-medium')}
+                            <div className='flex flex-col flex-grow gap-1'>
+                                <div className={'h-10 mt-1 pb-1 mr-2 flex items-center'}
                                     title={notification.content}>
-                                    {notification.content}
+                                    <span className={'text-sm line-clamp-2' + (notification.seen ? ' text-gray-800' : ' text-black font-medium')} >
+                                        {notification.content}
+                                    </span>
                                 </div>
                                 <div className='text-xs text-right mr-2 text-gray-400'>
                                     {timeAgo(notification.createdAt)}
