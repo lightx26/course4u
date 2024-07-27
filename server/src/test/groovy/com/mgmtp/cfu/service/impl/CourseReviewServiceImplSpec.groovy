@@ -14,6 +14,7 @@ import com.mgmtp.cfu.exception.MapperNotFoundException
 import com.mgmtp.cfu.mapper.CourseReviewOverviewMapper
 import com.mgmtp.cfu.mapper.factory.impl.CourseReviewMapperFactory
 import com.mgmtp.cfu.service.CourseReviewService
+import com.mgmtp.cfu.util.AuthUtils
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
@@ -39,6 +40,7 @@ class CourseReviewServiceImplSpec extends Specification {
         def authentication = Mock(Authentication)
         SecurityContextHolder.setContext(securityContext)
         securityContext.getAuthentication() >> authentication
+
         def user = User.builder().id(1)
                 .fullName("Jane Doe")
                 .username("janedoe")
@@ -49,6 +51,10 @@ class CourseReviewServiceImplSpec extends Specification {
                 .telephone("008837623")
                 .build()
         authentication.getCredentials() >> user
+
+
+
+
     }
 
     def "should return an initial rating page"() {
@@ -208,4 +214,37 @@ class CourseReviewServiceImplSpec extends Specification {
         return (1..num).collect { new CourseReview(id: it) }
     }
 
+    def "should throw CourseNotFoundException when course is not found"() {
+        given:
+        Long courseId = 1L
+        courseRepository.findById(courseId) >> Optional.empty()
+
+        when:
+        courseReviewService.checkReviewed(courseId)
+
+        then:
+        def e = thrown(CourseNotFoundException)
+        e.message == "Course with id '1' not found"
+    }
+
+    def "should return false when courseId is null"() {
+        when:
+        boolean result = courseReviewService.checkReviewed(null)
+
+        then:
+        !result
+    }
+
+    def "checkReviewed should return result of courseReviewRepository.existsByCourseIdAndUserId when inputs are valid"() {
+        given:
+        Long courseId = 1L
+        courseRepository.findById(courseId) >> Optional.of(new Course())
+        courseReviewRepository.existsByCourseIdAndUserId(courseId, _ as Long) >> true
+
+        when:
+        boolean result = courseReviewService.checkReviewed(courseId)
+
+        then:
+        result
+    }
 }
