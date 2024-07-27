@@ -341,7 +341,7 @@ class CourseServiceImplSpec extends Specification {
         given:
         var categories=Set.of(Category.builder().name("ABC").id(1).build())
         courseRepository.findById(_)>>> Optional.of(Course.builder().categories(categories).id(1).status(CourseStatus.AVAILABLE).registrations(new HashSet<Registration>(Arrays.asList(Registration.builder().id(1).build()))).build())
-        courseRepository.findTop8RelatedCourse(_,_,_,_)>> createAvailableCourses(7)
+        courseRepository.findTop8RelatedCourse(_,_,_)>> createAvailableCourses(7)
         courseMapperFactory.getDTOMapper(CourseOverviewDTO.class) >> Optional.of(courseOverviewMapper)
         courseOverviewMapper.toDTO(_) >> new CourseOverviewDTO(id: 1)
 
