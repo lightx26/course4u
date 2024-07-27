@@ -10,4 +10,5 @@ public interface CourseReviewService {
     RatingsPage getRatingsOfCourse(Long courseId);
     Page<CourseReviewOverviewDTO> getReviewsPageOfCourse(Long courseId, Integer starFilter, int page, int size);
     CourseReview saveReview(CourseReviewDto courseReviewDto);
+    boolean checkReviewed(Long courseId);
 }

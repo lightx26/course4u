@@ -111,6 +111,19 @@ public class CourseReviewServiceImpl implements CourseReviewService {
         return courseReviewRepository.save(courseReview);
     }
 
+    @Override
+    public boolean checkReviewed(Long courseId) {
+        if (courseId == null) {
+            return false;
+        }
+
+        if (courseRepository.findById(courseId).isEmpty()) {
+            throw new CourseNotFoundException("Course with id '" + courseId + "' not found");
+        }
+        Long userId = AuthUtils.getCurrentUser().getId();
+        return courseReviewRepository.existsByCourseIdAndUserId(courseId, userId);
+    }
+
     private Page<CourseReview> geReviewsOfCourseBySpec(Long courseId, Integer starFilter, Pageable pageable) {
         Specification<CourseReview> spec = CourseReviewSpecifications.hasCourseId(courseId);
 

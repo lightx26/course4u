@@ -11,6 +11,7 @@ import {
   saveDataListRegistration,
 } from "../../../redux/slice/registration.slice.ts";
 import { RootState } from "../../../redux/store/store.ts";
+import { useRefreshState } from "../../../hooks/use-refresh-state.ts";
 
 export type OverviewMyRegistrationType = {
   id?: string;
@@ -25,6 +26,7 @@ export type OverviewMyRegistrationType = {
 export default function MyRegistrationPage() {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+  const { registrationFlagAdmin } = useRefreshState(state => state)
   const totalItem = useSelector(
     (state: RootState) => state.registration.totalItem
   );
@@ -50,7 +52,7 @@ export default function MyRegistrationPage() {
 
   useEffect(() => {
     fetchData(currentPage, filterBy);
-  }, [currentPage, filterBy]);
+  }, [currentPage, filterBy, registrationFlagAdmin]);
 
   useEffect(() => {
     dispatch(handleChangeStatus("SUBMITTED"));

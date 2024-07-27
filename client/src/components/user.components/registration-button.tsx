@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
     finishLearning,
@@ -21,6 +21,8 @@ import { fetchListOfMyRegistration } from "../../apiService/MyRegistration.servi
 import { saveDataListRegistration } from "../../redux/slice/registration.slice";
 import { useRefreshState } from "../../hooks/use-refresh-state";
 import { isStatusSuccesful } from "../../utils/checkResStatus";
+import SendReviewModal from "../modal/send-review-modal";
+import { checkExistReview, sendReview } from "../../apiService/courseReview.service";
 
 type Props = {
     status?: Status;
@@ -49,6 +51,12 @@ export const RegistrationButton = ({
     const { close } = useRegistrationModal((state) => state);
     const [isLoading, setIsLoading] = useState(false);
     const { setRegistrationFlagAdmin } = useRefreshState((state) => state);
+    const [haveReview, setHaveReview] = useState<boolean>(false);
+
+    //state to manange review and send rating
+    const [rating, setRating] = useState<number>(0);
+    const [reviewContent, setReviewContent] = useState<string>("");
+
     const closeModal = () => {
         close();
         closeRegistration();
@@ -129,6 +137,22 @@ export const RegistrationButton = ({
         }
     }
 
+    const handleSendReview = async () => {
+        const response = await sendReview(rating, reviewContent, registration!.course!.id!);
+        if (isStatusSuccesful(response.status)) {
+            toast.success("Review sent successfully", {
+                style: { color: "green" },
+                description: "Your review has been sent successfully.",
+            });
+            handleCheckExistReview();
+        } else {
+            toast.error("Failed to send review", {
+                style: { color: "red" },
+                description: "Failed to send review" + response.statusText,
+            });
+        }
+    }
+
     //Submit Document
     const currentPage = useSelector(
         (state: RootState) => state.registration.currentPage
@@ -166,6 +190,18 @@ export const RegistrationButton = ({
             });
         }
     };
+    const handleCheckExistReview = async () => {
+        const response = await checkExistReview(registration!.course!.id!);
+        if (isStatusSuccesful(response.status)) {
+            if (response.data === true)
+                setHaveReview(true);
+        }
+    };
+    useEffect(() => {
+        if (status === Status.DONE || status === Status.VERIFIED || status === Status.VERIFYING || status === Status.CLOSED || status === Status.DOCUMENT_DECLINED) {
+            handleCheckExistReview();
+        }
+    }, [status]);
     return (
         <div className='flex justify-end gap-4'>
             {(status === Status.DRAFT || status === Status.DISCARDED) && (
@@ -271,15 +307,23 @@ export const RegistrationButton = ({
                             : "RE-SUBMIT"}
                     </Button>
             )}
-            {(status === Status.DONE || status === Status.VERIFIED) && (
-                <Button
-                    type='button'
-                    size='lg'
-                    variant='pink'
-                    disabled={isLoading}
-                >
-                    SEND FEEDBACK
-                </Button>
+            {((!haveReview) && (status === Status.DONE || status === Status.VERIFIED)) && (
+                <SendReviewModal
+                    title="Give your review"
+                    rating={rating}
+                    setRating={setRating}
+                    reviewContent={reviewContent}
+                    setReviewContent={setReviewContent}
+                    handleConfirm={handleSendReview}>
+                    <Button
+                        type='button'
+                        size='lg'
+                        variant='pink'
+                        disabled={isLoading}
+                    >
+                        SEND FEEDBACK
+                    </Button>
+                </SendReviewModal>
             )}
             {status === Status.DONE && (
                 <Button

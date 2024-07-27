@@ -143,7 +143,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
 
         // check if course with the same link already exists and available
-        if(courseRepository.findFirstByLinkIgnoreCaseAndStatus(registration.getCourse().getLink(), CourseStatus.AVAILABLE).isPresent()){
+        if(courseRepository.findFirstByLinkIgnoreCaseAndStatus(registration.getCourse().getLink(), CourseStatus.AVAILABLE).isPresent() && !registration.getCourse().getStatus().equals(CourseStatus.AVAILABLE)){
             throw new DuplicateCourseException("Course with link " + registration.getCourse().getLink() + " already exists and available");
         }
         registration.getCourse().setStatus(CourseStatus.AVAILABLE);

@@ -34,4 +34,8 @@ public class CourseReviewController {
         return ResponseEntity.ok(courseReviewService.getReviewsPageOfCourse(courseId, starFilter, page, size));
     }
 
+    @PostMapping("/courses/{courseId}/checkReviewed")
+    public ResponseEntity<?> checkReviewed(@PathVariable Long courseId) {
+        return ResponseEntity.ok(courseReviewService.checkReviewed(courseId));
+    }
 }

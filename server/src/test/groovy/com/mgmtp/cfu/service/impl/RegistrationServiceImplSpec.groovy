@@ -673,6 +673,7 @@ class RegistrationServiceImplSpec extends Specification {
 
         registrationRepository.findById(registrationId) >> Optional.of(registration)
         courseRepository.findFirstByLinkIgnoreCaseAndStatus(_,_) >> Optional.of(duplicateCourse)
+        registration.getCourse().status = CourseStatus.PENDING
 
         when:
         registrationService.approveRegistration(registrationId)
