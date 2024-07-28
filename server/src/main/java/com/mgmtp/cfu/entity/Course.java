@@ -63,7 +63,4 @@ public class Course {
     @OneToMany(mappedBy = "course",cascade = CascadeType.ALL)
     @JsonManagedReference
     private Set<CourseReview> courseReviews;
-
-
-
 }

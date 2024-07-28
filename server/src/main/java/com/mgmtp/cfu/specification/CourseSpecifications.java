@@ -39,11 +39,17 @@ public class CourseSpecifications {
         };
     }
 
-    public static Specification<Course> hasRatingGreaterThan(double rating) {
+    public static Specification<Course> hasRatings(List<Integer> ratings) {
         return (root, query, builder) -> {
             Subquery<Double> ratingSubquery = getRatingSubquery(builder, root, query);
 
-            query.where(builder.greaterThanOrEqualTo(ratingSubquery, rating));
+            List<Predicate> predicates = ratings.stream().map(
+                    rating -> builder.and(
+                            builder.greaterThanOrEqualTo(ratingSubquery, rating.doubleValue()),
+                            builder.lessThan(ratingSubquery, rating.doubleValue() + 1)
+                    )).toList();
+
+            query.where(builder.or(predicates.toArray(new Predicate[0])));
 
             return query.getRestriction();
         };
@@ -63,7 +69,10 @@ public class CourseSpecifications {
 
     public static Specification<Course> sortByCreatedDateDesc() {
         return (root, query, builder) -> {
-            query.orderBy(builder.desc(root.get("createdDate")), builder.desc(root.get("id")));
+            query.orderBy(
+                    builder.desc(root.get("createdDate")),
+                    builder.desc(root.get("id"))
+            );
             return query.getRestriction();
         };
     }
@@ -86,7 +95,10 @@ public class CourseSpecifications {
                     .where(cb.equal(courseSubqueryJoin.get("id"), root.get("id")));
 
             // Main query
-            query.orderBy(cb.desc(enrollmentCountSubquery), cb.desc(root.get("id")));
+            query.orderBy(
+                    cb.desc(enrollmentCountSubquery),
+                    cb.desc(root.get("id"))
+            );
 
             return query.getRestriction();
         };
@@ -96,9 +108,10 @@ public class CourseSpecifications {
         return (root, query, builder) -> {
             Subquery<Double> ratingSubquery = getRatingSubquery(builder, root, query);
 
-            query.orderBy(builder.desc(builder.selectCase()
-                    .when(builder.isNull(ratingSubquery.getSelection()), -1.0)
-                    .otherwise(ratingSubquery)), builder.desc(root.get("id")));
+            query.orderBy(
+                    builder.desc(ratingSubquery.getSelection()),
+                    builder.desc(root.get("id"))
+            );
 
             return query.getRestriction();
         };
@@ -111,7 +124,10 @@ public class CourseSpecifications {
 
         ratingSubquery.correlate(root);
 
-        ratingSubquery.select(builder.avg(courseReviewRoot.get("rating")))
+        Expression<Double> avgRating = builder.coalesce(builder.avg(courseReviewRoot.get("rating")), -1.0);
+        Expression<Double> roundedAvgRating = builder.function("ROUND", Double.class, avgRating, builder.literal(1));
+
+        ratingSubquery.select(roundedAvgRating)
                 .where(builder.equal(courseJoin.get("id"), root.get("id")));
 
         return ratingSubquery;
@@ -124,8 +140,8 @@ public class CourseSpecifications {
             spec = spec.and(hasCategories(filter.getCategoryFilters()));
         }
 
-        if (filter.getMinRating() > 0) {
-            spec = spec.and(hasRatingGreaterThan(filter.getMinRating()));
+        if (!filter.getRatingFilters().isEmpty()) {
+            spec = spec.and(hasRatings(filter.getRatingFilters()));
         }
 
         if (!filter.getLevelFilters().isEmpty()) {
