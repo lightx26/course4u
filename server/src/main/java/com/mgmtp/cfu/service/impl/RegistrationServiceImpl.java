@@ -47,8 +47,6 @@ import java.time.LocalDateTime;
 
 
 import static com.mgmtp.cfu.util.AuthUtils.getCurrentUser;
-import static com.mgmtp.cfu.enums.NotificationType.INFORMATION;
-import static com.mgmtp.cfu.enums.RegistrationStatus.*;
 import static com.mgmtp.cfu.util.Constant.APPROVE_REGISTRATION_EMAIL_TEMPLATE;
 import static com.mgmtp.cfu.util.Constant.DECLINE_REGISTRATION_EMAIL_TEMPLATE;
 import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getRegistrationOverviewDTOS;
@@ -115,7 +113,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         var myRegistrations = registrationRepository.getSortedRegistrations(userId);
         myRegistrations=myRegistrations!=null?myRegistrations:new ArrayList<>();
-        myRegistrations.forEach(registration -> log.info(registration.getLastUpdated()!=null? (String) registration.getLastUpdated().toString() :"null"));
+        myRegistrations.forEach(registration -> log.info(registration.getLastUpdated()!=null? registration.getLastUpdated().toString() :"null"));
         if (!RegistrationValidator.isDefaultStatus(status)) {
             try {
                 var statusEnum = RegistrationStatus.valueOf(status.toUpperCase());
@@ -124,7 +122,7 @@ public class RegistrationServiceImpl implements RegistrationService {
                 throw new IllegalArgumentException(e.getMessage());
             }
         }
-        if (myRegistrations == null || myRegistrations.isEmpty()) {
+        if (myRegistrations.isEmpty()) {
             return PageResponse.builder().totalElements(0).list(new ArrayList<>()).build();
         }
         var listOfMyRegistration = getRegistrationOverviewDTOS(page, myRegistrations, registrationMapperFactory.getDTOMapper(RegistrationOverviewDTO.class));
