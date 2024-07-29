@@ -45,6 +45,7 @@ export default function FilterWrap() {
         const updatedCategoryList = listCategory.map((item) => ({
             id: `${item.id}`,
             name: item.name,
+            countNumber: 1200,
             parentID: "Category",
             checked: false,
         }));
@@ -56,30 +57,35 @@ export default function FilterWrap() {
             {
                 id: "5",
                 name: "5 Star",
+                countNumber: 1200,
                 parentID: "Rating",
                 checked: false,
             },
             {
                 id: "4",
-                name: "4 - 4.9 Star",
+                name: "4 Star & up",
+                countNumber: 800,
                 parentID: "Rating",
                 checked: false,
             },
             {
                 id: "3",
-                name: "3 - 3.9 Star",
+                name: "3 Star & up",
+                countNumber: 900,
                 parentID: "Rating",
                 checked: false,
             },
             {
                 id: "2",
-                name: "2 - 2.9 Star",
+                name: "2 Star & up",
+                countNumber: 1500,
                 parentID: "Rating",
                 checked: false,
             },
             {
                 id: "1",
-                name: "1 - 1.9 Star",
+                name: "1 Star & up",
+                countNumber: 700,
                 parentID: "Rating",
                 checked: false,
             },
@@ -92,18 +98,21 @@ export default function FilterWrap() {
             {
                 id: "BEGINNER",
                 name: "Beginner",
+                countNumber: 1200,
                 parentID: "Level",
                 checked: false,
             },
             {
                 id: "INTERMEDIATE",
                 name: "Intermediate",
+                countNumber: 800,
                 parentID: "Level",
                 checked: false,
             },
             {
                 id: "ADVANCED",
                 name: "Advanced",
+                countNumber: 900,
                 parentID: "Level",
                 checked: false,
             },
@@ -117,6 +126,7 @@ export default function FilterWrap() {
                 return {
                     id: items.value,
                     name: items.content,
+                    countNumber: 1200,
                     parentID: "Platform",
                     checked: false,
                 };
@@ -126,7 +136,7 @@ export default function FilterWrap() {
     }, []);
 
     return (
-        <div className='sticky max-h-[90vh] custom-scrollbar overflow-y-auto rounded-md'>
+        <div className='sticky max-h-[90vh] custom-scrollbar overflow-y-auto border-2 border-gray-100 border-solid rounded-md'>
             <div className='flex flex-col w-64 max-w-full gap-5 pb-10 select-none'>
                 {/*Category need search*/}
                 <FilterComponent
@@ -138,6 +148,7 @@ export default function FilterWrap() {
                 {/*Rating can only choose one option/time*/}
                 <FilterComponent
                     key={"Rating"}
+                    isMultipleChoice={false}
                     isHaveSearch={false}
                     title='Rating'
                     list={ratingList}
