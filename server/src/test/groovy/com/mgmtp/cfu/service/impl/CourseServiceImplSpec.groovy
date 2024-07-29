@@ -242,9 +242,9 @@ class CourseServiceImplSpec extends Specification {
         filter << [new CoursePageFilter(),
                    new CoursePageFilter(categoryFilters: [1, 2, 3],
                            levelFilters: [CourseLevel.BEGINNER, CourseLevel.INTERMEDIATE],
-                           minRating: 3.5,
+                           ratingFilters: [3],
                            platformFilters: ["UDEMY"]),
-                   new CoursePageFilter(categoryFilters: [], levelFilters: [CourseLevel.ADVANCED], minRating: 0, platformFilters: []),
+                   new CoursePageFilter(categoryFilters: [], levelFilters: [CourseLevel.ADVANCED], ratingFilters: [], platformFilters: []),
                    new CoursePageFilter()]
         search << ["", "Java", "  PYTHON  ", "   "]
     }

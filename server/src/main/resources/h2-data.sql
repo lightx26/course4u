@@ -167,7 +167,7 @@ INSERT INTO "Registration" ("Status", "StartDate", "EndDate", "Score", "Register
 INSERT INTO "Registration" ("Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdated", "DurationUnit", "UserId") VALUES ('SUBMITTED', '2024-02-10', '2025-02-27', 35, '2023-10-16', 27, 2, null, 'MONTH', 7);
 INSERT INTO "Registration" ("Status", "StartDate", "EndDate", "Score", "RegisterDate", "Duration", "CourseId", "LastUpdated", "DurationUnit", "UserId") VALUES ('APPROVED', null, null, 35, '2023-10-16', 27, 2, null, 'MONTH', 7);
 
-INSERT INTO "CourseReview" ("CourseId", "UserId", "Rating", "Comment", "CreatedDate")
+INSERT INTO "CourseReview" ("CourseId", "UserId", "Rating", "Comment", "CreatedAt")
 values ('1', '1', '5', 'Good course', '2021-01-01'),
        ('1', '2', '5', 'This is peak!', '2021-01-01'),
        ('2', '1', '4', 'Pretty cool', '2021-01-01'),
