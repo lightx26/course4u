@@ -57,3 +57,22 @@ export const statusList = [
         content: "Declined (Document)",
     },
 ];
+
+export const platform = [
+    {
+        value: "COURSERA",
+        content: "Coursera",
+    },
+    {
+        value: "UDEMY",
+        content: "Udemy",
+    },
+    {
+        value: "LINKEDIN",
+        content: "LinkedIn",
+    },
+    {
+        value: "OTHER",
+        content: "Other",
+    },
+];
