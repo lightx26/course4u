@@ -48,7 +48,6 @@ export function Notification(props: IProps) {
         // If there are no notifications in the buffer, fetch the first 10 notifications from server
         if (notifications.length === 0) {
             res = await getAllNotificationsByCurrUser(defaultBatchSize);
-            console.log(res)
             setCountUnread(res.totalUnread);
         }
 
@@ -148,7 +147,7 @@ export function Notification(props: IProps) {
                             key={notification.id}
                             className={`flex items-start gap-3 py-2 hover:bg-gray-200 ${!notification.seen ? ' bg-gray-100' : ''}`}
                         >
-                            <div className="ml-2 mt-2">
+                            <div className="mt-2 ml-2">
                                 {notification.type === "SUCCESS" && (
                                     <CircleCheck
                                         width={30}
@@ -185,7 +184,7 @@ export function Notification(props: IProps) {
                                         {notification.content}
                                     </span>
                                 </div>
-                                <div className='text-xs text-right mr-2 text-gray-400'>
+                                <div className='mr-2 text-xs text-right text-gray-400'>
                                     {timeAgo(notification.createdAt)}
                                 </div>
                             </div>
@@ -193,12 +192,12 @@ export function Notification(props: IProps) {
                     ))
                     }
                     {isLoading && notifications.length > 0 && (
-                        <div className='text-center text-gray-300 mt-2 py-2'>
+                        <div className='py-2 mt-2 text-center text-gray-300'>
                             Loading...
                         </div>
                     )}
                     {isLast && (notifications.length === buffer.length) && (
-                        <div className='text-center text-gray-400 mt-2 pb-2'>
+                        <div className='pb-2 mt-2 text-center text-gray-400'>
                             You have reached the end of the notifications.
                         </div>
                     )}

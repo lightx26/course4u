@@ -48,7 +48,6 @@ const Registrations = ({ className, id }: Props) => {
                     registrationFeedbacks: [],
                     isBlockedModifiedCourse: isBlockedModifiedCourse
                 });
-                console.log(registration);
                 setIsEdit(true);
                 return;
             }
