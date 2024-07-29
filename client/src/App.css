@@ -1,0 +1,49 @@
+.draft {
+    color: #333;
+    background-color: #ccc;
+}
+
+.discarded {
+    color: #fff;
+    background-color: #808080;
+}
+
+.declined {
+    color: #fff;
+    background-color: #f71414;
+}
+
+.submitted {
+    color: #fff;
+    background-color: #fbbc05;
+}
+
+.approved {
+    color: #fff;
+    background-color: #34a853;
+}
+
+.done {
+    color: #fff;
+    background-color: #4285f4;
+}
+
+.verifying {
+    color: #fff;
+    background-color: #fbbc05;
+}
+
+.verified {
+    color: #fff;
+    background-color: #008000;
+}
+
+.closed {
+    color: #fff;
+    background-color: #808080;
+}
+
+.document_declined {
+    color: #fff;
+    background-color: #f71414;
+}

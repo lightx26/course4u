@@ -63,7 +63,7 @@ export const RegistrationButtonAdmin = ({ status = Status.NONE }: Props) => {
             {(status === Status.DONE ||
                 status === Status.VERIFYING ||
                 status === Status.DOCUMENT_DECLINED) && (
-                <Button variant='danger'>Send feedback and close</Button>
+                <Button variant='danger'>Close and send feedback</Button>
             )}
         </div>
     );

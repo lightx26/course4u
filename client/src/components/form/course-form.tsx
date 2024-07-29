@@ -526,7 +526,7 @@ export const CourseForm = ({
                             Supported format: <b>.jpg, .jpeg, or .png</b>
                         </p>
                         <Button
-                            className='text-[#861FA2] bg-violet-600/20 hover:bg-violet-100 translate-y-6'
+                            className='text-white bg-[#861FA2] translate-y-6'
                             disabled={
                                 isBlockedModifiedCourse ||
                                 !thumbnail.imageUrl ||

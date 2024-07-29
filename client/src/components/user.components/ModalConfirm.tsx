@@ -1,15 +1,12 @@
-import { Button } from "../ui/button";
-
 import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogTitle,
-    DialogTrigger,
-} from "../ui/dialog";
-
-
+    AlertDialog,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "../ui/alert-dialog";
+import { Button } from "../ui/button";
 
 type Props = {
     children: React.ReactNode;
@@ -21,29 +18,48 @@ type Props = {
     cancelButtonTitle?: string;
 };
 
-const ModalConfirm = ({ children, handleCancel, handleConfirm, title, description, acceptButtonTitle = 'Yes', cancelButtonTitle = 'No' }: Props) => {
+const ModalConfirm = ({
+    children,
+    handleCancel,
+    handleConfirm,
+    title,
+    description,
+    acceptButtonTitle = "Yes",
+    cancelButtonTitle = "No",
+}: Props) => {
     return (
-        <Dialog>
-            <DialogTrigger asChild>{children}</DialogTrigger>
-            <DialogContent>
-                <DialogTitle className="font-semibold text-center">{title}</DialogTitle>
-                <DialogDescription className="text-center text-slate-700">{description}</DialogDescription>
-                <div className="flex justify-between gap-2 mt-4">
-                    <DialogClose asChild>
-                        <Button className="w-32 hover:bg-gray-300 text-[16px]" onClick={handleCancel} type="button" variant="secondary">
+        <AlertDialog>
+            <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
+            <AlertDialogContent>
+                <AlertDialogTitle className='font-semibold'>
+                    {title}
+                </AlertDialogTitle>
+                <AlertDialogDescription className=' text-slate-700'>
+                    {description}
+                </AlertDialogDescription>
+                <div className='flex justify-end gap-2'>
+                    <AlertDialogCancel asChild>
+                        <Button
+                            className='hover:bg-gray-300 text-sm'
+                            onClick={handleCancel}
+                            type='button'
+                            variant='secondary'
+                            size='sm'
+                        >
                             {cancelButtonTitle}
                         </Button>
-                    </DialogClose>
+                    </AlertDialogCancel>
                     <Button
-                        type="button"
-                        className="w-32 text-[16px] text-white bg-purple h-9"
+                        type='button'
+                        className='text-sm text-white bg-purple h-9'
+                        size='sm'
                         onClick={handleConfirm}
                     >
                         {acceptButtonTitle}
                     </Button>
                 </div>
-            </DialogContent>
-        </Dialog>
+            </AlertDialogContent>
+        </AlertDialog>
     );
 };
 

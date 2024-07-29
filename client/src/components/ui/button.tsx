@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../utils/utils";
 
 const buttonVariants = cva(
-    "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+    "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:opacity-85",
     {
         variants: {
             variant: {
@@ -19,12 +19,13 @@ const buttonVariants = cva(
                     "bg-secondary text-secondary-foreground hover:bg-secondary/80",
                 ghost: "hover:bg-accent hover:text-accent-foreground",
                 link: "text-primary underline-offset-4 hover:underline",
-                success:
-                    "bg-green-200 text-green-600 hover:bg-green-600 hover:text-white",
-                danger: "bg-red-200 text-red-600 hover:bg-red-600 hover:text-white",
-                edit: "bg-yellow-200 text-yellow-600 hover:bg-yellow-400 hover:text-white",
-                blue: "bg-blue-200 text-blue-600 hover:bg-blue-600 hover:text-white",
-                pink: "bg-pink-200 text-pink-600 hover:bg-pink-600 hover:text-white",
+                success: "bg-green-600 text-white",
+                danger: "bg-red-600 text-white",
+                edit: "bg-yellow-400 text-white",
+                blue: "bg-blue-600 text-white",
+                pink: "bg-pink-600 text-white",
+                gray: "bg-slate-600 text-white",
+                primary: "bg-[#861FA2] text-white",
             },
             size: {
                 default: "h-10 px-4 py-2",
@@ -42,7 +43,7 @@ const buttonVariants = cva(
 
 export interface ButtonProps
     extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+        VariantProps<typeof buttonVariants> {
     asChild?: boolean;
 }
 
