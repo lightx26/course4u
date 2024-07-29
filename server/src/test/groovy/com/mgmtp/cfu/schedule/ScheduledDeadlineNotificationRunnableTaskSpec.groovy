@@ -11,6 +11,7 @@ import com.mgmtp.cfu.service.IEmailService
 import spock.lang.Specification
 
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 class ScheduledDeadlineNotificationRunnableTaskSpec extends Specification {
     def registrationRepository = Mock(RegistrationRepository)
@@ -37,7 +38,7 @@ class ScheduledDeadlineNotificationRunnableTaskSpec extends Specification {
                 .id(1)
                 .status(RegistrationStatus.APPROVED)
         .course(Course.builder().name("").build())
-        .startDate(LocalDateTime.now().minusDays(10))
+        .startDate(ZonedDateTime.now().minusDays(10))
         .user(User.builder().username("").email("").build())
         .duration(12)
         .durationUnit(DurationUnit.DAY)
@@ -56,7 +57,7 @@ class ScheduledDeadlineNotificationRunnableTaskSpec extends Specification {
         def registration = Registration.builder()
                 .id(1)
                 .status(RegistrationStatus.APPROVED)
-                .startDate(LocalDateTime.now().minusDays(10))
+                .startDate(ZonedDateTime.now().minusDays(10))
                 .duration(2)
                 .durationUnit(DurationUnit.WEEK)
                 .build()

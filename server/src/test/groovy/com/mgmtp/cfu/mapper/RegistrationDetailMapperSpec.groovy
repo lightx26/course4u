@@ -19,6 +19,7 @@ import spock.lang.Subject
 
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
 
 
 class RegistrationDetailMapperSpec extends Specification {
@@ -31,8 +32,8 @@ class RegistrationDetailMapperSpec extends Specification {
         Registration registration = new Registration(
                 id: 1L,
                 status: RegistrationStatus.APPROVED,
-                startDate: LocalDateTime.of(2023, 7, 1,0,0,0),
-                endDate: LocalDateTime.of(2023, 12, 31,0,0,0),
+                startDate: LocalDateTime.of(2023, 7, 1,0,0,0).atZone(ZoneId.systemDefault()),
+                endDate: LocalDateTime.of(2023, 12, 31,0,0,0).atZone(ZoneId.systemDefault()),
                 score: 95,
                 registerDate: LocalDate.of(2023, 6, 15),
                 duration: 6,
@@ -84,8 +85,8 @@ class RegistrationDetailMapperSpec extends Specification {
         then:
             dto.id == 1L
             dto.status == RegistrationStatus.APPROVED
-            dto.startDate == LocalDateTime.of(2023, 7, 1,0,0,0)
-            dto.endDate == LocalDateTime.of(2023, 12, 31,0,0,0)
+            dto.startDate == LocalDateTime.of(2023, 7, 1,0,0,0).atZone(ZoneId.systemDefault())
+            dto.endDate == LocalDateTime.of(2023, 12, 31,0,0,0).atZone(ZoneId.systemDefault())
             dto.score == 95
             dto.registerDate == LocalDate.of(2023, 6, 15)
             dto.duration == 6

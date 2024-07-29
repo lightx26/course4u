@@ -68,6 +68,8 @@ import spock.lang.Subject
 
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 
 class RegistrationServiceImplSpec extends Specification {
@@ -140,7 +142,7 @@ class RegistrationServiceImplSpec extends Specification {
         given: "a mock user and registration data"
         def userId = 1
         def status = "DEFAULT"
-        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).startDate(LocalDateTime.now()).build()
+        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).startDate(ZonedDateTime.now()).build()
         def authentication = Mock(Authentication) {
             getCredentials() >> User.builder().id(userId).build()
         }
@@ -157,14 +159,14 @@ class RegistrationServiceImplSpec extends Specification {
         given:
         def userId = 1
         def status = "APPROVED"
-        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDateTime.now()).build()
-        def registrayion2 = Registration.builder().id(2).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDateTime.now()).build()
+        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(ZonedDateTime.now()).build()
+        def registration2 = Registration.builder().id(2).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(ZonedDateTime.now()).build()
 
         def authentication = Mock(Authentication) {
             getCredentials() >> User.builder().id(userId).build()
         }
         SecurityContextHolder.context.authentication = authentication
-        registrationRepository.getSortedRegistrations(userId) >> List.of(registrations, registrayion2)
+        registrationRepository.getSortedRegistrations(userId) >> List.of(registrations, registration2)
         registrationMapperFactory.getDTOMapper(_) >> Optional.of(registrationOverviewMapper)
         registrationOverviewMapper.toDTO(_) >> RegistrationOverviewDTO.builder().id(1).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDate.now()).build()
         when:
@@ -180,7 +182,7 @@ class RegistrationServiceImplSpec extends Specification {
         given: "a mock user and registration data"
         def userId = 1
         def status = "APPROVaaaED"
-        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).startDate(LocalDateTime.now()).build()
+        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).startDate(ZonedDateTime.now()).build()
         def authentication = Mock(Authentication) {
             getCredentials() >> User.builder().id(userId).build()
         }
@@ -199,7 +201,7 @@ class RegistrationServiceImplSpec extends Specification {
         given: "a mock user and registration data"
         def userId = 1
         def status = "DEFAULT"
-        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).startDate(LocalDateTime.now()).build()
+        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).startDate(ZonedDateTime.now()).build()
         def authentication = Mock(Authentication) {
             getCredentials() >> User.builder().id(userId).build()
         }
@@ -217,15 +219,15 @@ class RegistrationServiceImplSpec extends Specification {
         given:
         def userId = 1
         def status = "APPROVED"
-        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDateTime.now()).build()
-        def registrayion2 = Registration.builder().id(2).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDateTime.now()).build()
+        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(ZonedDateTime.now()).build()
+        def registration2 = Registration.builder().id(2).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(ZonedDateTime.now()).build()
 
         def authentication = Mock(Authentication) {
             getCredentials() >> User.builder().id(userId).build()
         }
         registrationMapperFactory.getDTOMapper(_) >> Optional.of(registrationOverviewMapper)
         SecurityContextHolder.context.authentication = authentication
-        registrationRepository.getSortedRegistrations(userId) >> List.of(registrations, registrayion2)
+        registrationRepository.getSortedRegistrations(userId) >> List.of(registrations, registration2)
         registrationOverviewMapper.toDTO(_) >> RegistrationOverviewDTO.builder().id(1).status(RegistrationStatus.APPROVED).registerDate(LocalDate.now()).startDate(LocalDate.now()).build()
         when:
         def result = registrationService.getMyRegistrationPage(1, status)
@@ -240,7 +242,7 @@ class RegistrationServiceImplSpec extends Specification {
         given: "a mock user and registration data"
         def userId = 1
         def status = "APPROVaaaED"
-        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).startDate(LocalDateTime.now()).build()
+        def registrations = Registration.builder().id(1).course(Course.builder().id(1).name("").build()).status(RegistrationStatus.APPROVED).startDate(ZonedDateTime.now()).build()
         def authentication = Mock(Authentication) {
             getCredentials() >> User.builder().id(userId).build()
         }
@@ -267,7 +269,7 @@ class RegistrationServiceImplSpec extends Specification {
     def "startLearningCourse: This course was started learning"() {
         given:
         registrationRepository.existsByIdAndUserId(_ as Long, _ as Long) >> true
-        registrationRepository.findById(_ as Long) >> Optional.of(Registration.builder().id(1).startDate(LocalDateTime.now()).build());
+        registrationRepository.findById(_ as Long) >> Optional.of(Registration.builder().id(1).startDate(ZonedDateTime.now()).build());
         when:
         registrationService.startLearningCourse(1)
         then:
@@ -797,7 +799,7 @@ class RegistrationServiceImplSpec extends Specification {
         Registration registration = Registration.builder()
                 .id(1)
                 .status(RegistrationStatus.APPROVED)
-                .startDate(LocalDateTime.of(2024, 7, 22, 18, 0, 0))
+                .startDate(LocalDateTime.of(2024, 7, 22, 18, 0, 0).atZone(ZoneId.systemDefault()))
                 .score(1008)
                 .course(course)
                 .duration(1)

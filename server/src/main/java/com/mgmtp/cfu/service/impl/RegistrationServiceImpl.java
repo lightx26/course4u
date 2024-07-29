@@ -14,9 +14,6 @@ import com.mgmtp.cfu.entity.Course;
 import com.mgmtp.cfu.enums.*;
 import com.mgmtp.cfu.entity.RegistrationFeedback;
 import com.mgmtp.cfu.entity.User;
-import com.mgmtp.cfu.enums.*;
-import com.mgmtp.cfu.entity.RegistrationFeedback;
-import com.mgmtp.cfu.entity.User;
 import com.mgmtp.cfu.exception.*;
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper;
 import com.mgmtp.cfu.entity.Registration;
@@ -39,6 +36,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.List;
 
@@ -266,8 +264,8 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         if (registration.getStatus().equals(RegistrationStatus.APPROVED)) {
 
-            LocalDateTime startDate = registration.getStartDate();
-            LocalDateTime endDate = LocalDateTime.now();
+            ZonedDateTime startDate = registration.getStartDate();
+            ZonedDateTime endDate = ZonedDateTime.now();
             Integer estimatedDuration = registration.getDuration();
             DurationUnit durationUnit = registration.getDurationUnit(); // Day || Week || Month
             CourseLevel level = registration.getCourse().getLevel();
@@ -308,7 +306,6 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Transactional
     public void closeRegistration(Long id, FeedbackRequest feedbackRequest) {
         Registration registration = registrationRepository.findById(id).orElseThrow(() -> new RegistrationNotFoundException("Registration not found"));
-
 
         if (!RegistrationStatusUtil.isCloseableStatus(registration.getStatus())) {
             throw new BadRequestRuntimeException("Registration status must be in [DONE, VERIFYING, DOCUMENT_DECLINED, VERIFIED]  to be closed");
@@ -378,7 +375,7 @@ public class RegistrationServiceImpl implements RegistrationService {
             if (!registration.getStatus().equals(RegistrationStatus.APPROVED)) {
                 throw new BadRequestRuntimeException("This registration requires approval by admin.");
             }
-            registration.setStartDate(LocalDateTime.now());
+            registration.setStartDate(ZonedDateTime.now());
             registration.setLastUpdated(LocalDateTime.now());
             registrationRepository.save(registration);
             return true;
@@ -519,11 +516,6 @@ public class RegistrationServiceImpl implements RegistrationService {
                 mailContentUnits
         );
     }
-
-
-
-
-
 
     @Override
     public void createRegistrationFromExistingCourses(Long courseId, RegistrationEnrollDTO registrationEnrollDTO) {

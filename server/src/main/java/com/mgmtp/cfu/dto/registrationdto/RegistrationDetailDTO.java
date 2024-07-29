@@ -9,7 +9,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Set;
 
 @Getter
@@ -20,8 +20,8 @@ import java.util.Set;
 public class RegistrationDetailDTO {
     Long id;
     RegistrationStatus status;
-    LocalDateTime startDate;
-    LocalDateTime endDate;
+    ZonedDateTime startDate;
+    ZonedDateTime endDate;
     Integer score;
     LocalDate registerDate;
     Integer duration;

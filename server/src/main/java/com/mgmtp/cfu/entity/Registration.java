@@ -9,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Set;
 
 @Entity
@@ -28,9 +29,9 @@ public class Registration {
     @Column(name = "`Status`")
     RegistrationStatus status;
     @Column(name = "`StartDate`")
-    LocalDateTime startDate;
+    ZonedDateTime startDate;
     @Column(name = "`EndDate`")
-    LocalDateTime endDate;
+    ZonedDateTime endDate;
     @Column(name = "`Score`")
     Integer score;
     @Column(name = "`RegisterDate`")

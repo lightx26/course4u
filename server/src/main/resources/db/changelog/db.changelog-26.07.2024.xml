@@ -13,4 +13,9 @@
         <renameColumn tableName="CourseReview" oldColumnName="CreatedDate" newColumnName="CreatedAt" />
         <modifyDataType tableName="CourseReview" columnName="CreatedAt" newDataType="TIMESTAMP WITH TIMEZONE"/>
     </changeSet>
+    
+    <changeSet id="9" author="Quang Nguyen">
+        <modifyDataType tableName="Registration" columnName="StartDate" newDataType="TIMESTAMP WITH TIMEZONE"/>
+        <modifyDataType tableName="Registration" columnName="EndDate" newDataType="TIMESTAMP WITH TIMEZONE"/>
+    </changeSet>
 </databaseChangeLog>

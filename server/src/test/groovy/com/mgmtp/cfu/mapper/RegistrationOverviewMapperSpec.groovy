@@ -2,7 +2,6 @@ package com.mgmtp.cfu.mapper
 
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO
 import com.mgmtp.cfu.enums.CoursePlatform
-import com.mgmtp.cfu.mapper.RegistrationOverviewMapper
 import com.mgmtp.cfu.entity.Course
 import com.mgmtp.cfu.entity.Registration
 import com.mgmtp.cfu.enums.CourseStatus
@@ -12,7 +11,7 @@ import spock.lang.Specification
 import spock.lang.Subject
 
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 class RegistrationOverviewMapperSpec extends Specification {
     @Subject
@@ -34,9 +33,9 @@ class RegistrationOverviewMapperSpec extends Specification {
             def registration = Registration.builder()
                     .id(1)
                     .duration(15)
-                    .endDate(LocalDateTime.now())
+                    .endDate(ZonedDateTime.now())
                     .registerDate(LocalDate.now())
-                    .startDate(LocalDateTime.now())
+                    .startDate(ZonedDateTime.now())
                     .status(RegistrationStatus.DONE)
                     .score(10)
                     .course(course)

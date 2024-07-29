@@ -1,7 +1,6 @@
 package com.mgmtp.cfu.schedule;
 
 import com.mgmtp.cfu.dto.MailContentUnit;
-import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewParams;
 import com.mgmtp.cfu.entity.Registration;
 import com.mgmtp.cfu.enums.NotificationType;
 import com.mgmtp.cfu.enums.RegistrationStatus;
@@ -10,13 +9,8 @@ import com.mgmtp.cfu.repository.RegistrationRepository;
 import com.mgmtp.cfu.service.IEmailService;
 import com.mgmtp.cfu.util.NotificationUtil;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -47,7 +41,7 @@ public class ScheduledDeadlineNotificationRunnableTask implements Runnable {
         registrations.forEach(registration -> {
             try {
                 var unit = registration.getDurationUnit().name() + "S";
-                var deadline = registration.getStartDate().plus(registration.getDuration(), ChronoUnit.valueOf(unit));
+                var deadline = (registration.getStartDate().plus(registration.getDuration(), ChronoUnit.valueOf(unit))).toLocalDateTime();
                 LocalDateTime now = LocalDateTime.now();
                 boolean isNearDeadline = now.isBefore(deadline) && plus(now, reminderTime).isAfter(deadline);
                 if (isNearDeadline) {
