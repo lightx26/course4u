@@ -307,7 +307,7 @@ export const RegistrationButton = ({
                             : "RE-SUBMIT"}
                     </Button>
             )}
-            {((!haveReview) && (status === Status.DONE || status === Status.VERIFIED)) && (
+            {((!haveReview) && (status === Status.DONE || status === Status.VERIFIED || status === Status.VERIFYING || status === Status.DOCUMENT_DECLINED || status === Status.CLOSED)) && (
                 <SendReviewModal
                     title="Give your review"
                     rating={rating}
