@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -35,6 +36,6 @@ public class CourseReview {
     @Column(name = "`Comment`")
     private String comment;
 
-    @Column(name = "`CreatedDate`")
-    private LocalDateTime createdDate;
+    @Column(name = "`CreatedAt`")
+    private ZonedDateTime createdAt;
 }

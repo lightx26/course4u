@@ -7,12 +7,12 @@ interface IReview {
   userAvatar: string;
   userFullName: string;
   comment: string;
-  createdDate: string;
+  createdAt: string;
   rating: number;
 }
 
 const CommentDetail: React.FC<IReview> = (props) => {
-  const { userAvatar, rating, userFullName, comment, createdDate } = props;
+  const { userAvatar, rating, userFullName, comment, createdAt } = props;
   const [isExpanded, setIsExpanded] = useState(false);
   const [showSeeMore, setShowSeeMore] = useState(false);
   const commentRef = useRef<HTMLParagraphElement>(null);
@@ -74,7 +74,7 @@ const CommentDetail: React.FC<IReview> = (props) => {
               </svg>
             </div>
             <div className="text-[12px] font-semibold leading-none text-gray-500 mt-0.5">
-              {timeAgo(createdDate)}
+              {timeAgo(createdAt)}
             </div>
           </div>
           <div className="flex justify-start">
@@ -89,9 +89,8 @@ const CommentDetail: React.FC<IReview> = (props) => {
         <div className="relative">
           <p
             ref={commentRef}
-            className={`text-[15px] mt-2 ${
-              isExpanded ? "line-clamp-none" : "line-clamp-6"
-            } text-justify`}
+            className={`text-[15px] mt-2 ${isExpanded ? "line-clamp-none" : "line-clamp-6"
+              } text-justify`}
             style={{ marginBottom: showSeeMore ? "20px" : "0px" }}
             key={uuidv4()}
           >

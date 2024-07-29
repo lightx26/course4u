@@ -62,7 +62,7 @@ interface IReview {
   userAvatar: string;
   comment: string;
   rating: number;
-  createdDate: string;
+  createdAt: string;
 }
 
 const Detail_Of_Course: React.FC = () => {
@@ -74,6 +74,10 @@ const Detail_Of_Course: React.FC = () => {
 
   //Reviews
   const options = [
+    {
+      label: "All",
+      value: "0",
+    },
     {
       label: "1 Star Rating",
       value: "1",
@@ -93,10 +97,6 @@ const Detail_Of_Course: React.FC = () => {
     {
       label: "5 Star Rating",
       value: "5",
-    },
-    {
-      label: "All",
-      value: "0",
     },
   ];
   const [currentOption, setCurrentOption] = useState<Option>({
@@ -327,9 +327,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                  (dataRatings.detailRatings["5"] * 100) /
-                                    totalRating
-                                )
+                                (dataRatings.detailRatings["5"] * 100) /
+                                totalRating
+                              )
                               : 0
                           }
                         />
@@ -339,9 +339,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                  (dataRatings.detailRatings["4"] * 100) /
-                                    totalRating
-                                )
+                                (dataRatings.detailRatings["4"] * 100) /
+                                totalRating
+                              )
                               : 0
                           }
                         />
@@ -351,9 +351,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                  (dataRatings.detailRatings["3"] * 100) /
-                                    totalRating
-                                )
+                                (dataRatings.detailRatings["3"] * 100) /
+                                totalRating
+                              )
                               : 0
                           }
                         />
@@ -363,9 +363,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                  (dataRatings.detailRatings["2"] * 100) /
-                                    totalRating
-                                )
+                                (dataRatings.detailRatings["2"] * 100) /
+                                totalRating
+                              )
                               : 0
                           }
                         />
@@ -375,9 +375,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                  (dataRatings.detailRatings["1"] * 100) /
-                                    totalRating
-                                )
+                                (dataRatings.detailRatings["1"] * 100) /
+                                totalRating
+                              )
                               : 0
                           }
                         />
@@ -404,7 +404,7 @@ const Detail_Of_Course: React.FC = () => {
                               rating={item.rating}
                               userFullName={item.userFullName}
                               comment={item.comment}
-                              createdDate={item.createdDate}
+                              createdAt={item.createdAt}
                               key={uuidv4()}
                             />
                           );

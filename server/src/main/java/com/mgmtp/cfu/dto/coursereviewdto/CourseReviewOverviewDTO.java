@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -16,5 +17,5 @@ public class CourseReviewOverviewDTO {
     private String userAvatar;
     private Integer rating;
     private String comment;
-    private LocalDateTime createdDate;
+    private ZonedDateTime createdAt;
 }

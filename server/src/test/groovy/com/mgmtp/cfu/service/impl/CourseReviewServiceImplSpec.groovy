@@ -14,7 +14,6 @@ import com.mgmtp.cfu.exception.MapperNotFoundException
 import com.mgmtp.cfu.mapper.CourseReviewOverviewMapper
 import com.mgmtp.cfu.mapper.factory.impl.CourseReviewMapperFactory
 import com.mgmtp.cfu.service.CourseReviewService
-import com.mgmtp.cfu.util.AuthUtils
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
@@ -51,10 +50,6 @@ class CourseReviewServiceImplSpec extends Specification {
                 .telephone("008837623")
                 .build()
         authentication.getCredentials() >> user
-
-
-
-
     }
 
     def "should return an initial rating page"() {

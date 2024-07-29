@@ -8,4 +8,9 @@
         <renameColumn tableName="Notification" oldColumnName="CreatedDate" newColumnName="CreatedAt" />
         <modifyDataType tableName="Notification" columnName="CreatedAt" newDataType="TIMESTAMP WITH TIMEZONE"/>
     </changeSet>
+
+    <changeSet id="8" author="Quang Nguyen">
+        <renameColumn tableName="CourseReview" oldColumnName="CreatedDate" newColumnName="CreatedAt" />
+        <modifyDataType tableName="CourseReview" columnName="CreatedAt" newDataType="TIMESTAMP WITH TIMEZONE"/>
+    </changeSet>
 </databaseChangeLog>

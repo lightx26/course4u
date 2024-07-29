@@ -21,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.time.LocalDateTime;
@@ -79,7 +80,7 @@ public class CourseReviewServiceImpl implements CourseReviewService {
         // Make sure the page is not less than 1
         page = Math.max(1, page);
 
-        Sort sort = Sort.by(Sort.Order.desc("createdDate"), Sort.Order.asc("id"));
+        Sort sort = Sort.by(Sort.Order.desc("createdAt"), Sort.Order.asc("id"));
         Pageable pageable = PageRequest.of(page - 1, size, sort);
 
         Page<CourseReview> reviewsPage = geReviewsOfCourseBySpec(courseId, starFilter, pageable);
@@ -100,7 +101,7 @@ public class CourseReviewServiceImpl implements CourseReviewService {
     
         courseReview.setRating(courseReviewDto.getRating());
         courseReview.setComment(courseReviewDto.getComment());
-        courseReview.setCreatedDate(LocalDateTime.now());
+        courseReview.setCreatedAt(ZonedDateTime.now());
         courseReview.setUser(AuthUtils.getCurrentUser());
     
         Course course = courseRepository.findById(courseReviewDto.getCourseId())

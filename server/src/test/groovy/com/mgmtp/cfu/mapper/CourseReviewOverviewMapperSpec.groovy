@@ -7,6 +7,7 @@ import spock.lang.Specification
 import spock.lang.Subject
 
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 class CourseReviewOverviewMapperSpec extends Specification {
     @Subject
@@ -25,7 +26,7 @@ class CourseReviewOverviewMapperSpec extends Specification {
 
     def "Should mapping all the fields from entity to DTO correctly"() {
         given:
-        CourseReview entity = new CourseReview(id:1, rating: 5, comment: "Peak!", createdDate: LocalDateTime.now())
+        CourseReview entity = new CourseReview(id:1, rating: 5, comment: "Peak!", createdAt: ZonedDateTime.now())
         entity.user = new User(fullName: "Quang Nguyen", avatarUrl: "avatarUrl")
 
         when:
@@ -36,6 +37,6 @@ class CourseReviewOverviewMapperSpec extends Specification {
         dto.userAvatar == entity.user.avatarUrl
         dto.rating == entity.rating
         dto.comment == entity.comment
-        dto.createdDate == entity.createdDate
+        dto.createdAt == entity.createdAt
     }
 }
