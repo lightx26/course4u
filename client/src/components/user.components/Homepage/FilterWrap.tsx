@@ -63,28 +63,28 @@ export default function FilterWrap() {
             },
             {
                 id: "4",
-                name: "4 Star & up",
+                name: "4 - 4.9 Star",
                 countNumber: 800,
                 parentID: "Rating",
                 checked: false,
             },
             {
                 id: "3",
-                name: "3 Star & up",
+                name: "3 - 3.9 Star",
                 countNumber: 900,
                 parentID: "Rating",
                 checked: false,
             },
             {
                 id: "2",
-                name: "2 Star & up",
+                name: "2 - 2.9 Star",
                 countNumber: 1500,
                 parentID: "Rating",
                 checked: false,
             },
             {
                 id: "1",
-                name: "1 Star & up",
+                name: "1 - 1.9 Star",
                 countNumber: 700,
                 parentID: "Rating",
                 checked: false,
@@ -148,7 +148,6 @@ export default function FilterWrap() {
                 {/*Rating can only choose one option/time*/}
                 <FilterComponent
                     key={"Rating"}
-                    isMultipleChoice={false}
                     isHaveSearch={false}
                     title='Rating'
                     list={ratingList}

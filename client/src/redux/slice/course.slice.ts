@@ -93,7 +93,7 @@ export const searchCoursesByFilterNameAndSortBy = createAsyncThunk(
             categoryFilter: extractFilterIds('Category'),
             levelFilter: extractFilterIds('Level'),
             platformFilter: extractFilterIds('Platform'),
-            minRating: extractFilterIds('Rating')[0] ?? '0',
+            rating: extractFilterIds('Rating'),
             page: courseState.number ?? 1,
             limit: courseState.limit ?? 8,
             sortBy: courseState.sortBy,

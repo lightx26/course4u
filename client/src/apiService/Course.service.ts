@@ -5,7 +5,7 @@ export type SearchParams = {
   categoryFilter?: string[];
   levelFilter?: string[];
   platformFilter?: string[];
-  minRating?: string;
+  rating?: string[];
   limit?: number;
   sortBy?: string;
   page?: number;
@@ -22,9 +22,10 @@ async function fetchListAvailableCourse(Searcher: SearchParams) {
         categoryFilters: Searcher.categoryFilter ?? [],
         levelFilters: Searcher.levelFilter ?? [],
         platformFilters: Searcher.platformFilter ?? [],
-        minRating: Searcher.minRating ?? "0",
+        ratingFilters: Searcher.rating ?? [],
       },
     };
+    console.log(request_params);
     const response = await instance.post(`/courses/search`, request_params);
     return response;
   } catch (error) {
