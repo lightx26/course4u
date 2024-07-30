@@ -9,7 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 
+import java.time.LocalDate;
+import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.mgmtp.cfu.util.Constant.LEADERBOARD_RANK_LIMIT;
 
@@ -36,6 +39,10 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 
     @Override
     public Set<String> getExistedYears() {
-        return leaderboardQueryManager.getExistedYears();
+        return leaderboardQueryManager.getExistedYears().stream()
+                .filter(year -> year <= LocalDate.now().getYear())
+                .map(Object::toString)
+                .sorted(String::compareTo)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 }

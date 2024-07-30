@@ -170,6 +170,7 @@ const Detail_Of_Course: React.FC = () => {
   };
   useEffect(() => {
     getDataDetailCourse(id);
+    setTrackingIndex(1);
     setCurrentOption({
       value: "0",
       label: "All",
@@ -182,7 +183,7 @@ const Detail_Of_Course: React.FC = () => {
 
   function convertDate(dateString: string) {
     const [year, month, day] = dateString.split("-");
-    return `${day}/${month}/${year}`;
+    return `${month}/${day}/${year}`;
   }
 
   function truncateText(text: string, maxLines: number) {
@@ -327,9 +328,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                (dataRatings.detailRatings["5"] * 100) /
-                                totalRating
-                              )
+                                  (dataRatings.detailRatings["5"] * 100) /
+                                    totalRating
+                                )
                               : 0
                           }
                         />
@@ -339,9 +340,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                (dataRatings.detailRatings["4"] * 100) /
-                                totalRating
-                              )
+                                  (dataRatings.detailRatings["4"] * 100) /
+                                    totalRating
+                                )
                               : 0
                           }
                         />
@@ -351,9 +352,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                (dataRatings.detailRatings["3"] * 100) /
-                                totalRating
-                              )
+                                  (dataRatings.detailRatings["3"] * 100) /
+                                    totalRating
+                                )
                               : 0
                           }
                         />
@@ -363,9 +364,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                (dataRatings.detailRatings["2"] * 100) /
-                                totalRating
-                              )
+                                  (dataRatings.detailRatings["2"] * 100) /
+                                    totalRating
+                                )
                               : 0
                           }
                         />
@@ -375,9 +376,9 @@ const Detail_Of_Course: React.FC = () => {
                           percentage={
                             dataRatings && totalRating !== 0
                               ? Math.round(
-                                (dataRatings.detailRatings["1"] * 100) /
-                                totalRating
-                              )
+                                  (dataRatings.detailRatings["1"] * 100) /
+                                    totalRating
+                                )
                               : 0
                           }
                         />
@@ -665,10 +666,13 @@ const Detail_Of_Course: React.FC = () => {
                   )}
                 </div>
                 <div className="flex justify-between items-center w-full flex-wrap pb-[80px]">
-                  {trackingIndex === 1 && (
+                  {dataRelatedCourse && dataRelatedCourse.length === 0 && (
+                    <div>There are no results related to this course</div>
+                  )}
+                  {(trackingIndex === 1 || dataRelatedCourse.length <= 4) && (
                     <div className="w-[50px] h-[50px] rounded-full"></div>
                   )}
-                  {trackingIndex === 2 && dataRelatedCourse.length > 0 && (
+                  {trackingIndex === 2 && dataRelatedCourse.length > 4 && (
                     <div
                       className="previosBtn w-[50px] h-[50px] border border-[#ccc] rounded-full flex justify-center items-center cursor-pointer"
                       onClick={() => setTrackingIndex(1)}
@@ -688,14 +692,19 @@ const Detail_Of_Course: React.FC = () => {
                     </div>
                   )}
 
-                  <div className="itemCourseRelated flex justify-around items-center gap-[5px] flex-row py-[10px] w-[90%]">
+                  <div className="itemCourseRelated flex justify-start items-center gap-[5px] flex-row py-[10px] w-[90%]">
                     {dataRelatedCourse &&
                       trackingIndex === 1 &&
                       dataRelatedCourse.length > 0 &&
                       dataRelatedCourse.map((item, index) => {
                         if (index < 4)
                           return (
-                            <CourseCardComponent key={item.id} course={item} />
+                            <div className="w-[25%]">
+                              <CourseCardComponent
+                                key={item.id}
+                                course={item}
+                              />
+                            </div>
                           );
                       })}
 
@@ -705,14 +714,19 @@ const Detail_Of_Course: React.FC = () => {
                       dataRelatedCourse.map((item, index) => {
                         if (index >= 4)
                           return (
-                            <CourseCardComponent key={item.id} course={item} />
+                            <div className="w-[25%]">
+                              <CourseCardComponent
+                                key={item.id}
+                                course={item}
+                              />
+                            </div>
                           );
                       })}
                   </div>
-                  {trackingIndex === 2 && (
+                  {(trackingIndex === 2 || dataRelatedCourse.length <= 4) && (
                     <div className="w-[50px] h-[50px] rounded-full"></div>
                   )}
-                  {trackingIndex === 1 && dataRelatedCourse.length > 0 && (
+                  {trackingIndex === 1 && dataRelatedCourse.length > 4 && (
                     <div
                       className="nextBtn w-[50px] h-[50px] border border-[#ccc] rounded-full flex justify-center items-center cursor-pointer"
                       onClick={() => setTrackingIndex(2)}

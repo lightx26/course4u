@@ -7,8 +7,6 @@ import {
   getAllYearsLeadBoard,
   getDataLeaderBoard,
 } from "../../apiService/Score.service";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store/store";
 import { handleAvatarUrl } from "../../utils/handleAvatarUrl";
 
 interface DataType {
@@ -39,6 +37,7 @@ interface IYear {
   value: string;
   label: string;
 }
+
 const LeaderBoard: React.FC = () => {
   const [valueYear, setValueYear] = useState<string>("2024");
   const [dataCardLeaderBoard, setDataCardLeaderBoard] = useState<DataType[]>(
@@ -47,9 +46,7 @@ const LeaderBoard: React.FC = () => {
   const [dataLeaderBoardTable, setDataLeaderBoardTable] = useState<DataType[]>(
     []
   );
-
   const [dataYears, setDataYears] = useState<IYear[]>([]);
-  const fullname = useSelector((state: RootState) => state.user.user.fullName);
 
   const columns: TableProps<DataType>["columns"] = [
     {
@@ -67,25 +64,23 @@ const LeaderBoard: React.FC = () => {
         avatarUrl: string;
         username: string;
         fullname: string | null;
+        mine: boolean;
       }) => {
         const displayName = data.fullname ? data.fullname : "Anonymous";
-        const isCurrentUser =
-          (!fullname && !data.fullname) || data.fullname === fullname;
+        const isCurrentUser = data.mine;
         return (
-          <>
-            <div className="flex items-center gap-2.5">
-              <div className="relative w-8 h-8 rounded-full">
-                <img
-                  src={handleAvatarUrl(data.avatarUrl)}
-                  alt=""
-                  className="absolute object-cover object-center w-full h-full rounded-full"
-                />
-              </div>
-              <div className="font-normal">
-                {isCurrentUser ? `${displayName} (You)` : displayName}
-              </div>
+          <div className="flex items-center gap-2.5">
+            <div className="relative w-8 h-8 rounded-full">
+              <img
+                src={handleAvatarUrl(data.avatarUrl)}
+                alt=""
+                className="absolute object-cover object-center w-full h-full rounded-full"
+              />
             </div>
-          </>
+            <div className="font-normal">
+              {isCurrentUser ? `${displayName} (You)` : displayName}
+            </div>
+          </div>
         );
       },
     },
@@ -119,6 +114,7 @@ const LeaderBoard: React.FC = () => {
             username: item.username,
             email: item.email,
             fullname: item.fullName,
+            mine: item.mine,
           },
           time: item.learningTime,
           score: item.score,
@@ -153,6 +149,7 @@ const LeaderBoard: React.FC = () => {
       setDataYears(dataTmp);
     }
   };
+
   const rowClassName = (record: DataType) => {
     return record.mine ? "colorText" : "";
   };
@@ -166,53 +163,44 @@ const LeaderBoard: React.FC = () => {
   }, []);
 
   return (
-    <>
-      <div className="pb-12 bg-gray-100">
-        <div className="px-5 pt-6 mx-auto max-w-screen-2xl">
-          <div className="flex items-center justify-between px-2.5">
-            <div>
-              <span className="text-4xl font-semibold">Ranking</span>
-            </div>
-            <div className="flex items-center justify-center gap-6">
-              <div className="text-lg text-gray-600">Year</div>
-              <div>
-                <Select
-                  defaultValue={valueYear}
-                  style={{ width: 120 }}
-                  onChange={handleChange}
-                  options={dataYears}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="flex items-end justify-center gap-8 mt-10">
-            {dataCardLeaderBoard &&
-              dataCardLeaderBoard.length > 0 &&
-              dataCardLeaderBoard.map((item: DataType, index: number) => {
-                if (index <= 2)
-                  return (
-                    <Card_LeaderBoard
-                      fullname={item.userInfor.fullname}
-                      email={item.userInfor.email}
-                      ranking={item.rank}
-                      avatarUrl={item.userInfor.avatarUrl}
-                      score={item.score}
-                      learningTime={item.time}
-                    />
-                  );
-              })}
-          </div>
-          <div className="mt-12">
-            <Table
-              columns={columns}
-              dataSource={dataLeaderBoardTable}
-              pagination={false}
-              rowClassName={rowClassName}
+    <div className="pb-12 bg-gray-100">
+      <div className="px-5 pt-6 mx-auto max-w-screen-2xl">
+        <div className="flex items-center justify-between px-2.5">
+          <span className="text-4xl font-semibold">Ranking</span>
+          <div className="flex items-center justify-center gap-6">
+            <div className="text-lg text-gray-600">Year</div>
+            <Select
+              defaultValue={valueYear}
+              style={{ width: 120 }}
+              onChange={handleChange}
+              options={dataYears}
             />
           </div>
         </div>
+        <div className="flex items-end justify-center gap-8 mt-10">
+          {dataCardLeaderBoard.map((item: DataType, index: number) => (
+            <Card_LeaderBoard
+              key={index}
+              fullname={item.userInfor.fullname}
+              email={item.userInfor.email}
+              ranking={item.rank}
+              avatarUrl={item.userInfor.avatarUrl}
+              score={item.score}
+              learningTime={item.time}
+            />
+          ))}
+        </div>
+        <div className="mt-12">
+          <Table
+            columns={columns}
+            dataSource={dataLeaderBoardTable}
+            pagination={false}
+            rowClassName={rowClassName}
+          />
+        </div>
       </div>
-    </>
+    </div>
   );
 };
+
 export default LeaderBoard;

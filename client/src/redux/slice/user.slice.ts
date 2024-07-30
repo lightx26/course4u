@@ -1,5 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { handleRegister, handleLogin, getUserDetails } from "../../apiService/user.service";
+import {
+  handleRegister,
+  handleLogin,
+  getUserDetails,
+} from "../../apiService/user.service";
 
 export interface IUser {
   isAuthenticated: boolean;
@@ -40,7 +44,7 @@ const initialState: IUser = {
     avatarUrl: "",
     dateOfBirth: "",
     role: "",
-    gender: ""
+    gender: "",
   },
   statusLogin: "idle",
   statusRegister: "idle",
@@ -97,7 +101,7 @@ export const userSlice = createSlice({
       if (!state.user.avatarUrl) {
         state.user.avatarUrl = "";
       }
-    }
+    },
   },
   extraReducers: (builder) => {
     builder

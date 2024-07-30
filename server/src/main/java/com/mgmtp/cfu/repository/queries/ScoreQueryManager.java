@@ -26,6 +26,7 @@ public class ScoreQueryManager {
                 "FROM User u LEFT JOIN (SELECT re.id as re_id, re.score as re_score, re.startDate as re_startDate, re.endDate as re_endDate, re.user.id as re_user_id " +
                 "FROM Registration re WHERE EXTRACT(YEAR FROM re.endDate) = :year AND re.status IN :acceptStatus) r " +
                 "ON u.id = r.re_user_id " +
+                "WHERE u.role='USER'" +
                 "GROUP BY u.id, u.avatarUrl, u.email, u.username, u.fullName " +
                 "ORDER BY COALESCE(SUM(r.re_score), 0) DESC";
 
@@ -39,11 +40,12 @@ public class ScoreQueryManager {
     }
 
 
-    public Set<String> getExistedYears() {
+    public Set<Integer> getExistedYears() {
         var jpql = "select  distinct  YEAR(r.endDate) " +
                 " from Registration r" +
-                " WHERE r.endDate IS NOT NULL";
-        TypedQuery<String> query = entityManager.createQuery(jpql, String.class);
+                " WHERE r.endDate IS NOT NULL" +
+                " ORDER BY YEAR(r.endDate) ASC";
+        TypedQuery<Integer> query = entityManager.createQuery(jpql, Integer.class);
         return new HashSet<>(query.getResultList());
     }
 

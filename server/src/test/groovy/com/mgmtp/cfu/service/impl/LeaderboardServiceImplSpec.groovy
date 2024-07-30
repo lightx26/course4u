@@ -38,13 +38,13 @@ class LeaderboardServiceImplSpec extends Specification {
         4      | 2024
         5      | 2023
     }
-    def 'getLeaderboard'() {
+    def 'getExistedYears'() {
         given:
-        leaderboardQueryManager.getExistedYears()>>Set.of("2021")
+        leaderboardQueryManager.getExistedYears() >> Set.of(2021)
         when:
-        def result=leaderboardService.getExistedYears()
+        def result = leaderboardService.getExistedYears()
         then:
-        result.size()==1
+        result.size() == 1
     }
 
 }

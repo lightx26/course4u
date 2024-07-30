@@ -24,19 +24,7 @@ public interface CourseRepository extends JpaRepository<Course, Long>, JpaSpecif
                     "JOIN co.categories cat " +
                     "WHERE co.id != :courseId AND co.status = :status AND cat IN :categories " +
                     "GROUP BY co.id " +
-                    "ORDER BY COUNT(cat.id) DESC " +
-                    "LIMIT 8 " +
-                    "UNION " +
-                    "SELECT co FROM Course co " +
-                    "WHERE co.id != :courseId AND co.status = :status AND co.id NOT IN (" +
-                    "  SELECT co2.id FROM Course co2 " +
-                    "  JOIN co2.categories cat2 " +
-                    "  WHERE co2.id != :courseId AND co2.status = :status AND cat2 IN :categories " +
-                    "  GROUP BY co2.id " +
-                    "  ORDER BY COUNT(cat2.id) DESC " +
-                    "  LIMIT 8" +
-                    ") "
-
+                    "ORDER BY COUNT(cat.id) DESC "
     )
     List<Course> findTop8RelatedCourse(@Param("categories") Set<Category> categories, Pageable pageable, @Param("courseId") Long courseId, @Param("status") CourseStatus courseStatus
     );

@@ -67,6 +67,7 @@ const Card_LeaderBoard = (props: IProps) => {
                 wordWrap: "break-word",
                 overflow: "hidden",
               }}
+              title={fullname ? `${fullname}` : "Anonymous"}
             >
               {fullname ? `${fullname}` : "Anonymous"}
             </div>
@@ -82,6 +83,7 @@ const Card_LeaderBoard = (props: IProps) => {
                 wordWrap: "break-word",
                 overflow: "hidden",
               }}
+              title={email}
             >
               {email}
             </div>
@@ -89,16 +91,43 @@ const Card_LeaderBoard = (props: IProps) => {
         </div>
       </div>
       <div className="flex items-center justify-between pr-2.5">
-        <div>
+        <div className="w-[40%]">
           <div className={`text-lg font-medium ${rankingColor}`}>Score</div>
-          <div className={`text-xl font-medium ${rankingColor}`}>{score}</div>
+          <div
+            className={`text-xl font-medium ${rankingColor}`}
+            style={{
+              display: "-webkit-box",
+              WebkitLineClamp: 1,
+              WebkitBoxOrient: "vertical",
+              textOverflow: "ellipsis",
+              whiteSpace: "normal",
+              wordWrap: "break-word",
+              overflow: "hidden",
+            }}
+            title={score.toString()}
+          >
+            {score}
+          </div>
         </div>
-        <div>
+        <div className="w-[50%]">
           <div className={`text-lg font-medium ${rankingColor}`}>
             Learning time/year
           </div>
-          <div className={`text-xl font-medium ${rankingColor}`}>
-            {learningTime} day{learningTime > 1 ? "s" : ""}
+          <div
+            className={`text-xl font-medium ${rankingColor}`}
+            style={{
+              display: "-webkit-box",
+              WebkitLineClamp: 1,
+              WebkitBoxOrient: "vertical",
+              textOverflow: "ellipsis",
+              whiteSpace: "normal",
+              wordWrap: "break-word",
+              overflow: "hidden",
+            }}
+            title={learningTime.toString()}
+          >
+            {learningTime} day
+            {learningTime > 1 ? "s" : ""}
           </div>
         </div>
       </div>
