@@ -1,5 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
-import { Status } from "../../utils/index.ts";
+import {Status} from "../../utils/index.ts";
 
 // Define registrations type
 export type OverviewRegistrationsType = {
@@ -73,6 +73,8 @@ export const {
     saveRegistrationsData,
     handleOptionsChange
 } = adminPageRegistrationsSlice.actions
+
+export const adminInitialStateOption: RegistrationParamsType = initialState.options;
 
 // Export the reducer
 export default adminPageRegistrationsSlice.reducer;

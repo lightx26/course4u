@@ -10,9 +10,7 @@ function AdminCard({ avatarUrl }: { avatarUrl?: string }) {
 
   const adminDisplayName: string = adminData.fullName
     ? adminData.fullName
-    : adminData.username
-    ? adminData.username
-    : "Admin";
+    : "Anonymous";
 
   const adminAvatar = avatarUrl ?? handleAvatarUrl(adminData.avatarUrl);
 

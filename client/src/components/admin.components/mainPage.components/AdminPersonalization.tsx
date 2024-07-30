@@ -8,9 +8,7 @@ const AdminPersonalization = ({ avatarUrl }: { avatarUrl?: string }) => {
   const adminAvatar = avatarUrl ?? handleAvatarUrl(adminData.avatarUrl);
   const adminDisplayName: string = adminData.fullName
     ? adminData.fullName
-    : adminData.username
-    ? adminData.username
-    : "Admin";
+    : "Anonymous";
 
   const userRole = adminData.role;
   return (

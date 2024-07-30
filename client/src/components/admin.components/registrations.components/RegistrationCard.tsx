@@ -48,8 +48,6 @@ function RegistrationCardComponent({ registration }: PropsType) {
     );
     const displayedFullname: string = registration.userFullname
         ? registration.userFullname
-        : registration.userName
-        ? registration.userName
         : "Anonymous";
     const status: string = convertStatus(
         registration.status ? registration.status : ""
