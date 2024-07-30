@@ -319,9 +319,15 @@ public class RegistrationServiceImpl implements RegistrationService {
             else
                 score = 3 * actualDuration + (bonusPoints * 2);
 
+            Integer savedScore = registration.getScore();
+            if (savedScore == null)
+                registration.setScore((int) score);
+            else
+                score += savedScore;
+
+            registration.setScore((int) score);
             registration.setStatus(RegistrationStatus.DONE);
             registration.setEndDate(endDate);
-            registration.setScore((int) score);
             registration.setLastUpdated(LocalDateTime.now());
 
             registrationRepository.save(registration);
