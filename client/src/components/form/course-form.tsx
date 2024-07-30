@@ -26,6 +26,8 @@ import instance from "../../utils/customizeAxios";
 import { ArrowRightToLine, Upload } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
 import { toast } from "sonner";
+import { platform } from "../../utils/index";
+import { cn } from "../../utils";
 
 const courseSchema = registrationSchema.omit({
   duration: true,
@@ -67,14 +69,7 @@ export const CourseForm = ({
 
   useEffect(() => {
     if (course) {
-      setThumbnail({
-        imageUrl: course.thumbnailUrl,
-        croppedImageUrl: null,
-        crop: { x: 0, y: 0 },
-        zoom: 1,
-        aspect: { value: 4 / 3, text: "4:3" },
-      });
-      form?.setValue("link", course.link);
+      setThumbnail({e.link);
       form?.setValue("level", course.level);
       form?.setValue("teacherName", course.teacherName);
       const categoriesData = course?.categories?.map((category) => ({
@@ -84,7 +79,14 @@ export const CourseForm = ({
       form?.setValue("categories", categoriesData || []);
       form?.setValue("platform", course.platform.toUpperCase());
       form?.setValue("name", course.name);
-      form?.setValue("thumbnailUrl", course.thumbnailUrl);
+      form?.setValue("thumbnailUrl", course.th
+        imageUrl: course.thumbnailUrl,
+            croppedImageUrl: null,
+            crop: { x: 0, y: 0 },
+        zoom: 1,
+            aspect: { value: 4 / 3, text: "4:3" },
+    });
+      form?.setValue("link", coursumbnailUrl);
     }
   }, [course]);
 
