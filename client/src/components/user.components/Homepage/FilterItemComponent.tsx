@@ -74,7 +74,6 @@ export default function FilterItemComponent({ prop, isMultipleChoice }: PropsTyp
                 </div>
                 <div className="text-[13px] line-clamp-1 h-[20px] overflow-ellipsis max-w-[170px]" title={prop.name}>{prop.name}</div>
             </div>
-            <div className="pt-1 text-[12px]">{prop.countNumber}</div>
         </div>
     )
 }
