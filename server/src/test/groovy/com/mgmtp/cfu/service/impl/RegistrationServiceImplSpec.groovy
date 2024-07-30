@@ -9,7 +9,6 @@ import com.mgmtp.cfu.entity.Document
 import com.mgmtp.cfu.enums.DocumentStatus
 import com.mgmtp.cfu.enums.DocumentType
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewParams
-import com.mgmtp.cfu.exception.BadRequestRuntimeException
 import com.mgmtp.cfu.exception.ConflictRuntimeException
 import com.mgmtp.cfu.dto.MailContentUnit
 import com.mgmtp.cfu.enums.CourseLevel
@@ -23,12 +22,9 @@ import com.mgmtp.cfu.exception.CourseNotFoundException
 import com.mgmtp.cfu.exception.DuplicateCourseException
 import com.mgmtp.cfu.enums.Role
 import com.mgmtp.cfu.exception.BadRequestRuntimeException
-import com.mgmtp.cfu.enums.Role
-import com.mgmtp.cfu.exception.BadRequestRuntimeException
 import com.mgmtp.cfu.exception.ForbiddenException
 import com.mgmtp.cfu.exception.MapperNotFoundException
 import com.mgmtp.cfu.exception.RegistrationNotFoundException
-import com.mgmtp.cfu.exception.RegistrationStatusNotFoundException
 import com.mgmtp.cfu.mapper.RegistrationDetailMapper
 import com.mgmtp.cfu.mapper.RegistrationOverviewMapper
 
@@ -67,6 +63,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import com.mgmtp.cfu.service.CourseService
 import com.mgmtp.cfu.util.AuthUtils
+import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.Authentication
@@ -350,28 +347,22 @@ class RegistrationServiceImplSpec extends Specification {
                 .build()
 
         def page = 1
+        def pageSize = 8
 
         def registration1 = Registration.builder().id(0).build()
         def registration2 = Registration.builder().id(1).build()
 
-        Page<Registration> registrations = new PageImpl<>([registration1, registration2], PageRequest.of(page, 8), 2)
+        Pageable pageable = PageRequest.of(page - 1, pageSize)
 
-        registrationRepository.getOptionalRegistrationsWithoutStatus(_, _) >> {
-            args -> {
-                def pageRequest = args[1] as PageRequest
-                assert pageRequest.pageNumber == page - 1
-                assert pageRequest.pageSize == 8
-                assert pageRequest.sort == Sort.by(orderBy).ascending()
+        Page<Registration> registrations = new PageImpl<>([registration1, registration2], pageable, 2)
 
-                registrations
-            }
-        }
+        registrationRepository.findAll(_, pageable) >> registrations
 
         registrationOverviewMapper.toDTO(registration1) >> RegistrationOverviewDTO.builder().id(0).build()
         registrationOverviewMapper.toDTO(registration2) >> RegistrationOverviewDTO.builder().id(1).build()
 
         when:
-        Page<RegistrationOverviewDTO> result = registrationService.getRegistrations(params, page)
+        Page<RegistrationOverviewDTO> result = registrationService.getRegistrations(params, page, pageSize)
 
         then:
         result.size() == 2
@@ -393,28 +384,22 @@ class RegistrationServiceImplSpec extends Specification {
                 .build()
 
         def page = 1
+        def pageSize = 8
 
         def registration1 = Registration.builder().id(1).build()
         def registration2 = Registration.builder().id(2).build()
 
-        Page<Registration> registrations = new PageImpl<>([registration2, registration1], PageRequest.of(page - 1, 8), 2)
+        Pageable pageable = PageRequest.of(page - 1, pageSize)
 
-        registrationRepository.getOptionalRegistrationsWithoutStatus(_, _) >> {
-            args -> {
-                def pageRequest = args[1] as PageRequest
-                assert pageRequest.pageNumber == page - 1
-                assert pageRequest.pageSize == 8
-                assert pageRequest.sort == Sort.by(orderBy).descending()
+        Page<Registration> registrations = new PageImpl<>([registration2, registration1], pageable, 2)
 
-                registrations
-            }
-        }
+        registrationRepository.findAll(_, pageable) >> registrations
 
         registrationOverviewMapper.toDTO(registration1) >> RegistrationOverviewDTO.builder().id(1).build()
         registrationOverviewMapper.toDTO(registration2) >> RegistrationOverviewDTO.builder().id(2).build()
 
         when:
-        Page<RegistrationOverviewDTO> response = registrationService.getRegistrations(params, page)
+        Page<RegistrationOverviewDTO> response = registrationService.getRegistrations(params, page, pageSize)
 
         then:
         response.size() == 2
@@ -436,28 +421,22 @@ class RegistrationServiceImplSpec extends Specification {
                 .build()
 
         def page = 1
+        def pageSize = 8
 
         def registration1 = Registration.builder().id(1).lastUpdated(LocalDateTime.now().plusDays(1)).build()
         def registration2 = Registration.builder().id(2).lastUpdated(LocalDateTime.now()).build()
 
-        Page<Registration> registrations = new PageImpl<>([registration2, registration1], PageRequest.of(page - 1, 8), 2)
+        Pageable pageable = PageRequest.of(page - 1, pageSize)
 
-        registrationRepository.getOptionalRegistrationsWithoutStatus(_, _) >> {
-            args -> {
-                def pageRequest = args[1] as PageRequest
-                assert pageRequest.pageNumber == page - 1
-                assert pageRequest.pageSize == 8
-                assert pageRequest.sort == Sort.by(orderBy).ascending()
+        Page<Registration> registrations = new PageImpl<>([registration2, registration1], pageable, 2)
 
-                registrations
-            }
-        }
+        registrationRepository.findAll(_, pageable) >> registrations
 
         registrationOverviewMapper.toDTO(registration1) >> RegistrationOverviewDTO.builder().id(1).build()
         registrationOverviewMapper.toDTO(registration2) >> RegistrationOverviewDTO.builder().id(2).build()
 
         when:
-        Page<RegistrationOverviewDTO> response = registrationService.getRegistrations(params, page)
+        Page<RegistrationOverviewDTO> response = registrationService.getRegistrations(params, page, pageSize)
 
         then:
         response.size() == 2
@@ -467,7 +446,7 @@ class RegistrationServiceImplSpec extends Specification {
 
     def "getRegistrations should return the registrations with the provided status"(){
         given:
-        def status = "submitted"
+        def status = "SUBMITTED"
         def search = ""
         def orderBy = "id"
         def isAscending = true
@@ -479,28 +458,22 @@ class RegistrationServiceImplSpec extends Specification {
                 .build()
 
         def page = 1
+        def pageSize = 8
 
         def registration1 = Registration.builder().id(1).status(RegistrationStatus.SUBMITTED).build()
         def registration2 = Registration.builder().id(2).status(RegistrationStatus.APPROVED).build()
 
-        Page<Registration> registrations = new PageImpl<>([registration1], PageRequest.of(page - 1, 8), 1)
+        Pageable pageable = PageRequest.of(page - 1, pageSize)
 
-        registrationRepository.getOptionalRegistrationsWithStatus(_, _, _) >> {
-            args -> {
-                def pageRequest = args[2] as PageRequest
-                assert pageRequest.pageNumber == page - 1
-                assert pageRequest.pageSize == 8
-                assert pageRequest.sort == Sort.by(orderBy).ascending()
+        Page<Registration> registrations = new PageImpl<>([registration1], pageable, 1)
 
-                registrations
-            }
-        }
+        registrationRepository.findAll(_, pageable) >> registrations
 
         registrationOverviewMapper.toDTO(registration1) >> RegistrationOverviewDTO.builder().id(1).status(RegistrationStatus.SUBMITTED).build()
         registrationOverviewMapper.toDTO(registration2) >> RegistrationOverviewDTO.builder().id(2).status(RegistrationStatus.APPROVED).build()
 
         when:
-        Page<RegistrationOverviewDTO> response = registrationService.getRegistrations(params, page)
+        Page<RegistrationOverviewDTO> response = registrationService.getRegistrations(params, page, pageSize)
 
         then:
         response.size() == 1
@@ -521,33 +494,24 @@ class RegistrationServiceImplSpec extends Specification {
                 .build()
 
         def page = 1
+        def pageSize = 8
 
         Course course1 = Course.builder().id(1).name("machine learning & AI").build()
         Course course2 = Course.builder().id(1).name("NodeJS").build()
         def registration1 = Registration.builder().id(1).course(course1).build()
         def registration2 = Registration.builder().id(2).course(course2).build()
 
-        Page<Registration> registrations = new PageImpl<>([registration1], PageRequest.of(page - 1, 8), 1)
+        Pageable pageable = PageRequest.of(page - 1, pageSize)
 
-        registrationRepository.getOptionalRegistrationsWithoutStatus(_, _) >> {
-            args -> {
-                def pageRequest = args[1] as PageRequest
-                assert pageRequest.pageNumber == page - 1
-                assert pageRequest.pageSize == 8
-                assert pageRequest.sort == Sort.by(orderBy).ascending()
+        Page<Registration> registrations = new PageImpl<>([registration1], pageable, 1)
 
-                def searchInput = args[0]
-                assert searchInput.toLowerCase() == search.toLowerCase()
-
-                registrations
-            }
-        }
+        registrationRepository.findAll(_, pageable) >> registrations
 
         registrationOverviewMapper.toDTO(registration1) >> RegistrationOverviewDTO.builder().id(1).courseName(course1.name).build()
         registrationOverviewMapper.toDTO(registration2) >> RegistrationOverviewDTO.builder().id(2).courseName(course2.name).build()
 
         when:
-        Page<RegistrationOverviewDTO> response = registrationService.getRegistrations(params, page)
+        Page<RegistrationOverviewDTO> response = registrationService.getRegistrations(params, page, pageSize)
 
         then:
         response.size() == 1
@@ -568,33 +532,24 @@ class RegistrationServiceImplSpec extends Specification {
                 .build()
 
         def page = 1
+        def pageSize = 8
 
         User user1 = User.builder().username("Phan Hoang").build()
         User user2 = User.builder().username("SangTraan").build()
         def registration1 = Registration.builder().id(1).user(user1).build()
         def registration2 = Registration.builder().id(2).user(user2).build()
 
-        Page<Registration> registrations = new PageImpl<>([registration1], PageRequest.of(page - 1, 8), 1)
+        Pageable pageable = PageRequest.of(page - 1, pageSize)
 
-        registrationRepository.getOptionalRegistrationsWithoutStatus(_, _) >> {
-            args -> {
-                def pageRequest = args[1] as PageRequest
-                assert pageRequest.pageNumber == page - 1
-                assert pageRequest.pageSize == 8
-                assert pageRequest.sort == Sort.by(orderBy).ascending()
+        Page<Registration> registrations = new PageImpl<>([registration1], pageable, 1)
 
-                def searchInput = args[0]
-                assert searchInput.toLowerCase() == search.toLowerCase()
-
-                registrations
-            }
-        }
+        registrationRepository.findAll(_, pageable) >> registrations
 
         registrationOverviewMapper.toDTO(registration1) >> RegistrationOverviewDTO.builder().id(1).userName(user1.username).build()
         registrationOverviewMapper.toDTO(registration2) >> RegistrationOverviewDTO.builder().id(2).userName(user2.username).build()
 
         when:
-        Page<RegistrationOverviewDTO> response = registrationService.getRegistrations(params, page)
+        Page<RegistrationOverviewDTO> response = registrationService.getRegistrations(params, page, pageSize)
 
         then:
         response.size() == 1
@@ -615,33 +570,24 @@ class RegistrationServiceImplSpec extends Specification {
                 .build()
 
         def page = 1
+        def pageSize = 8
 
         User user = User.builder().username("Em Linh xinh gai").build()
         Course course =  Course.builder().name("Em Duy dep gai").build()
         def registration1 = Registration.builder().id(1).user(user).build()
         def registration2 = Registration.builder().id(2).course(course).build()
 
-        Page<Registration> registrations = new PageImpl<>([registration1, registration2], PageRequest.of(page - 1, 8), 1)
+        Pageable pageable = PageRequest.of(page - 1, pageSize)
 
-        registrationRepository.getOptionalRegistrationsWithoutStatus(_, _) >> {
-            args -> {
-                def pageRequest = args[1] as PageRequest
-                assert pageRequest.pageNumber == page - 1
-                assert pageRequest.pageSize == 8
-                assert pageRequest.sort == Sort.by(orderBy).ascending()
+        Page<Registration> registrations = new PageImpl<>([registration1, registration2], pageable, 2)
 
-                def searchInput = args[0]
-                assert searchInput == search
-
-                registrations
-            }
-        }
+        registrationRepository.findAll(_, pageable) >> registrations
 
         registrationOverviewMapper.toDTO(registration1) >> RegistrationOverviewDTO.builder().id(1).userName(user.username).build()
         registrationOverviewMapper.toDTO(registration2) >> RegistrationOverviewDTO.builder().id(2).courseName(course.name).build()
 
         when:
-        Page<RegistrationOverviewDTO> response = registrationService.getRegistrations(params, page)
+        Page<RegistrationOverviewDTO> response = registrationService.getRegistrations(params, page, pageSize)
 
         then:
         response.size() == 2

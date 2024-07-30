@@ -6,7 +6,7 @@ import type { UploadFile } from "antd";
 import {RegistrationParamsType} from "../redux/slice/adminRegistration.slice.ts";
 import OrderByMapping from "../utils/orderByMapping.ts";
 
-export async function fetchAllRegistrations(params: RegistrationParamsType, page: number = 1) {
+export async function fetchAllRegistrations(params: RegistrationParamsType, page: number = 1, pageSize: number = 8) {
     const status: string = params.status == "Declined (Document)"
         ? "DOCUMENT_DECLINED"
         : params.status.toUpperCase();
@@ -16,7 +16,7 @@ export async function fetchAllRegistrations(params: RegistrationParamsType, page
     const search: string = params.search.toLowerCase();
     const isAscending: string = params.isAscending ? 'true' : 'false';
 
-    const url = `/registrations?status=${status}&search=${search}&orderBy=${orderBy}&isAscending=${isAscending}&page=${page}`
+    const url = `/registrations?status=${status}&search=${search}&orderBy=${orderBy}&isAscending=${isAscending}&page=${page}&pageSize=${pageSize}`;
 
     try {
         const response = await instance.get(url);

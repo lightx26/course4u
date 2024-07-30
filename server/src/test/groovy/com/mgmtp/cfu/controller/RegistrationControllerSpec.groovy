@@ -4,12 +4,19 @@ import com.mgmtp.cfu.dto.RegistrationRequest
 import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest
 import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO
 import com.mgmtp.cfu.dto.registrationdto.RegistrationEnrollDTO
+import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO
+import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewParams
 import com.mgmtp.cfu.enums.RegistrationStatus
 import com.mgmtp.cfu.exception.BadRequestRuntimeException
 import com.mgmtp.cfu.exception.CourseNotFoundException
+import com.mgmtp.cfu.exception.RegistrationFieldNotFoundException
 import com.mgmtp.cfu.exception.RegistrationNotFoundException
+import com.mgmtp.cfu.exception.RegistrationStatusNotFoundException
 import com.mgmtp.cfu.exception.UnknownErrorException
 import com.mgmtp.cfu.service.RegistrationService
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import spock.lang.Specification
@@ -21,6 +28,90 @@ class RegistrationControllerSpec extends Specification {
     def registrationService = Mock(RegistrationService)
     @Subject
     RegistrationController registrationController = new RegistrationController(registrationService)
+
+    def "getRegistrationsForAdmin with default param should return correct response"() {
+        given:
+        def status = "all"
+        def search = ""
+        def orderBy = "id"
+        def isAscending = true
+        def page = 1
+        def pageSize = 8
+
+        RegistrationOverviewParams registrationOverviewParams = RegistrationOverviewParams.builder()
+                .status(status)
+                .search(search)
+                .orderBy(orderBy)
+                .isAscending(isAscending)
+                .build()
+
+        RegistrationOverviewDTO registrationOverviewDTO = RegistrationOverviewDTO.builder().build()
+        def pagedResponse = new PageImpl<>(
+                [registrationOverviewDTO],
+                PageRequest.of(page - 1, 1, Sort.by(orderBy).ascending()),
+                1
+        )
+        registrationService.getRegistrations(registrationOverviewParams, page, pageSize) >> pagedResponse
+
+        when:
+        ResponseEntity<?> response = registrationController.getRegistrationsForAdmin(registrationOverviewParams, page, pageSize)
+
+        then:
+        response.statusCode.value() == 200
+        response.body == pagedResponse
+    }
+
+    def "getRegistrationsForAdmin should response with the correct message when exception is thrown with bad status"() {
+        given:
+        def falseStatus = "NotFoundStatus"
+        def search = ""
+        def orderBy = "id"
+        def isAscending = true
+        def page = 1
+        def pageSize = 8
+
+        RegistrationOverviewParams badRequestParam = RegistrationOverviewParams.builder()
+                .status(falseStatus)
+                .search(search)
+                .orderBy(orderBy)
+                .isAscending(isAscending)
+                .build()
+
+        registrationService.getRegistrations(badRequestParam, page, pageSize) >> { throw new RegistrationStatusNotFoundException("Registration status not found") }
+
+        when:
+        registrationController.getRegistrationsForAdmin(badRequestParam, page, pageSize)
+
+        then:
+        thrown(RegistrationStatusNotFoundException)
+    }
+
+    def "getRegistrationsForAdmin should response with the correct message when exception is thrown with bad orderBy"() {
+        given:
+        def status = "all"
+        def search = ""
+        def falseOrderBy = "NotFoundField"
+        def isAscending = true
+        def page = 1
+        def pageSize = 8
+
+        RegistrationOverviewParams badRequestParam = RegistrationOverviewParams.builder()
+                .status(status)
+                .search(search)
+                .orderBy(falseOrderBy)
+                .isAscending(isAscending)
+                .build()
+
+        registrationService.getRegistrations(badRequestParam, page, pageSize) >> { throw new RegistrationFieldNotFoundException() }
+
+        when:
+        registrationController.getRegistrationsForAdmin(badRequestParam, page, pageSize)
+
+        then:
+        thrown(RegistrationFieldNotFoundException)
+    }
+
+
     def "test getDetailRegistration"() {
         given:
             def registrationId = 1
