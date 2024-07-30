@@ -72,16 +72,15 @@ export default function MyRegistrationPage() {
     return (
         <div className='flex flex-col gap-5 w-[80%] p-3 grow min-h-[1000px]'>
             <div className='flex items-center justify-between'>
-                {listMyRegistration === null ||
-                listMyRegistration.length === 0 ? (
-                    <div>Showing 0 results</div>
-                ) : (
-                    <div>
-                        Showing {(currentPage - 1) * 10 + 1} -{" "}
-                        {Math.min(currentPage * 10, totalItem)} of {totalItem}{" "}
-                        results
-                    </div>
-                )}
+                {(listMyRegistration && listMyRegistration.length > 0)
+                    ? (
+                        <div>
+                            Showing {(currentPage - 1) * 10 + 1} -{" "}
+                            {Math.min(currentPage * 10, totalItem)} of {totalItem}{" "}
+                            results
+                        </div>
+                    )
+                    : <div>Showing 0 results</div>}
                 <SatusFilter
                     listOption={statusList}
                     onSortByChange={onFilterByChange}
@@ -95,6 +94,7 @@ export default function MyRegistrationPage() {
             )}
             {totalItem > 10 && (
                 <PaginationSection
+                    isLoading={isLoading}
                     totalItems={totalItem}
                     currentPage={currentPage}
                     itemPerPage={10}

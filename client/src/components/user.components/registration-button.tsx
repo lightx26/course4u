@@ -153,7 +153,7 @@ export const RegistrationButton = ({
                 style: { color: "green" },
                 description: "Your review has been sent successfully.",
             });
-            handleCheckExistReview();
+            setHaveReview(true);
         } else {
             toast.error("Failed to send review", {
                 style: { color: "red" },

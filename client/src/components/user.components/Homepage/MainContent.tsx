@@ -42,6 +42,7 @@ export default function MainContent() {
     const dispatch: AppDispatch = useDispatch();
 
     useEffect(() => {
+        setIsLoading(true);
         const fetchData = async () => {
             setIsLoading(true);
             dispatch(updateSort(sortBy));
@@ -55,8 +56,6 @@ export default function MainContent() {
     const onPageNumberClick = (newPageNumber: number) => {
         //update page number
         dispatch(updatePage(newPageNumber));
-        //Search when change page number
-        dispatch(searchCoursesByFilterNameAndSortBy());
     }
 
     const length = Array.from(new Set(selectedItems.flatMap(item => item.listChoice.map(choice => choice.name)))).length;
@@ -113,7 +112,10 @@ export default function MainContent() {
                             </Select>
                         </div>
                         <ListCourseCardComponent ListCourse={courseState.content} isLoading={isLoading} length={courseState.content.length} />
-                        {courseState.totalElements > 8 && <PaginationSection totalItems={courseState.totalElements} currentPage={currentPage} itemPerPage={8} setCurrentPage={onPageNumberClick} />}
+                        {
+                            courseState.totalElements > 8
+                            && <PaginationSection isLoading={isLoading} totalItems={courseState.totalElements} currentPage={currentPage} itemPerPage={8} setCurrentPage={onPageNumberClick} />
+                        }
                     </>
             }
         </div >

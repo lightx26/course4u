@@ -29,6 +29,19 @@ export default function SendReviewModal({
     reviewContent,
     setReviewContent,
 }: Props) {
+    const handleClickCancel = () => {
+        if (handleCancel)
+            handleCancel();
+        setReviewContent('');
+        setRating(0);
+    }
+
+    const handleClickAction = () => {
+        handleConfirm();
+        setReviewContent('');
+        setRating(0);
+    }
+
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
@@ -58,7 +71,7 @@ export default function SendReviewModal({
                     <AlertDialogCancel asChild>
                         <Button
                             className='w-32 hover:bg-gray-300 text-[16px]'
-                            onClick={handleCancel}
+                            onClick={handleClickCancel}
                             type='button'
                             variant='secondary'
                         >
@@ -69,7 +82,7 @@ export default function SendReviewModal({
                         <Button
                             type='button'
                             className='w-32 text-[16px] text-white bg-purple h-9'
-                            onClick={handleConfirm}
+                            onClick={handleClickAction}
                         >
                             Submit review
                         </Button>

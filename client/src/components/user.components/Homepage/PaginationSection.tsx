@@ -6,9 +6,10 @@ type PropType = {
     itemPerPage: number;
     currentPage: number;
     setCurrentPage: (page: number) => void;
+    isLoading?: boolean;
 }
 
-export default function PaginationSection({ totalItems, itemPerPage, currentPage, setCurrentPage }: PropType) {
+export default function PaginationSection({ totalItems, itemPerPage, currentPage, setCurrentPage, isLoading = false }: PropType) {
     const lastPage = Math.ceil(totalItems / itemPerPage);
     if (lastPage <= 1) return <></>;
     const handlePageClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent> | React.MouseEvent<HTMLSpanElement, MouseEvent>, page: number) => {
@@ -20,7 +21,7 @@ export default function PaginationSection({ totalItems, itemPerPage, currentPage
     const endPage = Math.min(lastPage - 1, currentPage + 1);
 
     return (
-        <Pagination>
+        <Pagination className={isLoading ? 'pointer-events-none' : ''}>
             <PaginationContent>
                 <PaginationItem className={currentPage == 1 ? 'pointer-events-none opacity-50 cursor-not-allowed' : ''}>
                     <PaginationPrevious onClick={(event) => {
