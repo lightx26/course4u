@@ -6,9 +6,10 @@ import { Status, statusList } from "../../../utils/index.ts";
 import PaginationSection from "../Homepage/PaginationSection.tsx";
 import { useDispatch, useSelector } from "react-redux";
 import {
-    handleChangeCurrentPage,
-    handleChangeStatus,
-    saveDataListRegistration,
+  handleChangeCurrentPage,
+  handleChangeStatus,
+  saveDataListRegistration,
+  resetRegistrationState,
 } from "../../../redux/slice/registration.slice.ts";
 import { RootState } from "../../../redux/store/store.ts";
 import { useRefreshState } from "../../../hooks/use-refresh-state.ts";
@@ -24,21 +25,19 @@ export type OverviewMyRegistrationType = {
 };
 
 export default function MyRegistrationPage() {
-    const [isLoading, setIsLoading] = useState(false);
-    const dispatch = useDispatch();
-    const { registrationFlagAdmin } = useRefreshState((state) => state);
-    const totalItem = useSelector(
-        (state: RootState) => state.registration.totalItem
-    );
-    const currentPage = useSelector(
-        (state: RootState) => state.registration.currentPage
-    );
-    const filterBy = useSelector(
-        (state: RootState) => state.registration.status
-    );
-    const listMyRegistration = useSelector(
-        (state: RootState) => state.registration.data
-    );
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+  const { registrationFlagAdmin } = useRefreshState((state) => state);
+  const totalItem = useSelector(
+    (state: RootState) => state.registration.totalItem
+  );
+  const currentPage = useSelector(
+    (state: RootState) => state.registration.currentPage
+  );
+  const filterBy = useSelector((state: RootState) => state.registration.status);
+  const listMyRegistration = useSelector(
+    (state: RootState) => state.registration.data
+  );
 
     const fetchData = async (
         page: number = currentPage,
@@ -52,14 +51,21 @@ export default function MyRegistrationPage() {
         }
     };
 
+    // useLayoutEffect(() => {
+    //   fetchData(1, "SUBMITTED");
+    //   dispatch(handleChangeStatus("SUBMITTED"));
+    // }, []);
+
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            dispatch(resetRegistrationState());
+        };
+    }, [dispatch]);
+
     useEffect(() => {
         fetchData(currentPage, filterBy);
     }, [currentPage, filterBy, registrationFlagAdmin]);
-
-    useEffect(() => {
-        dispatch(handleChangeStatus("SUBMITTED"));
-        fetchData(1, "SUBMITTED");
-    }, []);
 
     const onPageNumberClick = (newPageNumber: number) => {
         dispatch(handleChangeCurrentPage(newPageNumber));

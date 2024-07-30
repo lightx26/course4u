@@ -12,4 +12,6 @@ import java.util.Set;
 public interface CategoryService {
     List<CategoryDTO> getAvailableCategories();
     List<Category> findOrCreateNewCategory(List<CourseRequest.CategoryCourseRequestDTO> category);
+
+    Set<CategoryDTO> findAllByCourseId(Long id);
 }

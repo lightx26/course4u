@@ -35,6 +35,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
@@ -137,7 +138,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         var myRegistrations = registrationRepository.getSortedRegistrations(userId);
         myRegistrations=myRegistrations!=null?myRegistrations:new ArrayList<>();
-        myRegistrations.forEach(registration -> log.info(registration.getLastUpdated()!=null? registration.getLastUpdated().toString() :"null"));
         if (!RegistrationValidator.isDefaultStatus(status)) {
             try {
                 var statusEnum = RegistrationStatus.valueOf(status.toUpperCase());
@@ -340,6 +340,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     public void closeRegistration(Long id, FeedbackRequest feedbackRequest) {
         Registration registration = registrationRepository.findById(id).orElseThrow(() -> new RegistrationNotFoundException("Registration not found"));
 
+
         if (!RegistrationStatusUtil.isCloseableStatus(registration.getStatus())) {
             throw new BadRequestRuntimeException("Registration status must be in [DONE, VERIFYING, DOCUMENT_DECLINED, VERIFIED]  to be closed");
         }
@@ -492,12 +493,15 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
 
         // Notify about the verified documents and save the registration
-        notifyVerifiedDocument(registration, feedback);
+        notifyVerifiedDocument(registration);
         registration.setLastUpdated(LocalDateTime.now());
         registrationRepository.save(registration);
     }
 
-    private void notifyVerifiedDocument(Registration registration, String feedback) {
+
+
+
+    private void notifyVerifiedDocument(Registration registration) {
         var accountant = getCurrentUser();
 
         if (registration.getStatus().equals(RegistrationStatus.VERIFIED)) {
@@ -508,8 +512,8 @@ public class RegistrationServiceImpl implements RegistrationService {
             admins.forEach(admin -> {
                 String courseName = registration.getCourse().getName();
                 String message = String.format(
-                        "The course titled '%s' that user %s registered has been successfully verified by our accountant %s.",
-                        courseName, user.getUsername(), accountant.getUsername()
+                        "The course titled '%s' that user %s registered has been successfully verified by our accountant .",
+                        courseName, user.getUsername()
                 );
                 notificationRepository.save(NotificationUtil.createNotification(NotificationType.INFORMATION, admin, message));
                 sendEmail(registration, admin, message);
@@ -523,7 +527,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         } else if (registration.getStatus().equals(RegistrationStatus.DOCUMENT_DECLINED)) {
             log.info("DOCUMENT_DECLINED");
             String message = "We regret to inform you that your submitted documents for the course " +
-                    registration.getCourse().getName() + " have been rejected. " + feedback;
+                    registration.getCourse().getName() + " have been rejected. ";
             notificationRepository.save(NotificationUtil.createNotification(NotificationType.INFORMATION, registration.getUser(), message));
             sendEmail(registration, registration.getUser(), message);
             log.info(message);
@@ -541,7 +545,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         );
 
         emailService.sendMessage(
-                registration.getUser().getEmail(),
+                user.getEmail(),
                 status == RegistrationStatus.DOCUMENT_DECLINED ? "Document Decline" : "Document Approval",
                 status == RegistrationStatus.VERIFIED ? APPROVE_REGISTRATION_EMAIL_TEMPLATE : DECLINE_REGISTRATION_EMAIL_TEMPLATE,
                 mailContentUnits

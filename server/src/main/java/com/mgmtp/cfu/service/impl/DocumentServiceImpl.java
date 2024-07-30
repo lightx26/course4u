@@ -22,6 +22,7 @@ import com.mgmtp.cfu.repository.RegistrationRepository;
 import com.mgmtp.cfu.repository.UserRepository;
 import com.mgmtp.cfu.service.DocumentService;
 import com.mgmtp.cfu.service.IEmailService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -69,26 +70,40 @@ public class DocumentServiceImpl implements DocumentService {
         return list.stream().map(getMapper()::toDTO).toList();
     }
 
+
     @Override
     public void submitDocument(MultipartFile[] certificates, MultipartFile[] payments, Long id) {
+        saveDocuments(certificates, payments, id, RegistrationStatus.DONE);
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void resubmit(MultipartFile[] certificates, MultipartFile[] payments, Long id, Long[] deletedDocument) {
+        saveDocuments(certificates, payments, id, RegistrationStatus.DOCUMENT_DECLINED);
+        if(deletedDocument.length>0)
+            deleteDocuments(deletedDocument, id);
+    }
+
+
+    public void saveDocuments(MultipartFile[] certificates, MultipartFile[] payments, Long id, RegistrationStatus status) {
+        var user = getCurrentUser();
         var registration = registrationRepository.findById(id).orElseThrow(() ->
                 new BadRequestRuntimeException("Registration is not found.")
         );
-        var user = getCurrentUser();
         if (!registration.getUser().getId().equals(user.getId())) {
             throw new ForbiddenException("You don't have permission.");
         }
-        if (!registration.getStatus().equals(RegistrationStatus.DONE)) {
-            throw new BadRequestRuntimeException("Registration must be done.");
+        if (!registration.getStatus().equals(status)) {
+            throw new BadRequestRuntimeException("Registration must be "+status.name().toLowerCase()+".");
         }
         storageDocuments(certificates, DocumentType.CERTIFICATE, registration, user);
         storageDocuments(payments, DocumentType.PAYMENT, registration, user);
-        notifyAccountant(user, registration);
+        if(status.equals(RegistrationStatus.DONE))
+            notifyAccountant(user, registration);
         registration.setStatus(RegistrationStatus.VERIFYING);
         registration.setLastUpdated(LocalDateTime.now());
         registrationRepository.save(registration);
     }
-
 
 
     private void notifyAccountant(User user, Registration registration) {
@@ -141,17 +156,23 @@ public class DocumentServiceImpl implements DocumentService {
             user) {
         List<Document> documentList = Arrays.stream(documents)
                 .map(document -> {
-                    String fileUrl = storageDocument(type, document, documentStorageDir + "/" + user.getUsername());
+                    String fileName = storageDocument(type, document, documentStorageDir + "/" + user.getUsername());
                     return Document.builder()
                             .registration(registration)
                             .status(PENDING)
                             .type(type)
-                            .url("/api/document-storage")
+                            .url("/api/document-storage/"+ user.getUsername()+"/"+fileName)
                             .build();
                 })
                 .toList();
 
         documentRepository.saveAll(documentList);
     }
+
+    private void deleteDocuments(Long[] deletedDocument, Long registrationId) {
+        documentRepository.deleteAllByIdAndRegistrationId(List.of(deletedDocument),registrationId);
+    }
+
+
 
 }

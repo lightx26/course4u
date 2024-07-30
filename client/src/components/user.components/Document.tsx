@@ -5,12 +5,23 @@ import "../../assets/css/Document.css";
 import ReactDOM from "react-dom";
 import { Collapse } from "antd";
 import type { CollapseProps } from "antd";
-
+type DocumentType = {
+  id: number;
+  registrationId: number;
+  url: string;
+  status: string;
+  type: string;
+};
 interface IProps {
   listFileCertificate: UploadFile[];
   setListFileCertificate: React.Dispatch<React.SetStateAction<UploadFile[]>>;
   listFilePayment: UploadFile[];
   setListFilePayment: React.Dispatch<React.SetStateAction<UploadFile[]>>;
+  documentRegistrationResubmit?: DocumentType[];
+  setDocumentRegistrationResubmit?: React.Dispatch<
+    React.SetStateAction<DocumentType[]>
+  >;
+  setListIdDocumentRemove?: React.Dispatch<React.SetStateAction<number[]>>;
 }
 const Document: React.FC<IProps> = (props) => {
   const {
@@ -18,6 +29,9 @@ const Document: React.FC<IProps> = (props) => {
     setListFileCertificate,
     listFilePayment,
     setListFilePayment,
+    documentRegistrationResubmit,
+    setDocumentRegistrationResubmit,
+    setListIdDocumentRemove,
   } = props;
   const { Dragger } = Upload;
 
@@ -201,7 +215,7 @@ const Document: React.FC<IProps> = (props) => {
             </div>
             <div
               className="file-list-item-info-name"
-              style={{ fontSize: "0.8rem", color: "#32768e" }}
+              style={{ fontSize: "0.8rem", color: "#3276e8" }}
             >
               Upload complete
             </div>
@@ -282,7 +296,7 @@ const Document: React.FC<IProps> = (props) => {
             </div>
             <div
               className="file-list-item-info-name"
-              style={{ fontSize: "0.8rem", color: "#32768e" }}
+              style={{ fontSize: "0.8rem", color: "#3276e8" }}
             >
               Upload complete
             </div>
@@ -321,6 +335,18 @@ const Document: React.FC<IProps> = (props) => {
       strokeWidth: 3,
       format: (percent) => percent && `${parseFloat(percent.toFixed(2))}%`,
     },
+  };
+
+  const capitalizeFirstLetter = (text: string) => {
+    if (!text) return "";
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+  };
+
+  const handlePreview = (url: string) => {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    const sanitizedUrl = url.startsWith("/") ? url.slice(1) : url;
+    const urlPreview = `${backendUrl}/${sanitizedUrl.slice(4)}`;
+    window.open(urlPreview, "_blank");
   };
 
   return (
@@ -382,7 +408,88 @@ const Document: React.FC<IProps> = (props) => {
             </Dragger>
           </div>
         </div>
-        <div className="div_itemRender" style={{ padding: "0px 100px" }}></div>
+        <div className="div_itemRender" style={{ padding: "0px 100px" }}>
+          {documentRegistrationResubmit &&
+            documentRegistrationResubmit.length > 0 &&
+            documentRegistrationResubmit.map((item) => (
+              <div
+                className="file-list-item"
+                key={item.id}
+                style={{
+                  borderColor: `${
+                    item.status === "PENDING"
+                      ? "#ccc"
+                      : item.status === "APPROVED"
+                      ? "#34A853"
+                      : "#f71414"
+                  }`,
+                }}
+              >
+                <div
+                  className="file-list-item-info"
+                  style={{
+                    width: "50%",
+                  }}
+                >
+                  <div
+                    className="file-list-item-info-name"
+                    style={{
+                      fontWeight: "500",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 1,
+                      WebkitBoxOrient: "vertical",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "normal",
+                      wordWrap: "break-word",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {item?.url?.split("/").pop()}
+                  </div>
+                  <div
+                    className="file-list-item-info-name"
+                    style={{
+                      fontSize: "0.8rem",
+                      color: "#3276e8",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => handlePreview(item.url)}
+                  >
+                    Preview
+                  </div>
+                </div>
+                <div style={{ fontWeight: "500", width: "25%" }}>
+                  {capitalizeFirstLetter(item.type)}
+                </div>
+                <div className="file-list-item-action">
+                  <svg
+                    width="17"
+                    height="19"
+                    viewBox="0 0 17 19"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    style={{ color: "red", cursor: "pointer" }}
+                    onClick={() => {
+                      if (setDocumentRegistrationResubmit) {
+                        setDocumentRegistrationResubmit((prev) => {
+                          return prev.filter((i) => i.id !== item.id);
+                        });
+                      }
+
+                      if (setListIdDocumentRemove) {
+                        setListIdDocumentRemove((prev) => [...prev, item.id]);
+                      }
+                    }}
+                  >
+                    <path
+                      d="M3.5 18.4508C2.95 18.4508 2.47933 18.2551 2.088 17.8638C1.69667 17.4725 1.50067 17.0015 1.5 16.4508V3.45081H0.5V1.45081H5.5V0.450806H11.5V1.45081H16.5V3.45081H15.5V16.4508C15.5 17.0008 15.3043 17.4718 14.913 17.8638C14.5217 18.2558 14.0507 18.4515 13.5 18.4508H3.5ZM13.5 3.45081H3.5V16.4508H13.5V3.45081ZM5.5 14.4508H7.5V5.45081H5.5V14.4508ZM9.5 14.4508H11.5V5.45081H9.5V14.4508Z"
+                      fill="#EC5454"
+                    />
+                  </svg>
+                </div>
+              </div>
+            ))}
+        </div>
       </div>
     </>
   );
@@ -394,12 +501,15 @@ const FormDocument: React.FC<IProps> = (props) => {
     setListFileCertificate,
     listFilePayment,
     setListFilePayment,
+    documentRegistrationResubmit,
+    setDocumentRegistrationResubmit,
+    setListIdDocumentRemove,
   } = props;
   const items: CollapseProps["items"] = [
     {
       key: "1",
       label: (
-        <h1 style={{ fontWeight: 500 }}>
+        <h1 style={{ fontWeight: 500, fontSize: "1.1rem" }}>
           Document <span style={{ color: "red" }}>*</span>
         </h1>
       ),
@@ -409,6 +519,9 @@ const FormDocument: React.FC<IProps> = (props) => {
           setListFileCertificate={setListFileCertificate}
           listFilePayment={listFilePayment}
           setListFilePayment={setListFilePayment}
+          documentRegistrationResubmit={documentRegistrationResubmit}
+          setDocumentRegistrationResubmit={setDocumentRegistrationResubmit}
+          setListIdDocumentRemove={setListIdDocumentRemove}
         />
       ),
       showArrow: false,

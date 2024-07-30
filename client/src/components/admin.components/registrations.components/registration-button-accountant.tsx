@@ -34,6 +34,20 @@ export const RegistrationButtonForAccountant = (props: IProps) => {
 
   const handleApproveDocument = async () => {
     setConfirmLoadingApprove(true);
+    if (document && document.length > 0) {
+      for (let i = 0; i < document.length; i++) {
+        if (
+          document[i].status === "PENDING" ||
+          document[i].status === "REFUSED"
+        ) {
+          setConfirmLoadingApprove(false);
+          return toast.error("Failed to approve registration", {
+            style: { color: "red" },
+            description: `Please approve all document before approve registration`,
+          });
+        }
+      }
+    }
     const trimmedFeedback = feedBackFromAccountant.trim();
     const response = await approve_Decline_Document_Registration(
       id,
@@ -109,29 +123,65 @@ export const RegistrationButtonForAccountant = (props: IProps) => {
             Decline and send feedback
           </Button>
           <Modal
-            title="Approve Registration"
+            title={
+              <p style={{ fontSize: "1.2rem" }}>Approve this registration</p>
+            }
             open={openModalConfirmApprove}
             onOk={handleApproveDocument}
             onCancel={() => setOpenModalConfirmApprove(false)}
-            okText="OK"
-            cancelText="Cancel"
+            okText="Yes"
+            cancelText="No"
             centered={true}
             confirmLoading={confirmLoadingApprove}
+            okButtonProps={{
+              style: {
+                backgroundColor: "#861fa2",
+                color: "white",
+                width: "80px",
+              },
+            }}
+            cancelButtonProps={{
+              style: {
+                borderColor: "#ccc",
+                color: "black",
+                width: "80px",
+              },
+            }}
           >
-            <p>Are you sure you want to approve this registration?</p>
+            <p style={{ fontSize: "1rem", margin: "10px 0px 40px 0px" }}>
+              Are you sure you want to approve this registration?
+            </p>
           </Modal>
 
           <Modal
-            title="Decline Registration"
+            title={
+              <p style={{ fontSize: "1.2rem" }}>Decline this registration</p>
+            }
             open={openModalConfirmDecline}
             onOk={handleDeclineDocument}
             onCancel={() => setOpenModalConfirmDecline(false)}
-            okText="OK"
-            cancelText="Cancel"
+            okText="Yes"
+            cancelText="No"
             centered={true}
             confirmLoading={confirmLoadingDecline}
+            okButtonProps={{
+              style: {
+                backgroundColor: "#861fa2",
+                color: "white",
+                width: "80px",
+              },
+            }}
+            cancelButtonProps={{
+              style: {
+                borderColor: "#ccc",
+                color: "black",
+                width: "80px",
+              },
+            }}
           >
-            <p>Are you sure you want to decline this registration?</p>
+            <p style={{ fontSize: "1rem", margin: "10px 0px 40px 0px" }}>
+              Are you sure you want to decline this registration?
+            </p>
           </Modal>
           <Button
             size="lg"

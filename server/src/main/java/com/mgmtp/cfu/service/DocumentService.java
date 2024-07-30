@@ -11,4 +11,5 @@ public interface DocumentService {
     List<DocumentDTO> getDocumentsByRegistrationId(Long registrationId);
 
 
+    void resubmit(MultipartFile[] certificates, MultipartFile[] payments, Long id, Long[] deletedDocument);
 }

@@ -53,6 +53,9 @@ export const registrationSlice = createSlice({
       state.data = action.payload.list;
       state.totalItem = action.payload.totalElements;
     },
+    resetRegistrationState: (state) => {
+      Object.assign(state, initialState);
+    },
   },
   extraReducers: () => {},
 });
@@ -63,8 +66,8 @@ export const {
   handleChangeFilterBy,
   handleChangeCurrentPage,
   saveDataListRegistration,
+  resetRegistrationState,
 } = registrationSlice.actions;
-
 
 // Export the reducer
 export default registrationSlice.reducer;

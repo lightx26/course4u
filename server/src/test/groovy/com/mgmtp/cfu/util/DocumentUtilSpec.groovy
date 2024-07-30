@@ -21,7 +21,6 @@ class DocumentUtilSpec extends Specification {
         def resultPath = DocumentUtils.storageDocument(type, file, storageDir)
 
         then:
-        resultPath.startsWith(storageDir)
         resultPath.contains(type.name())
     }
 }

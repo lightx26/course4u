@@ -55,7 +55,6 @@ public class RegistrationController {
             page = 1;
         return ResponseEntity.ok(registrationService.getMyRegistrationPage(page, status));
     }
-
     @PostMapping("/start-learning/{id}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public void startLearningCourse(@PathVariable("id") Long registrationId){
@@ -104,14 +103,13 @@ public class RegistrationController {
         registrationService.discardRegistration(id);
         return ResponseEntity.ok().build();
     }
-    
     @PostMapping("{id}/verify")
     @PreAuthorize("hasRole('ROLE_ACCOUNTANT')")
     public void verifyDeclineRegistration(@PathVariable Long id, @RequestBody Map<String, String> longDocumentStatusMap, @RequestParam(name = "status") String status) {
         validateId(id,"registration id");
         registrationService.verifyRegistration(id,longDocumentStatusMap, status);
-    }
 
+    }
     @PostMapping("/{courseId}/enroll")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<?> createRegistrationFromExistingCourses(@PathVariable Long courseId, @RequestBody RegistrationEnrollDTO registrationEnrollDTO) {

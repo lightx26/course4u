@@ -67,7 +67,7 @@ class DocumentControllerSpec extends Specification {
         MultipartFile file = new MockMultipartFile("file", "filename.pdf", "application/pdf", new byte[100])
 
         when:
-        documentController.submitDocument([] as MultipartFile[], [file] as MultipartFile[], 1L)
+        documentController.submitDocument([] as MultipartFile[], [] as MultipartFile[], 1L)
 
         then:
         thrown(BadRequestRuntimeException)
@@ -84,6 +84,19 @@ class DocumentControllerSpec extends Specification {
         then:
         1 * documentService.submitDocument([certFile] as MultipartFile[], [payFile] as MultipartFile[], 1L)
     }
+
+    def "should call documentService.submitDocument when inputs are valid"() {
+        given:
+        MultipartFile certFile = new MockMultipartFile("certificate", "cert.pdf", "application/pdf", new byte[100])
+        MultipartFile payFile = new MockMultipartFile("payment", "pay.pdf", "application/pdf", new byte[100])
+
+        when:
+        documentController.resubmitDocument([certFile] as MultipartFile[], [payFile] as MultipartFile[], 1L, new String[]{"1","2"})
+
+        then:
+        1 * documentService.resubmit([certFile] as MultipartFile[], [payFile] as MultipartFile[], 1L,new Long[]{1,2})
+    }
+
 
 
 

@@ -3,7 +3,6 @@ package com.mgmtp.cfu.service.impl
 import com.mgmtp.cfu.dto.documentdto.DocumentDTO
 import com.mgmtp.cfu.entity.Document
 
-import com.mgmtp.cfu.enums.DocumentStatus
 import com.mgmtp.cfu.mapper.DTOMapper
 import com.mgmtp.cfu.mapper.factory.MapperFactory
 import com.mgmtp.cfu.repository.DocumentRepository
@@ -177,5 +176,33 @@ class DocumentServiceImplSpec extends Specification {
         e.message == "Registration not found."
     }
 
+    def "test submitDocument with valid inputs"() {
+        given:
+        Long id = 1L
+        MultipartFile certificateFile = Mock(MultipartFile)
+        certificateFile.getOriginalFilename() >> "originalFilename.pdf"
+        certificateFile.getSize() >> 1
+        MultipartFile paymentFile = Mock(MultipartFile)
+        paymentFile.getOriginalFilename() >> "originalFilename.pdf"
+        paymentFile.getSize() >> 1
+        MultipartFile[] certificates = [certificateFile]
+        MultipartFile[] payments = [paymentFile]
+        certificateFile.transferTo(_ as File) >> {};
+        paymentFile.transferTo(_ as File) >> {};
+        User user = new User(id: 1L, username: "user1")
+        Registration registration = new Registration(id: id, user: user, status: RegistrationStatus.DOCUMENT_DECLINED)
+
+        registrationRepository.findById(id) >> Optional.of(registration)
+        userRepository.findAllByRole(Role.ACCOUNTANT) >> [new User(id: 2L, username: "accountant1", email: "acc1@example.com")]
+        documentRepository.deleteAllByIdAndRegistrationId(List.of(new Long[]{1,2,3}),id)>>{
+
+        }
+        when:
+        documentServiceImpl.setDocumentStorageDir(tempDir.toString())
+        documentServiceImpl.resubmit(certificates, payments, id, new Long[]{1,2,3})
+
+        then:
+        1*documentRepository.deleteAllByIdAndRegistrationId(List.of(new Long[]{1,2,3}),id)
+    }
 
 }

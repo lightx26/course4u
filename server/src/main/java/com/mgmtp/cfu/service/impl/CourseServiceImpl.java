@@ -6,6 +6,7 @@ import com.mgmtp.cfu.dto.coursedto.CourseRequest;
 import com.mgmtp.cfu.dto.coursedto.CourseResponse;
 import com.mgmtp.cfu.entity.Category;
 import com.mgmtp.cfu.entity.Course;
+import com.mgmtp.cfu.enums.RegistrationStatus;
 import com.mgmtp.cfu.exception.BadRequestRuntimeException;
 import com.mgmtp.cfu.exception.CourseNotFoundException;
 import com.mgmtp.cfu.enums.CoursePageSortOption;
@@ -21,6 +22,7 @@ import com.mgmtp.cfu.service.CourseService;
 import com.mgmtp.cfu.service.UploadService;
 import com.mgmtp.cfu.specification.CourseSpecifications;
 import com.mgmtp.cfu.util.AuthUtils;
+import com.mgmtp.cfu.util.RegistrationStatusUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -37,7 +39,6 @@ import java.util.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -58,7 +59,7 @@ public class CourseServiceImpl implements CourseService {
     public CourseServiceImpl(CourseRepository courseRepository, MapperFactory<Course> courseMapperFactory,
                              CategoryService categoryService,
                              UploadService uploadService
-                             ) {
+    ) {
         this.courseRepository = courseRepository;
         this.courseMapperFactory = courseMapperFactory;
         this.categoryService = categoryService;
@@ -67,13 +68,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseDto getCourseDtoById(Long id) {
-        Optional<Course> optCourse = courseRepository.findById(id);
-        if (optCourse.isPresent()) {
-            Course course = optCourse.get();
-            return new CourseDto(course.getId(), course.getName(), course.getLink(), course.getPlatform().getLabel(), course.getThumbnailUrl(), course.getTeacherName(),
-                    course.getCreatedDate(), course.getStatus(), course.getLevel(), course.getCategories());
-        }
-        throw new CourseNotFoundException("course with id " + id + " not found");
+        CourseDto courseDto = courseRepository.findDtoById(id, RegistrationStatusUtil.ACCEPTED_STATUSES).orElseThrow(() -> new CourseNotFoundException("course with id " + id + " not found"));
+        courseDto.setCategories(categoryService.findAllByCourseId(id));
+        return courseDto;
     }
 
     @Override
@@ -81,7 +78,7 @@ public class CourseServiceImpl implements CourseService {
         var modelMapper = new ModelMapper();
         try {
             Course course = modelMapper.map(courseRequest, Course.class);
-            if (courseRepository.findFirstByLinkIgnoreCaseAndStatus(course.getLink(), CourseStatus.AVAILABLE).isPresent()){
+            if (courseRepository.findFirstByLinkIgnoreCaseAndStatus(course.getLink(), CourseStatus.AVAILABLE).isPresent()) {
                 throw new DuplicateCourseException("Course with link " + course.getLink() + " already exists");
             }
             String thumbnailUrl = null;
@@ -92,16 +89,15 @@ public class CourseServiceImpl implements CourseService {
             }
 
             List<Category> categories = categoryService.findOrCreateNewCategory(
-                   courseRequest.getCategories()
+                    courseRequest.getCategories()
             );
             log.info("categories: " + categories);
             course.setThumbnailUrl(thumbnailUrl);
             course.setCategories(Set.copyOf(categories));
             course.setCreatedDate(LocalDate.now());
-            if (AuthUtils.getCurrentUser().getRole().toString().equals("ADMIN")){
+            if (AuthUtils.getCurrentUser().getRole().toString().equals("ADMIN")) {
                 course.setStatus(CourseStatus.AVAILABLE);
-            }
-            else if (AuthUtils.getCurrentUser().getRole().toString().equals("USER")){
+            } else if (AuthUtils.getCurrentUser().getRole().toString().equals("USER")) {
                 course.setStatus(CourseStatus.PENDING);
             }
             course = courseRepository.save(course);
@@ -168,7 +164,7 @@ public class CourseServiceImpl implements CourseService {
             if (courseRepository.existsById(id)) {
                 if (isRemovableCourse(id))
                     courseRepository.deleteById(id);
-                 else
+                else
                     throw new BadRequestRuntimeException("Course can't be removed. It was registered by someone.");
             } else
                 throw new BadRequestRuntimeException("Course don't exist.");
@@ -194,14 +190,14 @@ public class CourseServiceImpl implements CourseService {
                 courseId,
                 CourseStatus.AVAILABLE
         );
-        relatedCourses=relatedCourses!=null?relatedCourses:new ArrayList<>();
+        relatedCourses = relatedCourses != null ? relatedCourses : new ArrayList<>();
         var courseMapper = getOverviewCourseMapper();
         // Map to DTO, set null ratings to 0.0, and sort by rating in descending order
         return relatedCourses.stream()
                 .map(courseMapper::toDTO)
                 .peek(courseOverviewDTO -> {
                     if (courseOverviewDTO.getRating() == null) {
-                        courseOverviewDTO.setRating(0.0);   
+                        courseOverviewDTO.setRating(0.0);
                     }
                 })
                 .sorted(Comparator.comparing(CourseOverviewDTO::getRating).reversed())
@@ -210,6 +206,6 @@ public class CourseServiceImpl implements CourseService {
 
     private DTOMapper<CourseOverviewDTO, Course> getOverviewCourseMapper() {
         Optional<DTOMapper<CourseOverviewDTO, Course>> courseMapperOpt = courseMapperFactory.getDTOMapper(CourseOverviewDTO.class);
-        return courseMapperOpt.orElseThrow(()-> new ServerErrorRuntimeException("Couldn't get mapper"));
+        return courseMapperOpt.orElseThrow(() -> new ServerErrorRuntimeException("Couldn't get mapper"));
     }
 }

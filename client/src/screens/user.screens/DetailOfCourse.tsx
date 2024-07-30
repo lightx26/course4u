@@ -50,6 +50,7 @@ export interface CourseType {
   link: string;
   teacherName: string;
   status: string;
+  totalEnrollees: number;
 }
 
 interface Option {
@@ -595,7 +596,7 @@ const Detail_Of_Course: React.FC = () => {
                         </div>
                         Enrolled
                       </div>
-                      <div>500</div>
+                      <div>{courseData?.totalEnrollees}</div>
                     </div>
                     <hr />
                     <div className="p-[5px_10px_0_10px]">

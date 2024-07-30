@@ -103,16 +103,32 @@ const ModalEditOrDeleteCourse = ({ children, courseData }: Props) => {
                 Delete
               </Button>
               <Modal
-                title="Delete Course"
+                title={<p style={{ fontSize: "1.2rem" }}>Delete a course</p>}
                 open={openModalConfirm}
                 onOk={handleConfirm}
                 onCancel={() => setOpenModalConfirm(false)}
-                okText="OK"
-                cancelText="Cancel"
+                okText="Yes"
+                cancelText="No"
                 centered={true}
                 confirmLoading={confirmLoading}
+                okButtonProps={{
+                  style: {
+                    backgroundColor: "#861fa2",
+                    color: "white",
+                    width: "80px",
+                  },
+                }}
+                cancelButtonProps={{
+                  style: {
+                    borderColor: "#ccc",
+                    color: "black",
+                    width: "80px",
+                  },
+                }}
               >
-                <p>Are you sure you want to delete this course?</p>
+                <p style={{ fontSize: "1rem", margin: "10px 0px 40px 0px" }}>
+                  Do you want to delete this course?
+                </p>
               </Modal>
               <Button
                 type="button"

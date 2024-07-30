@@ -232,13 +232,23 @@ export const RegistrationsForm = ({
     DocumentType[]
   >([]);
 
+  //Document For User Re-submit
+  const [documentRegistrationResubmit, setDocumentRegistrationResubmit] =
+    useState<DocumentType[]>([]);
+  const [listIdDocumentRemove, setListIdDocumentRemove] = useState<number[]>(
+    []
+  );
+
   const [feedBackFromAccountant, setFeedBackFromAccountant] =
     useState<string>("");
 
   const fetchListDocument = async () => {
-    const result = await getListDocumentByRegistrationId(id);
-    if (result && result.data) {
-      setDocumentRegistration(result.data);
+    if (id !== undefined) {
+      const result = await getListDocumentByRegistrationId(id);
+      if (result && result.data) {
+        setDocumentRegistrationResubmit(result.data);
+        setDocumentRegistration(result.data);
+      }
     }
   };
   useEffect(() => {
@@ -320,38 +330,119 @@ export const RegistrationsForm = ({
           {startDate && (
             <LearningProgress startDate={startDate} endDate={endDate || ""} />
           )}
+
+          {/* View Document and Feedback for User */}
           {user.user?.role === "USER" && (
             <div className="space-y-5">
               {status === "DONE" && (
-                <FormDocument
-                  listFileCertificate={listFileCertificate}
-                  setListFileCertificate={setListFileCertificate}
-                  listFilePayment={listFilePayment}
-                  setListFilePayment={setListFilePayment}
-                />
+                <>
+                  <FormDocument
+                    listFileCertificate={listFileCertificate}
+                    setListFileCertificate={setListFileCertificate}
+                    listFilePayment={listFilePayment}
+                    setListFilePayment={setListFilePayment}
+                  />
+                  {registrationFeedbacks &&
+                    registrationFeedbacks.length > 0 && (
+                      <FeedbackList feedbacks={registrationFeedbacks} />
+                    )}
+                  <RegistrationButton
+                    status={status!}
+                    setIsEdit={setIsEdit}
+                    isEdit={isEdit}
+                    id={id}
+                    isStatrted={startDate != undefined}
+                    listFileCertificate={listFileCertificate}
+                    listFilePayment={listFilePayment}
+                    isBlockedMofiedCourse={isBlockedModifiedCourse}
+                    duration={form.getValues("duration")}
+                    durationUnit={form.getValues("durationUnit")}
+                  />
+                </>
               )}
-              {registrationFeedbacks && registrationFeedbacks.length > 0 && (
-                <FeedbackList feedbacks={registrationFeedbacks} />
+
+              {status !== "DONE" &&
+                status !== "DOCUMENT_DECLINED" &&
+                status !== "VERIFIED" &&
+                status !== "CLOSED" &&
+                status !== "VERIFYING" && (
+                  <>
+                    {registrationFeedbacks &&
+                      registrationFeedbacks.length > 0 && (
+                        <FeedbackList feedbacks={registrationFeedbacks} />
+                      )}
+                    <RegistrationButton
+                      status={status!}
+                      setIsEdit={setIsEdit}
+                      isEdit={isEdit}
+                      id={id}
+                      isStatrted={startDate != undefined}
+                      listFileCertificate={listFileCertificate}
+                      listFilePayment={listFilePayment}
+                      isBlockedMofiedCourse={isBlockedModifiedCourse}
+                      duration={form.getValues("duration")}
+                      durationUnit={form.getValues("durationUnit")}
+                    />
+                  </>
+                )}
+              {(status === "VERIFIED" ||
+                status === "CLOSED" ||
+                status === "VERIFYING") && (
+                <>
+                  <VerifyDocumentForAccountant
+                    documentRegistration={documentRegistration}
+                    setDocumentRegistration={setDocumentRegistration}
+                    status={status}
+                  />
+                  {registrationFeedbacks &&
+                    registrationFeedbacks.length > 0 && (
+                      <FeedbackList feedbacks={registrationFeedbacks} />
+                    )}
+                </>
               )}
-              <RegistrationButton
-                status={status!}
-                setIsEdit={setIsEdit}
-                isEdit={isEdit}
-                id={id}
-                isStatrted={startDate != undefined}
-                listFileCertificate={listFileCertificate}
-                listFilePayment={listFilePayment}
-                isBlockedMofiedCourse={isBlockedModifiedCourse}
-                duration={form.getValues("duration")}
-                durationUnit={form.getValues("durationUnit")}
-              />
+            </div>
+          )}
+          {user.user?.role === "USER" && (
+            <div className="space-y-5">
+              {status === "DOCUMENT_DECLINED" && (
+                <>
+                  <FormDocument
+                    listFileCertificate={listFileCertificate}
+                    setListFileCertificate={setListFileCertificate}
+                    listFilePayment={listFilePayment}
+                    setListFilePayment={setListFilePayment}
+                    documentRegistrationResubmit={documentRegistrationResubmit}
+                    setDocumentRegistrationResubmit={
+                      setDocumentRegistrationResubmit
+                    }
+                    setListIdDocumentRemove={setListIdDocumentRemove}
+                  />
+                  {registrationFeedbacks &&
+                    registrationFeedbacks.length > 0 && (
+                      <FeedbackList feedbacks={registrationFeedbacks} />
+                    )}
+
+                  <RegistrationButton
+                    status={status!}
+                    setIsEdit={setIsEdit}
+                    isEdit={isEdit}
+                    id={id}
+                    isStatrted={startDate != undefined}
+                    listFileCertificate={listFileCertificate}
+                    listFilePayment={listFilePayment}
+                    listIdDocumentRemove={listIdDocumentRemove}
+                    isBlockedMofiedCourse={isBlockedModifiedCourse}
+                    duration={form.getValues("duration")}
+                    durationUnit={form.getValues("durationUnit")}
+                  />
+                </>
+              )}
             </div>
           )}
 
+          {/* View Document and Feedback for Accounant */}
           {user.user?.role === "ACCOUNTANT" && (
             <div className="space-y-5">
-              {}
-
               {status === "VERIFYING" && (
                 <>
                   <VerifyDocumentForAccountant
@@ -399,6 +490,12 @@ export const RegistrationsForm = ({
       </Form>
       {user.user?.role === "ADMIN" && (
         <div className="space-y-5">
+          <VerifyDocumentForAccountant
+            documentRegistration={documentRegistration}
+            setDocumentRegistration={setDocumentRegistration}
+            status={status}
+          />
+
           {registrationFeedbacks && registrationFeedbacks?.length > 0 && (
             <FeedbackList feedbacks={registrationFeedbacks!} />
           )}

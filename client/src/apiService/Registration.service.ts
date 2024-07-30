@@ -4,20 +4,20 @@ import { isStatusSuccesful } from "../utils/checkResStatus";
 
 import type { UploadFile } from "antd";
 export const approveRegistration = async (id: number, close: VoidFunction) => {
-    const res = await instance.post(`/registrations/${id}/approve`);
-    if (isStatusSuccesful(res.status)) {
-        toast.success("Registration approved", {
-            style: { color: "green" },
-            description: "Registration approved successfully",
-        });
-        close();
-        return res.status;
-    }
-
-    toast.error("Failed to approve registration", {
-        style: { color: "red" },
-        description: "Failed to approve registration",
+  const res = await instance.post(`/registrations/${id}/approve`);
+  if (isStatusSuccesful(res.status)) {
+    toast.success("Registration approved", {
+      style: { color: "green" },
+      description: "Registration approved successfully",
     });
+    close();
+    return res.status;
+  }
+
+  toast.error("Failed to approve registration", {
+    style: { color: "red" },
+    description: "Failed to approve registration",
+  });
 };
 
 export const declineRegistration = async (
@@ -25,37 +25,37 @@ export const declineRegistration = async (
   comment: string,
   close: VoidFunction
 ) => {
-    const res = await instance.post(`/registrations/${id}/decline`, {
-        comment,
+  const res = await instance.post(`/registrations/${id}/decline`, {
+    comment,
+  });
+  if (isStatusSuccesful(res.status)) {
+    toast.success("Registration declined", {
+      style: { color: "green" },
+      description: "Registration declined successfully",
     });
-    if (isStatusSuccesful(res.status)) {
-        toast.success("Registration declined", {
-            style: { color: "green" },
-            description: "Registration declined successfully",
-        });
-        close();
-        return res.status;
-    }
+    close();
+    return res.status;
+  }
 
-    toast.error("Failed to decline registration", {
-        style: { color: "red" },
-        description: "Failed to decline registration",
-    });
+  toast.error("Failed to decline registration", {
+    style: { color: "red" },
+    description: "Failed to decline registration",
+  });
 };
 export const startLearning = async (id: number) => {
-    const res = await instance.post(`/registrations/start-learning/${id}`);
-    if (isStatusSuccesful(res.status)) {
-        toast.success("Start learning", {
-            style: { color: "green" },
-            description: "Start learning successfully",
-        });
-        return res.status;
-    }
-
-    toast.error("Failed to start learning", {
-        style: { color: "red" },
-        description: "Failed to start learning",
+  const res = await instance.post(`/registrations/start-learning/${id}`);
+  if (isStatusSuccesful(res.status)) {
+    toast.success("Start learning", {
+      style: { color: "green" },
+      description: "Start learning successfully",
     });
+    return res.status;
+  }
+
+  toast.error("Failed to start learning", {
+    style: { color: "red" },
+    description: "Failed to start learning",
+  });
 };
 
 export const closeRegistration = async (
@@ -63,38 +63,38 @@ export const closeRegistration = async (
   comment: string,
   close: VoidFunction
 ) => {
-    const res = await instance.post(`/registrations/${id}/close`, {
-        comment,
+  const res = await instance.post(`/registrations/${id}/close`, {
+    comment,
+  });
+  if (isStatusSuccesful(res.status)) {
+    toast.success("Registration closed", {
+      style: { color: "green" },
+      description: "Registration closed successfully",
     });
-    if (isStatusSuccesful(res.status)) {
-        toast.success("Registration closed", {
-            style: { color: "green" },
-            description: "Registration closed successfully",
-        });
-        close();
-        return res.status;
-    }
+    close();
+    return res.status;
+  }
 
-    toast.error("Failed to close registration", {
-        style: { color: "red" },
-        description: "Failed to close registration",
-    });
+  toast.error("Failed to close registration", {
+    style: { color: "red" },
+    description: "Failed to close registration",
+  });
 };
 
 export const removeRegistration = async (id: number) => {
-    const res = await instance.delete(`/registrations/${id}`);
-    if (isStatusSuccesful(res.status)) {
-        toast.success("Registration removed", {
-            style: { color: "green" },
-            description: "Registration removed successfully!!!",
-        });
-        return res.status;
-    }
-
-    toast.error("Failed to remove registration", {
-        style: { color: "red" },
-        description: "Something went wrong, please try again!!!",
+  const res = await instance.delete(`/registrations/${id}`);
+  if (isStatusSuccesful(res.status)) {
+    toast.success("Registration removed", {
+      style: { color: "green" },
+      description: "Registration removed successfully!!!",
     });
+    return res.status;
+  }
+
+  toast.error("Failed to remove registration", {
+    style: { color: "red" },
+    description: "Something went wrong, please try again!!!",
+  });
 };
 
 export const submitDocument = async (
@@ -104,19 +104,27 @@ export const submitDocument = async (
 ) => {
   try {
     const formData = new FormData();
-    // Append payment files
-    listFilePayment.forEach((file) => {
-      if (file.originFileObj) {
-        formData.append("payment", file.originFileObj);
+    if(listFilePayment.length > 0)
+      {
+      // Append payment files
+      listFilePayment.forEach((file) => {
+        if (file.originFileObj) {
+          formData.append("payment", file.originFileObj);
+        }
+      });
       }
-    });
-
-    // Append certificate files
-    listFileCertificate.forEach((file) => {
-      if (file.originFileObj) {
-        formData.append("certificate", file.originFileObj);
+      else formData.append("payment", "");
+  
+      if(listFileCertificate.length > 0)
+      {
+  // Append certificate files
+  listFileCertificate.forEach((file) => {
+    if (file.originFileObj) {
+      formData.append("certificate", file.originFileObj);
+    }
+  });
       }
-    });
+      else formData.append("certificate", "");
 
     const response = await instance.post(
       `/documents/registrations/${id}`,
@@ -134,41 +142,56 @@ export const submitDocument = async (
 };
 
 export const finishLearning = async (id: string | number) => {
-    const response = await instance.put(`/registrations/${id}/finish-learning`);
-    response.status == 200 ? toast.success("Finish learning", {
+  const response = await instance.put(`/registrations/${id}/finish-learning`);
+  response.status == 200
+    ? toast.success("Finish learning", {
         style: { color: "green" },
-        description: "Congratulations! You have successfully completed the course.",
-    }) : toast.error("Failed to finish learning", {
+        description:
+          "Congratulations! You have successfully completed the course.",
+      })
+    : toast.error("Failed to finish learning", {
         style: { color: "red" },
-        description: "Opps.., some thing went wrong. Please, reload the page and try again",
-    });
-    return response
-}
-
-export const discardRegistration = async (id: number) => {
-    const res = await instance.post(`/registrations/${id}/discard`);
-    if (isStatusSuccesful(res.status)) {
-        toast.success("Registration discarded", {
-            style: { color: "green" },
-            description: "Registration discarded successfully",
-        });
-        return res.status;
-    }
-
-    toast.error("Failed to discard registration", {
-        style: { color: "red" },
-        description: "Failed to discard registration",
-    });
+        description:
+          "Opps.., some thing went wrong. Please, reload the page and try again",
+      });
+  return response;
 };
 
-export const submitWithExistedCourse = async ({ courseId, duration, durationUnit }: { courseId: string, duration: number, durationUnit: string }) => {
-    const params = {
-        duration,
-        durationUnit,
-    }
-    const response = await instance.post(`/registrations/${courseId}/enroll`, params);
-    return response;
-}
+export const discardRegistration = async (id: number) => {
+  const res = await instance.post(`/registrations/${id}/discard`);
+  if (isStatusSuccesful(res.status)) {
+    toast.success("Registration discarded", {
+      style: { color: "green" },
+      description: "Registration discarded successfully",
+    });
+    return res.status;
+  }
+
+  toast.error("Failed to discard registration", {
+    style: { color: "red" },
+    description: "Failed to discard registration",
+  });
+};
+
+export const submitWithExistedCourse = async ({
+  courseId,
+  duration,
+  durationUnit,
+}: {
+  courseId: string;
+  duration: number;
+  durationUnit: string;
+}) => {
+  const params = {
+    duration,
+    durationUnit,
+  };
+  const response = await instance.post(
+    `/registrations/${courseId}/enroll`,
+    params
+  );
+  return response;
+};
 
 type DocumentType = {
   id: number;
@@ -207,5 +230,48 @@ export const approve_Decline_Document_Registration = async (
     return response;
   } catch (error) {
     console.log("Error while approving documents", error);
+  }
+};
+
+export const resubmitDocument = async (
+  id: number | undefined,
+  listFileCertificate: UploadFile[],
+  listFilePayment: UploadFile[],
+  listIdRemove: number[]
+) => {
+  try {
+    const formData = new FormData();
+
+    // Append payment files
+    listFilePayment.forEach((file) => {
+      if (file.originFileObj) {
+        formData.append("payment", file.originFileObj);
+      }
+    });
+
+    // Append certificate files
+    listFileCertificate.forEach((file) => {
+      if (file.originFileObj) {
+        formData.append("certificate", file.originFileObj);
+      }
+    });
+
+   
+    
+    if (listIdRemove.length > 0) {
+      listIdRemove.forEach((id) => {
+        formData.append("deleted_documents", id.toString());
+      });
+    } else {
+      formData.append("deleted_documents", "");
+    }
+
+    const response = await instance.post(
+      `/documents/registrations/${id}/resubmit-document`,
+      formData
+    );
+    return response;
+  } catch (error) {
+    console.log("Error while resubmitting documents", error);
   }
 };
