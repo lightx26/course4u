@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { RootState } from "../../redux/store/store";
 import "../../assets/css/login.css";
 import { useAppDispatch } from "../../redux/store/hook";
-import { DatePicker, Input } from "antd";
+import { DatePicker } from "antd";
 import type { DatePickerProps } from "antd";
 import PasswordInput from "../../components/user.components/personal/InputPassword";
 interface ISignUpRequest {
