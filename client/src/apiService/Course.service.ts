@@ -98,6 +98,18 @@ const fetchDataRelatedCourseById = async (id: string | undefined) => {
   }
 };
 
+const editCourse = async (data: any): Promise<number> => {
+  try {
+    const res = await instance.patchForm("/courses", data);
+    return res.status;
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.status;
+    } else {
+      return 503;
+    }
+  }
+};
 export {
   fetchListAvailableCourse,
   fetchDataCourseById,
@@ -106,4 +118,5 @@ export {
   fetchDataReviewsCourseById,
   fetchDataRelatedCourseById,
   createNewCourse,
+  editCourse,
 };

@@ -14,10 +14,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { deleteCourseById } from "../../apiService/Course.service";
+import { deleteCourseById, editCourse } from "../../apiService/Course.service";
 import { useNavigate } from "react-router-dom";
 
 import { toast } from "sonner";
+import blobToFile from "../../utils/convertBlobToFile";
+import { base64ToBlob } from "../../utils/ThumbnailConverter";
 
 interface CourseType {
   id: string | undefined;
@@ -91,8 +93,100 @@ const ModalEditOrDeleteCourse = ({ children, courseData }: Props) => {
   };
 
   async function onSubmit(values: z.infer<typeof courseSchema>) {
+    const formData = new FormData();
     values.id = courseData?.id;
-    console.log(values);
+    formData.append("id", values.id!);
+    Object.entries(values).forEach(([key, value]) => {
+      if (key !== "categories" && key !== "thumbnailUrl") {
+        if (typeof value === "string") {
+          formData.append(key, value);
+        }
+      }
+    });
+
+    values.categories.forEach((category, index) => {
+      formData.append(`categories[${index}].label`, category.label!);
+      formData.append(`categories[${index}].value`, category.value);
+    });
+
+    // Handle the thumbnailUrl if it starts with "blob:" or "data:"
+    if (values.thumbnailUrl.startsWith("blob:")) {
+      const thumbnailFile = await blobToFile(values.thumbnailUrl, values.name);
+      if (thumbnailFile) {
+        formData.append("thumbnailFile", thumbnailFile);
+      }
+    } else if (values.thumbnailUrl.startsWith("data:")) {
+      const thumbnailFromBase64 = base64ToBlob(values.thumbnailUrl);
+      if (thumbnailFromBase64) {
+        const thumbnailFile = new File(
+          [thumbnailFromBase64],
+          `${values.name}.jpg`,
+          { type: thumbnailFromBase64.type }
+        );
+        formData.append("thumbnailFile", thumbnailFile);
+      }
+    } else {
+      formData.append("thumbnailUrl", values.thumbnailUrl);
+    }
+    console.log(formData.get("thumbnailUrl")?.toString());
+    if (formData.get("thumbnailUrl")?.toString().match("/api/thumbnail/")) {
+      formData.delete("thumbnailUrl");
+    }
+    const status = await editCourse(formData);
+    if (status === 200) {
+      toast.success("Edit course succesfully", {
+        description:
+          "Course information already updated! refresh to see the changes",
+        style: {
+          color: "green",
+          fontWeight: "bold",
+          textAlign: "center",
+        },
+        // onAutoClose: () => {
+        //   navigate("/admin", {
+        //     replace: true,
+        //     state: { refresh: true },
+        //   });
+        // },
+      });
+    } else if (status === 500) {
+      toast.error("Oops! Something went wrong. Please try again later", {
+        description: "Contact the admin for further assistance!",
+        style: {
+          color: "red",
+          fontWeight: "bold",
+          textAlign: "center",
+        },
+      });
+    } else if (status === 409) {
+      toast.error("Edit course unsuccessfully", {
+        description:
+          "Course link already exists in the system. Please check again!",
+        style: {
+          color: "red",
+          fontWeight: "bold",
+          textAlign: "center",
+        },
+      });
+    } else if (status === 404) {
+      toast.error("Edit course unsuccessfully", {
+        description: "Course not found in the system. Please check again!",
+        style: {
+          color: "red",
+          fontWeight: "bold",
+          textAlign: "center",
+        },
+      });
+    } else {
+      toast.error("Oops! Something went wrong. Please try again later", {
+        description: "Contact the admin for further assistance!",
+        style: {
+          color: "red",
+          fontWeight: "bold",
+          textAlign: "center",
+        },
+      });
+    }
   }
 
   return (

@@ -40,6 +40,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 
+
 @Service
 @Log4j2
 public class CourseServiceImpl implements CourseService {
@@ -59,7 +60,7 @@ public class CourseServiceImpl implements CourseService {
     public CourseServiceImpl(CourseRepository courseRepository, MapperFactory<Course> courseMapperFactory,
                              CategoryService categoryService,
                              UploadService uploadService
-    ) {
+                             ) {
         this.courseRepository = courseRepository;
         this.courseMapperFactory = courseMapperFactory;
         this.categoryService = categoryService;
@@ -72,32 +73,37 @@ public class CourseServiceImpl implements CourseService {
         courseDto.setCategories(categoryService.findAllByCourseId(id));
         return courseDto;
     }
-
+    private String handleThumbnail(CourseRequest courseRequest) throws IOException {
+        String thumbnailUrl = null;
+        if (courseRequest.getThumbnailFile() != null) {
+            thumbnailUrl = uploadService.uploadThumbnail(courseRequest.getThumbnailFile(), uploadThumbnailDir);
+        } else if (courseRequest.getThumbnailUrl() != null) {
+            thumbnailUrl = courseRequest.getThumbnailUrl();
+        }
+        return thumbnailUrl;
+    }
+    private List<Category> handleCategory(CourseRequest courseRequest){
+        List<Category> categories = categoryService.findOrCreateNewCategory(courseRequest.getCategories());
+        return new ArrayList<>(categories);
+    }
     @Override
     public CourseResponse createCourse(CourseRequest courseRequest) {
         var modelMapper = new ModelMapper();
         try {
             Course course = modelMapper.map(courseRequest, Course.class);
-            if (courseRepository.findFirstByLinkIgnoreCaseAndStatus(course.getLink(), CourseStatus.AVAILABLE).isPresent()) {
+            if (courseRepository.findFirstByLinkIgnoreCaseAndStatus(course.getLink(), CourseStatus.AVAILABLE).isPresent()){
                 throw new DuplicateCourseException("Course with link " + course.getLink() + " already exists");
             }
-            String thumbnailUrl = null;
-            if (courseRequest.getThumbnailFile() != null) {
-                thumbnailUrl = uploadService.uploadThumbnail(courseRequest.getThumbnailFile(), uploadThumbnailDir);
-            } else if (courseRequest.getThumbnailUrl() != null) {
-                thumbnailUrl = courseRequest.getThumbnailUrl();
-            }
-
-            List<Category> categories = categoryService.findOrCreateNewCategory(
-                    courseRequest.getCategories()
-            );
+            String thumbnailUrl = handleThumbnail(courseRequest);
+            List<Category> categories = handleCategory(courseRequest);
             log.info("categories: " + categories);
             course.setThumbnailUrl(thumbnailUrl);
             course.setCategories(Set.copyOf(categories));
             course.setCreatedDate(LocalDate.now());
-            if (AuthUtils.getCurrentUser().getRole().toString().equals("ADMIN")) {
+            if (AuthUtils.getCurrentUser().getRole().toString().equals("ADMIN")){
                 course.setStatus(CourseStatus.AVAILABLE);
-            } else if (AuthUtils.getCurrentUser().getRole().toString().equals("USER")) {
+            }
+            else if (AuthUtils.getCurrentUser().getRole().toString().equals("USER")){
                 course.setStatus(CourseStatus.PENDING);
             }
             course = courseRepository.save(course);
@@ -204,6 +210,56 @@ public class CourseServiceImpl implements CourseService {
                 .toList();
     }
 
+    @Override
+    public CourseResponse updateCourse(CourseRequest courseRequest) {
+        var modelMapper = new ModelMapper();
+        String oldThumbnailUrl = null;
+        try {
+            var courseOpt = courseRepository.findById(Long.valueOf(courseRequest.getId()));
+            if (courseOpt.isEmpty()) {
+                throw new CourseNotFoundException("Course with ID " + courseRequest.getId() + " not found");
+            }
+            Course oldCourse = courseOpt.get();
+            validateCourseLink(courseRequest, oldCourse);
+            String thumbnailUrl = handleThumbnail(courseRequest);
+            List<Category> categories = handleCategory(courseRequest);
+            if (thumbnailUrl != null) {
+                if (oldCourse.getThumbnailUrl().endsWith(".jpg")) {
+                    oldThumbnailUrl = oldCourse.getThumbnailUrl();
+                }
+                oldCourse.setThumbnailUrl(thumbnailUrl);
+            }
+            updateCourseDetails(oldCourse, courseRequest);
+            oldCourse.setCategories(new HashSet<>(categories));
+            courseRepository.save(oldCourse);
+            if (oldThumbnailUrl != null) {
+                uploadService.deleteThumbnail(oldThumbnailUrl, uploadThumbnailDir);
+            }
+            return modelMapper.map(oldCourse, CourseResponse.class);
+        } catch (IOException e) {
+            log.error("Error while uploading thumbnail", e);
+            throw new RuntimeException("Error while updating course");
+        } catch (DuplicateCourseException e){
+            throw new DuplicateCourseException(e.getMessage());
+        }
+    }
+
+    private void validateCourseLink(CourseRequest courseRequest, Course oldCourse) {
+        if (!oldCourse.getLink().equals(courseRequest.getLink()) &&
+                courseRepository.findFirstByLinkIgnoreCaseAndStatus(courseRequest.getLink(), CourseStatus.AVAILABLE).isPresent()) {
+            throw new DuplicateCourseException("Course with link " + courseRequest.getLink() + " already exists");
+        }
+    }
+
+    private void updateCourseDetails(Course oldCourse, CourseRequest courseRequest) {
+        oldCourse.setLink(courseRequest.getLink());
+        oldCourse.setName(courseRequest.getName());
+        oldCourse.setPlatform(courseRequest.getPlatform());
+        oldCourse.setTeacherName(courseRequest.getTeacherName());
+        oldCourse.setLevel(courseRequest.getLevel());
+        oldCourse.setStatus(CourseStatus.AVAILABLE);
+        oldCourse.setCreatedDate(LocalDate.now());
+    }
     private DTOMapper<CourseOverviewDTO, Course> getOverviewCourseMapper() {
         Optional<DTOMapper<CourseOverviewDTO, Course>> courseMapperOpt = courseMapperFactory.getDTOMapper(CourseOverviewDTO.class);
         return courseMapperOpt.orElseThrow(() -> new ServerErrorRuntimeException("Couldn't get mapper"));

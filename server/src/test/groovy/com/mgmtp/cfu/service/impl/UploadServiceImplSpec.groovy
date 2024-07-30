@@ -6,6 +6,7 @@ import spock.lang.TempDir
 
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.Paths
 
 class UploadServiceImplSpec extends Specification {
 
@@ -48,6 +49,58 @@ class UploadServiceImplSpec extends Specification {
         then:
         result.endsWith(".jpg")
     }
+    def "deleteThumbnail should delete file when filename is valid"() {
+        given:
+        String filename = "valid-thumbnail.jpg"
+        String directory = tempDir.toString()
+        Path filePath = Paths.get(directory, filename)
+        Files.createFile(filePath)
 
+        when:
+        uploadService.deleteThumbnail(filename, directory)
+
+        then:
+        !Files.exists(filePath)
+    }
+
+    def "deleteThumbnail should not throw exception when file does not exist"() {
+        given:
+        String filename = "nonexistent-thumbnail.jpg"
+        String directory = tempDir.toString()
+
+        when:
+        uploadService.deleteThumbnail(filename, directory)
+
+        then:
+        noExceptionThrown()
+    }
+
+    def "deleteThumbnail should not delete file when filename is null"() {
+        given:
+        String filename = null
+        String directory = tempDir.toString()
+        Path filePath = Paths.get(directory, "somefile.jpg")
+        Files.createFile(filePath)
+
+        when:
+        uploadService.deleteThumbnail(filename, directory)
+
+        then:
+        Files.exists(filePath)
+    }
+
+    def "deleteThumbnail should not delete file when filename is empty"() {
+        given:
+        String filename = ""
+        String directory = tempDir.toString()
+        Path filePath = Paths.get(directory, "somefile.jpg")
+        Files.createFile(filePath)
+
+        when:
+        uploadService.deleteThumbnail(filename, directory)
+
+        then:
+        Files.exists(filePath)
+    }
 
 }

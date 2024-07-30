@@ -2,6 +2,7 @@ package com.mgmtp.cfu.controller;
 
 import com.mgmtp.cfu.exception.BadRequestRuntimeException;
 import com.mgmtp.cfu.dto.coursedto.*;
+import com.mgmtp.cfu.exception.CourseNotFoundException;
 import com.mgmtp.cfu.exception.DuplicateCourseException;
 import com.mgmtp.cfu.exception.MapperNotFoundException;
 import com.mgmtp.cfu.service.CourseService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.util.Objects;
 
 @RestController
@@ -60,17 +62,33 @@ public class CourseController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
+    @PatchMapping
+    public ResponseEntity<?> updateCourse(@ModelAttribute CourseRequest courseRequest) {
+        try {
+            CourseResponse courseResponse = courseService.updateCourse(courseRequest);
+            return ResponseEntity.ok(courseResponse);
+        } catch (CourseNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (DuplicateCourseException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void deleteCourse(@PathVariable Long id) {
-        if(Objects.isNull(id))
+        if (Objects.isNull(id))
             throw new BadRequestRuntimeException("The course id must not be null.");
         courseService.deleteCourseById(id);
     }
 
     @GetMapping("/{id}/relation")
     public ResponseEntity<?> getRelatedCourses(@PathVariable("id") Long courseId) {
-        if(Objects.isNull(courseId)||courseId<1)
+        if (Objects.isNull(courseId) || courseId < 1)
             throw new BadRequestRuntimeException("The course id is incorrect.");
         return ResponseEntity.ok(courseService.getRelatedCourses(courseId));
     }

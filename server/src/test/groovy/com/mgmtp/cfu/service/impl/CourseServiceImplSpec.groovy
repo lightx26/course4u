@@ -17,6 +17,7 @@ import com.mgmtp.cfu.enums.CourseStatus
 import com.mgmtp.cfu.enums.Role
 import com.mgmtp.cfu.exception.CourseNotFoundException
 import com.mgmtp.cfu.exception.BadRequestRuntimeException
+import com.mgmtp.cfu.exception.DuplicateCourseException
 import com.mgmtp.cfu.exception.ServerErrorRuntimeException
 import com.mgmtp.cfu.exception.MapperNotFoundException
 import com.mgmtp.cfu.mapper.factory.MapperFactory
@@ -363,5 +364,104 @@ class CourseServiceImplSpec extends Specification {
         then:
         thrown(CourseNotFoundException)
     }
+
+    def "updateCourse should update course successfully"() {
+        given:
+        CourseRequest courseRequest = CourseRequest.builder()
+                .id("1")
+                .name("Advanced Java")
+                .link("https://example.com/advanced-java-course")
+                .platform(CoursePlatform.UDEMY)
+                .teacherName("Jane Doe")
+                .thumbnailUrl("https://example.com/new-thumbnail.jpg")
+                .status(CourseStatus.AVAILABLE)
+                .level(CourseLevel.ADVANCED)
+                .categories([new CourseRequest.CategoryCourseRequestDTO(label: "Java", value: "1")] as List)
+                .build()
+        Course oldCourse = Course.builder()
+                .id(1)
+                .name("Java Programming")
+                .link("https://example.com/java-course")
+                .platform(CoursePlatform.UDEMY)
+                .teacherName("John Doe")
+                .thumbnailUrl("https://example.com/thumbnail.jpg")
+                .status(CourseStatus.PENDING)
+                .level(CourseLevel.INTERMEDIATE)
+                .categories(new HashSet<>())
+                .build()
+        courseRepository.findById(_) >> Optional.of(oldCourse)
+        courseRepository.findFirstByLinkIgnoreCaseAndStatus(_, _) >> Optional.empty()
+        categoryService.findOrCreateNewCategory(_) >> [new Category(id: 1, name: "Java", status: "AVAILABLE")]
+        uploadService.deleteThumbnail(_, _) >> {}
+
+        when:
+        CourseResponse courseResponse = courseService.updateCourse(courseRequest)
+
+        then:
+        courseResponse != null
+        courseResponse.name == courseRequest.name
+        courseResponse.link == courseRequest.link
+        courseResponse.platform == courseRequest.platform.name()
+        courseResponse.teacherName == courseRequest.teacherName
+        courseResponse.status == courseRequest.status
+        courseResponse.level == courseRequest.level
+    }
+
+    def "updateCourse should throw CourseNotFoundException when course does not exist"() {
+        given:
+        CourseRequest courseRequest = CourseRequest.builder()
+                .id("1")
+                .name("Advanced Java")
+                .link("https://example.com/advanced-java-course")
+                .platform(CoursePlatform.UDEMY)
+                .teacherName("Jane Doe")
+                .thumbnailUrl("https://example.com/new-thumbnail.jpg")
+                .status(CourseStatus.AVAILABLE)
+                .level(CourseLevel.ADVANCED)
+                .categories([new CourseRequest.CategoryCourseRequestDTO(label: "Java", value: "1")] as List)
+                .build()
+        courseRepository.findById(_) >> Optional.empty()
+
+        when:
+        courseService.updateCourse(courseRequest)
+
+        then:
+        thrown(CourseNotFoundException)
+    }
+
+    def "updateCourse should throw DuplicateCourseException when course with same link exists"() {
+        given:
+        CourseRequest courseRequest = CourseRequest.builder()
+                .id("1")
+                .name("Advanced Java")
+                .link("https://example.com/advanced-java-course")
+                .platform(CoursePlatform.UDEMY)
+                .teacherName("Jane Doe")
+                .thumbnailUrl("https://example.com/new-thumbnail.jpg")
+                .status(CourseStatus.AVAILABLE)
+                .level(CourseLevel.ADVANCED)
+                .categories([new CourseRequest.CategoryCourseRequestDTO(label: "Java", value: "1")] as List)
+                .build()
+        Course oldCourse = Course.builder()
+                .id(1)
+                .name("Java Programming")
+                .link("https://example.com/java-course")
+                .platform(CoursePlatform.UDEMY)
+                .teacherName("John Doe")
+                .thumbnailUrl("https://example.com/thumbnail.jpg")
+                .status(CourseStatus.PENDING)
+                .level(CourseLevel.INTERMEDIATE)
+                .categories(new HashSet<>())
+                .build()
+        courseRepository.findById(_) >> Optional.of(oldCourse)
+        courseRepository.findFirstByLinkIgnoreCaseAndStatus(_, _) >> Optional.of(new Course())
+
+        when:
+        courseService.updateCourse(courseRequest)
+
+        then:
+        thrown(DuplicateCourseException)
+    }
+
 
 }

@@ -27,4 +27,12 @@ public class UploadServiceImpl implements UploadService {
         }
         return thumbnailUrl;
     }
+    @Override
+    public void deleteThumbnail(String filename, String directory) throws IOException {
+        if (filename != null && !filename.isEmpty()) {
+            Path uploadPath = Paths.get(directory).toAbsolutePath().normalize();
+            Path filePath = uploadPath.resolve(filename);
+            Files.deleteIfExists(filePath);
+        }
+    }
 }
