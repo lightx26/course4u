@@ -7,8 +7,8 @@ import PaginationSection from "../../components/user.components/Homepage/Paginat
 import UtilsBar from "../../components/admin.components/mainPage.components/UtilsBar.tsx";
 import RegistrationList from "../../components/admin.components/registrations.components/RegistrationList.tsx";
 
-import {fetchAllRegistrations} from "../../apiService/Admin.service.ts";
-import {handleAvatarUrl} from "../../utils/handleAvatarUrl.ts";
+import { fetchAllRegistrations } from "../../apiService/Registration.service.ts";
+import { handleAvatarUrl } from "../../utils/handleAvatarUrl.ts";
 
 import {useRefreshState} from "../../hooks/use-refresh-state.ts";
 

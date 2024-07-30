@@ -3,6 +3,29 @@ import instance from "../utils/customizeAxios";
 import { isStatusSuccesful } from "../utils/checkResStatus";
 
 import type { UploadFile } from "antd";
+import {RegistrationParamsType} from "../redux/slice/adminRegistration.slice.ts";
+import OrderByMapping from "../utils/orderByMapping.ts";
+
+export async function fetchAllRegistrations(params: RegistrationParamsType, page: number = 1) {
+    const status: string = params.status == "Declined (Document)"
+        ? "DOCUMENT_DECLINED"
+        : params.status.toUpperCase();
+
+    const orderBy: string = OrderByMapping(params.orderBy);
+
+    const search: string = params.search.toLowerCase();
+    const isAscending: string = params.isAscending ? 'true' : 'false';
+
+    const url = `/registrations?status=${status}&search=${search}&orderBy=${orderBy}&isAscending=${isAscending}&page=${page}`
+
+    try {
+        const response = await instance.get(url);
+        return response.data;
+    } catch (error) {
+        throw new Error("Error while fetching registrations");
+    }
+}
+
 export const approveRegistration = async (id: number, close: VoidFunction) => {
   const res = await instance.post(`/registrations/${id}/approve`);
   if (isStatusSuccesful(res.status)) {

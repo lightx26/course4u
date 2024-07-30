@@ -23,6 +23,7 @@ import com.mgmtp.cfu.mapper.factory.MapperFactory;
 import com.mgmtp.cfu.repository.RegistrationRepository;
 import com.mgmtp.cfu.service.*;
 import com.mgmtp.cfu.repository.*;
+import com.mgmtp.cfu.specification.RegistrationSpecifications;
 import com.mgmtp.cfu.util.NotificationUtil;
 import com.mgmtp.cfu.util.RegistrationStatusUtil;
 import com.mgmtp.cfu.util.RegistrationValidator;
@@ -33,7 +34,8 @@ import org.springframework.data.domain.PageRequest;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -253,35 +255,21 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     // Admin Registration Services
-    /**
-     * Get optional registrations by configuration of Admin
-     *
-     * @param params: parameters for searching, filtering and sorting
-     * @param page: page number
-     * @return Page<RegistrationOverviewDTO>
-     */
+
     @Override
-    public Page<RegistrationOverviewDTO> getRegistrations(RegistrationOverviewParams params, int page) {
+    public Page<RegistrationOverviewDTO> getRegistrations(RegistrationOverviewParams params, int page, int pageSize) {
         String status = params.getStatus();
         String search = params.getSearch();
         String orderBy = (params.getOrderBy().isEmpty()) ? "id" : params.getOrderBy();
-        Boolean isAscending = params.getIsAscending();
 
-        Page<Registration> registrations;
-        PageRequest pageRequest = (
-                isAscending
-                        ? PageRequest.of(page - 1, 8, Sort.by(orderBy).ascending())
-                        : PageRequest.of(page - 1, 8, Sort.by(orderBy).descending())
-        );
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
 
-        if (status.isEmpty() || status.equalsIgnoreCase("all")) {
-            registrations = registrationRepository.getOptionalRegistrationsWithoutStatus(search, pageRequest);
-        } else {
-            RegistrationStatus mappedStatus = RegistrationStatus.valueOf(status.toUpperCase());
-            registrations = registrationRepository.getOptionalRegistrationsWithStatus(mappedStatus, search, pageRequest);
-        }
+        return getRegistrationsBySpec(status, search, orderBy, pageable).map(registrationOverviewMapper::toDTO);
+    }
 
-        return registrations.map(registrationOverviewMapper::toDTO);
+    private Page<Registration> getRegistrationsBySpec(String status, String search, String orderBy, Pageable pageable) {
+        Specification<Registration> spec = RegistrationSpecifications.getSpecs(status, search, orderBy);
+        return registrationRepository.findAll(spec, pageable);
     }
 
     @Override

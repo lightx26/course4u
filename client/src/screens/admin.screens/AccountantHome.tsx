@@ -10,12 +10,12 @@ import {
 } from "../../redux/slice/accountantRegistration.slice.ts";
 import { useEffect, useState } from "react";
 import { handleAvatarUrl } from "../../utils/handleAvatarUrl.ts";
-import { fetchAllRegistrations } from "../../apiService/Admin.service.ts";
 import AdminCard from "../../components/admin.components/mainPage.components/AdminCard.tsx";
 import RegistrationList from "../../components/admin.components/registrations.components/RegistrationList.tsx";
 import PaginationSection from "../../components/user.components/Homepage/PaginationSection.tsx";
 import AccountantUtilsBar from "../../components/admin.components/mainPage.components/AccountantUtilsBar.tsx";
 import { useRefreshState } from "../../hooks/use-refresh-state.ts";
+import {fetchAllRegistrations} from "../../apiService/Registration.service.ts";
 
 const AccountantHomePage = () => {
   const dispatch = useDispatch();

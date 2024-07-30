@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface RegistrationRepository extends JpaRepository<Registration, Long> {
+public interface RegistrationRepository extends JpaRepository<Registration, Long>, JpaSpecificationExecutor<Registration> {
     @Query("SELECT COUNT(r) FROM Registration r WHERE r.course.id = ?1 and (r.status in ?2)")
     int countRegistrationInCourse(Long courseId, List<RegistrationStatus> Statuses);
 
@@ -43,8 +44,4 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
             "r.lastUpdated desc, " +
             "r.id desc")
     List<Registration> getSortedRegistrations(@Param("userId") Long userId);
-
-
-
-
 }
