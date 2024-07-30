@@ -41,7 +41,7 @@ public interface RegistrationService {
 
     void verifyRegistration(Long id, Map<String, String> longDocumentStatusMap, String status);
 
-    void editRegistration(Long id, RegistrationRequest registrationRequest);
+    void editRegistration(Long id, RegistrationRequest registrationRequest,boolean asDraft);
 
     Boolean isExistAvailableCourse(Long id);
 

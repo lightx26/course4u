@@ -3,33 +3,31 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registrationSchema } from "../../schemas/registration-schema";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { CourseForm } from "./course-form";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "../ui/select";
 
 import { useEffect, useState } from "react";
 import { RegistrationsProps } from "../user.components/registrations";
 import { RegistrationButton } from "../user.components/registration-button";
-import { toast } from "sonner";
-import blobToFile from "../../utils/convertBlobToFile";
 import {
-  createNewRegistration,
-  editRegistration,
+    createNewRegistration,
+    editRegistration,
+    saveRegistrationAsDraft,
 } from "../../apiService/MyRegistration.service";
-import { base64ToBlob } from "../../utils/ThumbnailConverter";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import RegistrationAdminSection from "../admin.components/registrations.components/registration-admin-section";
@@ -44,228 +42,123 @@ import FeedBackFromAccountant from "../FeedBackFromAccountant";
 import { getListDocumentByRegistrationId } from "../../apiService/Document.service";
 import { Status } from "../../utils/index";
 import { useRefreshState } from "../../hooks/use-refresh-state";
-import handleThumbnailUrl from "../../utils/handleThumbnailUrl";
+import { convertToFormData } from "../../utils/convertToFormData";
 type DocumentType = {
-  id: number;
-  registrationId: number;
-  url: string;
-  status: string;
-  type: string;
+    id: number;
+    registrationId: number;
+    url: string;
+    status: string;
+    type: string;
 };
 type RegistrationsFormProps = RegistrationsProps & {
-  isEdit: boolean;
-  setIsEdit: (isEdit: boolean) => void;
-  startDate?: string;
-  endDate?: string;
+    isEdit: boolean;
+    setIsEdit: (isEdit: boolean) => void;
+    startDate?: string;
+    endDate?: string;
 };
 
 export const RegistrationsForm = ({
-  id,
-  duration,
-  durationUnit,
-  status,
-  course,
-  isEdit,
-  setIsEdit,
-  startDate,
-  endDate,
-  registrationFeedbacks,
-  isBlockedModifiedCourse,
+    id,
+    duration,
+    durationUnit,
+    status,
+    course,
+    isEdit,
+    setIsEdit,
+    startDate,
+    endDate,
+    registrationFeedbacks,
+    isBlockedModifiedCourse,
 }: RegistrationsFormProps) => {
-  const form = useForm<z.infer<typeof registrationSchema>>({
-    resolver: zodResolver(registrationSchema),
-    mode: "onBlur",
-    shouldFocusError: false,
-    defaultValues: {
-      name: "",
-      teacherName: "",
-      link: "",
-      level: "",
-      platform: "",
-      categories: [],
-      duration: 1,
-      durationUnit: "DAY",
-      thumbnailUrl: "",
-    },
-  });
-  const { setRegistrationFlagAdmin } = useRefreshState((state) => state);
-  const { open } = useRegistrationModal((state) => state);
-  const user = useSelector((state: RootState) => state.user);
-  const [inputDuration, setInputDuration] = useState(1);
-  const [blockEditCourseForm, setBlockEditCourseForm] = useState<boolean>(isBlockedModifiedCourse ?? false)
-  useEffect(() => {
-    if (id) {
-      form.setValue("duration", duration!);
-      form.setValue("durationUnit", durationUnit || "DAY");
-      form.setValue("platform", course?.platform || "");
-      form.setValue("name", course?.name || "");
-      form.setValue("teacherName", course?.teacherName || "");
-      form.setValue("link", course?.link || "");
-      form.setValue(
-        "thumbnailUrl",
-        handleThumbnailUrl(course?.thumbnailUrl) || ""
-      );
-      form.setValue("level", course?.level || "BEGINNER");
-      const categoriesData = course?.categories?.map((category) => ({
-        label: category.name,
-        value: category.name!,
-      }));
-      form.setValue("categories", categoriesData || []);
-    }
-  }, [course, duration, durationUnit, form, id]);
-  // @ts-nocheck
-  async function onSubmit(values: z.infer<typeof registrationSchema>) {
-    let isFile = false;
-    let thumbnailFile;
-
-    if (values.thumbnailUrl.startsWith("blob:")) {
-      thumbnailFile = await blobToFile(values.thumbnailUrl, values.name);
-      isFile = true;
-    } else if (values.thumbnailUrl.startsWith("data:")) {
-      const thumbnailFromBase64 = base64ToBlob(values.thumbnailUrl);
-      thumbnailFile = new File([thumbnailFromBase64], `${values.name}.jpg`, {
-        type: thumbnailFromBase64.type,
-      });
-      isFile = true;
-    } else {
-      isFile = false;
-    }
-
-    const requestBody = new FormData();
-    requestBody.append("name", values.name);
-    requestBody.append("teacherName", values.teacherName);
-    requestBody.append("link", values.link);
-    requestBody.append("level", values.level);
-    requestBody.append("platform", values.platform.toUpperCase());
-    values.categories.forEach((category, index) => {
-      requestBody.append(`categories[${index}].label`, category.label!);
-      requestBody.append(`categories[${index}].value`, category.value);
+    const form = useForm<z.infer<typeof registrationSchema>>({
+        resolver: zodResolver(registrationSchema),
+        mode: "onBlur",
+        shouldFocusError: false,
+        defaultValues: {
+            name: "",
+            teacherName: "",
+            link: "",
+            level: "",
+            platform: "",
+            categories: [],
+            duration: 1,
+            durationUnit: "DAY",
+            thumbnailUrl: "",
+        },
     });
-    requestBody.append("duration", values.duration.toString());
-    requestBody.append("durationUnit", values.durationUnit);
-
-    if (isFile) {
-      if (thumbnailFile) {
-        requestBody.append("thumbnailFile", thumbnailFile);
-      }
-    } else {
-      requestBody.append("thumbnailUrl", values.thumbnailUrl);
+    const { setRegistrationFlagAdmin } = useRefreshState((state) => state);
+    const { close } = useRegistrationModal((state) => state);
+    const user = useSelector((state: RootState) => state.user);
+    const [inputDuration, setInputDuration] = useState(1);
+    const [asDraft, setAsDraft] = useState(false);
+    const [blockEditCourseForm, setBlockEditCourseForm] = useState<boolean>(isBlockedModifiedCourse ?? false)
+    useEffect(() => {
+        if (id) {
+            form.setValue("duration", duration!);
+            form.setValue("durationUnit", durationUnit || "DAY");
+        }
+    }, [duration, durationUnit, form, id]);
+    // @ts-nocheck
+    async function onSubmit(values: z.infer<typeof registrationSchema>) {
+        const requestBody = await convertToFormData(values);
+        if (asDraft) {
+            await saveRegistrationAsDraft(
+                requestBody,
+                +id!,
+                close,
+                setRegistrationFlagAdmin
+            );
+        } else if (
+            isEdit &&
+            (status === Status.DRAFT ||
+                status === Status.DECLINED ||
+                status === Status.SUBMITTED)
+        ) {
+            await editRegistration(
+                +id!,
+                requestBody,
+                status,
+                close,
+                setRegistrationFlagAdmin
+            );
+        } else {
+            await createNewRegistration(requestBody, close);
+        }
     }
 
-    if (
-      isEdit &&
-      (status === Status.DRAFT ||
-        status === Status.DECLINED ||
-        status === Status.SUBMITTED)
-    ) {
-      const statusResponse = await editRegistration(id, requestBody);
+    //Submit Document
+    const [listFileCertificate, setListFileCertificate] = useState<
+        UploadFile[]
+    >([]);
+    const [listFilePayment, setListFilePayment] = useState<UploadFile[]>([]);
 
-      if (status === Status.DRAFT && statusResponse === 201) {
-        setRegistrationFlagAdmin();
-        toast.success("Submit registration successfully", {
-          description: "",
-          style: {
-            color: "green",
-            fontWeight: "bold",
-            textAlign: "center",
-          },
-          onAutoClose: () => {
-            open(false);
-          },
-        });
-      } else {
-        setRegistrationFlagAdmin();
-        toast.success("Re-submit registration successfully", {
-          description: "",
-          style: {
-            color: "green",
-            fontWeight: "bold",
-            textAlign: "center",
-          },
-          onAutoClose: () => {
-            open(false);
-          },
-        });
-      }
-    } else {
-      const status = await createNewRegistration(requestBody);
-      if (status === 201) {
-        toast.success("Create a new registration successfully", {
-          description: "",
-          style: {
-            color: "green",
-            fontWeight: "bold",
-            textAlign: "center",
-          },
-          onAutoClose: () => {
-            open(false);
-          },
-        });
-      } else if (status === 500) {
-        toast.error("Oops! Something went wrong. Please try again later", {
-          description: "Contact the admin for further assistance!",
-          style: {
-            color: "red",
-            fontWeight: "bold",
-            textAlign: "center",
-          },
-        });
-      } else if (status === 409) {
-        toast.error("Create a new registration unsuccessfully", {
-          description:
-            "Your course request already exists in the system. Please check again!",
-          style: {
-            color: "red",
-            fontWeight: "bold",
-            textAlign: "center",
-          },
-        });
-      } else {
-        toast.error("Oops! Something went wrong. Please try again later", {
-          description: "Contact the admin for further assistance!",
-          style: {
-            color: "red",
-            fontWeight: "bold",
-            textAlign: "center",
-          },
-        });
-      }
-    }
-  }
+    //Accoutant
+    const [documentRegistration, setDocumentRegistration] = useState<
+        DocumentType[]
+    >([]);
 
-  //Submit Document
-  const [listFileCertificate, setListFileCertificate] = useState<UploadFile[]>(
-    []
-  );
-  const [listFilePayment, setListFilePayment] = useState<UploadFile[]>([]);
+    //Document For User Re-submit
+    const [documentRegistrationResubmit, setDocumentRegistrationResubmit] =
+        useState<DocumentType[]>([]);
+    const [listIdDocumentRemove, setListIdDocumentRemove] = useState<number[]>(
+        []
+    );
 
-  //Accoutant
-  const [documentRegistration, setDocumentRegistration] = useState<
-    DocumentType[]
-  >([]);
+    const [feedBackFromAccountant, setFeedBackFromAccountant] =
+        useState<string>("");
 
-  //Document For User Re-submit
-  const [documentRegistrationResubmit, setDocumentRegistrationResubmit] =
-    useState<DocumentType[]>([]);
-  const [listIdDocumentRemove, setListIdDocumentRemove] = useState<number[]>(
-    []
-  );
-
-  const [feedBackFromAccountant, setFeedBackFromAccountant] =
-    useState<string>("");
-
-  const fetchListDocument = async () => {
-    if (id !== undefined) {
-      const result = await getListDocumentByRegistrationId(id);
-      if (result && result.data) {
-        setDocumentRegistrationResubmit(result.data);
-        setDocumentRegistration(result.data);
-      }
-    }
-  };
-  useEffect(() => {
-    fetchListDocument();
-  }, [id]);
+    const fetchListDocument = async () => {
+        if (id !== undefined) {
+            const result = await getListDocumentByRegistrationId(id);
+            if (result && result.data) {
+                setDocumentRegistrationResubmit(result.data);
+                setDocumentRegistration(result.data);
+            }
+        }
+    };
+    useEffect(() => {
+        fetchListDocument();
+    }, [id]);
 
   return (
     <div className="flex flex-col w-full">
@@ -370,6 +263,7 @@ export const RegistrationsForm = ({
                     setBlockEditCourseForm={setBlockEditCourseForm}
                     duration={form.getValues("duration")}
                     durationUnit={form.getValues("durationUnit")}
+                    setAsDraft={setAsDraft}
                   />
                 </>
               )}
@@ -396,6 +290,7 @@ export const RegistrationsForm = ({
                       setBlockEditCourseForm={setBlockEditCourseForm}
                       duration={form.getValues("duration")}
                       durationUnit={form.getValues("durationUnit")}
+                      setAsDraft={setAsDraft}
                     />
                   </>
                 )}
@@ -449,74 +344,98 @@ export const RegistrationsForm = ({
                     setBlockEditCourseForm={setBlockEditCourseForm}
                     duration={form.getValues("duration")}
                     durationUnit={form.getValues("durationUnit")}
+                    setAsDraft={setAsDraft}
                   />
                 </>
               )}
             </div>
           )}
 
-          {/* View Document and Feedback for Accounant */}
-          {user.user?.role === "ACCOUNTANT" && (
-            <div className="space-y-5">
-              {status === "VERIFYING" && (
-                <>
-                  <VerifyDocumentForAccountant
-                    documentRegistration={documentRegistration}
-                    setDocumentRegistration={setDocumentRegistration}
-                    status={status}
-                  />
-                  {registrationFeedbacks &&
-                    registrationFeedbacks.length > 0 && (
-                      <FeedbackList feedbacks={registrationFeedbacks} />
+                    {/* View Document and Feedback for Accounant */}
+                    {user.user?.role === "ACCOUNTANT" && (
+                        <div className='space-y-5'>
+                            {status === "VERIFYING" && (
+                                <>
+                                    <VerifyDocumentForAccountant
+                                        documentRegistration={
+                                            documentRegistration
+                                        }
+                                        setDocumentRegistration={
+                                            setDocumentRegistration
+                                        }
+                                        status={status}
+                                    />
+                                    {registrationFeedbacks &&
+                                        registrationFeedbacks.length > 0 && (
+                                            <FeedbackList
+                                                feedbacks={
+                                                    registrationFeedbacks
+                                                }
+                                            />
+                                        )}
+                                    {registrationFeedbacks &&
+                                        registrationFeedbacks.length === 0 && (
+                                            <h4 className='mb-5 text-xl font-semibold'>
+                                                Feedback
+                                            </h4>
+                                        )}
+                                    <FeedBackFromAccountant
+                                        setFeedBackFromAccountant={
+                                            setFeedBackFromAccountant
+                                        }
+                                    />
+                                    <RegistrationButtonForAccountant
+                                        status={status!}
+                                        id={id}
+                                        feedBackFromAccountant={
+                                            feedBackFromAccountant
+                                        }
+                                        document={documentRegistration}
+                                    />
+                                </>
+                            )}
+                            {(status === "VERIFIED" ||
+                                status === "CLOSED" ||
+                                status === "DOCUMENT_DECLINED") && (
+                                <>
+                                    <VerifyDocumentForAccountant
+                                        documentRegistration={
+                                            documentRegistration
+                                        }
+                                        setDocumentRegistration={
+                                            setDocumentRegistration
+                                        }
+                                        status={status}
+                                    />
+                                    {registrationFeedbacks &&
+                                        registrationFeedbacks.length > 0 && (
+                                            <FeedbackList
+                                                feedbacks={
+                                                    registrationFeedbacks
+                                                }
+                                            />
+                                        )}
+                                </>
+                            )}
+                        </div>
                     )}
-                  {registrationFeedbacks &&
-                    registrationFeedbacks.length === 0 && (
-                      <h4 className="mb-5 text-xl font-semibold">Feedback</h4>
-                    )}
-                  <FeedBackFromAccountant
-                    setFeedBackFromAccountant={setFeedBackFromAccountant}
-                  />
-                  <RegistrationButtonForAccountant
-                    status={status!}
-                    id={id}
-                    feedBackFromAccountant={feedBackFromAccountant}
-                    document={documentRegistration}
-                  />
-                </>
-              )}
-              {(status === "VERIFIED" ||
-                status === "CLOSED" ||
-                status === "DOCUMENT_DECLINED") && (
-                <>
-                  <VerifyDocumentForAccountant
-                    documentRegistration={documentRegistration}
-                    setDocumentRegistration={setDocumentRegistration}
-                    status={status}
-                  />
-                  {registrationFeedbacks &&
-                    registrationFeedbacks.length > 0 && (
-                      <FeedbackList feedbacks={registrationFeedbacks} />
-                    )}
-                </>
-              )}
-            </div>
-          )}
-        </form>
-      </Form>
-      {user.user?.role === "ADMIN" && (
-        <div className="space-y-5">
-          <VerifyDocumentForAccountant
-            documentRegistration={documentRegistration}
-            setDocumentRegistration={setDocumentRegistration}
-            status={status}
-          />
+                </form>
+            </Form>
+            {user.user?.role === "ADMIN" && (
+                <div className='space-y-5'>
+                    <VerifyDocumentForAccountant
+                        documentRegistration={documentRegistration}
+                        setDocumentRegistration={setDocumentRegistration}
+                        status={status}
+                    />
 
-          {registrationFeedbacks && registrationFeedbacks?.length > 0 && (
-            <FeedbackList feedbacks={registrationFeedbacks!} />
-          )}
-          <RegistrationAdminSection status={status} />
+                    {registrationFeedbacks &&
+                        registrationFeedbacks?.length > 0 && (
+                            <FeedbackList feedbacks={registrationFeedbacks!} />
+                        )}
+                    <RegistrationAdminSection status={status} />
+                </div>
+            )}
         </div>
-      )}
-    </div>
-  );
+    );
 };

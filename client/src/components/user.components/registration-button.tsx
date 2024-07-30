@@ -41,6 +41,7 @@ type Props = {
   listIdDocumentRemove?: number[];
   blockEditCourseForm?:boolean,
   setBlockEditCourseForm: React.Dispatch<React.SetStateAction<boolean>>
+    setAsDraft: (asDraft: boolean) => void;
 };
 
 export const RegistrationButton = ({
@@ -56,6 +57,7 @@ export const RegistrationButton = ({
   duration,
   durationUnit,
   listIdDocumentRemove,
+                                       setAsDraft,
 }: Props) => {
   const { registration, closeRegistration } = useRegistrationDetail();
   const { close } = useRegistrationModal((state) => state);
@@ -257,6 +259,17 @@ export const RegistrationButton = ({
     }, [status]);
     return (
         <div className='flex justify-end gap-4'>
+            {(status === Status.NONE || status === Status.DRAFT) && (
+                <Button
+                    size='default'
+                    variant='gray'
+                    onClick={() => {
+                        setAsDraft(true);
+                    }}
+                >
+                    SAVE AS DRAFT
+                </Button>
+            )}
             {(status === Status.DRAFT || status === Status.DISCARDED) && (
                 <ModalConfirm
                     title='Delete this registration?'
@@ -342,7 +355,7 @@ export const RegistrationButton = ({
             {(status === Status.SUBMITTED || status === Status.DECLINED) && isEdit === false && (
                 <Button
                     size='default'
-                    variant='edit'
+                    variant='blue'
                     type='button'
                     onClick={onEdit}
                 >

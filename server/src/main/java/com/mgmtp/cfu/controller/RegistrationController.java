@@ -129,7 +129,6 @@ public class RegistrationController {
     @PostMapping("/draft")
     public void createRegistrationAsDraft(@ModelAttribute RegistrationRequest registrationRequest ) {
         registrationService.createRegistrationAsDraft(registrationRequest);
-
     }
 
     @PostMapping("{id}/verify")
@@ -150,7 +149,14 @@ public class RegistrationController {
     @PutMapping("/{id}/edit")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<?> editRegistration(@PathVariable Long id, @ModelAttribute RegistrationRequest registrationRequest) {
-        registrationService.editRegistration(id, registrationRequest);
+        registrationService.editRegistration(id, registrationRequest,false);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}/draft")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<?> updateDraftRegistration(@PathVariable Long id, @ModelAttribute RegistrationRequest registrationRequest) {
+        registrationService.editRegistration(id, registrationRequest,true);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

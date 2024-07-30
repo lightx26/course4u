@@ -1044,6 +1044,7 @@ class RegistrationServiceImplSpec extends Specification {
         RegistrationRequest registrationRequest = Mock()
         User user = new User(id: 1)
         Course course = new Course(id: 8)
+        def asDraft = false;
         def categories = [Mock(Category), Mock(Category)]
         Registration registration = Registration.builder()
                                                 .user(user)
@@ -1057,7 +1058,7 @@ class RegistrationServiceImplSpec extends Specification {
         categoryService.findOrCreateNewCategory(_) >> categories
 
         when:
-        registrationService.editRegistration(id, registrationRequest)
+        registrationService.editRegistration(id, registrationRequest,asDraft)
 
         then:
         1 * registrationRepository.save(_)
@@ -1070,6 +1071,7 @@ class RegistrationServiceImplSpec extends Specification {
         RegistrationRequest registrationRequest = Mock()
         def user = new User(id: 2)
         Course course = new Course(id: 8)
+        def asDraft = false
         Registration registration = Registration.builder()
                                                 .user(user)
                                                 .course(course)
@@ -1081,7 +1083,7 @@ class RegistrationServiceImplSpec extends Specification {
         courseRepository.findById(registration.getCourse().getId()) >> Optional.of(course)
 
         when:
-        registrationService.editRegistration(id, registrationRequest)
+        registrationService.editRegistration(id, registrationRequest,asDraft)
 
         then:
         thrown(IllegalArgumentException)
@@ -1093,6 +1095,7 @@ class RegistrationServiceImplSpec extends Specification {
         RegistrationRequest registrationRequest = Mock()
         def user = new User(id: 1)
         Course course = new Course(id: 8)
+        def asDraft = false
         Registration registration = Registration.builder()
                                                 .user(user)
                                                 .course(course)
@@ -1104,7 +1107,7 @@ class RegistrationServiceImplSpec extends Specification {
         courseRepository.findById(registration.getCourse().getId()) >> Optional.of(course)
 
         when:
-        registrationService.editRegistration(id, registrationRequest)
+        registrationService.editRegistration(id, registrationRequest,asDraft)
 
         then:
         thrown(IllegalArgumentException)

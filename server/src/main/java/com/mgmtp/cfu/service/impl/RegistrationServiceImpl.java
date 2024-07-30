@@ -551,13 +551,13 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     @Override
-    public void editRegistration(Long id, RegistrationRequest registrationRequest) {
+    public void editRegistration(Long id, RegistrationRequest registrationRequest, boolean asDraft) {
 
         Registration registration = registrationRepository.findById(id)
-                                                          .orElseThrow(() -> new RegistrationNotFoundException("Registration with id " + id + " not found!"));
+                .orElseThrow(() -> new RegistrationNotFoundException("Registration with id " + id + " not found!"));
 
         Course course = courseRepository.findById(registration.getCourse().getId())
-                                        .orElseThrow(() -> new CourseNotFoundException("Course with id " + id + " not found!"));
+                .orElseThrow(() -> new CourseNotFoundException("Course with id " + id + " not found!"));
 
         if (registration.getUser().getId().equals(getCurrentUser().getId())) {
             var status = registration.getStatus();
@@ -600,7 +600,8 @@ public class RegistrationServiceImpl implements RegistrationService {
                 registration.setDurationUnit(registrationRequest.getDurationUnit());
                 registration.setLastUpdated(LocalDateTime.now());
 
-                if (registration.getStatus() == RegistrationStatus.DRAFT || registration.getStatus() == RegistrationStatus.DECLINED)
+
+                if ((registration.getStatus() == RegistrationStatus.DRAFT || registration.getStatus() == RegistrationStatus.DECLINED) && !asDraft)
                     registration.setStatus(RegistrationStatus.SUBMITTED);
 
                 registrationRepository.save(registration);
@@ -610,10 +611,9 @@ public class RegistrationServiceImpl implements RegistrationService {
             throw new IllegalArgumentException("You are not owner of this Registration!");
     }
 
-
     @Override
     public void createRegistrationAsDraft(RegistrationRequest registrationRequest) {
-        log.info(String.valueOf(LocalDateTime.now()));
+        log.info(String.valueOf(ZonedDateTime.now()));
         var modelMapper=new ModelMapper();
         CourseRequest courseRequest = CourseRequest.builder()
                 .name(registrationRequest.getName()!=null?registrationRequest.getName():" ")
