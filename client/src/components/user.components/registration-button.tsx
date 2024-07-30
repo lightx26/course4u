@@ -6,7 +6,7 @@ import {
     removeRegistration,
     startLearning,
     submitDocument,
-    submitWithExistedCourse,
+    submitWithExistedCourse
 } from "../../apiService/Registration.service";
 import { useRegistrationDetail } from "../../hooks/use-registration-detail";
 import { useRegistrationModal } from "../../hooks/use-registration-modal";
@@ -34,8 +34,9 @@ type Props = {
     listFilePayment?: UploadFile[];
     isBlockedMofiedCourse?: boolean;
     duration: number,
-    durationUnit: string
+    durationUnit: string,
 };
+
 export const RegistrationButton = ({
     status = Status.NONE,
     setIsEdit,
@@ -47,6 +48,7 @@ export const RegistrationButton = ({
     duration,
     durationUnit,
 }: Props) => {
+
     const { registration, closeRegistration } = useRegistrationDetail();
     const { close } = useRegistrationModal((state) => state);
     const [isLoading, setIsLoading] = useState(false);
@@ -62,6 +64,7 @@ export const RegistrationButton = ({
         closeRegistration();
         setRegistrationFlagAdmin();
     };
+
     const onEdit = () => {
         setIsEdit(true);
     };
@@ -77,6 +80,7 @@ export const RegistrationButton = ({
         closeModal();
         setIsLoading(false);
     };
+
     const handleStartLearning = async () => {
         if (registration?.startDate) {
             window.open(registration?.course?.link);
@@ -204,6 +208,7 @@ export const RegistrationButton = ({
     }, [status]);
     return (
         <div className='flex justify-end gap-4'>
+
             {(status === Status.DRAFT || status === Status.DISCARDED) && (
                 <ModalConfirm
                     title='Delete this registration?'
@@ -222,20 +227,19 @@ export const RegistrationButton = ({
                     </Button>
                 </ModalConfirm>
             )}
-            {(status === Status.SUBMITTED ||
-                status === Status.DECLINED ||
-                status === Status.APPROVED) &&
-                !isEdit && (
-                    <Button
-                        size='lg'
-                        variant='outline'
-                        type='button'
-                        onClick={handleDiscard}
-                        disabled={isLoading}
-                    >
-                        DISCARD
-                    </Button>
-                )}
+
+            {(status === Status.SUBMITTED || status === Status.DECLINED || status === Status.APPROVED) && !isEdit && (
+                <Button
+                    size='lg'
+                    variant='outline'
+                    type='button'
+                    onClick={handleDiscard}
+                    disabled={isLoading}
+                >
+                    DISCARD
+                </Button>
+            )}
+
             {status === Status.APPROVED && !registration?.startDate && (
                 <ModalConfirm
                     handleConfirm={handleStartLearning}
@@ -252,6 +256,7 @@ export const RegistrationButton = ({
                     </Button>
                 </ModalConfirm>
             )}
+
             {status === Status.APPROVED && registration?.startDate && (
                 <Button
                     size='lg'
@@ -263,6 +268,7 @@ export const RegistrationButton = ({
                     START LEARNING
                 </Button>
             )}
+
             {status === Status.APPROVED && (
                 <ModalConfirm
                     handleConfirm={handleFinishLearning}
@@ -283,18 +289,19 @@ export const RegistrationButton = ({
                     </Button>
                 </ModalConfirm>
             )}
-            {(status === Status.SUBMITTED || status === Status.DECLINED) &&
-                isEdit === false && (
-                    <Button
-                        size='lg'
-                        variant='edit'
-                        type='button'
-                        onClick={onEdit}
-                    >
-                        EDIT
-                    </Button>
-                )}
-            {(status === Status.NONE || status === Status.DRAFT || isEdit) && (
+
+            {(status === Status.SUBMITTED || status === Status.DECLINED || status === Status.DRAFT) && isEdit === false && (
+                <Button
+                    size='lg'
+                    variant='edit'
+                    type='button'
+                    onClick={onEdit}
+                >
+                    EDIT
+                </Button>
+            )}
+
+            {((status === Status.NONE || status === Status.DRAFT) && isEdit) && (
                 isBlockedMofiedCourse
                     ?
                     <Button type='button' onClick={handleSubmitWithExistedCourse} size='lg' variant='success'>
@@ -302,11 +309,16 @@ export const RegistrationButton = ({
                     </Button>
                     :
                     <Button type='submit' size='lg' variant='success'>
-                        {status === Status.DRAFT || status === Status.NONE
-                            ? "SUBMIT"
-                            : "RE-SUBMIT"}
+                        SUBMIT
                     </Button>
             )}
+
+            {((status === Status.SUBMITTED || status === Status.DECLINED) && isEdit) && (
+                <Button type='submit' size='lg' variant='success'>
+                    RE-SUBMIT
+                </Button>
+            )}
+            
             {((!haveReview) && (status === Status.DONE || status === Status.VERIFIED || status === Status.VERIFYING || status === Status.DOCUMENT_DECLINED || status === Status.CLOSED)) && (
                 <SendReviewModal
                     title="Give your review"

@@ -12,6 +12,7 @@ import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewParams
 import com.mgmtp.cfu.exception.BadRequestRuntimeException
 import com.mgmtp.cfu.exception.ConflictRuntimeException
 import com.mgmtp.cfu.dto.MailContentUnit
+import com.mgmtp.cfu.enums.CourseLevel
 import com.mgmtp.cfu.enums.CoursePlatform
 import com.mgmtp.cfu.enums.CourseLevel
 import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO
@@ -45,6 +46,8 @@ import com.mgmtp.cfu.repository.CourseRepository
 import com.mgmtp.cfu.repository.NotificationRepository
 import com.mgmtp.cfu.repository.RegistrationFeedbackRepository
 import com.mgmtp.cfu.repository.RegistrationRepository
+import com.mgmtp.cfu.service.CategoryService
+import com.mgmtp.cfu.service.IEmailService
 import com.mgmtp.cfu.service.NotificationService;
 import com.mgmtp.cfu.service.RegistrationFeedbackService
 import com.mgmtp.cfu.service.IEmailService;
@@ -55,6 +58,11 @@ import com.mgmtp.cfu.service.IEmailService;
 import com.mgmtp.cfu.repository.UserRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Page
+import com.mgmtp.cfu.service.NotificationService
+import com.mgmtp.cfu.service.RegistrationFeedbackService
+import com.mgmtp.cfu.service.UploadService
+import org.modelmapper.ModelMapper
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import com.mgmtp.cfu.service.CourseService
@@ -71,28 +79,46 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-
 class RegistrationServiceImplSpec extends Specification {
 
     RegistrationRepository registrationRepository = Mock(RegistrationRepository)
+
     MapperFactory<Registration> registrationMapperFactory = Mock(MapperFactory)
+
     RegistrationOverviewMapper registrationOverviewMapper = Mock(RegistrationOverviewMapper)
+
     CourseRepository courseRepository = Mock(CourseRepository)
+
     NotificationService notificationService = Mock(NotificationService)
+
     RegistrationFeedbackService feedbackService = Mock(RegistrationFeedbackService)
+
     IEmailService emailService = Mock(IEmailService)
+
     UserRepository userRepository = Mock(UserRepository)
+
     def registrationDetailMapper = Mock(RegistrationDetailMapper)
+
     NotificationRepository notificationRepository = Mock();
+
     CourseService courseService = Mock()
+
     RegistrationFeedbackRepository registrationFeedbackRepository = Mock();
+
     def documentService = Mock(DocumentServiceImpl)
 
+    CategoryService categoryService = Mock()
+
+    UploadService uploadService = Mock()
+
     @Subject
-    RegistrationServiceImpl registrationService = new RegistrationServiceImpl(
-            registrationRepository, registrationMapperFactory, registrationOverviewMapper,
-            courseRepository, notificationRepository, registrationFeedbackRepository,
-            emailService, userRepository, notificationService, feedbackService, courseService, documentService)
+    RegistrationServiceImpl registrationService = new RegistrationServiceImpl(registrationRepository, registrationMapperFactory,
+                                                                              registrationOverviewMapper, courseRepository,
+                                                                              notificationRepository, registrationFeedbackRepository,
+                                                                              emailService, userRepository,
+                                                                              notificationService, feedbackService,
+                                                                              courseService, categoryService,
+                                                                              uploadService, documentService)
 
     def "return registration details successfully"() {
         given:
@@ -296,7 +322,6 @@ class RegistrationServiceImplSpec extends Specification {
         def e = thrown(BadRequestRuntimeException)
     }
 
-
     def "startLearningCourse: return false"() {
         given:
         registrationRepository.existsByIdAndUserId(_ as Long, _ as Long) >> true
@@ -353,6 +378,7 @@ class RegistrationServiceImplSpec extends Specification {
         result[0].id == 0
         result[1].id == 1
     }
+
     def "getRegistrations should return registration list in descending order when configurated"(){
         given:
         def status = "all"
@@ -622,8 +648,6 @@ class RegistrationServiceImplSpec extends Specification {
         response[0].userName == user.username
         response[1].courseName == course.name
     }
-
-
 
     def "should approve registration when status is submitted and no duplicate course exists"() {
         given:
@@ -1002,6 +1026,7 @@ class RegistrationServiceImplSpec extends Specification {
         1L | ["1": "APPROVED", "2": "APPROVED"]              | "DOCUMENT_DECLINED"          | RegistrationStatus.VERIFYING
 
     }
+
     def "createRegistrationFromExistingCourses should throw BadRequestRuntimeException when duration or durationUnit is null"() {
         given:
         Long courseId = 1L
@@ -1050,4 +1075,77 @@ class RegistrationServiceImplSpec extends Specification {
             assert registration.user != null
         }
     }
+
+    def "editRegistration updates Registration"() {
+        given:
+        Long id = 1
+        RegistrationRequest registrationRequest = Mock()
+        User user = new User(id: 1)
+        Course course = new Course(id: 8)
+        def categories = [Mock(Category), Mock(Category)]
+        Registration registration = Registration.builder()
+                                                .user(user)
+                                                .course(course)
+                                                .status(RegistrationStatus.DRAFT)
+                                                .build()
+
+        and:
+        registrationRepository.findById(id) >> Optional.of(registration)
+        courseRepository.findById(registration.getCourse().getId()) >> Optional.of(course)
+        categoryService.findOrCreateNewCategory(_) >> categories
+
+        when:
+        registrationService.editRegistration(id, registrationRequest)
+
+        then:
+        1 * registrationRepository.save(_)
+        1 * courseRepository.save(_)
+    }
+
+    def "editRegistration throws exception when user is not owner of Registration"() {
+        given:
+        Long id = 1
+        RegistrationRequest registrationRequest = Mock()
+        def user = new User(id: 2)
+        Course course = new Course(id: 8)
+        Registration registration = Registration.builder()
+                                                .user(user)
+                                                .course(course)
+                                                .status(RegistrationStatus.DRAFT)
+                                                .build()
+
+        and:
+        registrationRepository.findById(id) >> Optional.of(registration)
+        courseRepository.findById(registration.getCourse().getId()) >> Optional.of(course)
+
+        when:
+        registrationService.editRegistration(id, registrationRequest)
+
+        then:
+        thrown(IllegalArgumentException)
+    }
+
+    def "editRegistration throws exception when status is invalid"() {
+        given:
+        Long id = 1
+        RegistrationRequest registrationRequest = Mock()
+        def user = new User(id: 1)
+        Course course = new Course(id: 8)
+        Registration registration = Registration.builder()
+                                                .user(user)
+                                                .course(course)
+                                                .status(RegistrationStatus.DONE)
+                                                .build()
+
+        and:
+        registrationRepository.findById(id) >> Optional.of(registration)
+        courseRepository.findById(registration.getCourse().getId()) >> Optional.of(course)
+
+        when:
+        registrationService.editRegistration(id, registrationRequest)
+
+        then:
+        thrown(IllegalArgumentException)
+    }
+
 }

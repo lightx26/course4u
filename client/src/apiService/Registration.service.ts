@@ -170,6 +170,10 @@ export const submitWithExistedCourse = async ({ courseId, duration, durationUnit
     return response;
 }
 
+// export const resubmitRegistration = async ({ registrationId,  }: {}) => {
+
+// }
+
 type DocumentType = {
   id: number;
   registrationId: number;

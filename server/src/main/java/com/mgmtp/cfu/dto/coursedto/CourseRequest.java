@@ -15,14 +15,23 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class CourseRequest {
+
     private String name;
+
     private String link;
+
     private CoursePlatform platform;
+
     private MultipartFile thumbnailFile;
+
     private String thumbnailUrl;
+
     private String teacherName;
+
     private CourseStatus status;
+
     private CourseLevel level;
+
     private List<CategoryCourseRequestDTO> categories;
 
     @Getter
@@ -31,7 +40,6 @@ public class CourseRequest {
         private String label;
         private String value;
     }
-
 
     public void setName(String name) {
         this.name = name != null ? name.trim() : null;
@@ -44,4 +52,5 @@ public class CourseRequest {
     public void setTeacherName(String teacherName) {
         this.teacherName = teacherName != null ? teacherName.trim() : null;
     }
+
 }

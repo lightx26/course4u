@@ -42,10 +42,15 @@ import java.util.stream.Collectors;
 @Service
 @Log4j2
 public class CourseServiceImpl implements CourseService {
+
     private final CourseRepository courseRepository;
+
     private final MapperFactory<Course> courseMapperFactory;
+
     private final CategoryService categoryService;
+
     private final UploadService uploadService;
+
     @Value("${course4u.upload.thumbnail-directory}")
     private String uploadThumbnailDir;
 
@@ -172,12 +177,10 @@ public class CourseServiceImpl implements CourseService {
         }
     }
 
-
     private boolean isRemovableCourse(Long id) {
         var course = courseRepository.findById(id).orElseThrow();
         return course.getRegistrations().isEmpty();
     }
-
 
     @Override
     public List<CourseOverviewDTO> getRelatedCourses(Long courseId) {

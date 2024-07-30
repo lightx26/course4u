@@ -25,7 +25,7 @@ import { RegistrationsProps } from "../user.components/registrations";
 import { RegistrationButton } from "../user.components/registration-button";
 import { toast } from "sonner";
 import blobToFile from "../../utils/convertBlobToFile";
-import { createNewRegistration } from "../../apiService/MyRegistration.service";
+import { createNewRegistration, editRegistration } from "../../apiService/MyRegistration.service";
 import { base64ToBlob } from "../../utils/ThumbnailConverter";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
@@ -39,6 +39,8 @@ import VerifyDocumentForAccountant from "../accountant.components/VerifyDocument
 import { RegistrationButtonForAccountant } from "../admin.components/registrations.components/registration-button-accountant";
 import FeedBackFromAccountant from "../FeedBackFromAccountant";
 import { getListDocumentByRegistrationId } from "../../apiService/Document.service";
+import { Status } from "../../utils/index";
+import { useRefreshState } from "../../hooks/use-refresh-state";
 type DocumentType = {
   id: number;
   registrationId: number;
@@ -82,6 +84,7 @@ export const RegistrationsForm = ({
       thumbnailUrl: "",
     },
   });
+  const { setRegistrationFlagAdmin } = useRefreshState((state) => state)
   const { open } = useRegistrationModal((state) => state);
   const user = useSelector((state: RootState) => state.user);
   const [inputDuration, setInputDuration] = useState(1);
@@ -125,7 +128,7 @@ export const RegistrationsForm = ({
     requestBody.append("teacherName", values.teacherName);
     requestBody.append("link", values.link);
     requestBody.append("level", values.level);
-    requestBody.append("platform", values.platform);
+    requestBody.append("platform", values.platform.toUpperCase());
     values.categories.forEach((category, index) => {
       requestBody.append(`categories[${index}].label`, category.label!);
       requestBody.append(`categories[${index}].value`, category.value);
@@ -141,47 +144,80 @@ export const RegistrationsForm = ({
       requestBody.append("thumbnailUrl", values.thumbnailUrl);
     }
 
-    const status = await createNewRegistration(requestBody);
-    if (status === 201) {
-      toast.success("Create a new registration successfully", {
-        description: "",
-        style: {
-          color: "green",
-          fontWeight: "bold",
-          textAlign: "center",
-        },
-        onAutoClose: () => {
-          open(false);
-        },
-      });
-    } else if (status === 500) {
-      toast.error("Oops! Something went wrong. Please try again later", {
-        description: "Contact the admin for further assistance!",
-        style: {
-          color: "red",
-          fontWeight: "bold",
-          textAlign: "center",
-        },
-      });
-    } else if (status === 409) {
-      toast.error("Create a new registration unsuccessfully", {
-        description:
-          "Your course request already exists in the system. Please check again!",
-        style: {
-          color: "red",
-          fontWeight: "bold",
-          textAlign: "center",
-        },
-      });
+    if (isEdit && (status === Status.DRAFT || status === Status.DECLINED || status === Status.SUBMITTED)) {
+
+      const statusResponse = await editRegistration(id, requestBody);
+
+      if (status === Status.DRAFT && statusResponse === 201) {
+        setRegistrationFlagAdmin()
+        toast.success("Submit registration successfully", {
+          description: "",
+          style: {
+            color: "green",
+            fontWeight: "bold",
+            textAlign: "center",
+          },
+          onAutoClose: () => {
+            open(false);
+          }
+        });
+      } else {
+        setRegistrationFlagAdmin()
+        toast.success("Re-submit registration successfully", {
+          description: "",
+          style: {
+            color: "green",
+            fontWeight: "bold",
+            textAlign: "center",
+          },
+          onAutoClose: () => {
+            open(false);
+          }
+        });
+      }
     } else {
-      toast.error("Oops! Something went wrong. Please try again later", {
-        description: "Contact the admin for further assistance!",
-        style: {
-          color: "red",
-          fontWeight: "bold",
-          textAlign: "center",
-        },
+      const status = await createNewRegistration(requestBody);
+      if (status === 201) {
+        toast.success("Create a new registration successfully", {
+          description: "",
+          style: {
+            color: "green",
+            fontWeight: "bold",
+            textAlign: "center",
+          },
+          onAutoClose: () => {
+            open(false);
+          },
       });
+      } else if (status === 500) {
+        toast.error("Oops! Something went wrong. Please try again later", {
+          description: "Contact the admin for further assistance!",
+          style: {
+            color: "red",
+            fontWeight: "bold",
+            textAlign: "center",
+          },
+        });
+      } else if (status === 409) {
+        toast.error("Create a new registration unsuccessfully", {
+          description:
+            "Your course request already exists in the system. Please check again!",
+          style: {
+            color: "red",
+            fontWeight: "bold",
+            textAlign: "center",
+          },
+        });
+      } else {
+        toast.error("Oops! Something went wrong. Please try again later", {
+          description: "Contact the admin for further assistance!",
+          style: {
+            color: "red",
+            fontWeight: "bold",
+            textAlign: "center",
+          },
+        });
+      }
     }
   }
 

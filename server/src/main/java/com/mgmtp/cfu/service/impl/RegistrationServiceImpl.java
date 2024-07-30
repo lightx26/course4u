@@ -10,6 +10,7 @@ import com.mgmtp.cfu.dto.registrationdto.RegistrationEnrollDTO;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewParams;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO;
+import com.mgmtp.cfu.entity.Category;
 import com.mgmtp.cfu.entity.Course;
 import com.mgmtp.cfu.enums.*;
 import com.mgmtp.cfu.entity.RegistrationFeedback;
@@ -40,11 +41,9 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.List;
 
-
-
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
 
 import static com.mgmtp.cfu.util.AuthUtils.getCurrentUser;
 import static com.mgmtp.cfu.util.Constant.APPROVE_REGISTRATION_EMAIL_TEMPLATE;
@@ -54,18 +53,37 @@ import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getRegistrationOvervi
 @Service
 @Slf4j
 public class RegistrationServiceImpl implements RegistrationService {
+
     private final RegistrationRepository registrationRepository;
-    private final MapperFactory<Registration> registrationMapperFactory;
-    private final RegistrationOverviewMapper registrationOverviewMapper;
+
     private final CourseRepository courseRepository;
+
+    private final MapperFactory<Registration> registrationMapperFactory;
+
+    private final RegistrationOverviewMapper registrationOverviewMapper;
+
     private final NotificationService notificationService;
+
     private final RegistrationFeedbackService feedbackService;
+
     private final IEmailService emailService;
+
     private final CourseService courseService;
+
     private final UserRepository userRepository;
+
     private final NotificationRepository notificationRepository;
+
     private final RegistrationFeedbackRepository registrationFeedbackRepository;
+
     private final DocumentServiceImpl documentService;
+
+    private final CategoryService categoryService;
+
+    private final UploadService uploadService;
+
+    @Value("${course4u.upload.thumbnail-directory}")
+    private String uploadThumbnailDir;
 
     @Autowired
     public RegistrationServiceImpl(RegistrationRepository registrationRepository,
@@ -74,10 +92,14 @@ public class RegistrationServiceImpl implements RegistrationService {
                                    CourseRepository courseRepository,
                                    NotificationRepository notificationRepository,
                                    RegistrationFeedbackRepository registrationFeedbackRepository,
-                                   IEmailService emailService, UserRepository userRepository,
+                                   IEmailService emailService,
+                                   UserRepository userRepository,
                                    NotificationService notificationService,
                                    RegistrationFeedbackService feedbackService,
-                                   CourseService courseService, DocumentServiceImpl documentService) {
+                                   CourseService courseService,
+                                   CategoryService categoryService,
+                                   UploadService uploadService,
+                                   DocumentServiceImpl documentService) {
         this.registrationRepository = registrationRepository;
         this.registrationMapperFactory = registrationMapperFactory;
         this.registrationOverviewMapper = registrationOverviewMapper;
@@ -90,6 +112,8 @@ public class RegistrationServiceImpl implements RegistrationService {
         this.notificationRepository = notificationRepository;
         this.registrationFeedbackRepository=registrationFeedbackRepository;
         this.documentService = documentService;
+        this.categoryService = categoryService;
+        this.uploadService = uploadService;
     }
 
     @Value("${course4u.vite.frontend.url}")
@@ -200,25 +224,30 @@ public class RegistrationServiceImpl implements RegistrationService {
     public Boolean createRegistration(RegistrationRequest registrationRequest) {
         // Create course if needed
         var modelMapper = new ModelMapper();
-        CourseRequest courseRequest = CourseRequest.builder().name(registrationRequest.getName())
-                .link(registrationRequest.getLink())
-                .platform(registrationRequest.getPlatform())
-                .thumbnailFile(registrationRequest.getThumbnailFile())
-                .thumbnailUrl(registrationRequest.getThumbnailUrl())
-                .teacherName(registrationRequest.getTeacherName())
-                .categories(registrationRequest.getCategories())
-                .level(registrationRequest.getLevel())
-                .build();
+
+        CourseRequest courseRequest = CourseRequest.builder()
+                                                   .name(registrationRequest.getName())
+                                                   .link(registrationRequest.getLink())
+                                                   .platform(registrationRequest.getPlatform())
+                                                   .thumbnailFile(registrationRequest.getThumbnailFile())
+                                                   .thumbnailUrl(registrationRequest.getThumbnailUrl())
+                                                   .teacherName(registrationRequest.getTeacherName())
+                                                   .categories(registrationRequest.getCategories())
+                                                   .level(registrationRequest.getLevel())
+                                                   .build();
+
         CourseResponse course = courseService.createCourse(courseRequest);
+
         Registration registration = Registration.builder()
-                .course(modelMapper.map(course, Course.class))
-                .status(RegistrationStatus.SUBMITTED)
-                .registerDate(LocalDate.now())
-                .duration(registrationRequest.getDuration())
-                .durationUnit(registrationRequest.getDurationUnit())
-                .lastUpdated(LocalDateTime.now())
-                .user(getCurrentUser())
-                .build();
+                                                .course(modelMapper.map(course, Course.class))
+                                                .status(RegistrationStatus.SUBMITTED)
+                                                .registerDate(LocalDate.now())
+                                                .duration(registrationRequest.getDuration())
+                                                .durationUnit(registrationRequest.getDurationUnit())
+                                                .lastUpdated(LocalDateTime.now())
+                                                .user(getCurrentUser())
+                                                .build();
+
         registrationRepository.save(registration);
         return true;
     }
@@ -334,7 +363,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Override
     public void deleteRegistration(Long id) {
         var registration = registrationRepository.findById(id)
-                .orElseThrow(() -> new BadRequestRuntimeException("Registration not found"));
+                                                 .orElseThrow(() -> new BadRequestRuntimeException("Registration not found"));
 
         if (!Objects.equals(getCurrentUser().getId(), registration.getUser().getId())) {
             throw new ForbiddenException("You do not have permission to delete this registration.");
@@ -380,8 +409,6 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
         return false;
     }
-
-
 
     @Override
     @Transactional(rollbackOn = Exception.class)
@@ -535,4 +562,56 @@ public class RegistrationServiceImpl implements RegistrationService {
                 .build();
         registrationRepository.save(registration);
     }
+
+    @Override
+    public void editRegistration(Long id, RegistrationRequest registrationRequest) {
+
+        Registration registration = registrationRepository.findById(id)
+                                                          .orElseThrow(() -> new RegistrationNotFoundException("Registration with id " + id + " not found!"));
+
+        Course course = courseRepository.findById(registration.getCourse().getId())
+                                        .orElseThrow(() -> new CourseNotFoundException("Course with id " + id + " not found!"));
+
+        if (registration.getUser().getId().equals(getCurrentUser().getId())) {
+            var status = registration.getStatus();
+
+            if (status.equals(RegistrationStatus.DRAFT) || status.equals(RegistrationStatus.SUBMITTED) || status.equals(RegistrationStatus.DECLINED)) {
+
+                List<Category> categories = categoryService.findOrCreateNewCategory(registrationRequest.getCategories());
+                course.setCategories(new HashSet<>(categories));
+
+                String thumbnailUrl;
+                try {
+                    if (registrationRequest.getThumbnailFile() != null && !registrationRequest.getThumbnailFile().isEmpty()) {
+                        thumbnailUrl = uploadService.uploadThumbnail(registrationRequest.getThumbnailFile(), uploadThumbnailDir);
+                        course.setThumbnailUrl(thumbnailUrl);
+                    } else
+                        course.setThumbnailUrl(registrationRequest.getThumbnailUrl());
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to upload thumbnail", e);
+                }
+
+                course.setLink(registrationRequest.getLink());
+                course.setName(registrationRequest.getName());
+                course.setTeacherName(registrationRequest.getTeacherName());
+                course.setPlatform(registrationRequest.getPlatform());
+                course.setLevel(registrationRequest.getLevel());
+
+                courseRepository.save(course);
+
+                registration.setCourse(course);
+                registration.setDuration(registrationRequest.getDuration());
+                registration.setDurationUnit(registrationRequest.getDurationUnit());
+                registration.setLastUpdated(LocalDateTime.now());
+
+                if (registration.getStatus() == RegistrationStatus.DRAFT || registration.getStatus() == RegistrationStatus.DECLINED)
+                    registration.setStatus(RegistrationStatus.SUBMITTED);
+
+                registrationRepository.save(registration);
+            } else
+                throw new IllegalArgumentException("Status of Registration is invalid!");
+        } else
+            throw new IllegalArgumentException("You are not owner of this Registration!");
+    }
+
 }

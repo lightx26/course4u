@@ -7,8 +7,6 @@ import com.mgmtp.cfu.dto.coursedto.CourseRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.MalformedURLException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -17,16 +15,27 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class RegistrationRequest {
+
     private String name;
+
     private String link;
+
     private CoursePlatform platform;
+
     private MultipartFile thumbnailFile;
+
     private String thumbnailUrl;
+
     private String teacherName;
+
     private List<CourseRequest.CategoryCourseRequestDTO> categories;
+
     private CourseLevel level;
+
     private Integer duration;
+
     private DurationUnit durationUnit;
+
     public void setName(String name) {
         this.name = name != null ? name.trim() : null;
     }

@@ -1,9 +1,7 @@
 package com.mgmtp.cfu.controller;
 
 import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest;
-import com.mgmtp.cfu.enums.DocumentStatus;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationEnrollDTO;
-import com.mgmtp.cfu.exception.BadRequestRuntimeException;
 import com.mgmtp.cfu.exception.UnknownErrorException;
 import com.mgmtp.cfu.exception.DuplicateCourseException;
 import com.mgmtp.cfu.service.RegistrationService;
@@ -22,7 +20,6 @@ import com.mgmtp.cfu.entity.Registration;
 import org.springframework.http.HttpStatus;
 
 import java.util.Map;
-
 import static com.mgmtp.cfu.util.RequestValidator.validateId;
 
 @RequiredArgsConstructor
@@ -58,6 +55,7 @@ public class RegistrationController {
             page = 1;
         return ResponseEntity.ok(registrationService.getMyRegistrationPage(page, status));
     }
+
     @PostMapping("/start-learning/{id}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public void startLearningCourse(@PathVariable("id") Long registrationId){
@@ -75,7 +73,7 @@ public class RegistrationController {
 
     @PostMapping("/{id}/decline")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> declineRegistration(@PathVariable Long id,@RequestBody FeedbackRequest feedbackRequest) {
+    public ResponseEntity<?> declineRegistration(@PathVariable Long id, @RequestBody FeedbackRequest feedbackRequest) {
         registrationService.declineRegistration(id,feedbackRequest);
         return ResponseEntity.ok().build();
     }
@@ -106,18 +104,26 @@ public class RegistrationController {
         registrationService.discardRegistration(id);
         return ResponseEntity.ok().build();
     }
+    
     @PostMapping("{id}/verify")
     @PreAuthorize("hasRole('ROLE_ACCOUNTANT')")
     public void verifyDeclineRegistration(@PathVariable Long id, @RequestBody Map<String, String> longDocumentStatusMap, @RequestParam(name = "status") String status) {
         validateId(id,"registration id");
         registrationService.verifyRegistration(id,longDocumentStatusMap, status);
-
     }
+
     @PostMapping("/{courseId}/enroll")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<?> createRegistrationFromExistingCourses(@PathVariable Long courseId, @RequestBody RegistrationEnrollDTO registrationEnrollDTO) {
         registrationService.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}/edit")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<?> editRegistration(@PathVariable Long id, @ModelAttribute RegistrationRequest registrationRequest) {
+        registrationService.editRegistration(id, registrationRequest);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 }

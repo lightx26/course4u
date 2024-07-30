@@ -35,13 +35,17 @@ public class Course {
     @Column(name = "`Platform`")
     @Enumerated(EnumType.STRING)
     private CoursePlatform platform;
+
     @Column(name = "`Level`")
     @Enumerated(EnumType.STRING)
     private CourseLevel level;
+
     @Column(name = "`ThumbnailUrl`")
     private String thumbnailUrl;
+
     @Column(name = "`TeacherName`")
     private String teacherName;
+
     @Column(name = "`CreatedDate`")
     private LocalDate createdDate;
 
@@ -50,12 +54,11 @@ public class Course {
     private CourseStatus status;
 
     @ManyToMany
-    @JoinTable(
-            name = "`Category_Course`",
-            joinColumns = @JoinColumn(name = "`CourseId`"),
-            inverseJoinColumns = @JoinColumn(name = "`CategoryId`")
-    )
+    @JoinTable(name = "`Category_Course`",
+               joinColumns = @JoinColumn(name = "`CourseId`"),
+               inverseJoinColumns = @JoinColumn(name = "`CategoryId`"))
     private Set<Category> categories;
+
     @OneToMany(mappedBy = "course",cascade = CascadeType.ALL)
     @JsonManagedReference
     private Set<Registration> registrations;
@@ -63,4 +66,5 @@ public class Course {
     @OneToMany(mappedBy = "course",cascade = CascadeType.ALL)
     @JsonManagedReference
     private Set<CourseReview> courseReviews;
+
 }

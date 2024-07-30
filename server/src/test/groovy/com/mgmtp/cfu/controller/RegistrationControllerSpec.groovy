@@ -1,5 +1,6 @@
 package com.mgmtp.cfu.controller
 
+import com.mgmtp.cfu.dto.RegistrationRequest
 import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest
 import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO
 import com.mgmtp.cfu.dto.registrationdto.RegistrationEnrollDTO
@@ -48,7 +49,7 @@ class RegistrationControllerSpec extends Specification {
         given:
         registrationService.getMyRegistrationPage(_ as int, _ as String)>>List.of()
         when:
-        def response=registrationController.getListOfMyRegistration(page,status);
+        def response=registrationController.getListOfMyRegistration(page,status)
         then:
         response.statusCode.value()==200
         where:
@@ -160,6 +161,7 @@ class RegistrationControllerSpec extends Specification {
             def ex = thrown(RegistrationNotFoundException)
             ex.message == "Registration not found"
     }
+
     def "createRegistrationFromExistingCourses should return 200 OK when inputs are valid"() {
         given:
         Long courseId = 1L
@@ -198,6 +200,7 @@ class RegistrationControllerSpec extends Specification {
         then:
         thrown(CourseNotFoundException)
     }
+
     def "verifyDeclineRegistration should call registrationService with correct parameters"() {
         given:
         Long id = 1L
@@ -209,6 +212,18 @@ class RegistrationControllerSpec extends Specification {
 
         then:
         1*registrationService.verifyRegistration(id, longDocumentStatusMap, status)
+    }
+
+    def "editRegistration updates Registration"() {
+        given:
+        def id = 1
+        def registrationRequest = Mock(RegistrationRequest)
+
+        when:
+        def result = registrationController.editRegistration(id, registrationRequest)
+
+        then:
+        result.statusCode == HttpStatus.CREATED
     }
 
 }
