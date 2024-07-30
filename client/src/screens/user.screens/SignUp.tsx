@@ -11,6 +11,7 @@ import "../../assets/css/login.css";
 import { useAppDispatch } from "../../redux/store/hook";
 import { DatePicker, Input } from "antd";
 import type { DatePickerProps } from "antd";
+import PasswordInput from "../../components/user.components/personal/InputPassword";
 interface ISignUpRequest {
   username: string;
   password: string;
@@ -56,7 +57,6 @@ const SignUp: React.FC = () => {
     // Regular expression to match Vietnamese characters with accents
     const vietnameseRegex =
       /[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ]/;
-
     return vietnameseRegex.test(str);
   }
 
@@ -119,7 +119,7 @@ const SignUp: React.FC = () => {
     const minLength = /^.{8,}$/;
     const hasUpperCase = /[A-Z]/;
     const hasNumber = /\d/;
-    const hasSpecialChar = /[`~!@#$%^&*()\-_=+{};:'"\\|,.<>\/?]+/;
+    const hasSpecialChar = /[`~!@#$%^&*()\-_=+{};:'"\\|,.<>/?]+/;
 
     const errors = [];
 
@@ -267,12 +267,12 @@ const SignUp: React.FC = () => {
     setFormData({ ...formData, dateOfBirth: dateString.toString() });
   };
   return (
-    <div className="w-full h-screen flex">
-      <div className="w-1/2 relative">
+    <div className="flex w-full h-screen select-none">
+      <div className="relative w-1/2">
         <img
           src={logo}
           alt=""
-          className="w-full h-full absolute left-0 right-0 object-cover object-center"
+          className="absolute left-0 right-0 object-cover object-center w-full h-full"
         />
         <div className="absolute top-1/4 left-8">
           <div className="bg-white w-[120px] h-[120px] rounded-full flex justify-center items-center">
@@ -280,20 +280,20 @@ const SignUp: React.FC = () => {
               <img
                 src={logo_c4u}
                 alt=""
-                className="absolute left-0 top-0 object-cover object-center w-full h-full"
+                className="absolute top-0 left-0 object-cover object-center w-full h-full"
               />
             </div>
           </div>
-          <div className="text-white font-semibold text-4xl my-1">Course4U</div>
-          <div className="text-white font-normal text-2xl">
+          <div className="my-1 text-4xl font-semibold text-white">Course4U</div>
+          <div className="text-2xl font-normal text-white">
             Wishing you success on your path to learning
             <br />
             and self-improvement!
           </div>
         </div>
       </div>
-      <div className=" w-1/2 flex justify-center items-center direction-column ">
-        <form action="" className="w-3/4 flex flex-col p-5 gap-4">
+      <div className="flex items-center justify-center w-1/2 direction-column">
+        <form action="" className="flex flex-col w-3/4 gap-4 p-5">
           <div className="flex flex-col gap-1">
             <label
               htmlFor="username"
@@ -305,9 +305,8 @@ const SignUp: React.FC = () => {
               type="text"
               id="username"
               name="username"
-              className={`border h-10 pl-3 rounded-lg text-sm font-normal outline-none ${
-                errors.username ? "border-red-500" : "border-gray-300"
-              }`}
+              className={`border h-10 pl-3 rounded-lg text-sm font-normal outline-none ${errors.username ? "border-red-500" : "border-gray-300"
+                }`}
               placeholder="Enter your username here"
               value={formData.username}
               onChange={handleChange}
@@ -316,7 +315,7 @@ const SignUp: React.FC = () => {
               pattern="[a-z0-9]+"
             />
             {errors.username && (
-              <div className="text-red-500 text-sm">{errors.username}</div>
+              <div className="text-sm text-red-500">{errors.username}</div>
             )}
           </div>
           <div className="flex flex-col gap-1">
@@ -330,56 +329,32 @@ const SignUp: React.FC = () => {
               type="email"
               id="email"
               name="email"
-              className={`border h-10 pl-3 rounded-lg text-sm font-normal outline-none ${
-                errors.email ? "border-red-500" : "border-gray-300"
-              }`}
+              className={`border h-10 pl-3 rounded-lg text-sm font-normal outline-none ${errors.email ? "border-red-500" : "border-gray-300"
+                }`}
               placeholder="Enter your email here"
               // required
               value={formData.email}
               onChange={handleChange}
             />
             {errors.email && (
-              <div className="text-red-500 text-sm">{errors.email}</div>
+              <div className="text-sm text-red-500">{errors.email}</div>
             )}
           </div>
           <div className="flex flex-col gap-1">
-            <div className="flex justify-between items-center gap-5">
-              <div className="flex flex-col gap-1 w-1/2">
+            <div className="flex items-center justify-between gap-5">
+              <div className="flex flex-col w-1/2 gap-1">
                 <label
                   htmlFor="password"
                   className="text-sm font-normal text-gray-600"
                 >
                   Your password<span className="text-red-500">*</span>
                 </label>
-
-                {/* <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  className="border border-gray-300 h-10 pl-3 rounded-lg text-sm font-normal outline-none"
-                  placeholder="Your password"
-                  title="
-                  Password requirements: must be at least 8 characters long and include 
-at least one uppercase letter, one special character, and one number."
-                  value={formData.password}
-                  onChange={(e) =>
+                <PasswordInput title="Password requirements: must be at least 8 characters long and include 
+at least one uppercase letter, one special character, and one number." name="password" onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
-                  }
-                /> */}
-                <Input.Password
-                  id="password"
-                  name="password"
-                  placeholder="Your password"
-                  value={formData.password}
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
-                  className="h-10 pl-3 text-sm font-normal"
-                  title="Password requirements: must be at least 8 characters long and include 
-at least one uppercase letter, one special character, and one number."
-                />
+                  } placeholder="Enter your password" value={formData.password} className="h-10 pl-3 overflow-hidden text-sm font-normal select-none pr-11" />
               </div>
-              <div className="flex flex-col gap-1 w-1/2">
+              <div className="flex flex-col w-1/2 gap-1">
                 <label
                   htmlFor="confirm_password"
                   className="text-sm font-normal text-gray-600"
@@ -387,21 +362,7 @@ at least one uppercase letter, one special character, and one number."
                   Confirm password<span className="text-red-500">*</span>
                 </label>
 
-                {/* <input
-                  type="password"
-                  id="confirm_password"
-                  name="confirm_password"
-                  className="border border-gray-300 h-10 pl-3 rounded-lg text-sm font-normal outline-none"
-                  placeholder="Confirm your password"
-                  value={formData.confirmPassword}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      confirmPassword: e.target.value,
-                    })
-                  }
-                /> */}
-                <Input.Password
+                <PasswordInput
                   id="confirm_password"
                   name="confirm_password"
                   placeholder="Confirm your password"
@@ -412,12 +373,12 @@ at least one uppercase letter, one special character, and one number."
                       confirmPassword: e.target.value,
                     })
                   }
-                  className="h-10 pl-3 text-sm font-normal"
+                  className="h-10 pl-3 overflow-hidden text-sm font-normal select-none pr-11"
                 />
               </div>
             </div>
             {errors.password && (
-              <div className="text-red-500 text-sm">{errors.password}</div>
+              <div className="text-sm text-red-500">{errors.password}</div>
             )}
           </div>
 
@@ -432,7 +393,7 @@ at least one uppercase letter, one special character, and one number."
               type="text"
               id="fullname"
               name="fullname"
-              className="border border-gray-300 h-10 pl-3 rounded-lg text-sm font-normal outline-none"
+              className="h-10 pl-3 text-sm font-normal border border-gray-300 rounded-lg outline-none"
               placeholder="Enter your fullname here"
               value={formData.fullname}
               onChange={(e) =>
@@ -440,12 +401,12 @@ at least one uppercase letter, one special character, and one number."
               }
             />
             {errors.fullname && (
-              <div className="text-red-500 text-sm">{errors.fullname}</div>
+              <div className="text-sm text-red-500">{errors.fullname}</div>
             )}
           </div>
           <div className="flex flex-col gap-1">
-            <div className="flex justify-between items-center gap-5">
-              <div className="flex flex-col gap-1 w-1/2">
+            <div className="flex items-center justify-between gap-5">
+              <div className="flex flex-col w-1/2 gap-1">
                 <label
                   htmlFor="dateofbirth"
                   className="text-sm font-normal text-gray-600"
@@ -457,11 +418,11 @@ at least one uppercase letter, one special character, and one number."
                   format="MM/DD/YYYY"
                   placeholder="mm/dd/yyyy"
                   inputReadOnly={true}
-                  className="border border-gray-300 h-10 pl-3 pr-4 rounded-lg text-sm font-normal outline-none"
+                  className="h-10 pl-3 pr-4 text-sm font-normal border border-gray-300 rounded-lg outline-none"
                   onChange={handleChangeDateOfBirth}
                 />
               </div>
-              <div className="flex flex-col gap-1 w-1/2">
+              <div className="flex flex-col w-1/2 gap-1">
                 <label
                   htmlFor="gender"
                   className="text-sm font-normal text-gray-600"
@@ -471,7 +432,7 @@ at least one uppercase letter, one special character, and one number."
                 <select
                   name="gender"
                   id="gender"
-                  className="border border-gray-300 h-10 pl-3 pr-4 rounded-lg text-sm font-normal outline-none"
+                  className="h-10 pl-3 pr-4 text-sm font-normal border border-gray-300 rounded-lg outline-none"
                   onChange={(e) => {
                     setStatusChangeGender(true);
                     setFormData({ ...formData, gender: e.target.value });
@@ -493,14 +454,14 @@ at least one uppercase letter, one special character, and one number."
             </div>
 
             {errors.dateOfBirth && (
-              <div className="text-red-500 text-sm">{errors.dateOfBirth}</div>
+              <div className="text-sm text-red-500">{errors.dateOfBirth}</div>
             )}
           </div>
 
           {statusRegister === "pending" ? (
             <div>
               <button
-                className="border border-gray-300 w-full h-12 text-white bg-black rounded-2xl"
+                className="w-full h-12 text-white bg-black border border-gray-300 rounded-2xl"
                 type="submit"
                 onClick={(e) => handleSubmitForm(e)}
                 style={{
@@ -526,7 +487,7 @@ at least one uppercase letter, one special character, and one number."
           ) : (
             <div>
               <button
-                className="border border-gray-300 w-full h-12 text-white bg-black rounded-2xl"
+                className="w-full h-12 text-white bg-black border border-gray-300 rounded-2xl"
                 type="submit"
                 onClick={(e) => handleSubmitForm(e)}
               >

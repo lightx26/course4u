@@ -60,7 +60,7 @@ export default function ChangePassword() {
     return (
         <div className="flex items-center h-[500px] w-[500px] justify-center p-[20px] bg-white shadow-sm rounded-3xl grow">
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col items-end justify-between w-full h-full">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col items-end justify-between w-full h-full select-none">
                     <h3 className="w-full text-xl font-semibold text-left">Change password</h3>
                     {/* Visually Hidden Username Field */}
                     <div className="w-full">
@@ -71,7 +71,7 @@ export default function ChangePassword() {
                                 <FormItem>
                                     <FormLabel>Old password</FormLabel>
                                     <FormControl>
-                                        <PasswordInput className="w-full" placeholder="Enter your old password" {...field}
+                                        <PasswordInput placeholder="Enter your old password" {...field}
                                             name='old-password'
                                         />
                                     </FormControl>

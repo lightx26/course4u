@@ -92,13 +92,13 @@ const Login: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-full h-screen flex">
+    <div className="flex w-full h-screen">
       <div
-        className=" w-1/2 flex justify-center items-center "
+        className="flex items-center justify-center w-1/2 "
         style={{ flexDirection: "column" }}
       >
         <form
-          className="w-3/4 flex flex-col p-5 gap-4"
+          className="flex flex-col w-3/4 gap-4 p-5"
           onSubmit={handleFormSubmit}
         >
           {statusLogin == "failed" && (
@@ -145,15 +145,15 @@ const Login: React.FC = () => {
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="border border-gray-300 h-12 pl-3 rounded-lg text-sm font-normal outline-none"
+              className="h-12 pl-3 text-sm font-normal border border-gray-300 rounded-lg outline-none"
               placeholder="Enter your username here"
             />
             {errors.username && (
-              <span className="text-red-500 text-sm">{errors.username}</span>
+              <span className="text-sm text-red-500">{errors.username}</span>
             )}
           </div>
           <div className="flex flex-col gap-1">
-            <div className="flex justify-between items-center">
+            <div className="flex items-center justify-between">
               <label
                 htmlFor="pwd"
                 className="text-base font-normal text-gray-600"
@@ -162,7 +162,7 @@ const Login: React.FC = () => {
               </label>
               {showPassword && (
                 <div
-                  className="flex justify-center items-center cursor-pointer"
+                  className="flex items-center justify-center cursor-pointer"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   <svg
@@ -189,7 +189,7 @@ const Login: React.FC = () => {
               )}
               {!showPassword && (
                 <div
-                  className="flex justify-center items-center cursor-pointer"
+                  className="flex items-center justify-center cursor-pointer"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   <svg
@@ -216,27 +216,17 @@ const Login: React.FC = () => {
               id="pwd"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="border border-gray-300 h-12 pl-3 rounded-lg text-sm font-normal outline-none"
+              className="h-12 pl-3 text-sm font-normal border border-gray-300 rounded-lg outline-none"
               placeholder="Enter your password here"
             />
             {errors.password && (
-              <span className="text-red-500 text-sm">{errors.password}</span>
+              <span className="text-sm text-red-500">{errors.password}</span>
             )}
-          </div>
-          <div className="flex justify-end items-center">
-            <div>
-              <a
-                href=""
-                className="text-base text-black underline hover:text-purple"
-              >
-                Forgot password
-              </a>
-            </div>
           </div>
           {(statusLogin == "idle" || statusLogin == "failed") && (
             <div>
               <button
-                className="border border-gray-300 w-full h-12 text-white bg-btnLoginHover rounded-lg "
+                className="w-full h-12 text-white border border-gray-300 rounded-lg bg-btnLoginHover"
                 type="submit"
               >
                 Sign in
@@ -246,7 +236,7 @@ const Login: React.FC = () => {
           {statusLogin == "loading" && (
             <div>
               <button
-                className="border border-gray-300 w-full h-12 text-white bg-btnLoginHover rounded-lg "
+                className="w-full h-12 text-white border border-gray-300 rounded-lg bg-btnLoginHover "
                 type="submit"
                 style={{
                   display: "flex",
@@ -283,11 +273,11 @@ const Login: React.FC = () => {
         </form>
       </div>
 
-      <div className="w-1/2 relative">
+      <div className="relative w-1/2">
         <img
           src={logo}
           alt=""
-          className="w-full h-full absolute left-0 right-0 object-cover object-center"
+          className="absolute left-0 right-0 object-cover object-center w-full h-full"
         />
         <div className="absolute top-1/4 left-8">
           <div
@@ -305,12 +295,12 @@ const Login: React.FC = () => {
               <img
                 src={logo_c4u}
                 alt=""
-                className="absolute left-0 top-0 object-cover object-center w-full h-full"
+                className="absolute top-0 left-0 object-cover object-center w-full h-full"
               />
             </div>
           </div>
-          <div className="text-white font-semibold text-4xl my-1">Course4U</div>
-          <div className="text-white font-normal text-2xl">
+          <div className="my-1 text-4xl font-semibold text-white">Course4U</div>
+          <div className="text-2xl font-normal text-white">
             Learn Efficiently - Earn Your Rewards
           </div>
         </div>

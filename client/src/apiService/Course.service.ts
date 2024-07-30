@@ -25,7 +25,6 @@ async function fetchListAvailableCourse(Searcher: SearchParams) {
         ratingFilters: Searcher.rating ?? [],
       },
     };
-    console.log(request_params);
     const response = await instance.post(`/courses/search`, request_params);
     return response;
   } catch (error) {

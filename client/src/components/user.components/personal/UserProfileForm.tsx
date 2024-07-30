@@ -22,8 +22,8 @@ import { toast } from "sonner"
 import blobToFile, { _blobToFile, base64ToBlob } from "../../../utils/convertBlobToFile.ts"
 
 type Avatar = {
-    imageUrl: string | undefined;
-    croppedImageUrl: string | undefined;
+    imageUrl: string | null | undefined;
+    croppedImageUrl: string | null | undefined;
     crop?: { x: number; y: number };
     zoom?: number;
     aspect?: { value: number; text: string };
@@ -49,7 +49,6 @@ export default function UserProfileForm() {
             gender: ""
         },
     })
-
 
     useEffect(() => {
         form.setValue("fullName", userInfor.fullName ?? "")
@@ -100,8 +99,8 @@ export default function UserProfileForm() {
         setIsEditing(!isEditing);
     }
 
-    const onDrop = useCallback((acceptedFiles: FileList, rejectedFiles: FileList) => {
-        if (rejectedFiles.length > 0) {
+    const onDrop = useCallback((acceptedFiles: File[]) => {
+        if (acceptedFiles.length === 0) {
             toast.error("File size exceeds 3MB", {
                 description: "please select a smaller file & must be jpeg, jpg, png."
             });
@@ -114,27 +113,29 @@ export default function UserProfileForm() {
             };
             file.readAsDataURL(acceptedFiles[0]);
         }
-    }, []);
+    }, [avatar]);
 
-    //eslint-disable-next-line
-    //@ts-expect-error
-    const setCroppedImageFor = (crop, zoom, aspect, croppedImageUrl) => {
+    const setCroppedImageFor = (
+        crop: { x: number; y: number },
+        zoom: number,
+        aspect: { value: number; text: string },
+        croppedImageUrl: string
+    ) => {
         const newAvatar = {
             ...avatar,
             crop,
             zoom,
             aspect,
             croppedImageUrl,
+            isOval: true,
         };
         setAvatar(newAvatar);
         form!.setValue("avatarUrl", croppedImageUrl);
         setIsOpen(false);
     };
-    //eslint-disable-next-line
-    //@ts-ignore
-    const { acceptedFiles, getRootProps, getInputProps, isDragActive } =
+
+    const { getRootProps, getInputProps, isDragActive } =
         useDropzone({
-            //@ts-expect-error
             onDrop,
             accept: {
                 "image/jpeg": [".jpg", ".jpeg"],
@@ -150,7 +151,7 @@ export default function UserProfileForm() {
 
 
     return (
-        <div className="flex items-center h-[500px] justify-center p-2 bg-white shadow-sm rounded-3xl w-[500px] grow">
+        <div className="flex items-center h-[500px] justify-center p-2 bg-white shadow-sm rounded-3xl w-[500px] grow select-none">
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="w-full h-full justify-between p-[20px] gap-3 flex flex-col items-end">
                     <h3 className="w-full text-xl font-semibold text-left">Account setting</h3>
@@ -238,7 +239,7 @@ export default function UserProfileForm() {
                                                             avatar.croppedImageUrl || avatar.imageUrl
                                                         }
                                                         alt='avatar'
-                                                        className='block object-cover w-full h-full rounded-[50%] mt-[8px]'
+                                                        className='block object-cover bg-white w-full h-full rounded-[50%] mt-[8px]'
                                                     />
                                                     <div>
                                                         {isEditing && <Button
