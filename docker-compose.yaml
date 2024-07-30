@@ -94,7 +94,7 @@ services:
     networks:
       - "cfu"
     labels:
-      - "traefik.http.routers.cfu-server-prod.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.cfu-server-prod.rule=PathPrefix(`/api`)"
       - "traefik.http.middlewares.cfu-server-prod-api-middleware.replacepathregex.regex=^/api/(.*)"
       - "traefik.http.middlewares.cfu-server-prod-api-middleware.replacepathregex.replacement=/api/$$1"
       - "traefik.http.routers.cfu-server-prod-cfu.middlewares=cfu-server-prod-api-middleware"
