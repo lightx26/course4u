@@ -35,9 +35,10 @@ public interface CourseRepository extends JpaRepository<Course, Long>, JpaSpecif
     @Query("select new com.mgmtp.cfu.dto.coursedto.CourseDto(c.id, c.name, c.link, c.platform, " +
             "c.thumbnailUrl, c.teacherName, c.createdDate, " +
             "c.status, c.level, count(r.id)) " +
-            "from Course c left join Registration r on c.id = r.course.id " +
-            "where c.id = :id and r.status IN :acceptedStatuses " +
+            "from Course c left join Registration r on c.id = r.course.id and r.status IN :acceptedStatuses " +
+            "where c.id = :id " +
             "GROUP BY c.id, c.name, c.link, c.platform, c.thumbnailUrl, c.teacherName, " +
             "c.createdDate, c.status, c.level")
     Optional<CourseDto> findDtoById(@Param("id") Long id, @Param("acceptedStatuses") List<RegistrationStatus> acceptedStatuses);
+
 }
