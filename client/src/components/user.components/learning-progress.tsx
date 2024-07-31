@@ -50,7 +50,7 @@ const LearningProgress = ({ startDate, endDate }: Props) => {
                                     <p className='text-purple font-semibold'>
                                         {endDate
                                             ? formatDate(endDate)
-                                            : "-----------------------------"}
+                                            : "Unknown"}
                                     </p>
                                 </div>
                             </div>

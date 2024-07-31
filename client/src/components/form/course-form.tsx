@@ -26,8 +26,6 @@ import instance from "../../utils/customizeAxios";
 import { ArrowRightToLine, Upload } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
 import { toast } from "sonner";
-import { platform } from "../../utils/index";
-import { cn } from "../../utils";
 
 const courseSchema = registrationSchema.omit({
   duration: true,
@@ -69,7 +67,14 @@ export const CourseForm = ({
 
   useEffect(() => {
     if (course) {
-      setThumbnail({e.link);
+      setThumbnail({
+        imageUrl: course.thumbnailUrl,
+        croppedImageUrl: null,
+        crop: { x: 0, y: 0 },
+        zoom: 1,
+        aspect: { value: 4 / 3, text: "4:3" },
+      });
+      form?.setValue("link", course.link);
       form?.setValue("level", course.level);
       form?.setValue("teacherName", course.teacherName);
       const categoriesData = course?.categories?.map((category) => ({
@@ -79,14 +84,7 @@ export const CourseForm = ({
       form?.setValue("categories", categoriesData || []);
       form?.setValue("platform", course.platform.toUpperCase());
       form?.setValue("name", course.name);
-      form?.setValue("thumbnailUrl", course.th
-        imageUrl: course.thumbnailUrl,
-            croppedImageUrl: null,
-            crop: { x: 0, y: 0 },
-        zoom: 1,
-            aspect: { value: 4 / 3, text: "4:3" },
-    });
-      form?.setValue("link", coursumbnailUrl);
+      form?.setValue("thumbnailUrl", course.thumbnailUrl);
     }
   }, [course]);
 
@@ -460,8 +458,7 @@ export const CourseForm = ({
           )}
           <div className="flex flex-col gap-5">
             <p className="text-[#6E7485] text-sm">
-              Upload your course Thumbnail here. Important
-              <b> guidelines</b>: 1200x800 pixels or 12:8 Ratio. Supported
+              Upload your course Thumbnail here. Supported
               format: <b>.jpg, .jpeg, or .png</b>
             </p>
             <Button
