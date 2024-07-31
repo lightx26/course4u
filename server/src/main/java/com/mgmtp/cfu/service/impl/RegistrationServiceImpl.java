@@ -510,13 +510,13 @@ public class RegistrationServiceImpl implements RegistrationService {
             // Notify the user about the verification
             String userMessage = "Congratulations! Your course titled " + registration.getCourse().getName() + " has been verified successfully.";
             sendEmail(registration, user, userMessage);
-            log.info(userMessage);
+            notificationRepository.save(NotificationUtil.createNotification(NotificationType.SUCCESS, user, userMessage));
 
         } else if (registration.getStatus().equals(RegistrationStatus.DOCUMENT_DECLINED)) {
             log.info("DOCUMENT_DECLINED");
             String message = "We regret to inform you that your submitted documents for the course " +
                     registration.getCourse().getName() + " have been rejected. ";
-            notificationRepository.save(NotificationUtil.createNotification(NotificationType.INFORMATION, registration.getUser(), message));
+            notificationRepository.save(NotificationUtil.createNotification(NotificationType.ERROR, registration.getUser(), message));
             sendEmail(registration, registration.getUser(), message);
             log.info(message);
         }

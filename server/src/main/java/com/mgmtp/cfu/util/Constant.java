@@ -10,5 +10,5 @@ public class Constant {
     public static final String DECLINE_REGISTRATION_EMAIL_TEMPLATE="decline_registration_mail_template.xml";
 
     public static final String DEADLINE_WARNING_EMAIL="deadline_warning_email.xml";
-    public static final String DATE_TIME_FORMAT="HH:mm MM/dd/yyyy";
+    public static final String DATE_TIME_FORMAT="HH:mm dd/MM/yyyy";
 }

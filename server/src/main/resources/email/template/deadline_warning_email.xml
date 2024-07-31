@@ -29,13 +29,7 @@
                     <div id="deadline" style="font-weight: bold; color: #F7C631; margin-top: 20px; font-size: 18px;">
                         Deadline: [Date and Time]
                     </div>
-                    <div style="margin-top: 30px;">
-                        <a id="client_url"
-                           style="display: inline-block; width: 180px; height: 40px; line-height: 40px; border-radius: 5px; border: 1px solid #ccc; background-color: #F7C631; color: white; font-size: 1.1rem; font-weight: 600; text-decoration: none; cursor: pointer;"
-                           href="">
-                            VIEW DETAILS
-                        </a>
-                    </div>
+
                 </td>
             </tr>
         </table>

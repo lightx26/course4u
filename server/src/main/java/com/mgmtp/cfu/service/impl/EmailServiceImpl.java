@@ -83,11 +83,15 @@ public class EmailServiceImpl implements IEmailService {
     }
 
     private void modifyContent(Document document, String id, String newText, String newHref, String tag) {
-        Element element = findLinkById(document.getRootElement(), id, tag);
-        if (Objects.nonNull(newText) && !newText.trim().isEmpty())
-            element.setText(newText);
-        if (Objects.nonNull(newHref) && !newHref.trim().isEmpty())
-            element.attribute("href").setValue(newHref);
+        try {
+            Element element = findLinkById(document.getRootElement(), id, tag);
+            if (Objects.nonNull(newText) && !newText.trim().isEmpty())
+                element.setText(newText);
+            if (Objects.nonNull(newHref) && !newHref.trim().isEmpty())
+                element.attribute("href").setValue(newHref);
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+        }
 
     }
 

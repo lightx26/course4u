@@ -21,11 +21,6 @@
                 <div id="content" style="width: 50%; margin: 20px auto; text-align: center; font-size: 16px; font-weight: 400; color: #847f7f;">
                     Congratulations! Your registration with Course4U has been approved. You can now log in and start exploring a variety of courses tailored to your interests. Happy learning!
                 </div>
-                <div>
-                    <a id="client_url" style="display: inline-block; width: 180px; height: 40px; line-height: 40px; border-radius: 5px; border: 1px solid #ccc; background-color: #50C878; color: white; font-size: 1.1rem; font-weight: 600; text-decoration: none; cursor: pointer;" href="">
-                        START LEARNING!
-                    </a>
-                </div>
             </td>
         </tr>
     </table>
