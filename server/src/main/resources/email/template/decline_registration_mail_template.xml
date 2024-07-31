@@ -11,7 +11,7 @@
             </td>
         </tr>
         <tr>
-            <td style="height: 200px; background-color: #F44336; text-align: center; vertical-align: middle;">
+            <td style="height: 200px; background-coor: #F44336; text-align: center; vertical-align: middle;">
                 <div id="title" style="font-size: 35px; font-weight: 700; color: white;">Registration Declined!</div>
             </td>
         </tr>
@@ -20,11 +20,6 @@
                 <div id="user_greeting" style="font-size: 30px; font-weight: 600;">Hi User!</div>
                 <div id="content" style="width: 50%; margin: 20px auto; text-align: center; font-size: 16px; font-weight: 400; color: #847f7f;">
                     Unfortunately! Your registration with Course4U has been declined. You can now check the information about registration carefully and then re-submit registration. Happy learning!
-                </div>
-                <div>
-                    <a id="client_url" style="display: inline-block; width: 180px; height: 40px; line-height: 40px; border-radius: 5px; border: 1px solid #ccc; background-color: #F44336; color: white; font-size: 1.1rem; font-weight: 600; text-decoration: none; cursor: pointer;" href="">
-                        CHECK REGISTRATION
-                    </a>
                 </div>
             </td>
         </tr>
