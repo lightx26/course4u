@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  finishLearning,
-  discardRegistration,
-  removeRegistration,
-  startLearning,
-  submitDocument,
-  submitWithExistedCourse,
-  resubmitDocument,
+    finishLearning,
+    discardRegistration,
+    removeRegistration,
+    startLearning,
+    submitDocument,
+    submitWithExistedCourse,
+    resubmitDocument,
 } from "../../apiService/Registration.service";
 import { useRegistrationDetail } from "../../hooks/use-registration-detail";
 import { useRegistrationModal } from "../../hooks/use-registration-modal";
@@ -29,31 +29,31 @@ import {
 } from "../../apiService/courseReview.service";
 
 type Props = {
-  status?: Status;
-  setIsEdit: (isEdit: boolean) => void;
-  isEdit: boolean;
-  id?: number;
-  isStatrted?: boolean;
-  listFileCertificate?: UploadFile[];
-  listFilePayment?: UploadFile[];
-  isBlockedMofiedCourse?: boolean;
-  duration: number;
-  durationUnit: string;
-  listIdDocumentRemove?: number[];
+    status?: Status;
+    setIsEdit: (isEdit: boolean) => void;
+    isEdit: boolean;
+    id?: number;
+    isStatrted?: boolean;
+    listFileCertificate?: UploadFile[];
+    listFilePayment?: UploadFile[];
+    isBlockedMofiedCourse?: boolean;
+    duration: number;
+    durationUnit: string;
+    listIdDocumentRemove?: number[];
 };
 
 export const RegistrationButton = ({
-  status = Status.NONE,
-  setIsEdit,
-  isEdit,
-  id,
-  listFileCertificate,
-  listFilePayment,
-  isStatrted,
-  isBlockedMofiedCourse,
-  duration,
-  durationUnit,
-  listIdDocumentRemove,
+    status = Status.NONE,
+    setIsEdit,
+    isEdit,
+    id,
+    listFileCertificate,
+    listFilePayment,
+    isStatrted,
+    isBlockedMofiedCourse,
+    duration,
+    durationUnit,
+    listIdDocumentRemove,
 }: Props) => {
     const { registration, closeRegistration } = useRegistrationDetail();
     const { close } = useRegistrationModal((state) => state);
@@ -61,9 +61,9 @@ export const RegistrationButton = ({
     const { setRegistrationFlagAdmin } = useRefreshState((state) => state);
     const [haveReview, setHaveReview] = useState<boolean>(true);
 
-  //state to manange review and send rating
-  const [rating, setRating] = useState<number>(0);
-  const [reviewContent, setReviewContent] = useState<string>("");
+    //state to manange review and send rating
+    const [rating, setRating] = useState<number>(0);
+    const [reviewContent, setReviewContent] = useState<string>("");
 
     const closeModal = () => {
         close();
@@ -110,16 +110,16 @@ export const RegistrationButton = ({
         setIsLoading(false);
     };
 
-  const handleDiscard = async () => {
-    setIsLoading(true);
-    const res = await discardRegistration(id!);
-    if (res !== 200) {
-      setIsLoading(false);
-      return;
-    }
-    closeModal();
-    setIsLoading(false);
-  };
+    const handleDiscard = async () => {
+        setIsLoading(true);
+        const res = await discardRegistration(id!);
+        if (res !== 200) {
+            setIsLoading(false);
+            return;
+        }
+        closeModal();
+        setIsLoading(false);
+    };
 
     const handleSubmitWithExistedCourse = async () => {
         try {
@@ -169,14 +169,19 @@ export const RegistrationButton = ({
     const currentPage = useSelector(
         (state: RootState) => state.registration.currentPage
     );
-    const filterBy = useSelector((state: RootState) => state.registration.status);
+    const filterBy = useSelector(
+        (state: RootState) => state.registration.status
+    );
     const dispatch = useDispatch();
     const handleSubmitDocument = async () => {
-        if(listFileCertificate?.length === 0 || listFilePayment?.length === 0)
-        {
+        if (
+            listFileCertificate?.length === 0 ||
+            listFilePayment?.length === 0
+        ) {
             return toast.error("Document Submission Failed", {
                 style: { color: "red" },
-                description: "Both certificates and payments are required. Please ensure all necessary documents are submitted.",
+                description:
+                    "Both certificates and payments are required. Please ensure all necessary documents are submitted.",
             });
         }
         const response = await submitDocument(
@@ -187,9 +192,13 @@ export const RegistrationButton = ({
         if (response && response.status === 200) {
             toast.success("Document Submitted Successfully", {
                 style: { color: "green" },
-                description: "Your registration has been completed successfully.",
+                description:
+                    "Your registration has been completed successfully.",
             });
-            const result = await fetchListOfMyRegistration(currentPage, filterBy);
+            const result = await fetchListOfMyRegistration(
+                currentPage,
+                filterBy
+            );
             if (result && result.data) {
                 dispatch(saveDataListRegistration(result.data));
             }
@@ -222,7 +231,10 @@ export const RegistrationButton = ({
                 description:
                     "The document has been re-submitted and will be reviewed shortly.",
             });
-            const result = await fetchListOfMyRegistration(currentPage, filterBy);
+            const result = await fetchListOfMyRegistration(
+                currentPage,
+                filterBy
+            );
             if (result && result.data) {
                 dispatch(saveDataListRegistration(result.data));
             }
@@ -276,8 +288,8 @@ export const RegistrationButton = ({
                 </ModalConfirm>
             )}
             {(status === Status.SUBMITTED ||
-                    status === Status.DECLINED ||
-                    status === Status.APPROVED) &&
+                status === Status.DECLINED ||
+                status === Status.APPROVED) &&
                 !isEdit && (
                     <Button
                         size='default'
@@ -340,12 +352,12 @@ export const RegistrationButton = ({
             )}
 
             {(status === Status.SUBMITTED ||
-                    status === Status.DECLINED ||
-                    status === Status.DRAFT) &&
+                status === Status.DECLINED ||
+                status === Status.DRAFT) &&
                 isEdit === false && (
                     <Button
                         size='default'
-                        variant='edit'
+                        variant='blue'
                         type='button'
                         onClick={onEdit}
                     >
@@ -394,10 +406,10 @@ export const RegistrationButton = ({
                         <Button
                             type='button'
                             size='default'
-                            variant='pink'
+                            variant='primary'
                             disabled={isLoading}
                         >
-                            SEND FEEDBACK
+                            REVIEW
                         </Button>
                     </SendReviewModal>
                 )}
@@ -415,22 +427,26 @@ export const RegistrationButton = ({
             {status === Status.DOCUMENT_DECLINED && (
                 <>
                     <Button
-                        size="lg"
-                        variant="success"
+                        size='lg'
+                        variant='success'
                         disabled={isLoading}
-                        type="button"
+                        type='button'
                         onClick={() => setOpenModalConfirmResubmit(true)}
                     >
                         RE-SUBMIT
                     </Button>
 
                     <Modal
-                        title={<p style={{fontSize: "1.2rem"}}>Re-submit document</p>}
+                        title={
+                            <p style={{ fontSize: "1.2rem" }}>
+                                Re-submit document
+                            </p>
+                        }
                         open={openModalConfirmResubmit}
                         onOk={handleReSubmitDocument}
                         onCancel={() => setOpenModalConfirmResubmit(false)}
-                        okText="Yes"
-                        cancelText="No"
+                        okText='Yes'
+                        cancelText='No'
                         centered={true}
                         confirmLoading={confirmLoadingResubmit}
                         okButtonProps={{
@@ -448,7 +464,12 @@ export const RegistrationButton = ({
                             },
                         }}
                     >
-                        <p style={{fontSize: "1rem", margin: "10px 0px 40px 0px"}}>
+                        <p
+                            style={{
+                                fontSize: "1rem",
+                                margin: "10px 0px 40px 0px",
+                            }}
+                        >
                             Are you sure you want to re-submit document?
                         </p>
                     </Modal>
