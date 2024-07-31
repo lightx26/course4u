@@ -23,7 +23,10 @@ export function Notification(props: IProps) {
     const [isLoading, setIsLoading] = useState(false);
     const [notifications, setNotifications] = useState<Notification[] | []>([]);
     const [buffer, setBuffer] = useState<Notification[] | []>([]);
+    // Last notifications from database
     const [isLast, setIsLast] = useState(false);
+    // Last notifications from buffer
+    const [isExhausted, setIsExhausted] = useState(false);
 
     const defaultBatchSize = 30;
     const firstLoadNum = 10;
@@ -104,6 +107,10 @@ export function Notification(props: IProps) {
         if (buffer.length - notifications.length <= defaultLoadNum) {
             fetchNotifications();
         }
+
+        if (buffer.length === notifications.length) {
+            setIsExhausted(true);
+        }
     }, [notifications]);
 
     useEffect(() => {
@@ -118,16 +125,18 @@ export function Notification(props: IProps) {
 
         const element = popoverContentRef.current; // Get PopoverContent element
 
-        if (!isLast && element) {
+        if (element && (!isLast || !isExhausted)) {
+            console.log('add event listener');
             element.addEventListener("scroll", handleScroll);
         }
 
         return () => {
             if (element) {
+                console.log('remove event listener');
                 element.removeEventListener("scroll", handleScroll);
             }
         };
-    }, [buffer, isLast, isOpen]);
+    }, [buffer, isLast, isExhausted, isOpen]);
 
     return (
         <Popover onOpenChange={setIsOpen}>
