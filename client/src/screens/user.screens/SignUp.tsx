@@ -202,6 +202,12 @@ const SignUp: React.FC = () => {
         fullname: "Max length for fullname is 50 characters.",
       }));
       formHasError = true;
+    } else if (fullname && !/^[A-Za-zÀ-ỹ\s]+$/.test(fullname)) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        fullname: "Fullname can only contain letters.",
+      }));
+      formHasError = true;
     }
 
     if (dateOfBirth) {
