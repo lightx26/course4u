@@ -136,18 +136,15 @@ const ModalEditOrDeleteCourse = ({ children, courseData }: Props) => {
     if (status === 200) {
       toast.success("Edit course succesfully", {
         description:
-          "Course information already updated! refresh to see the changes",
+          "Course information already updated! the page will reload in 3 seconds",
         style: {
           color: "green",
           fontWeight: "bold",
           textAlign: "center",
         },
-        // onAutoClose: () => {
-        //   navigate("/admin", {
-        //     replace: true,
-        //     state: { refresh: true },
-        //   });
-        // },
+        onAutoClose: () => {
+          window.location.reload();
+        },
       });
     } else if (status === 500) {
       toast.error("Oops! Something went wrong. Please try again later", {
