@@ -128,7 +128,6 @@ const ModalEditOrDeleteCourse = ({ children, courseData }: Props) => {
     } else {
       formData.append("thumbnailUrl", values.thumbnailUrl);
     }
-    console.log(formData.get("thumbnailUrl")?.toString());
     if (formData.get("thumbnailUrl")?.toString().match("/api/thumbnail/")) {
       formData.delete("thumbnailUrl");
     }
