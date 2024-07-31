@@ -259,7 +259,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Override
     public Page<RegistrationOverviewDTO> getRegistrations(RegistrationOverviewParams params, int page, int pageSize) {
         String status = params.getStatus();
-        String search = params.getSearch();
+        String search = params.getSearch().trim();
         String orderBy = (params.getOrderBy().isEmpty()) ? "id" : params.getOrderBy();
 
         Pageable pageable = PageRequest.of(page - 1, pageSize);
