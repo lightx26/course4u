@@ -32,7 +32,8 @@ public class LeaderboardServiceImpl implements LeaderboardService {
                 .findFirst()
                 .ifPresent(leaderboardUserDTO -> leaderboardUserDTO.setMine(true));
         return LeaderboardDTO.builder()
-                .leaderboardUserDTOs(listOfLeaderboardUser)
+                .leaderboardUserDTOs(listOfLeaderboardUser.stream().filter(leaderboardUserDTO -> leaderboardUserDTO.getScore() > 0)
+                        .toList())
                 .year(year)
                 .build();
     }

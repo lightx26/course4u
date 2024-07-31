@@ -28,7 +28,7 @@ public class ScoreQueryManager {
                 "ON u.id = r.re_user_id " +
                 "WHERE u.role='USER'" +
                 "GROUP BY u.id, u.avatarUrl, u.email, u.username, u.fullName " +
-                "ORDER BY COALESCE(SUM(r.re_score), 0) DESC";
+                "ORDER BY COALESCE(SUM(r.re_score), 0) DESC, u.username asc ";
 
 
 
