@@ -1,6 +1,7 @@
 package com.mgmtp.cfu.controller;
 
 import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest;
+import com.mgmtp.cfu.dto.registrationdto.RegistrationFeedbackDTO;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewParams;
 import com.mgmtp.cfu.dto.registrationdto.RegistrationEnrollDTO;
 import com.mgmtp.cfu.exception.UnknownErrorException;
@@ -20,6 +21,7 @@ import com.mgmtp.cfu.dto.RegistrationRequest;
 import com.mgmtp.cfu.entity.Registration;
 import org.springframework.http.HttpStatus;
 
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -49,7 +51,7 @@ public class RegistrationController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getDetailRegistration(@PathVariable Long id) {
         var registration = registrationService.getDetailRegistration(id);
-        registration.setRegistrationFeedbacks(registration.getRegistrationFeedbacks().stream().sorted((o1, o2) -> o2.getCreatedDate().compareTo(o1.getCreatedDate())).collect(Collectors.toCollection(LinkedHashSet::new)));
+        registration.setRegistrationFeedbacks((registration.getRegistrationFeedbacks()!=null?registration.getRegistrationFeedbacks():new HashSet<RegistrationFeedbackDTO>()).stream().sorted((o1, o2) -> o2.getCreatedDate().compareTo(o1.getCreatedDate())).collect(Collectors.toCollection(LinkedHashSet::new)));
         return ResponseEntity.ok(registration);
     }
 
