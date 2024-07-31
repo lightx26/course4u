@@ -20,7 +20,9 @@ import com.mgmtp.cfu.dto.RegistrationRequest;
 import com.mgmtp.cfu.entity.Registration;
 import org.springframework.http.HttpStatus;
 
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.mgmtp.cfu.util.RegistrationValidator.validateRegistrationOverviewParams;
 import static com.mgmtp.cfu.util.RequestValidator.validateId;
@@ -46,7 +48,9 @@ public class RegistrationController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getDetailRegistration(@PathVariable Long id) {
-        return ResponseEntity.ok(registrationService.getDetailRegistration(id));
+        var registration = registrationService.getDetailRegistration(id);
+        registration.setRegistrationFeedbacks(registration.getRegistrationFeedbacks().stream().sorted((o1, o2) -> o2.getCreatedDate().compareTo(o1.getCreatedDate())).collect(Collectors.toCollection(LinkedHashSet::new)));
+        return ResponseEntity.ok(registration);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")

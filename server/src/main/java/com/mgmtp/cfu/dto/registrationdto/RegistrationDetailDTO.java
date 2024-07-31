@@ -29,4 +29,6 @@ public class RegistrationDetailDTO {
     CourseRegistrationDTO course;
     UserRegistrationDTO user;
     Set<RegistrationFeedbackDTO> registrationFeedbacks;
+
+
 }
