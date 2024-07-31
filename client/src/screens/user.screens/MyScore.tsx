@@ -132,14 +132,24 @@ const MyScore: React.FC = () => {
 
   return (
     <div className="bg-gray-100 h-screen pt-4 mt-1">
-      <div className="max-w-screen-2xl mx-auto h-5/6 rounded-[15px] border border-gray-300 flex px-8 py-2.5 items-center bg-white">
-        <div className="w-1/4 border border-gray-300 rounded-2xl flex justify-between items-start p-5 h-auto">
-          <div className="flex flex-col gap-5">
+      <div className="max-w-screen-2xl mx-auto h-7/8 rounded-[15px] border border-gray-300 flex px-8 py-2.5 items-center bg-white">
+        <div className="w-[25%] border border-gray-300 rounded-2xl flex justify-between items-start p-5 h-auto">
+          <div className="flex flex-col gap-5 w-[70%]">
             <div>
               <div className="text-lg font-medium">Score</div>
               <div
-                className="text-4xl font-medium text-purple-700"
-                style={{ color: "#861fa2" }}
+                className="text-3xl font-medium text-purple-700"
+                style={{
+                  display: "-webkit-box",
+                  WebkitLineClamp: 1,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "normal",
+                  wordBreak: "break-word",
+                  color: "#861fa2",
+                }}
+                title={valuePersonal?.score.toString()}
               >
                 {valuePersonal?.score}
               </div>
@@ -147,7 +157,7 @@ const MyScore: React.FC = () => {
             <div>
               <div className="text-lg font-medium">Rank</div>
               <div
-                className="text-4xl font-medium text-purple-700"
+                className="text-3xl font-medium text-purple-700"
                 style={{ color: "#861fa2" }}
               >
                 {valuePersonal?.rank}
@@ -156,7 +166,7 @@ const MyScore: React.FC = () => {
           </div>
           <div>
             <Select onValueChange={(value) => setValueYear(value)}>
-              <SelectTrigger className="w-36 h-8.5">
+              <SelectTrigger className="w-28 h-8.5">
                 <SelectValue placeholder="2024" />
               </SelectTrigger>
               <SelectContent>
@@ -169,7 +179,7 @@ const MyScore: React.FC = () => {
             </Select>
           </div>
         </div>
-        <div className="flex-1 p-5 w-3/4 h-full">
+        <div className="flex-1 p-5 w-[75%] h-full">
           <div className="w-full h-1/2">
             <Line data={data} options={options} />
           </div>

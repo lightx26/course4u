@@ -189,7 +189,6 @@ const Detail_Of_Course: React.FC = () => {
 
   function truncateText(text: string, maxLines: number) {
     if (!text || text.length <= maxLines * 15) {
-      // Text is short enough, no need to truncate
       return text;
     }
 
@@ -202,7 +201,6 @@ const Detail_Of_Course: React.FC = () => {
       }
     }
 
-    // If all words fit, truncate at character limit
     return truncatedText.trim().slice(0, maxLines * 15) + "...";
   }
 
@@ -267,6 +265,7 @@ const Detail_Of_Course: React.FC = () => {
                         whiteSpace: "normal",
                         textDecoration: "underline",
                       }}
+                      title={courseData?.name}
                     >
                       {courseData?.name}
                     </a>
@@ -297,12 +296,12 @@ const Detail_Of_Course: React.FC = () => {
                         Platform:
                       </span>
                       <span className="text-white text-[1.3rem] font-[400] h-full ">
-                        {courseData?.platform}
+                        {capitalizeFirstLetter(courseData?.platform)}
                       </span>
                     </div>
                   </div>
                   <div className="w-full">
-                    <div className="text-[1.2rem] font-[500]">
+                    <div className="text-[1.2rem] font-[600]">
                       Course Rating
                     </div>
                     <div className="mt-[10px] flex justify-center items-center gap-[20px]">
@@ -545,7 +544,13 @@ const Detail_Of_Course: React.FC = () => {
                           textOverflow: "ellipsis",
                           whiteSpace: "normal",
                           maxWidth: "60%",
+                          wordBreak: "break-word",
                         }}
+                        title={
+                          courseData?.categories
+                            ?.map((item) => item.name)
+                            .join(`, `) ?? ""
+                        }
                       >
                         {truncateText(
                           courseData?.categories
