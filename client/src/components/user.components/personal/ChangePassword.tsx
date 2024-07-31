@@ -27,6 +27,7 @@ export default function ChangePassword() {
                             color: "green"
                         }
                     });
+                    form.reset();
                 } else if (status === 406) {  // HTTP 406 Not Acceptable
                     toast.error("New password cannot be the same as the old password", {
                         style: {
