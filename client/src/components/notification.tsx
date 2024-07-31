@@ -126,13 +126,11 @@ export function Notification(props: IProps) {
         const element = popoverContentRef.current; // Get PopoverContent element
 
         if (element && (!isLast || !isExhausted)) {
-            console.log('add event listener');
             element.addEventListener("scroll", handleScroll);
         }
 
         return () => {
             if (element) {
-                console.log('remove event listener');
                 element.removeEventListener("scroll", handleScroll);
             }
         };
