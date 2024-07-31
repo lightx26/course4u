@@ -6,6 +6,8 @@ import { AppDispatch, RootState } from "../../../redux/store/store.ts";
 import { useNavigate } from "react-router-dom";
 
 import functionMapping from "../../../utils/functionMapping.ts";
+import {refreshAdmin} from "../../../redux/slice/adminRegistration.slice.ts";
+import {refreshAccountant} from "../../../redux/slice/accountantRegistration.slice.ts";
 
 const PersonalizationFunctionList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -20,6 +22,15 @@ const PersonalizationFunctionList = () => {
     return alt == "sign_out" ? "[5px]" : "2.5";
   };
 
+  const handleRefresh = (userRole: string) => {
+    if(userRole === 'ADMIN'){
+      dispatch(refreshAdmin());
+    }
+    else{
+      dispatch(refreshAccountant());
+    }
+  }
+
   return (
     <div
       className="function_list flex-col pl-3 text-lg"
@@ -33,7 +44,10 @@ const PersonalizationFunctionList = () => {
                 gap-${handleGap(item.alt)}
             `}
             key={item.key}
-            onClick={(e) => handleFunctionMapping(e, item.alt)}
+            onClick={(e) => {
+              handleFunctionMapping(e, item.alt);
+              handleRefresh(userRole);
+            }}
           >
             <div className="icon flex items-center">
               <img className="h-[70%]" src={item.imgSrc} alt={item.alt} />

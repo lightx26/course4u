@@ -60,6 +60,10 @@ export const accountantPageRegistrationsSlice = createSlice({
         },
         handleOptionsChange: (state, action) => {
             state.options = action.payload;
+        },
+        refreshAccountant: (state) => {
+            state.options = initialState.options;
+            state.currentPage = 1;
         }
     },
     extraReducers: () => {},
@@ -70,7 +74,8 @@ export const {
     handleTotalItemChange,
     handleShowingMessageChange,
     saveRegistrationsData,
-    handleOptionsChange
+    handleOptionsChange,
+    refreshAccountant
 } = accountantPageRegistrationsSlice.actions
 
 // Export the reducer

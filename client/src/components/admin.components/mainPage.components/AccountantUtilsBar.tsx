@@ -1,16 +1,16 @@
 import SearchGlass from "../../../assets/images/admin.images/SearchGlass.svg";
-import { useState } from "react";
-import { Select } from "antd";
+import {useState} from "react";
+import {Select} from "antd";
 
 import registrationStatusList from "../../../utils/registrationStatusList";
 import registrationOrderByList from "../../../utils/orderByList.ts";
 
-import { handleOptionsChange } from "../../../redux/slice/accountantRegistration.slice.ts";
-import { useDispatch, useSelector } from "react-redux";
+import {handleOptionsChange} from "../../../redux/slice/accountantRegistration.slice.ts";
+import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../../redux/store/store.ts";
-import { RegistrationParamsType } from "../../../redux/slice/accountantRegistration.slice.ts";
+import {RegistrationParamsType} from "../../../redux/slice/accountantRegistration.slice.ts";
 
-import { registrationStatusListForAccountant } from "../../../utils/registrationStatusList";
+import {registrationStatusListForAccountant} from "../../../utils/registrationStatusList";
 
 const AccountantUtilsBar = () => {
     const dispatch = useDispatch();
@@ -53,6 +53,14 @@ const AccountantUtilsBar = () => {
         dispatch(handleOptionsChange(newOptions));
     }
 
+    const inputElement: HTMLInputElement | null = document.querySelector('.search_input');
+    const handleInputKeyUpdate = (e: React.KeyboardEvent) => {
+        if (e.key == 'Enter' || e.key == 'Escape') {
+            handleSearchConfirm(searchContent);
+            inputElement?.blur();
+        }
+    }
+
     return (
         <div className="h-[10%] utils-bar flex gap-7">
             <div className="search-bar w-[70%]">
@@ -69,18 +77,14 @@ const AccountantUtilsBar = () => {
                         alt="search"
                     />
                     <input
-                        className="w-full h-[70%] ml-2 py-2 placeholder-opacity-5 focus:outline-none"
+                        className="search_input w-full h-[70%] ml-2 py-2 placeholder-opacity-5 focus:outline-none"
                         placeholder="Search registration by course name or learner"
                         value={searchContent}
                         onChange={(e) => {
                             setSearchContent(e.target.value);
                         }}
                         onBlur={() => handleSearchConfirm(searchContent)}
-                        onKeyDown={(e: React.KeyboardEvent) => {
-                            if (e.key == 'Enter') {
-                                handleSearchConfirm(searchContent)
-                            }
-                        }}
+                        onKeyDown={handleInputKeyUpdate}
                     ></input>
                 </div>
             </div>
@@ -96,7 +100,7 @@ const AccountantUtilsBar = () => {
             <div className="sortby_select w-[15%]">
                 <span className="text-[11px] font-normal">Sort by: </span>
                 <Select
-                    value={ sortOrder }
+                    value={sortOrder}
                     options={orderByList}
                     onChange={handleOrderChange}
                     className="w-full min-h-[42px]"

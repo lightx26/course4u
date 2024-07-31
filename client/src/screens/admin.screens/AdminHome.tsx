@@ -15,8 +15,6 @@ import {useRefreshState} from "../../hooks/use-refresh-state.ts";
 import {RootState} from "../../redux/store/store.ts";
 import {useDispatch, useSelector} from "react-redux";
 import {
-    adminInitialStateOption,
-    handleOptionsChange,
     RegistrationParamsType
 } from "../../redux/slice/adminRegistration.slice.ts";
 import {
@@ -78,11 +76,6 @@ function AdminHomePage() {
         handleFetchRegistrations(options, 1)
         dispatch(handleCurrentPageChange(1));
     }, [options]);
-
-    useEffect(() => {
-        dispatch(handleOptionsChange(adminInitialStateOption));
-        dispatch(handleCurrentPageChange(1));
-    }, []);
 
     useEffect(() => {
         handleFetchRegistrations(options, currentPage)

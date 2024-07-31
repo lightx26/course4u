@@ -61,6 +61,10 @@ export const adminPageRegistrationsSlice = createSlice({
         },
         handleOptionsChange: (state, action) => {
             state.options = action.payload;
+        },
+        refreshAdmin: (state) => {
+            state.options = initialState.options;
+            state.currentPage = 1;
         }
     },
     extraReducers: () => {},
@@ -71,7 +75,8 @@ export const {
     handleTotalItemChange,
     handleShowingMessageChange,
     saveRegistrationsData,
-    handleOptionsChange
+    handleOptionsChange,
+    refreshAdmin
 } = adminPageRegistrationsSlice.actions
 
 export const adminInitialStateOption: RegistrationParamsType = initialState.options;

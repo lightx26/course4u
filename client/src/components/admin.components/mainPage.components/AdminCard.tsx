@@ -19,7 +19,7 @@ function AdminCard({ avatarUrl }: { avatarUrl?: string }) {
     <div
       className={`bg-white ${
         userRole === "ACCOUNTANT" ? "h-[17rem]" : "h-[20rem]"
-      } rounded-2xl pt-4 min-w-60`}
+      } rounded-2xl pt-4 min-w-60 truncate`}
       style={{ boxShadow: "0px 0px 4px 0px rgba(0, 0, 0, 0.25)" }}
     >
       <div className="personalizaion h-[49%] border-b-2">

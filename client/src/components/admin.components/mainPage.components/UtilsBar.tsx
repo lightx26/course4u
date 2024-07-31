@@ -46,9 +46,17 @@ const UtilsBar = () => {
         dispatch(handleOptionsChange(newOptions));
     }
 
-    const handleSearchConfirm = (newSearchContent: string): void => {
+    const handleSearchConfirm = (newSearchContent: string = searchContent): void => {
         const newOptions: RegistrationParamsType = {...options, search: newSearchContent};
         dispatch(handleOptionsChange(newOptions));
+    }
+
+    const inputElement: HTMLInputElement | null = document.querySelector('.search_input');
+    const handleInputKeyUpdate = (e: React.KeyboardEvent) => {
+        if (e.key == 'Enter' || e.key == 'Escape') {
+            handleSearchConfirm(searchContent);
+            inputElement?.blur();
+        }
     }
 
     return (
@@ -67,18 +75,14 @@ const UtilsBar = () => {
                         alt="search"
                     />
                     <input
-                        className="w-full h-[70%] ml-2 py-2 placeholder-opacity-5 focus:outline-none"
+                        className="search_input w-full h-[70%] ml-2 py-2 placeholder-opacity-5 focus:outline-none"
                         placeholder="Search registration by course name or learner"
                         value={searchContent}
                         onChange={(e) => {
                             setSearchContent(e.target.value);
                         }}
                         onBlur={() => handleSearchConfirm(searchContent)}
-                        onKeyDown={(e: React.KeyboardEvent) => {
-                            if (e.key == 'Enter') {
-                                handleSearchConfirm(searchContent)
-                            }
-                        }}
+                        onKeyDown={ handleInputKeyUpdate }
                     ></input>
                 </div>
             </div>
