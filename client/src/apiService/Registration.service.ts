@@ -13,7 +13,7 @@ export async function fetchAllRegistrations(params: RegistrationParamsType, page
 
     const orderBy: string = OrderByMapping(params.orderBy);
 
-    const search: string = params.search.toLowerCase();
+    const search: string = params.search.toLowerCase().trim();
     const isAscending: string = params.isAscending ? 'true' : 'false';
 
     const url = `/registrations?status=${status}&search=${search}&orderBy=${orderBy}&isAscending=${isAscending}&page=${page}&pageSize=${pageSize}`;
