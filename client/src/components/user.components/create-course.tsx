@@ -64,18 +64,16 @@ const CreateCourse = () => {
     const status = await createNewCourse(formData);
     if (status === 201) {
       toast.success("Create a new course successfully", {
-        description: "You will be redirected to the admin page in 3 seconds!",
+        description: "",
         style: {
           color: "green",
           fontWeight: "bold",
           textAlign: "center",
         },
-        onAutoClose: () => {
-          navigate("/admin", {
-            replace: true,
-            state: { refresh: true },
-          });
-        },
+      });
+      navigate("/admin", {
+        replace: true,
+        state: { refresh: true },
       });
     } else if (status === 500) {
       toast.error("Oops! Something went wrong. Please try again later", {
