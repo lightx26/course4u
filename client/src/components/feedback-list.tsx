@@ -19,6 +19,7 @@ const FeedbackList = ({ feedbacks }: Props) => {
             </span>
         ));
     };
+
     return (
         <div>
             <h4 className='mb-5 text-xl font-semibold'>Feedback</h4>
@@ -34,7 +35,7 @@ const FeedbackList = ({ feedbacks }: Props) => {
                         />
                         <div className=''>
                             <p className='font-semibold'>
-                                {feedback.user?.fullName}
+                                { feedback.user?.fullName || "Anonymous" }
                             </p>
                             <p className='mt-2 min-w-[1000px] whitespace-normal max-h-[160px] overflow-y-auto border-2 border-collapse p-2 rounded-lg '>
                                 {formatText(feedback.comment)}

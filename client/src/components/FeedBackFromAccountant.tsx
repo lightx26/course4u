@@ -43,7 +43,7 @@ const FeedBackFromAccountant = (props: IProps) => {
       </div>
       <div style={{ width: "100%" }}>
         <div style={{ marginBottom: "10px", fontWeight: 500 }}>
-          {userData.fullName || "Accountant"}
+          {userData.fullName || "Anonymous"}
         </div>
         <TextArea
           onChange={onChange}
