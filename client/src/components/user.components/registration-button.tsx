@@ -1,20 +1,19 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-    finishLearning,
-    discardRegistration,
-    removeRegistration,
-    startLearning,
-    submitDocument,
-    submitWithExistedCourse,
-    resubmitDocument,
+  finishLearning,
+  discardRegistration,
+  removeRegistration,
+  startLearning,
+  submitDocument,
+  submitWithExistedCourse,
+  resubmitDocument,
 } from "../../apiService/Registration.service";
 import { useRegistrationDetail } from "../../hooks/use-registration-detail";
 import { useRegistrationModal } from "../../hooks/use-registration-modal";
 import { Status } from "../../utils/index";
 import { Button } from "../ui/button";
 import ModalConfirm from "./ModalConfirm";
-import { Modal } from "antd";
 import type { UploadFile } from "antd";
 import { toast } from "sonner";
 import { RootState } from "../../redux/store/store";
@@ -24,8 +23,8 @@ import { useRefreshState } from "../../hooks/use-refresh-state";
 import { isStatusSuccesful } from "../../utils/checkResStatus";
 import SendReviewModal from "../modal/send-review-modal";
 import {
-    checkExistReview,
-    sendReview,
+  checkExistReview,
+  sendReview,
 } from "../../apiService/courseReview.service";
 import { isExistAvailableCourseWithId } from "../../apiService/Course.service";
 
@@ -58,21 +57,21 @@ export const RegistrationButton = ({
   durationUnit,
   listIdDocumentRemove,
 }: Props) => {
-    const { registration, closeRegistration } = useRegistrationDetail();
-    const { close } = useRegistrationModal((state) => state);
-    const [isLoading, setIsLoading] = useState(false);
-    const { setRegistrationFlagAdmin } = useRefreshState((state) => state);
-    const [haveReview, setHaveReview] = useState<boolean>(true);
+  const { registration, closeRegistration } = useRegistrationDetail();
+  const { close } = useRegistrationModal((state) => state);
+  const [isLoading, setIsLoading] = useState(false);
+  const { setRegistrationFlagAdmin } = useRefreshState((state) => state);
+  const [haveReview, setHaveReview] = useState<boolean>(true);
 
-    //state to manange review and send rating
-    const [rating, setRating] = useState<number>(0);
-    const [reviewContent, setReviewContent] = useState<string>("");
+  //state to manange review and send rating
+  const [rating, setRating] = useState<number>(0);
+  const [reviewContent, setReviewContent] = useState<string>("");
 
-    const closeModal = () => {
-        close();
-        closeRegistration();
-        setRegistrationFlagAdmin();
-    };
+  const closeModal = () => {
+    close();
+    closeRegistration();
+    setRegistrationFlagAdmin();
+  };
 
     const onEdit = async() => {
         setIsEdit(true);
@@ -81,150 +80,137 @@ export const RegistrationButton = ({
             setBlockEditCourseForm(true)
     };
 
-    //Delete a registration
-    const handleDeleteButtonClick = async () => {
-        setIsLoading(true);
-        const res = await removeRegistration(id!);
-        if (res !== 200) {
-            setIsLoading(false);
-            return;
-        }
+  //Delete a registration
+  const handleDeleteButtonClick = async () => {
+    setIsLoading(true);
+    const res = await removeRegistration(id!);
+    if (res !== 200) {
+      setIsLoading(false);
+      return;
+    }
+    closeModal();
+    setIsLoading(false);
+  };
+
+  const handleStartLearning = async () => {
+    if (registration?.startDate) {
+      window.open(registration?.course?.link);
+      return;
+    }
+    setIsLoading(true);
+    const res = await startLearning(id!);
+    if (res !== 200) {
+      setIsLoading(false);
+      return;
+    }
+    window.open(registration?.course?.link);
+    closeModal();
+    setIsLoading(false);
+  };
+
+  const handleFinishLearning = async () => {
+    setIsLoading(true);
+    await finishLearning(id!);
+    closeModal();
+    setIsLoading(false);
+  };
+
+  const handleDiscard = async () => {
+    setIsLoading(true);
+    const res = await discardRegistration(id!);
+    if (res !== 200) {
+      setIsLoading(false);
+      return;
+    }
+    closeModal();
+    setIsLoading(false);
+  };
+
+  const handleSubmitWithExistedCourse = async () => {
+    try {
+      const res = await submitWithExistedCourse({
+        courseId: registration!.course!.id!,
+        duration: duration,
+        durationUnit: durationUnit,
+      });
+      if (isStatusSuccesful(res.status)) {
+        toast.success("Create a registration successfully", {
+          style: { color: "green" },
+          description: "The registration was created successfully.",
+        });
+
         closeModal();
-        setIsLoading(false);
-    };
+      }
+    } catch (error) {
+      toast.error("Failed to Create a registration", {
+        style: { color: "red" },
+        description:
+          "Opps.., some thing went wrong. Please, reload the page and try again",
+      });
+    }
+  };
 
-    const handleStartLearning = async () => {
-        if (registration?.startDate) {
-            window.open(registration?.course?.link);
-            return;
-        }
-        setIsLoading(true);
-        const res = await startLearning(id!);
-        if (res !== 200) {
-            setIsLoading(false);
-            return;
-        }
-        window.open(registration?.course?.link);
-        closeModal();
-        setIsLoading(false);
-    };
-
-    const handleFinishLearning = async () => {
-        setIsLoading(true);
-        await finishLearning(id!);
-        closeModal();
-        setIsLoading(false);
-    };
-
-    const handleDiscard = async () => {
-        setIsLoading(true);
-        const res = await discardRegistration(id!);
-        if (res !== 200) {
-            setIsLoading(false);
-            return;
-        }
-        closeModal();
-        setIsLoading(false);
-    };
-
-    const handleSubmitWithExistedCourse = async () => {
-        try {
-            const res = await submitWithExistedCourse({
-                courseId: registration!.course!.id!,
-                duration: duration,
-                durationUnit: durationUnit,
-            });
-            if (isStatusSuccesful(res.status)) {
-                toast.success("Create a registration successfully", {
-                    style: { color: "green" },
-                    description: "The registration was created successfully.",
-                });
-
-                closeModal();
-            }
-        } catch (error) {
-            toast.error("Failed to Create a registration", {
-                style: { color: "red" },
-                description:
-                    "Opps.., some thing went wrong. Please, reload the page and try again",
-            });
-        }
-    };
-
-    const handleSendReview = async () => {
-        const response = await sendReview(
-            rating,
-            reviewContent,
-            registration!.course!.id!
-        );
-        if (isStatusSuccesful(response.status)) {
-            toast.success("Review sent successfully", {
-                style: { color: "green" },
-                description: "Your review has been sent successfully.",
-            });
-            setHaveReview(true);
-        } else {
-            toast.error("Failed to send review", {
-                style: { color: "red" },
-                description: "Failed to send review" + response.statusText,
-            });
-        }
-    };
-
-    //Submit Document
-    const currentPage = useSelector(
-        (state: RootState) => state.registration.currentPage
+  const handleSendReview = async () => {
+    const response = await sendReview(
+      rating,
+      reviewContent,
+      registration!.course!.id!
     );
-    const filterBy = useSelector(
-        (state: RootState) => state.registration.status
+    if (isStatusSuccesful(response.status)) {
+      toast.success("Review sent successfully", {
+        style: { color: "green" },
+        description: "Your review has been sent successfully.",
+      });
+      setHaveReview(true);
+    } else {
+      toast.error("Failed to send review", {
+        style: { color: "red" },
+        description: "Failed to send review" + response.statusText,
+      });
+    }
+  };
+
+  //Submit Document
+  const currentPage = useSelector(
+    (state: RootState) => state.registration.currentPage
+  );
+  const filterBy = useSelector((state: RootState) => state.registration.status);
+  const dispatch = useDispatch();
+  const handleSubmitDocument = async () => {
+    if (listFileCertificate?.length === 0 || listFilePayment?.length === 0) {
+      return toast.error("Document Submission Failed", {
+        style: { color: "red" },
+        description:
+          "Both certificates and payments are required. Please ensure all necessary documents are submitted.",
+      });
+    }
+    const response = await submitDocument(
+      listFileCertificate!,
+      listFilePayment!,
+      id?.toString()
     );
-    const dispatch = useDispatch();
-    const handleSubmitDocument = async () => {
-        if (
-            listFileCertificate?.length === 0 ||
-            listFilePayment?.length === 0
-        ) {
-            return toast.error("Document Submission Failed", {
-                style: { color: "red" },
-                description:
-                    "Both certificates and payments are required. Please ensure all necessary documents are submitted.",
-            });
-        }
-        const response = await submitDocument(
-            listFileCertificate!,
-            listFilePayment!,
-            id?.toString()
-        );
-        if (response && response.status === 200) {
-            toast.success("Document Submitted Successfully", {
-                style: { color: "green" },
-                description:
-                    "Your registration has been completed successfully.",
-            });
-            const result = await fetchListOfMyRegistration(
-                currentPage,
-                filterBy
-            );
-            if (result && result.data) {
-                dispatch(saveDataListRegistration(result.data));
-            }
-            closeModal();
-        } else {
-            toast.error("Document Submission Failed", {
-                style: { color: "red" },
-                description: response?.data.message
-                    ? response.data.message
-                    : "There was an error submitting your documents. Please try again later.",
-            });
-        }
-    };
+    if (response && response.status === 200) {
+      toast.success("Document Submitted Successfully", {
+        style: { color: "green" },
+        description: "Your registration has been completed successfully.",
+      });
+      const result = await fetchListOfMyRegistration(currentPage, filterBy);
+      if (result && result.data) {
+        dispatch(saveDataListRegistration(result.data));
+      }
+      closeModal();
+    } else {
+      toast.error("Document Submission Failed", {
+        style: { color: "red" },
+        description: response?.data.message
+          ? response.data.message
+          : "There was an error submitting your documents. Please try again later.",
+      });
+    }
+  };
 
     //User Re-submit Document
-    const [openModalConfirmResubmit, setOpenModalConfirmResubmit] =
-        useState(false);
-    const [confirmLoadingResubmit, setConfirmLoadingResubmit] = useState(false);
     const handleReSubmitDocument = async () => {
-        setConfirmLoadingResubmit(true);
         const response = await resubmitDocument(
             id!,
             listFileCertificate!,
@@ -237,17 +223,12 @@ export const RegistrationButton = ({
                 description:
                     "The document has been re-submitted and will be reviewed shortly.",
             });
-            const result = await fetchListOfMyRegistration(
-                currentPage,
-                filterBy
-            );
+            const result = await fetchListOfMyRegistration(currentPage, filterBy);
             if (result && result.data) {
                 dispatch(saveDataListRegistration(result.data));
             }
-            setConfirmLoadingResubmit(false);
             closeModal();
         } else {
-            setConfirmLoadingResubmit(false);
             toast.error("Document Re-submitted Failed", {
                 style: { color: "red" },
                 description: response?.data.message
@@ -325,17 +306,17 @@ export const RegistrationButton = ({
                 </ModalConfirm>
             )}
 
-            {status === Status.APPROVED && registration?.startDate && (
-                <Button
-                    size='default'
-                    variant='blue'
-                    type='button'
-                    onClick={handleStartLearning}
-                    disabled={isLoading}
-                >
-                    START LEARNING
-                </Button>
-            )}
+      {status === Status.APPROVED && registration?.startDate && (
+        <Button
+          size="default"
+          variant="blue"
+          type="button"
+          onClick={handleStartLearning}
+          disabled={isLoading}
+        >
+          START LEARNING
+        </Button>
+      )}
 
             {status === Status.APPROVED && (
                 <ModalConfirm
@@ -392,54 +373,60 @@ export const RegistrationButton = ({
                     </Button>
             )}
 
-            {!haveReview &&
-                (status === Status.DONE ||
-                    status === Status.VERIFIED ||
-                    status === Status.VERIFYING ||
-                    status === Status.DOCUMENT_DECLINED ||
-                    status === Status.CLOSED) && (
-                    <SendReviewModal
-                        title='Give your review'
-                        rating={rating}
-                        setRating={setRating}
-                        reviewContent={reviewContent}
-                        setReviewContent={setReviewContent}
-                        handleConfirm={handleSendReview}
-                    >
-                        <Button
-                            type='button'
-                            size='default'
-                            variant='primary'
-                            disabled={isLoading}
-                        >
-                            REVIEW
-                        </Button>
-                    </SendReviewModal>
-                )}
-            {status === Status.DONE && (
-                <Button
-                    size='default'
-                    variant='blue'
-                    disabled={isLoading}
-                    type='button'
-                    onClick={handleSubmitDocument}
-                >
-                    ASSIGN TO REVIEW
-                </Button>
-            )}
-            {status === Status.DOCUMENT_DECLINED && (
-                <>
-                    <Button
-                        size='lg'
-                        variant='success'
-                        disabled={isLoading}
-                        type='button'
-                        onClick={() => setOpenModalConfirmResubmit(true)}
-                    >
-                        RE-SUBMIT
-                    </Button>
-
-                    <Modal
+      {!haveReview &&
+        (status === Status.DONE ||
+          status === Status.VERIFIED ||
+          status === Status.VERIFYING ||
+          status === Status.DOCUMENT_DECLINED ||
+          status === Status.CLOSED) && (
+          <SendReviewModal
+            title="Give your review"
+            rating={rating}
+            setRating={setRating}
+            reviewContent={reviewContent}
+            setReviewContent={setReviewContent}
+            handleConfirm={handleSendReview}
+          >
+            <Button
+              type="button"
+              size="default"
+              variant="primary"
+              disabled={isLoading}
+            >
+              REVIEW
+            </Button>
+          </SendReviewModal>
+        )}
+      {status === Status.DONE && (
+        <Button
+          size="default"
+          variant="blue"
+          disabled={isLoading}
+          type="button"
+          onClick={handleSubmitDocument}
+        >
+          ASSIGN TO REVIEW
+        </Button>
+      )}
+      {status === Status.DOCUMENT_DECLINED && (
+        <>
+          <ModalConfirm
+            title="Re-submit document"
+            description="Are you sure you want to re-submit document?"
+            cancelButtonTitle="No"
+            acceptButtonTitle="Yes"
+            handleConfirm={handleReSubmitDocument}
+          >
+            <Button
+              size="lg"
+              variant="success"
+              disabled={isLoading}
+              type="button"
+            >
+              RE-SUBMIT
+            </Button>
+          </ModalConfirm>
+          {/* <Modal
                         title={
                             <p style={{ fontSize: "1.2rem" }}>
                                 Re-submit document
@@ -475,9 +462,9 @@ export const RegistrationButton = ({
                         >
                             Are you sure you want to re-submit document?
                         </p>
-                    </Modal>
-                </>
-            )}
-        </div>
-    );
+                    </Modal> */}
+        </>
+      )}
+    </div>
+  );
 };

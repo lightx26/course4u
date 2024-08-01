@@ -3,11 +3,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { courseSchema } from "../../schemas/course-schema";
 import { Button } from "../ui/button";
-import { useState } from "react";
 import { CourseForm } from "../../components/form/course-form";
 import { Form } from "../ui/form";
-
-import { Modal } from "antd";
 import {
   Dialog,
   DialogContent,
@@ -20,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import blobToFile from "../../utils/convertBlobToFile";
 import { base64ToBlob } from "../../utils/ThumbnailConverter";
+import ModalConfirm from "./ModalConfirm";
 
 interface CourseType {
   id: string | undefined;
@@ -44,8 +42,6 @@ type Props = {
 };
 
 const ModalEditOrDeleteCourse = ({ children, courseData }: Props) => {
-  const [openModalConfirm, setOpenModalConfirm] = useState(false);
-  const [confirmLoading, setConfirmLoading] = useState(false);
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof courseSchema>>({
     resolver: zodResolver(courseSchema),
@@ -67,25 +63,18 @@ const ModalEditOrDeleteCourse = ({ children, courseData }: Props) => {
   }
 
   const handleConfirm = async () => {
-    setConfirmLoading(true);
     const response = await deleteCourseById(courseData?.id);
     if (response && response.status === 200) {
-      setOpenModalConfirm(false);
-      setConfirmLoading(false);
       toast.success("Course Deleted Successfully!", {
         description:
           "The course has been successfully deleted. You can verify it in the course list.",
       });
       navigate("/admin/courses");
     } else if (response && response.status === 400) {
-      setOpenModalConfirm(false);
-      setConfirmLoading(false);
       toast.error("Course Delete Failed!", {
         description: response.data.message,
       });
     } else {
-      setOpenModalConfirm(false);
-      setConfirmLoading(false);
       toast.error("Course Delete Failed!", {
         description: "An error occurred while deleting the course.",
       });
@@ -194,22 +183,27 @@ const ModalEditOrDeleteCourse = ({ children, courseData }: Props) => {
           <form className="w-full" onSubmit={form.handleSubmit(onSubmit)}>
             <CourseForm form={form} isEdit={true} course={courseData} />
             <div className="flex justify-end gap-2 mt-8">
-              <Button
-                type="button"
-                className="bg-red-600 text-white w-32 h-9"
-                onClick={() => setOpenModalConfirm(true)}
+              <ModalConfirm
+                title="Delete a course"
+                handleConfirm={handleConfirm}
+                cancelButtonTitle="No"
+                acceptButtonTitle="Yes"
+                description="Do you want to delete this course?"
               >
-                Delete
-              </Button>
-              <Modal
+                <Button
+                  type="button"
+                  className="bg-red-600 text-white w-32 h-9"
+                >
+                  Delete
+                </Button>
+              </ModalConfirm>
+
+              {/* <Modal
                 title={<p style={{ fontSize: "1.2rem" }}>Delete a course</p>}
-                open={openModalConfirm}
                 onOk={handleConfirm}
-                onCancel={() => setOpenModalConfirm(false)}
                 okText="Yes"
                 cancelText="No"
                 centered={true}
-                confirmLoading={confirmLoading}
                 okButtonProps={{
                   style: {
                     backgroundColor: "#861fa2",
@@ -228,7 +222,7 @@ const ModalEditOrDeleteCourse = ({ children, courseData }: Props) => {
                 <p style={{ fontSize: "1rem", margin: "10px 0px 40px 0px" }}>
                   Do you want to delete this course?
                 </p>
-              </Modal>
+              </Modal> */}
               <Button
                 type="submit"
                 className="bg-green-600 text-white w-32 h-9"
