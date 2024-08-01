@@ -21,7 +21,8 @@ export async function fetchListOfMyRegistration(
 
 export async function createNewRegistration(
     data: FormData,
-    close: VoidFunction
+    close: VoidFunction,
+    setFlag: VoidFunction
 ) {
     try {
         const res = await instance.postForm("/registrations", data);
@@ -33,6 +34,7 @@ export async function createNewRegistration(
                     fontWeight: "bold",
                 },
             });
+            setFlag();
             close();
             return;
         }

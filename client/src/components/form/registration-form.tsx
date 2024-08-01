@@ -91,7 +91,9 @@ export const RegistrationsForm = ({
     const user = useSelector((state: RootState) => state.user);
     const [inputDuration, setInputDuration] = useState(1);
     const [asDraft, setAsDraft] = useState(false);
-    const [blockEditCourseForm, setBlockEditCourseForm] = useState<boolean>(isBlockedModifiedCourse ?? false)
+    const [blockEditCourseForm, setBlockEditCourseForm] = useState<boolean>(
+        isBlockedModifiedCourse ?? false
+    );
     useEffect(() => {
         if (id) {
             form.setValue("duration", duration!);
@@ -122,7 +124,11 @@ export const RegistrationsForm = ({
                 setRegistrationFlagAdmin
             );
         } else {
-            await createNewRegistration(requestBody, close);
+            await createNewRegistration(
+                requestBody,
+                close,
+                setRegistrationFlagAdmin
+            );
         }
     }
 
@@ -160,196 +166,278 @@ export const RegistrationsForm = ({
         fetchListDocument();
     }, [id]);
 
-  return (
-    <div className="flex flex-col w-full">
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full space-y-8 "
-        >
-          <CourseForm
-            //eslint-disable-next-line
-            // @ts-ignore
-            form={form}
-            course={course}
-            isEdit={isEdit}
-            registrationStatus={status}
-            blockEditCourseForm={blockEditCourseForm}
-          />
-          <div className="flex w-[60%] pr-4 gap-2">
-            <FormField
-              control={form.control}
-              name="duration"
-              render={({ field }) => (
-                <FormItem className="flex-1">
-                  <FormLabel>
-                    Duration <span className="text-red-500">*</span>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Duration"
-                      {...field}
-                      onChange={(event) => {
-                        field.onChange(+event.target.value);
-                        setInputDuration(+event.target.value);
-                      }}
-                      className=""
-                      disabled={!isEdit}
-                      onKeyDown={(e) => {
-                        e.key === "." && e.preventDefault();
-                      }}
-                      defaultValue={duration || Number(inputDuration).toString()}
+    return (
+        <div className='flex flex-col w-full'>
+            <Form {...form}>
+                <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className='w-full space-y-8 '
+                >
+                    <CourseForm
+                        //eslint-disable-next-line
+                        // @ts-ignore
+                        form={form}
+                        course={course}
+                        isEdit={isEdit}
+                        registrationStatus={status}
+                        blockEditCourseForm={blockEditCourseForm}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="durationUnit"
-              render={({ field }) => (
-                <FormItem className="w-[100px] mt-8">
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={durationUnit || form.watch("durationUnit")}
-                    disabled={!isEdit}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a level for this course" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="DAY">Day</SelectItem>
-                      <SelectItem value="WEEK">Week</SelectItem>
-                      <SelectItem value="MONTH">Month</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          {startDate && (
-            <LearningProgress startDate={startDate} endDate={endDate || ""} />
-          )}
-
-          {/* View Document and Feedback for User */}
-          {user.user?.role === "USER" && (
-            <div className="space-y-5">
-              {status === "DONE" && (
-                <>
-                  <FormDocument
-                    listFileCertificate={listFileCertificate}
-                    setListFileCertificate={setListFileCertificate}
-                    listFilePayment={listFilePayment}
-                    setListFilePayment={setListFilePayment}
-                  />
-                  {registrationFeedbacks &&
-                    registrationFeedbacks.length > 0 && (
-                      <FeedbackList feedbacks={registrationFeedbacks} />
-                    )}
-                  <RegistrationButton
-                    status={status!}
-                    setIsEdit={setIsEdit}
-                    isEdit={isEdit}
-                    id={id}
-                    isStatrted={startDate != undefined}
-                    listFileCertificate={listFileCertificate}
-                    listFilePayment={listFilePayment}
-                    blockEditCourseForm={blockEditCourseForm}
-                    setBlockEditCourseForm={setBlockEditCourseForm}
-                    duration={form.getValues("duration")}
-                    durationUnit={form.getValues("durationUnit")}
-                    setAsDraft={setAsDraft}
-                  />
-                </>
-              )}
-
-              {status !== "DONE" &&
-                status !== "DOCUMENT_DECLINED" &&
-                status !== "VERIFIED" &&
-                status !== "CLOSED" &&
-                status !== "VERIFYING" && (
-                  <>
-                    {registrationFeedbacks &&
-                      registrationFeedbacks.length > 0 && (
-                        <FeedbackList feedbacks={registrationFeedbacks} />
-                      )}
-                    <RegistrationButton
-                      status={status!}
-                      setIsEdit={setIsEdit}
-                      isEdit={isEdit}
-                      id={id}
-                      isStatrted={startDate != undefined}
-                      listFileCertificate={listFileCertificate}
-                      listFilePayment={listFilePayment}
-                      blockEditCourseForm={blockEditCourseForm}
-                      setBlockEditCourseForm={setBlockEditCourseForm}
-                      duration={form.getValues("duration")}
-                      durationUnit={form.getValues("durationUnit")}
-                      setAsDraft={setAsDraft}
-                    />
-                  </>
-                )}
-              {(status === "VERIFIED" ||
-                status === "CLOSED" ||
-                status === "VERIFYING") && (
-                <>
-                  <VerifyDocumentForAccountant
-                    documentRegistration={documentRegistration}
-                    setDocumentRegistration={setDocumentRegistration}
-                    status={status}
-                  />
-                  {registrationFeedbacks &&
-                    registrationFeedbacks.length > 0 && (
-                      <FeedbackList feedbacks={registrationFeedbacks} />
-                    )}
-                </>
-              )}
-            </div>
-          )}
-          {user.user?.role === "USER" && (
-            <div className="space-y-5">
-              {status === "DOCUMENT_DECLINED" && (
-                <>
-                  <FormDocument
-                    listFileCertificate={listFileCertificate}
-                    setListFileCertificate={setListFileCertificate}
-                    listFilePayment={listFilePayment}
-                    setListFilePayment={setListFilePayment}
-                    documentRegistrationResubmit={documentRegistrationResubmit}
-                    setDocumentRegistrationResubmit={
-                      setDocumentRegistrationResubmit
-                    }
-                    setListIdDocumentRemove={setListIdDocumentRemove}
-                  />
-                  {registrationFeedbacks &&
-                    registrationFeedbacks.length > 0 && (
-                      <FeedbackList feedbacks={registrationFeedbacks} />
+                    <div className='flex w-[60%] pr-4 gap-2'>
+                        <FormField
+                            control={form.control}
+                            name='duration'
+                            render={({ field }) => (
+                                <FormItem className='flex-1'>
+                                    <FormLabel>
+                                        Duration{" "}
+                                        <span className='text-red-500'>*</span>
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type='number'
+                                            placeholder='Duration'
+                                            {...field}
+                                            onChange={(event) => {
+                                                field.onChange(
+                                                    +event.target.value
+                                                );
+                                                setInputDuration(
+                                                    +event.target.value
+                                                );
+                                            }}
+                                            className=''
+                                            disabled={!isEdit}
+                                            onKeyDown={(e) => {
+                                                e.key === "." &&
+                                                    e.preventDefault();
+                                            }}
+                                            defaultValue={
+                                                duration ||
+                                                Number(inputDuration).toString()
+                                            }
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name='durationUnit'
+                            render={({ field }) => (
+                                <FormItem className='w-[100px] mt-8'>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        defaultValue={
+                                            durationUnit ||
+                                            form.watch("durationUnit")
+                                        }
+                                        disabled={!isEdit}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder='Select a level for this course' />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value='DAY'>
+                                                Day
+                                            </SelectItem>
+                                            <SelectItem value='WEEK'>
+                                                Week
+                                            </SelectItem>
+                                            <SelectItem value='MONTH'>
+                                                Month
+                                            </SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                    {startDate && (
+                        <LearningProgress
+                            startDate={startDate}
+                            endDate={endDate || ""}
+                        />
                     )}
 
-                  <RegistrationButton
-                    status={status!}
-                    setIsEdit={setIsEdit}
-                    isEdit={isEdit}
-                    id={id}
-                    isStatrted={startDate != undefined}
-                    listFileCertificate={listFileCertificate}
-                    listFilePayment={listFilePayment}
-                    listIdDocumentRemove={listIdDocumentRemove}
-                    blockEditCourseForm={blockEditCourseForm}
-                    setBlockEditCourseForm={setBlockEditCourseForm}
-                    duration={form.getValues("duration")}
-                    durationUnit={form.getValues("durationUnit")}
-                    setAsDraft={setAsDraft}
-                  />
-                </>
-              )}
-            </div>
-          )}
+                    {/* View Document and Feedback for User */}
+                    {user.user?.role === "USER" && (
+                        <div className='space-y-5'>
+                            {status === "DONE" && (
+                                <>
+                                    <FormDocument
+                                        listFileCertificate={
+                                            listFileCertificate
+                                        }
+                                        setListFileCertificate={
+                                            setListFileCertificate
+                                        }
+                                        listFilePayment={listFilePayment}
+                                        setListFilePayment={setListFilePayment}
+                                    />
+                                    {registrationFeedbacks &&
+                                        registrationFeedbacks.length > 0 && (
+                                            <FeedbackList
+                                                feedbacks={
+                                                    registrationFeedbacks
+                                                }
+                                            />
+                                        )}
+                                    <RegistrationButton
+                                        status={status!}
+                                        setIsEdit={setIsEdit}
+                                        isEdit={isEdit}
+                                        id={id}
+                                        isStatrted={startDate != undefined}
+                                        listFileCertificate={
+                                            listFileCertificate
+                                        }
+                                        listFilePayment={listFilePayment}
+                                        blockEditCourseForm={
+                                            blockEditCourseForm
+                                        }
+                                        setBlockEditCourseForm={
+                                            setBlockEditCourseForm
+                                        }
+                                        duration={form.getValues("duration")}
+                                        durationUnit={form.getValues(
+                                            "durationUnit"
+                                        )}
+                                        setAsDraft={setAsDraft}
+                                    />
+                                </>
+                            )}
+
+                            {status !== "DONE" &&
+                                status !== "DOCUMENT_DECLINED" &&
+                                status !== "VERIFIED" &&
+                                status !== "CLOSED" &&
+                                status !== "VERIFYING" && (
+                                    <>
+                                        {registrationFeedbacks &&
+                                            registrationFeedbacks.length >
+                                                0 && (
+                                                <FeedbackList
+                                                    feedbacks={
+                                                        registrationFeedbacks
+                                                    }
+                                                />
+                                            )}
+                                        <RegistrationButton
+                                            status={status!}
+                                            setIsEdit={setIsEdit}
+                                            isEdit={isEdit}
+                                            id={id}
+                                            isStatrted={startDate != undefined}
+                                            listFileCertificate={
+                                                listFileCertificate
+                                            }
+                                            listFilePayment={listFilePayment}
+                                            blockEditCourseForm={
+                                                blockEditCourseForm
+                                            }
+                                            setBlockEditCourseForm={
+                                                setBlockEditCourseForm
+                                            }
+                                            duration={form.getValues(
+                                                "duration"
+                                            )}
+                                            durationUnit={form.getValues(
+                                                "durationUnit"
+                                            )}
+                                            setAsDraft={setAsDraft}
+                                        />
+                                    </>
+                                )}
+                            {(status === "VERIFIED" ||
+                                status === "CLOSED" ||
+                                status === "VERIFYING") && (
+                                <>
+                                    <VerifyDocumentForAccountant
+                                        documentRegistration={
+                                            documentRegistration
+                                        }
+                                        setDocumentRegistration={
+                                            setDocumentRegistration
+                                        }
+                                        status={status}
+                                    />
+                                    {registrationFeedbacks &&
+                                        registrationFeedbacks.length > 0 && (
+                                            <FeedbackList
+                                                feedbacks={
+                                                    registrationFeedbacks
+                                                }
+                                            />
+                                        )}
+                                </>
+                            )}
+                        </div>
+                    )}
+                    {user.user?.role === "USER" && (
+                        <div className='space-y-5'>
+                            {status === "DOCUMENT_DECLINED" && (
+                                <>
+                                    <FormDocument
+                                        listFileCertificate={
+                                            listFileCertificate
+                                        }
+                                        setListFileCertificate={
+                                            setListFileCertificate
+                                        }
+                                        listFilePayment={listFilePayment}
+                                        setListFilePayment={setListFilePayment}
+                                        documentRegistrationResubmit={
+                                            documentRegistrationResubmit
+                                        }
+                                        setDocumentRegistrationResubmit={
+                                            setDocumentRegistrationResubmit
+                                        }
+                                        setListIdDocumentRemove={
+                                            setListIdDocumentRemove
+                                        }
+                                    />
+                                    {registrationFeedbacks &&
+                                        registrationFeedbacks.length > 0 && (
+                                            <FeedbackList
+                                                feedbacks={
+                                                    registrationFeedbacks
+                                                }
+                                            />
+                                        )}
+
+                                    <RegistrationButton
+                                        status={status!}
+                                        setIsEdit={setIsEdit}
+                                        isEdit={isEdit}
+                                        id={id}
+                                        isStatrted={startDate != undefined}
+                                        listFileCertificate={
+                                            listFileCertificate
+                                        }
+                                        listFilePayment={listFilePayment}
+                                        listIdDocumentRemove={
+                                            listIdDocumentRemove
+                                        }
+                                        blockEditCourseForm={
+                                            blockEditCourseForm
+                                        }
+                                        setBlockEditCourseForm={
+                                            setBlockEditCourseForm
+                                        }
+                                        duration={form.getValues("duration")}
+                                        durationUnit={form.getValues(
+                                            "durationUnit"
+                                        )}
+                                        setAsDraft={setAsDraft}
+                                    />
+                                </>
+                            )}
+                        </div>
+                    )}
 
                     {/* View Document and Feedback for Accounant */}
                     {user.user?.role === "ACCOUNTANT" && (

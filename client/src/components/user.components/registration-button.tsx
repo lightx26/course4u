@@ -29,35 +29,35 @@ import {
 import { isExistAvailableCourseWithId } from "../../apiService/Course.service";
 
 type Props = {
-  status?: Status;
-  setIsEdit: (isEdit: boolean) => void;
-  isEdit: boolean;
-  id?: number;
-  isStatrted?: boolean;
-  listFileCertificate?: UploadFile[];
-  listFilePayment?: UploadFile[];
-  duration: number;
-  durationUnit: string;
-  listIdDocumentRemove?: number[];
-  blockEditCourseForm?:boolean,
-  setBlockEditCourseForm: React.Dispatch<React.SetStateAction<boolean>>
+    status?: Status;
+    setIsEdit: (isEdit: boolean) => void;
+    isEdit: boolean;
+    id?: number;
+    isStatrted?: boolean;
+    listFileCertificate?: UploadFile[];
+    listFilePayment?: UploadFile[];
+    duration: number;
+    durationUnit: string;
+    listIdDocumentRemove?: number[];
+    blockEditCourseForm?: boolean;
+    setBlockEditCourseForm: React.Dispatch<React.SetStateAction<boolean>>;
     setAsDraft: (asDraft: boolean) => void;
 };
 
 export const RegistrationButton = ({
-  status = Status.NONE,
-  setIsEdit,
-  isEdit,
-  id,
-  listFileCertificate,
-  listFilePayment,
-  isStatrted,
-  blockEditCourseForm = false,
-  setBlockEditCourseForm,
-  duration,
-  durationUnit,
-  listIdDocumentRemove,
-                                       setAsDraft,
+    status = Status.NONE,
+    setIsEdit,
+    isEdit,
+    id,
+    listFileCertificate,
+    listFilePayment,
+    isStatrted,
+    blockEditCourseForm = false,
+    setBlockEditCourseForm,
+    duration,
+    durationUnit,
+    listIdDocumentRemove,
+    setAsDraft,
 }: Props) => {
   const { registration, closeRegistration } = useRegistrationDetail();
   const { close } = useRegistrationModal((state) => state);
@@ -75,11 +75,15 @@ export const RegistrationButton = ({
     setRegistrationFlagAdmin();
   };
 
-    const onEdit = async() => {
+    const onEdit = async () => {
         setIsEdit(true);
         const response = await isExistAvailableCourseWithId(registration!.id!);
-        if (response.data && (registration?.status === Status.SUBMITTED || registration?.status === Status.DECLINED))
-            setBlockEditCourseForm(true)
+        if (
+            response.data &&
+            (registration?.status === Status.SUBMITTED ||
+                registration?.status === Status.DECLINED)
+        )
+            setBlockEditCourseForm(true);
     };
 
   //Delete a registration
@@ -352,18 +356,20 @@ export const RegistrationButton = ({
                 </ModalConfirm>
             )}
 
-            {(status === Status.SUBMITTED || status === Status.DECLINED) && isEdit === false && (
-                <Button
-                    size='default'
-                    variant='blue'
-                    type='button'
-                    onClick={onEdit}
-                >
-                EDIT
-                </Button>
-            )}
+            {(status === Status.SUBMITTED || status === Status.DECLINED) &&
+                isEdit === false && (
+                    <Button
+                        size='default'
+                        variant='blue'
+                        type='button'
+                        onClick={onEdit}
+                    >
+                        EDIT
+                    </Button>
+                )}
 
-            {(status === Status.NONE || status === Status.DRAFT) && isEdit &&
+            {(status === Status.NONE || status === Status.DRAFT) &&
+                isEdit &&
                 (blockEditCourseForm ? (
                     <Button
                         type='button'
@@ -377,14 +383,14 @@ export const RegistrationButton = ({
                     <Button type='submit' size='default' variant='success'>
                         SUBMIT
                     </Button>
-            ))}
+                ))}
 
             {(status === Status.SUBMITTED || status === Status.DECLINED) &&
                 isEdit && (
                     <Button type='submit' size='default' variant='success'>
                         RE-SUBMIT
                     </Button>
-            )}
+                )}
 
       {!haveReview &&
         (status === Status.DONE ||
