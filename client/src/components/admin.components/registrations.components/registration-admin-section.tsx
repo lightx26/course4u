@@ -61,6 +61,8 @@ const RegistrationAdminSection = ({ status }: Props) => {
     }
 
     const avatarUrl = handleAvatarUrl(user.avatarUrl);
+    const adminName = user.fullName ? user.fullName : 'Anonymous';
+
     return (
         <Form {...form}>
             <form
@@ -82,7 +84,7 @@ const RegistrationAdminSection = ({ status }: Props) => {
                                         alt='avatar'
                                         className='rounded-full mr-2 w-[40px] h-[40px] border-2 border-violet-500 mb-1'
                                     />
-                                    {user.fullName}
+                                    {adminName}
                                 </FormLabel>
                                 <FormControl>
                                     <Textarea
