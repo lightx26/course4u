@@ -747,13 +747,13 @@ class RegistrationServiceImplSpec extends Specification {
         result == true
     }
 
-    def "Calculate score and update Registration"() {
+    def "finishRegistration: update registration and calculate score successfully"() {
         given:
-        Long id = 1
-        Course course = Course.builder().level(CourseLevel.ADVANCED).build()
+        def registrationId = 1L
+        def course = Course.builder().level(CourseLevel.ADVANCED).build()
 
-        Registration registration = Registration.builder()
-                .id(1)
+        def registration = Registration.builder()
+                .id(registrationId)
                 .status(RegistrationStatus.APPROVED)
                 .startDate(LocalDateTime.of(2024, 7, 22, 18, 0, 0).atZone(ZoneId.systemDefault()))
                 .score(1008)
@@ -762,16 +762,46 @@ class RegistrationServiceImplSpec extends Specification {
                 .durationUnit(DurationUnit.DAY)
                 .build()
 
-        registrationRepository.findById(_) >> Optional.of(registration)
+        registrationRepository.findById(registrationId) >> Optional.of(registration)
 
         when:
-        registrationService.calculateScore(id)
+        registrationService.finishRegistration(registrationId)
 
         then:
-        1 * registrationRepository.save(_)
+        1 * registrationRepository.save(registration) >> { Registration reg ->
+            assert reg.status == RegistrationStatus.DONE
+            assert reg.lastUpdated != null
+            assert reg.score != null
+        }
     }
 
-    def "should close the registration without sending feedback"() {
+    def "finishRegistration: should throw BadRequestRuntimeException when registration is not APPROVED"() {
+        given:
+        def registrationId = 1L
+        def registration = new Registration(id: registrationId, status: RegistrationStatus.SUBMITTED)
+        registrationRepository.findById(registrationId) >> Optional.of(registration)
+
+        when:
+        registrationService.finishRegistration(registrationId)
+
+        then:
+        thrown(BadRequestRuntimeException)
+    }
+
+
+    def "finishRegistration: should throw RegistrationNotFoundException when id is invalid"() {
+        given:
+        def registrationId = 101L
+        registrationRepository.findById(registrationId) >> Optional.empty()
+
+        when:
+        registrationService.finishRegistration(registrationId)
+
+        then:
+        thrown(RegistrationNotFoundException)
+    }
+
+    def "closeRegistration: should close the registration without sending feedback"() {
         given:
         def user = new User(id: 1L, username: "User", email: "user@mgm-tp.com")
         def registration = new Registration(id: 1L, status: RegistrationStatus.VERIFIED, course: new Course(name: "Course 101"), user: user)
@@ -791,7 +821,7 @@ class RegistrationServiceImplSpec extends Specification {
         1 * emailService.sendMessage(user.getEmail(), "Registration closed", _, _)
     }
 
-    def "should close the registration with feedback"() {
+    def "closeRegistration: should close the registration with feedback"() {
         given:
         def user = new User(id: 1L, username: "User", email: "user@mgm-tp.com")
         def registration = new Registration(id: 1L, status: RegistrationStatus.DONE, course: new Course(name: "Course 101"), user: user)
@@ -812,7 +842,7 @@ class RegistrationServiceImplSpec extends Specification {
         1 * emailService.sendMessage(user.getEmail(), "Registration closed", _, _)
     }
 
-    def "should throw RegistrationNotFoundException if registration is not found"() {
+    def "closeRegistration: should throw RegistrationNotFoundException if registration is not found"() {
         given:
         def feedbackRequest = new FeedbackRequest(comment: "Not suitable")
         registrationRepository.findById(1L) >> Optional.empty()

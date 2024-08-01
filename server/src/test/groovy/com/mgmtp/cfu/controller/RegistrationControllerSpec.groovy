@@ -206,11 +206,22 @@ class RegistrationControllerSpec extends Specification {
         def result = registrationController.finishLearning(id)
 
         then:
-        1 * registrationService.calculateScore(id)
+        1 * registrationService.finishRegistration(id)
         result.statusCode == HttpStatus.OK
     }
 
-    def "should return ok response when close registration successfully"() {
+    def "finishLearning: should throw exception when finish registration failed"() {
+        given:
+            def registrationId = 1
+            registrationService.finishRegistration(registrationId) >> { throw new RegistrationNotFoundException("Registration not found") }
+        when:
+            def response = registrationController.finishLearning(registrationId)
+        then:
+            def e = thrown(RegistrationNotFoundException)
+            e.message == "Registration not found"
+    }
+
+    def "closeRegistration: should return ok response when close registration successfully"() {
         given:
             def registrationId = 1
             def feedbackRequest = new FeedbackRequest(comment: "Close registration")
@@ -220,7 +231,7 @@ class RegistrationControllerSpec extends Specification {
             response.statusCode.value() == 200
     }
 
-    def "should throw exception when service throw exception"() {
+    def "closeRegistration: should throw exception when service throw exception"() {
         given:
             def registrationId = 1
             def feedbackRequest = new FeedbackRequest(comment: "Close registration")
@@ -231,6 +242,7 @@ class RegistrationControllerSpec extends Specification {
             def e = thrown(RegistrationNotFoundException)
             e.message == "Registration not found"
     }
+
     def 'test discard registration return ok response'() {
         given:
             registrationService.discardRegistration(_ as Long)>>{}

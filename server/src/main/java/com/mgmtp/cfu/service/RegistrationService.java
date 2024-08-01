@@ -20,7 +20,7 @@ public interface RegistrationService {
 
     Boolean createRegistration(RegistrationRequest registrationRequest);
 
-    void calculateScore(Long id);
+    void finishRegistration(Long id);
 
     void approveRegistration(Long id);
 

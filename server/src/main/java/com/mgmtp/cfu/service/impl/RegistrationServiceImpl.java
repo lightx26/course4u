@@ -27,6 +27,7 @@ import com.mgmtp.cfu.specification.RegistrationSpecifications;
 import com.mgmtp.cfu.util.NotificationUtil;
 import com.mgmtp.cfu.util.RegistrationStatusUtil;
 import com.mgmtp.cfu.util.RegistrationValidator;
+import com.mgmtp.cfu.util.ScoreCalculator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -38,7 +39,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.List;
@@ -272,54 +272,34 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     @Override
-    public void calculateScore(Long id) {
+    @Transactional
+    public void finishRegistration(Long id) {
+        Registration registration = registrationRepository.findById(id).orElseThrow(() -> new RegistrationNotFoundException("Registration not found"));
 
-        Registration registration = registrationRepository.findById(id).orElseThrow(() -> new RegistrationNotFoundException("Registration with id " + id + " not found"));
+        if (registration.getStatus() != RegistrationStatus.APPROVED) {
+            throw new BadRequestRuntimeException("Registration must be in approved status to be finished");
+        }
 
-        if (registration.getStatus().equals(RegistrationStatus.APPROVED)) {
+        registration.setStatus(RegistrationStatus.DONE);
+        registration.setEndDate(ZonedDateTime.now());
+        registration.setLastUpdated(LocalDateTime.now());
+        updateScore(registration);
 
-            ZonedDateTime startDate = registration.getStartDate();
-            ZonedDateTime endDate = ZonedDateTime.now();
-            Integer estimatedDuration = registration.getDuration();
-            DurationUnit durationUnit = registration.getDurationUnit(); // Day || Week || Month
-            CourseLevel level = registration.getCourse().getLevel();
+        registrationRepository.save(registration);
+    }
 
-            // Actual study hours
-            Duration duration = Duration.between(startDate, endDate);
-            long actualDuration = duration.toHours();
+    private void updateScore(Registration registration) {
+        if (registration.getStatus() != RegistrationStatus.DONE) {
+            throw new BadRequestRuntimeException("Registration must be in done status to calculate score");
+        }
 
-            long estimatedHour;
-            if (durationUnit.equals(DurationUnit.DAY))
-                estimatedHour = estimatedDuration * 24;
-            else if (durationUnit.equals(DurationUnit.WEEK))
-                estimatedHour = estimatedDuration * 168;
-            else
-                estimatedHour = estimatedDuration * 720;
+        int score = ScoreCalculator.calculateScore(registration.getCourse().getLevel(), registration.getStartDate(), registration.getEndDate(), registration.getDuration(), registration.getDurationUnit());
 
-            long bonusPoints = Math.max(0, estimatedHour - actualDuration);
-
-            long score;
-            if (level.equals(CourseLevel.BEGINNER))
-                score = actualDuration + (bonusPoints * 2);
-            else if (level.equals(CourseLevel.INTERMEDIATE))
-                score = 2 * actualDuration + (bonusPoints * 2);
-            else
-                score = 3 * actualDuration + (bonusPoints * 2);
-
-            Integer savedScore = registration.getScore();
-            if (savedScore == null)
-                registration.setScore((int) score);
-            else
-                score += savedScore;
-
-            registration.setScore((int) score);
-            registration.setStatus(RegistrationStatus.DONE);
-            registration.setEndDate(endDate);
-            registration.setLastUpdated(LocalDateTime.now());
-
-            registrationRepository.save(registration);
-        } else
-            throw new InvalidRegistrationStatusException("The status of the Registration is not APPROVED");
+        if (registration.getScore() == null) {
+            registration.setScore(score);
+        } else {
+            registration.setScore(registration.getScore() + score);
+        }
     }
 
     @Override

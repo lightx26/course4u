@@ -101,8 +101,8 @@ public class RegistrationController {
     @PutMapping("/{id}/finish-learning")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<?> finishLearning(@PathVariable Long id) {
-        registrationService.calculateScore(id);
-        return ResponseEntity.status(HttpStatus.OK).body("Saved score successfully!");
+        registrationService.finishRegistration(id);
+        return ResponseEntity.status(HttpStatus.OK).body("Finish learning successfully!");
     }
 
     @PostMapping("/{id}/close")
