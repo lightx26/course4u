@@ -24,11 +24,13 @@ public class ScoreQueryManager {
                 "COALESCE(SUM(FUNCTION('DATEDIFF', day, r.re_startDate, r.re_endDate)), 0), " +
                 "u.avatarUrl, u.email, u.username, u.fullName) " +
                 "FROM User u LEFT JOIN (SELECT re.id as re_id, re.score as re_score, re.startDate as re_startDate, re.endDate as re_endDate, re.user.id as re_user_id " +
-                "FROM Registration re WHERE EXTRACT(YEAR FROM re.endDate) = :year AND re.status IN :acceptStatus) r " +
+                "FROM Registration re WHERE EXTRACT(YEAR FROM re.endDate) = :year AND re.status IN :acceptStatus) r  " +
                 "ON u.id = r.re_user_id " +
-                "WHERE u.role='USER'" +
+                "WHERE u.role='USER' " +
                 "GROUP BY u.id, u.avatarUrl, u.email, u.username, u.fullName " +
-                "ORDER BY COALESCE(SUM(r.re_score), 0) DESC, u.username asc ";
+                "having COALESCE(SUM(r.re_score), 0)>0 " +
+                "ORDER BY COALESCE(SUM(r.re_score), 0) DESC, u.username asc "
+                ;
 
 
 

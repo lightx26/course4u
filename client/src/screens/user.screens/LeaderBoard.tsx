@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Card_LeaderBoard from "../../components/user.components/Card_LeaderBoard";
-import { Table, Select } from "antd";
+import { Table, Select, Empty } from "antd";
 import type { TableProps } from "antd";
 import "../../assets/css/Leader_board.css";
 import {
@@ -163,7 +163,7 @@ const LeaderBoard: React.FC = () => {
   }, []);
 
   return (
-    <div className="pb-12 bg-gray-100">
+    <div className="pb-12 bg-[#f9fafb] ">
       <div className="px-5 pt-6 mx-auto max-w-screen-2xl">
         <div className="flex items-center justify-between px-2.5">
           <span className="text-4xl font-semibold">Ranking</span>
@@ -177,27 +177,38 @@ const LeaderBoard: React.FC = () => {
             />
           </div>
         </div>
-        <div className="flex items-end justify-center gap-8 mt-10">
-          {dataCardLeaderBoard.map((item: DataType, index: number) => (
-            <Card_LeaderBoard
-              key={index}
-              fullname={item.userInfor.fullname}
-              email={item.userInfor.email}
-              ranking={item.rank}
-              avatarUrl={item.userInfor.avatarUrl}
-              score={item.score}
-              learningTime={item.time}
-            />
-          ))}
-        </div>
-        <div className="mt-12">
-          <Table
-            columns={columns}
-            dataSource={dataLeaderBoardTable}
-            pagination={false}
-            rowClassName={rowClassName}
-          />
-        </div>
+        {dataCardLeaderBoard &&
+        dataCardLeaderBoard.length === 0 &&
+        dataLeaderBoardTable &&
+        dataLeaderBoardTable.length === 0 ? (
+          <Empty />
+        ) : (
+          <>
+            <div className="flex items-end justify-center gap-8 mt-10">
+              {dataCardLeaderBoard &&
+                dataCardLeaderBoard.length > 0 &&
+                dataCardLeaderBoard.map((item: DataType, index: number) => (
+                  <Card_LeaderBoard
+                    key={index}
+                    fullname={item.userInfor.fullname}
+                    email={item.userInfor.email}
+                    ranking={item.rank}
+                    avatarUrl={item.userInfor.avatarUrl}
+                    score={item.score}
+                    learningTime={item.time}
+                  />
+                ))}
+            </div>
+            <div className="mt-12">
+              <Table
+                columns={columns}
+                dataSource={dataLeaderBoardTable}
+                pagination={false}
+                rowClassName={rowClassName}
+              />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
