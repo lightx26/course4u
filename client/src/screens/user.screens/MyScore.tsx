@@ -51,7 +51,12 @@ const MyScore: React.FC = () => {
     DataPersonal | undefined
   >();
   const [optionYear, setOptionYear] = useState<string[]>([]);
+  const [optionMonths, setOptionMonths] = useState<string[]>([]);
+
   const [dataChart, setDataChart] = useState<DataChartType | undefined>();
+  const [dataChartOfMonth, setDataChartOfMonth] = useState<DataChartType| undefined>();
+
+
 
   const fetchDataYearOption = async () => {
     const result = await getDataMyScore();
@@ -69,7 +74,16 @@ const MyScore: React.FC = () => {
       setValuePersonal({
         score: result.score || 0,
         rank: result.rank || 0,
+
       });
+      setDataChartOfMonth({
+        scores: result.scores ||0,
+        days:result.learningTime||0,
+      });
+      setOptionMonths(
+         result.months|| [""]
+      )
+
     }
   };
 
@@ -95,6 +109,27 @@ const MyScore: React.FC = () => {
       {
         label: "Days",
         data: dataChart?.days,
+        backgroundColor: "rgba(75, 192, 192, 0.4)",
+        borderColor: "rgba(75, 192, 192, 1)",
+        borderWidth: 1,
+        yAxisID: "y2",
+      },
+    ],
+  };
+  const dataOfMonths = {
+    labels: optionMonths,
+    datasets: [
+      {
+        label: "Score",
+        data: dataChartOfMonth?.scores,
+        backgroundColor: "#861fa2",
+        borderColor: "rgba(153, 102, 255, 1)",
+        borderWidth: 1,
+        yAxisID: "y1",
+      },
+      {
+        label: "Days",
+        data: dataChartOfMonth?.days,
         backgroundColor: "rgba(75, 192, 192, 0.4)",
         borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
@@ -181,7 +216,7 @@ const MyScore: React.FC = () => {
         </div>
         <div className="flex-1 p-5 w-[75%] h-full">
           <div className="w-full h-1/2">
-            <Line data={data} options={options} />
+            <Line data={dataOfMonths} options={options} />
           </div>
           <hr className="h-px w-full mt-5" />
           <div className="w-full h-1/2">

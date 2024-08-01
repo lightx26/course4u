@@ -2,6 +2,9 @@ package com.mgmtp.cfu.dto.userdto;
 
 import lombok.*;
 
+import java.util.List;
+import java.util.Set;
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -11,4 +14,7 @@ public class UserScore {
     private int rank;
     private long score;
     private String year;
+    private Set<String> months;
+    private List<Double> scores;
+    private List<Double> learningTime;
 }
