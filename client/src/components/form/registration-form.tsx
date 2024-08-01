@@ -25,7 +25,10 @@ import { RegistrationsProps } from "../user.components/registrations";
 import { RegistrationButton } from "../user.components/registration-button";
 import { toast } from "sonner";
 import blobToFile from "../../utils/convertBlobToFile";
-import { createNewRegistration, editRegistration } from "../../apiService/MyRegistration.service";
+import {
+  createNewRegistration,
+  editRegistration,
+} from "../../apiService/MyRegistration.service";
 import { base64ToBlob } from "../../utils/ThumbnailConverter";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
@@ -41,6 +44,7 @@ import FeedBackFromAccountant from "../FeedBackFromAccountant";
 import { getListDocumentByRegistrationId } from "../../apiService/Document.service";
 import { Status } from "../../utils/index";
 import { useRefreshState } from "../../hooks/use-refresh-state";
+import handleThumbnailUrl from "../../utils/handleThumbnailUrl";
 type DocumentType = {
   id: number;
   registrationId: number;
@@ -84,7 +88,7 @@ export const RegistrationsForm = ({
       thumbnailUrl: "",
     },
   });
-  const { setRegistrationFlagAdmin } = useRefreshState((state) => state)
+  const { setRegistrationFlagAdmin } = useRefreshState((state) => state);
   const { open } = useRegistrationModal((state) => state);
   const user = useSelector((state: RootState) => state.user);
   const [inputDuration, setInputDuration] = useState(1);
@@ -96,7 +100,10 @@ export const RegistrationsForm = ({
       form.setValue("name", course?.name || "");
       form.setValue("teacherName", course?.teacherName || "");
       form.setValue("link", course?.link || "");
-      form.setValue("thumbnailUrl", course?.thumbnailUrl || "");
+      form.setValue(
+        "thumbnailUrl",
+        handleThumbnailUrl(course?.thumbnailUrl) || ""
+      );
       form.setValue("level", course?.level || "BEGINNER");
       const categoriesData = course?.categories?.map((category) => ({
         label: category.name,
@@ -144,12 +151,16 @@ export const RegistrationsForm = ({
       requestBody.append("thumbnailUrl", values.thumbnailUrl);
     }
 
-    if (isEdit && (status === Status.DRAFT || status === Status.DECLINED || status === Status.SUBMITTED)) {
-
+    if (
+      isEdit &&
+      (status === Status.DRAFT ||
+        status === Status.DECLINED ||
+        status === Status.SUBMITTED)
+    ) {
       const statusResponse = await editRegistration(id, requestBody);
 
       if (status === Status.DRAFT && statusResponse === 201) {
-        setRegistrationFlagAdmin()
+        setRegistrationFlagAdmin();
         toast.success("Submit registration successfully", {
           description: "",
           style: {
@@ -159,10 +170,10 @@ export const RegistrationsForm = ({
           },
           onAutoClose: () => {
             open(false);
-          }
+          },
         });
       } else {
-        setRegistrationFlagAdmin()
+        setRegistrationFlagAdmin();
         toast.success("Re-submit registration successfully", {
           description: "",
           style: {
@@ -172,7 +183,7 @@ export const RegistrationsForm = ({
           },
           onAutoClose: () => {
             open(false);
-          }
+          },
         });
       }
     } else {
@@ -188,7 +199,7 @@ export const RegistrationsForm = ({
           onAutoClose: () => {
             open(false);
           },
-      });
+        });
       } else if (status === 500) {
         toast.error("Oops! Something went wrong. Please try again later", {
           description: "Contact the admin for further assistance!",
