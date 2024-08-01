@@ -8,7 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 public class RegistrationSpecifications {
 
     public static Specification<Registration> getSpecs(String status, String search, String orderBy) {
-        Specification<Registration> spec = Specification.where(null);
+        Specification<Registration> spec = excludeStatus();
 
         if (!status.isEmpty() && !status.equalsIgnoreCase("all")) {
             spec = spec.and(hasStatus(RegistrationStatus.valueOf(status)));
@@ -34,6 +34,10 @@ public class RegistrationSpecifications {
         }
 
         return spec;
+    }
+
+    private static Specification<Registration> excludeStatus() {
+        return (root, query, cb) -> cb.notEqual(root.get("status"), RegistrationStatus.DRAFT);
     }
 
     private static Specification<Registration> hasStatus(RegistrationStatus status) {

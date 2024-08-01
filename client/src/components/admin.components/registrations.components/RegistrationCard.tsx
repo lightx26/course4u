@@ -22,8 +22,7 @@ function RegistrationCardComponent({ registration }: PropsType) {
     // Since JS Date format is in yyyy-mm-dd,
     // We need to convert it to mm-dd-yyyy to fit the project
     //
-    const convertJSDatesToCorrectFormat = (date?: Date): string => {
-        if (!date) return "";
+    const convertJSDatesToCorrectFormat = (date: Date): string => {
         const newDate = date.toString().split("-");
         [newDate[0], newDate[1], newDate[2]] = [
             newDate[1],
@@ -33,10 +32,15 @@ function RegistrationCardComponent({ registration }: PropsType) {
         return newDate.join("/");
     };
 
-    const handlePeriod = (startDate?: Date, endDate?: Date): string => {
-        return `Period: ${convertJSDatesToCorrectFormat(
-            startDate
-        )} - ${convertJSDatesToCorrectFormat(endDate)}`;
+    const handlePeriod = (startDate: Date | undefined, endDate: Date | undefined): string => {
+        if (!startDate){
+            return `Not started yet`;
+        }
+
+        const handledStartDate = convertJSDatesToCorrectFormat(startDate);
+        const handledEndDate = endDate ? convertJSDatesToCorrectFormat(endDate) : "";
+
+        return `Period: ${ handledStartDate } - ${ handledEndDate }`;
     };
 
     const handlePopup = () => {
@@ -46,16 +50,20 @@ function RegistrationCardComponent({ registration }: PropsType) {
     const courseThumbnailUrl = handleThumbnailUrl(
         registration.courseThumbnailUrl
     );
+
     const displayedFullname: string = registration.userFullname
         ? registration.userFullname
         : "Anonymous";
+
     const status: string = convertStatus(
         registration.status ? registration.status : ""
     );
+
     const period: string = handlePeriod(
         registration.startDate,
         registration.endDate
     );
+
     const userAvatar: string = handleAvatarUrl(registration.userAvatarUrl);
 
     return (
