@@ -54,32 +54,26 @@ export default function FilterWrap() {
   useEffect(() => {
     const initialRatingList = [
       {
-        id: "5",
-        name: "5 Star",
-        parentID: "Rating",
-        checked: false,
-      },
-      {
         id: "4",
-        name: "4 - 4.9 Star",
+        name: "4 - 5 Star",
         parentID: "Rating",
         checked: false,
       },
       {
         id: "3",
-        name: "3 - 3.9 Star",
+        name: "3 - 4 Star",
         parentID: "Rating",
         checked: false,
       },
       {
         id: "2",
-        name: "2 - 2.9 Star",
+        name: "2 - 3 Star",
         parentID: "Rating",
         checked: false,
       },
       {
         id: "1",
-        name: "1 - 1.9 Star",
+        name: "1 - 2 Star",
         parentID: "Rating",
         checked: false,
       },

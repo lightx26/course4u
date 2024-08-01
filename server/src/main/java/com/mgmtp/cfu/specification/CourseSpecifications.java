@@ -46,7 +46,7 @@ public class CourseSpecifications {
             List<Predicate> predicates = ratings.stream().map(
                     rating -> builder.and(
                             builder.greaterThanOrEqualTo(ratingSubquery, rating.doubleValue()),
-                            builder.lessThan(ratingSubquery, rating.doubleValue() + 1)
+                            builder.lessThanOrEqualTo(ratingSubquery, rating.doubleValue() + 1)
                     )).toList();
 
             query.where(builder.or(predicates.toArray(new Predicate[0])));
