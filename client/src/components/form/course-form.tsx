@@ -28,6 +28,7 @@ import { Skeleton } from "../ui/skeleton";
 import { toast } from "sonner";
 import { platform } from "../../utils/index";
 import { cn } from "../../utils";
+import handleThumbnailUrl from "../../utils/handleThumbnailUrl";
 
 const courseSchema = registrationSchema.omit({
   duration: true,
@@ -60,7 +61,7 @@ export const CourseForm = ({
   form,
   course,
   isEdit,
-  blockEditCourseForm = false
+  blockEditCourseForm = false,
 }: Props) => {
   const [thumbnail, setThumbnail] = useState<Thumbnail>(initData);
   const [isOpen, setIsOpen] = useState(false);
@@ -422,7 +423,10 @@ export const CourseForm = ({
                   Thumbnail
                 </label>
                 <img
-                  src={thumbnail.croppedImageUrl || thumbnail.imageUrl}
+                  src={
+                    thumbnail.croppedImageUrl ||
+                    handleThumbnailUrl(thumbnail.imageUrl)
+                  }
                   alt="thumbnail"
                   className="object-cover max-w-[228px] w-[228px] h-[160px] rounded-xl mt-[8px]"
                 />
@@ -486,9 +490,7 @@ export const CourseForm = ({
             </p>
             <Button
               className="text-[#861FA2] bg-violet-600/20 hover:bg-violet-100 translate-y-6"
-              disabled={
-                (blockEditCourseForm && !thumbnail.imageUrl) || !isEdit
-              }
+              disabled={(blockEditCourseForm && !thumbnail.imageUrl) || !isEdit}
               type="button"
               onClick={onDeleteImage}
             >
