@@ -14,7 +14,7 @@ public class UserScore {
     private int rank;
     private long score;
     private String year;
-    private Set<String> months;
+    private List<String> months;
     private List<Double> scores;
     private List<Double> learningTime;
 }

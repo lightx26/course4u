@@ -95,7 +95,7 @@ public class ScoreQueryManager {
                 Long userId = (Long) userScore[0];
                 if (userId.equals(id)) {
                     return UserScore.builder().score((Long) userScore[1]).rank(i + 1).year(year)
-                            .months((Set<String>) dataPerMoth.get(2))
+                            .months((List<String>) dataPerMoth.get(2))
                             .scores((List<Double>) dataPerMoth.get(0))
                             .learningTime((List<Double>) dataPerMoth.get(1)).build();
 
@@ -123,13 +123,13 @@ public class ScoreQueryManager {
         var registrations = query.getResultList();
         List<Double> scores = new ArrayList<>();
         List<Double> learningTime = new ArrayList<>();
-        Set<String> months = new HashSet<>();
+        List<String> months = new ArrayList<>();
 
         for (int i = 1; i <= 12; i++) {
             scores.add(0.0);
             learningTime.add(0.0);
             var moth=Month.of(i).name();
-            months.add(moth.substring(0,1).toUpperCase()+ moth.substring(1).toLowerCase());
+            months.add(moth.substring(0,1).toUpperCase() +moth.substring(1).toLowerCase());
         }
         var intYear = Integer.parseInt(year);
 

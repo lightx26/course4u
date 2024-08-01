@@ -54,9 +54,9 @@ const MyScore: React.FC = () => {
   const [optionMonths, setOptionMonths] = useState<string[]>([]);
 
   const [dataChart, setDataChart] = useState<DataChartType | undefined>();
-  const [dataChartOfMonth, setDataChartOfMonth] = useState<DataChartType| undefined>();
-
-
+  const [dataChartOfMonth, setDataChartOfMonth] = useState<
+    DataChartType | undefined
+  >();
 
   const fetchDataYearOption = async () => {
     const result = await getDataMyScore();
@@ -74,16 +74,12 @@ const MyScore: React.FC = () => {
       setValuePersonal({
         score: result.score || 0,
         rank: result.rank || 0,
-
       });
       setDataChartOfMonth({
-        scores: result.scores ||0,
-        days:result.learningTime||0,
+        scores: result.scores || 0,
+        days: result.learningTime || 0,
       });
-      setOptionMonths(
-         result.months|| [""]
-      )
-
+      setOptionMonths(result.months || [""]);
     }
   };
 
@@ -205,11 +201,13 @@ const MyScore: React.FC = () => {
                 <SelectValue placeholder="2024" />
               </SelectTrigger>
               <SelectContent>
-                {optionYear.map((item) => (
-                  <SelectItem value={item} key={item}>
-                    {item}
-                  </SelectItem>
-                ))}
+                {optionYear &&
+                  optionYear.length > 0 &&
+                  optionYear.map((item) => (
+                    <SelectItem value={item} key={item}>
+                      {item}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           </div>
