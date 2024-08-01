@@ -6,14 +6,9 @@ import com.mgmtp.cfu.dto.coursedto.CourseRequest;
 import com.mgmtp.cfu.dto.coursedto.CourseResponse;
 import com.mgmtp.cfu.entity.Category;
 import com.mgmtp.cfu.entity.Course;
-import com.mgmtp.cfu.enums.RegistrationStatus;
-import com.mgmtp.cfu.exception.BadRequestRuntimeException;
-import com.mgmtp.cfu.exception.CourseNotFoundException;
+import com.mgmtp.cfu.exception.*;
 import com.mgmtp.cfu.enums.CoursePageSortOption;
 import com.mgmtp.cfu.enums.CourseStatus;
-import com.mgmtp.cfu.exception.DuplicateCourseException;
-import com.mgmtp.cfu.exception.MapperNotFoundException;
-import com.mgmtp.cfu.exception.ServerErrorRuntimeException;
 import com.mgmtp.cfu.mapper.DTOMapper;
 import com.mgmtp.cfu.mapper.factory.MapperFactory;
 import com.mgmtp.cfu.repository.CourseRepository;
@@ -43,8 +38,6 @@ import java.util.Set;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-
-
 @Service
 @Log4j2
 public class CourseServiceImpl implements CourseService {
@@ -61,10 +54,10 @@ public class CourseServiceImpl implements CourseService {
     private String uploadThumbnailDir;
 
     @Autowired
-    public CourseServiceImpl(CourseRepository courseRepository, MapperFactory<Course> courseMapperFactory,
+    public CourseServiceImpl(CourseRepository courseRepository,
+                             MapperFactory<Course> courseMapperFactory,
                              CategoryService categoryService,
-                             UploadService uploadService
-                             ) {
+                             UploadService uploadService) {
         this.courseRepository = courseRepository;
         this.courseMapperFactory = courseMapperFactory;
         this.categoryService = categoryService;
@@ -77,6 +70,7 @@ public class CourseServiceImpl implements CourseService {
         courseDto.setCategories(categoryService.findAllByCourseId(id));
         return courseDto;
     }
+
     private String handleThumbnail(CourseRequest courseRequest) throws IOException {
         String thumbnailUrl = null;
         if (courseRequest.getThumbnailFile() != null) {
@@ -86,10 +80,12 @@ public class CourseServiceImpl implements CourseService {
         }
         return thumbnailUrl;
     }
+
     private List<Category> handleCategory(CourseRequest courseRequest){
         List<Category> categories = categoryService.findOrCreateNewCategory(courseRequest.getCategories());
         return new ArrayList<>(categories);
     }
+
     @Override
     public CourseResponse createCourse(CourseRequest courseRequest) {
         var modelMapper = new ModelMapper();
@@ -264,8 +260,10 @@ public class CourseServiceImpl implements CourseService {
         oldCourse.setStatus(CourseStatus.AVAILABLE);
         oldCourse.setCreatedDate(LocalDate.now());
     }
+
     private DTOMapper<CourseOverviewDTO, Course> getOverviewCourseMapper() {
         Optional<DTOMapper<CourseOverviewDTO, Course>> courseMapperOpt = courseMapperFactory.getDTOMapper(CourseOverviewDTO.class);
         return courseMapperOpt.orElseThrow(() -> new ServerErrorRuntimeException("Couldn't get mapper"));
     }
-}
+
+} 

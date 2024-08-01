@@ -2,7 +2,6 @@ package com.mgmtp.cfu.service.impl
 
 import com.mgmtp.cfu.dto.coursedto.CourseResponse
 import com.mgmtp.cfu.dto.registrationdto.FeedbackRequest
-import com.mgmtp.cfu.dto.coursedto.CourseRegistrationDTO
 import com.mgmtp.cfu.dto.registrationdto.RegistrationEnrollDTO
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO
 import com.mgmtp.cfu.entity.Document
@@ -11,7 +10,6 @@ import com.mgmtp.cfu.enums.DocumentType
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewParams
 import com.mgmtp.cfu.exception.ConflictRuntimeException
 import com.mgmtp.cfu.dto.MailContentUnit
-import com.mgmtp.cfu.enums.CourseLevel
 import com.mgmtp.cfu.enums.CoursePlatform
 import com.mgmtp.cfu.enums.CourseLevel
 import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO
@@ -44,27 +42,15 @@ import com.mgmtp.cfu.repository.RegistrationFeedbackRepository
 import com.mgmtp.cfu.repository.RegistrationRepository
 import com.mgmtp.cfu.service.CategoryService
 import com.mgmtp.cfu.service.IEmailService
-import com.mgmtp.cfu.service.NotificationService;
-import com.mgmtp.cfu.service.RegistrationFeedbackService
-import com.mgmtp.cfu.service.IEmailService;
 import com.mgmtp.cfu.repository.UserRepository
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Page;
-import com.mgmtp.cfu.service.IEmailService;
-import com.mgmtp.cfu.repository.UserRepository
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
 import com.mgmtp.cfu.service.NotificationService
 import com.mgmtp.cfu.service.RegistrationFeedbackService
 import com.mgmtp.cfu.service.UploadService
-import org.modelmapper.ModelMapper
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import com.mgmtp.cfu.service.CourseService
-import com.mgmtp.cfu.util.AuthUtils
 import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Sort
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
@@ -96,11 +82,11 @@ class RegistrationServiceImplSpec extends Specification {
 
     def registrationDetailMapper = Mock(RegistrationDetailMapper)
 
-    NotificationRepository notificationRepository = Mock();
+    NotificationRepository notificationRepository = Mock()
 
     CourseService courseService = Mock()
 
-    RegistrationFeedbackRepository registrationFeedbackRepository = Mock();
+    RegistrationFeedbackRepository registrationFeedbackRepository = Mock()
 
     def documentService = Mock(DocumentServiceImpl)
 
@@ -292,7 +278,7 @@ class RegistrationServiceImplSpec extends Specification {
     def "startLearningCourse: This course was started learning"() {
         given:
         registrationRepository.existsByIdAndUserId(_ as Long, _ as Long) >> true
-        registrationRepository.findById(_ as Long) >> Optional.of(Registration.builder().id(1).startDate(ZonedDateTime.now()).build());
+        registrationRepository.findById(_ as Long) >> Optional.of(Registration.builder().id(1).startDate(ZonedDateTime.now()).build())
         when:
         registrationService.startLearningCourse(1)
         then:
@@ -302,7 +288,7 @@ class RegistrationServiceImplSpec extends Specification {
     def "startLearningCourse: return true"() {
         given:
         registrationRepository.existsByIdAndUserId(_ as Long, _ as Long) >> true
-        registrationRepository.findById(_ as Long) >> Optional.of(Registration.builder().id(1).status(RegistrationStatus.APPROVED).startDate(null).build());
+        registrationRepository.findById(_ as Long) >> Optional.of(Registration.builder().id(1).status(RegistrationStatus.APPROVED).startDate(null).build())
         when:
         def result = registrationService.startLearningCourse(1)
         then:
@@ -312,7 +298,7 @@ class RegistrationServiceImplSpec extends Specification {
     def "startLearningCourse: This registration requires approval by admin."() {
         given:
         registrationRepository.existsByIdAndUserId(_ as Long, _ as Long) >> true
-        registrationRepository.findById(_ as Long) >> Optional.of(Registration.builder().id(1).status(RegistrationStatus.SUBMITTED).startDate(null).build());
+        registrationRepository.findById(_ as Long) >> Optional.of(Registration.builder().id(1).status(RegistrationStatus.SUBMITTED).startDate(null).build())
         when:
         registrationService.startLearningCourse(1)
         then:
@@ -1092,6 +1078,22 @@ class RegistrationServiceImplSpec extends Specification {
 
         then:
         thrown(IllegalArgumentException)
+    }
+
+    def "isExistAvailableCourse return TRUE or FALSE whether registration has course which has AVAILABLE status"() {
+        given:
+        Long id = 6
+        Course course = new Course(status: CourseStatus.AVAILABLE)
+        Registration registration = new Registration(id: id, course: course)
+
+        and:
+        registrationRepository.findById(id) >> Optional.of(registration)
+
+        when:
+        def result = registrationService.isExistAvailableCourse(id)
+
+        then:
+        result == true || result == false
     }
 
 }

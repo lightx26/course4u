@@ -12,9 +12,10 @@ import java.util.UUID;
 
 @Service
 public class UploadServiceImpl implements UploadService {
+
     @Override
     public String uploadThumbnail(MultipartFile thumbnail, String directory) throws IOException {
-        String uuidFilename = UUID.randomUUID().toString() + ".jpg"; // Default extension
+        String uuidFilename = UUID.randomUUID() + ".jpg"; // Default extension
         String thumbnailUrl = uuidFilename;
         if (thumbnail != null && !thumbnail.isEmpty()) {
             Path uploadPath = Paths.get(directory).toAbsolutePath().normalize();
@@ -27,6 +28,7 @@ public class UploadServiceImpl implements UploadService {
         }
         return thumbnailUrl;
     }
+
     @Override
     public void deleteThumbnail(String filename, String directory) throws IOException {
         if (filename != null && !filename.isEmpty()) {
@@ -35,4 +37,5 @@ public class UploadServiceImpl implements UploadService {
             Files.deleteIfExists(filePath);
         }
     }
+
 }

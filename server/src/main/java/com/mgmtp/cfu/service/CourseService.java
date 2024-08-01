@@ -16,5 +16,7 @@ public interface CourseService {
     void deleteCourseById(Long id);
 
     List<CourseOverviewDTO> getRelatedCourses(Long courseId);
+
     CourseResponse updateCourse(CourseRequest courseRequest);
+
 }

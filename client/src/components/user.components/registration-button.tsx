@@ -27,33 +27,36 @@ import {
     checkExistReview,
     sendReview,
 } from "../../apiService/courseReview.service";
+import { isExistAvailableCourseWithId } from "../../apiService/Course.service";
 
 type Props = {
-    status?: Status;
-    setIsEdit: (isEdit: boolean) => void;
-    isEdit: boolean;
-    id?: number;
-    isStatrted?: boolean;
-    listFileCertificate?: UploadFile[];
-    listFilePayment?: UploadFile[];
-    isBlockedMofiedCourse?: boolean;
-    duration: number;
-    durationUnit: string;
-    listIdDocumentRemove?: number[];
+  status?: Status;
+  setIsEdit: (isEdit: boolean) => void;
+  isEdit: boolean;
+  id?: number;
+  isStatrted?: boolean;
+  listFileCertificate?: UploadFile[];
+  listFilePayment?: UploadFile[];
+  duration: number;
+  durationUnit: string;
+  listIdDocumentRemove?: number[];
+  blockEditCourseForm?:boolean,
+  setBlockEditCourseForm: React.Dispatch<React.SetStateAction<boolean>>
 };
 
 export const RegistrationButton = ({
-    status = Status.NONE,
-    setIsEdit,
-    isEdit,
-    id,
-    listFileCertificate,
-    listFilePayment,
-    isStatrted,
-    isBlockedMofiedCourse,
-    duration,
-    durationUnit,
-    listIdDocumentRemove,
+  status = Status.NONE,
+  setIsEdit,
+  isEdit,
+  id,
+  listFileCertificate,
+  listFilePayment,
+  isStatrted,
+  blockEditCourseForm = false,
+  setBlockEditCourseForm,
+  duration,
+  durationUnit,
+  listIdDocumentRemove,
 }: Props) => {
     const { registration, closeRegistration } = useRegistrationDetail();
     const { close } = useRegistrationModal((state) => state);
@@ -71,8 +74,11 @@ export const RegistrationButton = ({
         setRegistrationFlagAdmin();
     };
 
-    const onEdit = () => {
+    const onEdit = async() => {
         setIsEdit(true);
+        const response = await isExistAvailableCourseWithId(registration!.id!);
+        if (response.data && (registration?.status === Status.SUBMITTED || registration?.status === Status.DECLINED))
+            setBlockEditCourseForm(true)
     };
 
     //Delete a registration
@@ -256,6 +262,7 @@ export const RegistrationButton = ({
             setHaveReview(response.data);
         }
     };
+
     useEffect(() => {
         if (
             status === Status.DONE ||
@@ -351,23 +358,19 @@ export const RegistrationButton = ({
                 </ModalConfirm>
             )}
 
-            {(status === Status.SUBMITTED ||
-                status === Status.DECLINED ||
-                status === Status.DRAFT) &&
-                isEdit === false && (
-                    <Button
-                        size='default'
-                        variant='blue'
-                        type='button'
-                        onClick={onEdit}
-                    >
-                        EDIT
-                    </Button>
-                )}
+            {(status === Status.SUBMITTED || status === Status.DECLINED) && isEdit === false && (
+                <Button
+                    size='default'
+                    variant='edit'
+                    type='button'
+                    onClick={onEdit}
+                >
+                EDIT
+                </Button>
+            )}
 
-            {(status === Status.NONE || status === Status.DRAFT) &&
-                isEdit &&
-                (isBlockedMofiedCourse ? (
+            {(status === Status.NONE || status === Status.DRAFT) && isEdit &&
+                (blockEditCourseForm ? (
                     <Button
                         type='button'
                         onClick={handleSubmitWithExistedCourse}
@@ -380,14 +383,14 @@ export const RegistrationButton = ({
                     <Button type='submit' size='default' variant='success'>
                         SUBMIT
                     </Button>
-                ))}
+            ))}
 
             {(status === Status.SUBMITTED || status === Status.DECLINED) &&
                 isEdit && (
                     <Button type='submit' size='default' variant='success'>
                         RE-SUBMIT
                     </Button>
-                )}
+            )}
 
             {!haveReview &&
                 (status === Status.DONE ||

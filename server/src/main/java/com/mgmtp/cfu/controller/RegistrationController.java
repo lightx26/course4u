@@ -147,4 +147,10 @@ public class RegistrationController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @GetMapping("/{id}/available-exist")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<?> isExistAvailableCourse(@PathVariable Long id) {
+        return ResponseEntity.ok(registrationService.isExistAvailableCourse(id));
+    }
+
 }

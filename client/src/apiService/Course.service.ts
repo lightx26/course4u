@@ -110,6 +110,12 @@ const editCourse = async (data: any): Promise<number> => {
     }
   }
 };
+
+export const isExistAvailableCourseWithId = async(registrationId : number) => {
+  const res = await instance.get(`/registrations/${registrationId}/available-exist`);
+  return res;
+}
+
 export {
   fetchListAvailableCourse,
   fetchDataCourseById,

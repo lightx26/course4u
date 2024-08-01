@@ -6,7 +6,6 @@ import com.mgmtp.cfu.dto.registrationdto.RegistrationDetailDTO
 import com.mgmtp.cfu.dto.registrationdto.RegistrationEnrollDTO
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewDTO
 import com.mgmtp.cfu.dto.registrationdto.RegistrationOverviewParams
-import com.mgmtp.cfu.enums.RegistrationStatus
 import com.mgmtp.cfu.exception.BadRequestRuntimeException
 import com.mgmtp.cfu.exception.CourseNotFoundException
 import com.mgmtp.cfu.exception.RegistrationFieldNotFoundException
@@ -22,10 +21,10 @@ import org.springframework.http.ResponseEntity
 import spock.lang.Specification
 import spock.lang.Subject
 
-import java.time.LocalDateTime
-
 class RegistrationControllerSpec extends Specification {
+
     def registrationService = Mock(RegistrationService)
+
     @Subject
     RegistrationController registrationController = new RegistrationController(registrationService)
 
@@ -110,7 +109,6 @@ class RegistrationControllerSpec extends Specification {
         then:
         thrown(RegistrationFieldNotFoundException)
     }
-
 
     def "test getDetailRegistration"() {
         given:
@@ -315,6 +313,17 @@ class RegistrationControllerSpec extends Specification {
 
         then:
         result.statusCode == HttpStatus.CREATED
+    }
+
+    def "isExistAvailableCourse check if course of registration is AVAILABLE"() {
+        given:
+        Long id = 6
+
+        when:
+        def result = registrationController.isExistAvailableCourse(id)
+
+        then:
+        result.statusCode == HttpStatus.OK
     }
 
 }

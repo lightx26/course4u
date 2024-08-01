@@ -37,7 +37,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
@@ -164,7 +163,7 @@ public class RegistrationServiceImpl implements RegistrationService {
             throw new BadRequestRuntimeException("Registration must be in submitted status to be approved");
         }
 
-        // check if course with the same link already exists and available
+        // check if the course with the same link already exists and available
         if(courseRepository.findFirstByLinkIgnoreCaseAndStatus(registration.getCourse().getLink(), CourseStatus.AVAILABLE).isPresent() && !registration.getCourse().getStatus().equals(CourseStatus.AVAILABLE)){
             throw new DuplicateCourseException("Course with link " + registration.getCourse().getLink() + " already exists and available");
         }
@@ -486,9 +485,6 @@ public class RegistrationServiceImpl implements RegistrationService {
         registrationRepository.save(registration);
     }
 
-
-
-
     private void notifyVerifiedDocument(Registration registration) {
         var accountant = getCurrentUser();
 
@@ -561,6 +557,17 @@ public class RegistrationServiceImpl implements RegistrationService {
         registrationRepository.save(registration);
     }
 
+    private String handleThumbnail(RegistrationRequest registrationRequest) throws IOException {
+        String thumbnailUrl = null;
+
+        if (registrationRequest.getThumbnailFile() != null)
+            thumbnailUrl = uploadService.uploadThumbnail(registrationRequest.getThumbnailFile(), uploadThumbnailDir);
+        else if (registrationRequest.getThumbnailUrl() != null)
+            thumbnailUrl = registrationRequest.getThumbnailUrl();
+
+        return thumbnailUrl;
+    }
+
     @Override
     public void editRegistration(Long id, RegistrationRequest registrationRequest) {
 
@@ -579,15 +586,16 @@ public class RegistrationServiceImpl implements RegistrationService {
                 course.setCategories(new HashSet<>(categories));
 
                 String thumbnailUrl;
-                try {
-                    if (registrationRequest.getThumbnailFile() != null && !registrationRequest.getThumbnailFile().isEmpty()) {
+                String oldThumbnailUrl = course.getThumbnailUrl();
+                if (registrationRequest.getThumbnailFile() != null && !registrationRequest.getThumbnailFile().isEmpty()) {
+                    try {
                         thumbnailUrl = uploadService.uploadThumbnail(registrationRequest.getThumbnailFile(), uploadThumbnailDir);
-                        course.setThumbnailUrl(thumbnailUrl);
-                    } else
-                        course.setThumbnailUrl(registrationRequest.getThumbnailUrl());
-                } catch (IOException e) {
-                    throw new RuntimeException("Failed to upload thumbnail", e);
-                }
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    course.setThumbnailUrl(thumbnailUrl);
+                } else
+                    course.setThumbnailUrl(registrationRequest.getThumbnailUrl());
 
                 course.setLink(registrationRequest.getLink());
                 course.setName(registrationRequest.getName());
@@ -596,6 +604,14 @@ public class RegistrationServiceImpl implements RegistrationService {
                 course.setLevel(registrationRequest.getLevel());
 
                 courseRepository.save(course);
+
+                if (oldThumbnailUrl != null && !oldThumbnailUrl.startsWith("http")) {
+                    try {
+                        uploadService.deleteThumbnail(oldThumbnailUrl, uploadThumbnailDir);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
 
                 registration.setCourse(course);
                 registration.setDuration(registrationRequest.getDuration());
@@ -610,6 +626,13 @@ public class RegistrationServiceImpl implements RegistrationService {
                 throw new IllegalArgumentException("Status of Registration is invalid!");
         } else
             throw new IllegalArgumentException("You are not owner of this Registration!");
+    }
+
+    @Override
+    public Boolean isExistAvailableCourse(Long id) {
+        Registration registration = registrationRepository.findById(id)
+                                                          .orElseThrow(() -> new RegistrationNotFoundException("Registration with id " + id + " not found"));
+        return registration.getCourse().getStatus() == CourseStatus.AVAILABLE;
     }
 
 }

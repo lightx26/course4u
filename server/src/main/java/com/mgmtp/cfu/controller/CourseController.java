@@ -92,4 +92,5 @@ public class CourseController {
             throw new BadRequestRuntimeException("The course id is incorrect.");
         return ResponseEntity.ok(courseService.getRelatedCourses(courseId));
     }
+
 }

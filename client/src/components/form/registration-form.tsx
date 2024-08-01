@@ -92,6 +92,7 @@ export const RegistrationsForm = ({
   const { open } = useRegistrationModal((state) => state);
   const user = useSelector((state: RootState) => state.user);
   const [inputDuration, setInputDuration] = useState(1);
+  const [blockEditCourseForm, setBlockEditCourseForm] = useState<boolean>(isBlockedModifiedCourse ?? false)
   useEffect(() => {
     if (id) {
       form.setValue("duration", duration!);
@@ -280,7 +281,7 @@ export const RegistrationsForm = ({
             course={course}
             isEdit={isEdit}
             registrationStatus={status}
-            isBlockedModifiedCourse={isBlockedModifiedCourse}
+            blockEditCourseForm={blockEditCourseForm}
           />
           <div className="flex w-[60%] pr-4 gap-2">
             <FormField
@@ -305,7 +306,7 @@ export const RegistrationsForm = ({
                       onKeyDown={(e) => {
                         e.key === "." && e.preventDefault();
                       }}
-                      value={duration || Number(inputDuration).toString()}
+                      defaultValue={duration || Number(inputDuration).toString()}
                     />
                   </FormControl>
                   <FormMessage />
@@ -365,7 +366,8 @@ export const RegistrationsForm = ({
                     isStatrted={startDate != undefined}
                     listFileCertificate={listFileCertificate}
                     listFilePayment={listFilePayment}
-                    isBlockedMofiedCourse={isBlockedModifiedCourse}
+                    blockEditCourseForm={blockEditCourseForm}
+                    setBlockEditCourseForm={setBlockEditCourseForm}
                     duration={form.getValues("duration")}
                     durationUnit={form.getValues("durationUnit")}
                   />
@@ -390,7 +392,8 @@ export const RegistrationsForm = ({
                       isStatrted={startDate != undefined}
                       listFileCertificate={listFileCertificate}
                       listFilePayment={listFilePayment}
-                      isBlockedMofiedCourse={isBlockedModifiedCourse}
+                      blockEditCourseForm={blockEditCourseForm}
+                      setBlockEditCourseForm={setBlockEditCourseForm}
                       duration={form.getValues("duration")}
                       durationUnit={form.getValues("durationUnit")}
                     />
@@ -442,7 +445,8 @@ export const RegistrationsForm = ({
                     listFileCertificate={listFileCertificate}
                     listFilePayment={listFilePayment}
                     listIdDocumentRemove={listIdDocumentRemove}
-                    isBlockedMofiedCourse={isBlockedModifiedCourse}
+                    blockEditCourseForm={blockEditCourseForm}
+                    setBlockEditCourseForm={setBlockEditCourseForm}
                     duration={form.getValues("duration")}
                     durationUnit={form.getValues("durationUnit")}
                   />

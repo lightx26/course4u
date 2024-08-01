@@ -39,7 +39,7 @@ type Props = {
   course?: z.infer<typeof courseSchema>;
   isEdit: boolean;
   registrationStatus?: string;
-  isBlockedModifiedCourse?: boolean;
+  blockEditCourseForm?: boolean;
 };
 
 type Thumbnail = {
@@ -60,7 +60,7 @@ export const CourseForm = ({
   form,
   course,
   isEdit,
-  isBlockedModifiedCourse = false,
+  blockEditCourseForm = false
 }: Props) => {
   const [thumbnail, setThumbnail] = useState<Thumbnail>(initData);
   const [isOpen, setIsOpen] = useState(false);
@@ -224,10 +224,10 @@ export const CourseForm = ({
   }
   return (
     <div
-      aria-readonly={isBlockedModifiedCourse}
+      aria-readonly={blockEditCourseForm}
       className={
-        isBlockedModifiedCourse || !isEdit
-          ? "select-none cursor-not-allowed"
+        blockEditCourseForm
+          ? "pointer-events-none opacity-50"
           : "" + "flex flex-col gap-6 "
       }
     >
@@ -246,7 +246,7 @@ export const CourseForm = ({
                     placeholder="Course Link"
                     {...field}
                     className="flex-1 w-full"
-                    disabled={isBlockedModifiedCourse || !isEdit}
+                    disabled={blockEditCourseForm || !isEdit}
                   />
                   <Button
                     type="button"
@@ -254,7 +254,7 @@ export const CourseForm = ({
                     size="sm"
                     variant="default"
                     className="absolute right-0 transform -translate-y-1/2 cursor-pointer top-1/2 text-violet-600 bg-violet-200 hover:bg-violet-600 hover:text-white"
-                    disabled={isBlockedModifiedCourse || !isEdit}
+                    disabled={blockEditCourseForm || !isEdit}
                   >
                     <ArrowRightToLine width={20} height={20} />
                   </Button>
@@ -277,7 +277,7 @@ export const CourseForm = ({
                   placeholder="Course Name"
                   {...field}
                   className="w-full"
-                  disabled={isBlockedModifiedCourse || !isEdit}
+                  disabled={blockEditCourseForm || !isEdit}
                 />
               </FormControl>
               <FormMessage />
@@ -298,7 +298,7 @@ export const CourseForm = ({
                   placeholder="Teacher Name"
                   {...field}
                   className="w-full"
-                  disabled={isBlockedModifiedCourse || !isEdit}
+                  disabled={blockEditCourseForm || !isEdit}
                 />
               </FormControl>
               <FormMessage />
@@ -321,7 +321,7 @@ export const CourseForm = ({
                   <Select
                     onValueChange={field.onChange}
                     value={field.value.toUpperCase()}
-                    disabled={isBlockedModifiedCourse || !isEdit}
+                    disabled={blockEditCourseForm || !isEdit}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -355,7 +355,7 @@ export const CourseForm = ({
                     onValueChange={field.onChange}
                     defaultValue={""}
                     value={field.value.toUpperCase()}
-                    disabled={isBlockedModifiedCourse || !isEdit}
+                    disabled={blockEditCourseForm || !isEdit}
                   >
                     <FormControl>
                       <SelectTrigger className="border-gray-300">
@@ -390,7 +390,7 @@ export const CourseForm = ({
                     value={field.value || []}
                     placeholder="Select category..."
                     creatable={true}
-                    disabled={isBlockedModifiedCourse || !isEdit}
+                    disabled={blockEditCourseForm || !isEdit}
                     className={!isEdit ? "cursor-not-allowed" : ""}
                     form={form}
                   />
@@ -411,7 +411,7 @@ export const CourseForm = ({
               setIsOpen={setIsOpen}
               setCroppedImageFor={setCroppedImageFor}
               isEdit={
-                !isBlockedModifiedCourse &&
+                !blockEditCourseForm &&
                 isEdit &&
                 !thumbnail.imageUrl.startsWith("http")
               }
@@ -449,7 +449,7 @@ export const CourseForm = ({
                         className="bg-transparent"
                         type="file"
                         value={undefined}
-                        disabled={isBlockedModifiedCourse || !isEdit}
+                        disabled={blockEditCourseForm || !isEdit}
                         {...getInputProps()}
                       />
 
@@ -487,7 +487,7 @@ export const CourseForm = ({
             <Button
               className="text-[#861FA2] bg-violet-600/20 hover:bg-violet-100 translate-y-6"
               disabled={
-                isBlockedModifiedCourse || !thumbnail.imageUrl || !isEdit
+                (blockEditCourseForm && !thumbnail.imageUrl) || !isEdit
               }
               type="button"
               onClick={onDeleteImage}
