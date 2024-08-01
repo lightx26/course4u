@@ -21,7 +21,7 @@ interface IRegistration {
 // Create an initial state
 const initialState: IRegistration = {
   inputSearch: "",
-  status: "SUBMITTED",
+  status: "All",
   sortBy: "Last modified",
   currentPage: 1,
   totalItem: 0,

@@ -135,6 +135,8 @@ const LeaderBoard: React.FC = () => {
 
       if (dataTmp.length > 3) {
         setDataLeaderBoardTable(dataTmp.slice(3));
+      } else {
+        setDataLeaderBoardTable([]);
       }
     }
   };

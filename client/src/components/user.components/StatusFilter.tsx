@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 type OptionType = {
   content: string;
@@ -14,7 +14,7 @@ const StatusFilter: React.FC<PropType> = ({ listOption, onSortByChange }) => {
   const [selected, setSelected] = useState<string | null>(null);
 
   const toggleDropdown = () => setIsOpen(!isOpen);
-  
+
   const handleSelect = (value: string) => {
     let selectedValue = value;
     setSelected(selectedValue);
@@ -32,13 +32,13 @@ const StatusFilter: React.FC<PropType> = ({ listOption, onSortByChange }) => {
 
   return (
     <div className="relative inline-block text-left">
-      <div className='w-52'>
+      <div className="w-52">
         <button
           type="button"
           onClick={toggleDropdown}
           className="inline-flex justify-between w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
         >
-          {selected ? selected : 'Submitted'}
+          {selected ? selected : "All"}
           <svg
             className="ml-2 -mr-1 h-5 w-5"
             xmlns="http://www.w3.org/2000/svg"
@@ -57,7 +57,12 @@ const StatusFilter: React.FC<PropType> = ({ listOption, onSortByChange }) => {
 
       {isOpen && (
         <div className="origin-top-right absolute right-0 mt-2 w-52 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-          <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+          <div
+            className="py-1"
+            role="menu"
+            aria-orientation="vertical"
+            aria-labelledby="options-menu"
+          >
             {listOption.map((option, index) => (
               <button
                 key={index}
