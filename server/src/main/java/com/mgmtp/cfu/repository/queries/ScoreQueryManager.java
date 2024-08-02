@@ -113,8 +113,8 @@ public class ScoreQueryManager {
     private List<Object> getScoreAndLearningTimePerMoth(String year, Long id) {
         String jpql = "SELECT r from Registration r " +
                 " WHERE r.status IN :acceptStatus " +
-                "   and EXTRACT(YEAR FROM r.endDate) <= :year " +
-                "   and EXTRACT(YEAR FROM r.startDate) >= :year " +
+                "   and EXTRACT(YEAR FROM r.endDate) >= :year " +
+                "   and EXTRACT(YEAR FROM r.startDate) <= :year " +
                 "   and r.user.id=:userId";
         TypedQuery<Registration> query = entityManager.createQuery(jpql, Registration.class);
         query.setParameter("acceptStatus", RegistrationStatusUtil.ACCEPTED_STATUSES);
@@ -128,34 +128,38 @@ public class ScoreQueryManager {
         for (int i = 1; i <= 12; i++) {
             scores.add(0.0);
             learningTime.add(0.0);
-            var moth=Month.of(i).name();
-            months.add(moth.substring(0,1).toUpperCase() +moth.substring(1).toLowerCase());
+            var moth = Month.of(i).name();
+            months.add(moth.substring(0, 1).toUpperCase() + moth.substring(1).toLowerCase());
         }
         var intYear = Integer.parseInt(year);
 
         registrations.forEach(registration -> {
-                    var startDay = registration.getStartDate();
-                    var endDay = registration.getEndDate();
-                    var learningDays = (ChronoUnit.DAYS.between(startDay, endDay));
-                    learningDays = learningDays != 0 ? learningDays : 1;
-                    float scorePerDay =((float)registration.getScore() / (learningDays));
-                    if ((startDay.getYear() < intYear) && endDay.getYear() > intYear) {
-                        updateScoresAndLearningTime(scores, learningTime, 1, 12, intYear, scorePerDay, 1, 31);
-                    } else if (startDay.getYear() < intYear && endDay.getYear() == intYear) {
-                        updateScoresAndLearningTime(scores, learningTime, 1, endDay.getMonthValue(), intYear, scorePerDay, 1, endDay.getDayOfMonth());
-                    } else if (
-                            startDay.getYear() == intYear && endDay.getYear() > intYear
-                    ) {
-                        updateScoresAndLearningTime(scores, learningTime, startDay.getMonthValue(), 12, intYear, scorePerDay, startDay.getDayOfMonth(), 31);
-                    } else {
-                        updateScoresAndLearningTime(scores, learningTime, startDay.getMonthValue(), endDay.getMonthValue(), intYear, scorePerDay, startDay.getDayOfMonth(), endDay.getDayOfMonth());
+                    try {
+                        var startDay = registration.getStartDate();
+                        var endDay = registration.getEndDate();
+                        var learningDays = (ChronoUnit.DAYS.between(startDay, endDay));
+                        learningDays = learningDays != 0 ? learningDays : 1;
+                        float scorePerDay = ((float) registration.getScore() / (learningDays));
+                        if ((startDay.getYear() < intYear) && endDay.getYear() > intYear) {
+                            updateScoresAndLearningTime(scores, learningTime, 1, 12, intYear, scorePerDay, 1, 31);
+                        } else if (startDay.getYear() < intYear && endDay.getYear() == intYear) {
+                            updateScoresAndLearningTime(scores, learningTime, 1, endDay.getMonthValue(), intYear, scorePerDay, 1, endDay.getDayOfMonth());
+                        } else if (
+                                startDay.getYear() == intYear && endDay.getYear() > intYear
+                        ) {
+                            updateScoresAndLearningTime(scores, learningTime, startDay.getMonthValue(), 12, intYear, scorePerDay, startDay.getDayOfMonth(), 31);
+                        } else {
+                            updateScoresAndLearningTime(scores, learningTime, startDay.getMonthValue(), endDay.getMonthValue(), intYear, scorePerDay, startDay.getDayOfMonth(), endDay.getDayOfMonth());
+                        }
+                    } catch (Exception e) {
+                        log.error(e.getMessage());
                     }
                 }
         );
         for (int i = 1; i <= 12; i++) {
-            scores.set(i-1, (double) Math.round(scores.get(i-1)));
+            scores.set(i - 1, (double) Math.round(scores.get(i - 1)));
         }
-        return List.of(scores, learningTime,months);
+        return List.of(scores, learningTime, months);
 
     }
 
@@ -163,7 +167,7 @@ public class ScoreQueryManager {
 
         if (startMonth == endMonth) {
 
-            var learningDays = endDay - startDay +1> 0 ? endDay - startDay +1 : 1;
+            var learningDays = endDay - startDay + 1 > 0 ? endDay - startDay + 1 : 1;
             scores.set(startMonth - 1, (scores.get(startMonth - 1) + learningDays * scorePerDay));
             learningTime.set(startMonth - 1, learningTime.get(startMonth - 1) + learningDays);
 
