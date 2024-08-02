@@ -89,10 +89,8 @@ export const RegistrationsForm = ({
     const { setRegistrationFlagAdmin } = useRefreshState((state) => state);
     const { close } = useRegistrationModal((state) => state);
     const user = useSelector((state: RootState) => state.user);
-    const [inputDuration, setInputDuration] = useState(1);
     const [asDraft, setAsDraft] = useState(false);
-    const [blockEditCourseForm, setBlockEditCourseForm] = useState<boolean>(
-        isBlockedModifiedCourse ?? false
+    const [blockEditCourseForm, setBlockEditCourseForm] = useState<boolean>(isBlockedModifiedCourse ?? false
     );
     useEffect(() => {
         if (id) {
@@ -194,27 +192,16 @@ export const RegistrationsForm = ({
                                     </FormLabel>
                                     <FormControl>
                                         <Input
-                                            type='number'
-                                            placeholder='Duration'
+                                            type="text"
+                                            placeholder="Duration"
                                             {...field}
                                             onChange={(event) => {
-                                                field.onChange(
-                                                    +event.target.value
-                                                );
-                                                setInputDuration(
-                                                    +event.target.value
-                                                );
+                                                const value = event.target.value;
+                                                if (value.length == 0 || /^[1-9]\d*$/.test(value))
+                                                    field.onChange(+value);
                                             }}
-                                            className=''
+                                            defaultValue={1}
                                             disabled={!isEdit}
-                                            onKeyDown={(e) => {
-                                                e.key === "." &&
-                                                    e.preventDefault();
-                                            }}
-                                            defaultValue={
-                                                duration ||
-                                                Number(inputDuration).toString()
-                                            }
                                         />
                                     </FormControl>
                                     <FormMessage />

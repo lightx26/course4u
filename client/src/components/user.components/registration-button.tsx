@@ -78,12 +78,8 @@ export const RegistrationButton = ({
     const onEdit = async () => {
         setIsEdit(true);
         const response = await isExistAvailableCourseWithId(registration!.id!);
-        if (
-            response.data &&
-            (registration?.status === Status.SUBMITTED ||
-                registration?.status === Status.DECLINED)
-        )
-            setBlockEditCourseForm(true);
+        if (response.data && (registration?.status === Status.SUBMITTED || registration?.status === Status.DECLINED))
+            setBlockEditCourseForm(true)
     };
 
   //Delete a registration
@@ -368,8 +364,7 @@ export const RegistrationButton = ({
                     </Button>
                 )}
 
-            {(status === Status.NONE || status === Status.DRAFT) &&
-                isEdit &&
+            {(status === Status.NONE || status === Status.DRAFT) && isEdit &&
                 (blockEditCourseForm ? (
                     <Button
                         type='button'
@@ -383,14 +378,14 @@ export const RegistrationButton = ({
                     <Button type='submit' size='default' variant='success'>
                         SUBMIT
                     </Button>
-                ))}
+            ))}
 
             {(status === Status.SUBMITTED || status === Status.DECLINED) &&
                 isEdit && (
                     <Button type='submit' size='default' variant='success'>
                         RE-SUBMIT
                     </Button>
-                )}
+            )}
 
       {!haveReview &&
         (status === Status.DONE ||

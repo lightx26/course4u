@@ -539,12 +539,10 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     private String handleThumbnail(RegistrationRequest registrationRequest) throws IOException {
         String thumbnailUrl = null;
-
         if (registrationRequest.getThumbnailFile() != null)
             thumbnailUrl = uploadService.uploadThumbnail(registrationRequest.getThumbnailFile(), uploadThumbnailDir);
         else if (registrationRequest.getThumbnailUrl() != null)
             thumbnailUrl = registrationRequest.getThumbnailUrl();
-
         return thumbnailUrl;
     }
 
@@ -565,17 +563,17 @@ public class RegistrationServiceImpl implements RegistrationService {
                 List<Category> categories = categoryService.findOrCreateNewCategory(registrationRequest.getCategories());
                 course.setCategories(new HashSet<>(categories));
 
-                String thumbnailUrl;
-                String oldThumbnailUrl = course.getThumbnailUrl();
-                if (registrationRequest.getThumbnailFile() != null && !registrationRequest.getThumbnailFile().isEmpty()) {
-                    try {
-                        thumbnailUrl = uploadService.uploadThumbnail(registrationRequest.getThumbnailFile(), uploadThumbnailDir);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                String oldThumbnailUrl = null;
+                try {
+                    String thumbnailUrl = handleThumbnail(registrationRequest);
+                    if (thumbnailUrl != null) {
+                        if (course.getThumbnailUrl().endsWith(".jpg"))
+                            oldThumbnailUrl = course.getThumbnailUrl();
+                        course.setThumbnailUrl(thumbnailUrl);
                     }
-                    course.setThumbnailUrl(thumbnailUrl);
-                } else
-                    course.setThumbnailUrl(registrationRequest.getThumbnailUrl());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
 
                 course.setLink(registrationRequest.getLink());
                 course.setName(registrationRequest.getName());
