@@ -63,7 +63,9 @@ export function Notification(props: IProps) {
         }
 
         if (res.content.length > 0) {
-            setBuffer([...buffer, ...res.content])
+            if (isOpen) {
+                setBuffer([...buffer, ...res.content])
+            }
         }
 
         else {
@@ -98,6 +100,20 @@ export function Notification(props: IProps) {
     useEffect(() => {
         fetchNotifications();
     }, []);
+
+    useEffect(() => {
+        if (isOpen) {
+            fetchNotifications();
+        }
+
+        return () => {
+            setBuffer([]);
+            setNotifications([]);
+            setIsLoading(false);
+            setIsLast(false);
+            setIsExhausted(false);
+        }
+    }, [isOpen]);
 
     useEffect(() => {
         if (buffer.length === 0) {

@@ -41,7 +41,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
 import java.util.*;
-
 import java.util.List;
 
 import java.io.IOException;
@@ -364,7 +363,6 @@ public class RegistrationServiceImpl implements RegistrationService {
         registrationRepository.save(registration);
     }
 
-
     @Override
     public boolean startLearningCourse(Long registrationId) {
         var userId = getCurrentUser().getId();
@@ -643,5 +641,4 @@ public class RegistrationServiceImpl implements RegistrationService {
                                                           .orElseThrow(() -> new RegistrationNotFoundException("Registration with id " + id + " not found"));
         return registration.getCourse().getStatus() == CourseStatus.AVAILABLE;
     }
-
 }
