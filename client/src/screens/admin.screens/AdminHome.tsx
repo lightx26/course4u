@@ -1,5 +1,5 @@
-import {useEffect, useState} from "react";
-import {RegistrationType} from "../../App";
+import { useEffect, useState } from "react";
+import { RegistrationType } from "../../App";
 
 import AdminCard from "../../components/admin.components/mainPage.components/AdminCard.tsx";
 import PaginationSection from "../../components/user.components/Homepage/PaginationSection.tsx";
@@ -10,10 +10,10 @@ import RegistrationList from "../../components/admin.components/registrations.co
 import { fetchAllRegistrations } from "../../apiService/Registration.service.ts";
 import { handleAvatarUrl } from "../../utils/handleAvatarUrl.ts";
 
-import {useRefreshState} from "../../hooks/use-refresh-state.ts";
+import { useRefreshState } from "../../hooks/use-refresh-state.ts";
 
-import {RootState} from "../../redux/store/store.ts";
-import {useDispatch, useSelector} from "react-redux";
+import { RootState } from "../../redux/store/store.ts";
+import { useDispatch, useSelector } from "react-redux";
 import {
     RegistrationParamsType
 } from "../../redux/slice/adminRegistration.slice.ts";
@@ -23,9 +23,10 @@ import {
     handleShowingMessageChange,
     saveRegistrationsData,
 } from "../../redux/slice/adminRegistration.slice.ts";
+import TableRegistration from "../../components/admin.components/registrations.components/table-registration.tsx";
 
 function AdminHomePage() {
-    const {registrationFlagAdmin} = useRefreshState((state) => state);
+    const { registrationFlagAdmin } = useRefreshState((state) => state);
 
     const dispatch = useDispatch();
 
@@ -89,20 +90,21 @@ function AdminHomePage() {
         <div className='bg-[#F5F7FA] h-[100dvh] min-h-[1024px]'>
             <div className='flex w-screen gap-10 pt-10 mx-auto my-0 body px-14 max-w-screen-2xl'>
                 <div className='w-56 card'>
-                    <AdminCard avatarUrl={avatarUrl}/>
+                    <AdminCard avatarUrl={avatarUrl} />
                 </div>
                 <div className='registration-section flex flex-col gap-8 w-[80%]'>
                     <div className='filters'>
-                        <UtilsBar/>
+                        <UtilsBar />
                     </div>
                     <div className='registration-list min-h-[200px]'>
                         <div className='mb-2 showing-status'>
                             {showingMessage}
                         </div>
-                        <RegistrationList
+                        {/* <RegistrationList
                             ListRegistration={registrationList}
                             isLoading={isLoading}
-                        />
+                        /> */}
+                        <TableRegistration ListRegistration={registrationList} isLoading={isLoading} />
                     </div>
                     <div className='w-full pagination mt-7'>
                         <PaginationSection
