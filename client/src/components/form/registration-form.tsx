@@ -170,6 +170,11 @@ export const RegistrationsForm = ({
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
                     className='w-full space-y-8 '
+                    onKeyDown={(event) => {
+                        if (event.key === 'Enter') {
+                          event.preventDefault();
+                        }
+                      }}
                 >
                     <CourseForm
                         //eslint-disable-next-line
@@ -197,8 +202,8 @@ export const RegistrationsForm = ({
                                             {...field}
                                             onChange={(event) => {
                                                 const value = event.target.value;
-                                                if (value.length == 0 || /^[1-9]\d*$/.test(value))
-                                                    field.onChange(+value);
+                                                if (value.length == 0 || /^[0-9]\d*$/.test(value))
+                                                    field.onChange(+value.replace(/0/g, ''));
                                             }}
                                             defaultValue={1}
                                             disabled={!isEdit}

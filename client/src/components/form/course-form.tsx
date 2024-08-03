@@ -227,11 +227,10 @@ export const CourseForm = ({
   return (
     <div
       aria-readonly={blockEditCourseForm}
-      className={
-        blockEditCourseForm
-          ? "pointer-events-none opacity-50"
-          : "" + "flex flex-col gap-6 "
-      }
+      aria-disabled={blockEditCourseForm}
+      className={blockEditCourseForm || !isEdit
+        ? "select-none cursor-not-allowed"
+        : "" + "flex flex-col gap-6 "}
     >
       <div className="space-y-4">
         <FormField
@@ -393,7 +392,7 @@ export const CourseForm = ({
                     placeholder="Select category..."
                     creatable={true}
                     disabled={blockEditCourseForm || !isEdit}
-                    className={!isEdit ? "cursor-not-allowed" : ""}
+                    className={blockEditCourseForm || !isEdit ? "cursor-not-allowed" : ""}
                     form={form}
                   />
                 </FormControl>
@@ -491,7 +490,7 @@ export const CourseForm = ({
             </p>
             <Button
               className="text-[#861FA2] bg-violet-600/20 hover:bg-violet-100 translate-y-6"
-              disabled={(blockEditCourseForm && !thumbnail.imageUrl) || !isEdit}
+              disabled={blockEditCourseForm || !thumbnail.imageUrl || !isEdit}
               type="button"
               onClick={onDeleteImage}
             >
