@@ -35,11 +35,11 @@ const courseSchema = registrationSchema.omit({
 });
 
 type Props = {
-  form: UseFormReturn<z.infer<typeof courseSchema>> | undefined;
-  course?: z.infer<typeof courseSchema>;
-  isEdit: boolean;
-  registrationStatus?: string;
-  blockEditCourseForm?: boolean;
+    form: UseFormReturn<z.infer<typeof courseSchema>> | undefined;
+    course?: z.infer<typeof courseSchema>;
+    isEdit: boolean;
+    registrationStatus?: string;
+    blockEditCourseForm?: boolean;
 };
 
 type Thumbnail = {
@@ -57,66 +57,69 @@ const initData: Thumbnail = {
 };
 
 export const CourseForm = ({
-  form,
-  course,
-  isEdit,
-  blockEditCourseForm = false,
+    form,
+    course,
+    isEdit,
+    blockEditCourseForm = false,
 }: Props) => {
   const [thumbnail, setThumbnail] = useState<Thumbnail>(initData);
   const [isOpen, setIsOpen] = useState(false);
   const [categories, setCategories] = useState<Option[]>([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (course) {
-      setThumbnail({
-        imageUrl: course.thumbnailUrl,
-        croppedImageUrl: null,
-        crop: { x: 0, y: 0 },
-        zoom: 1,
-        aspect: { value: 4 / 3, text: "4:3" },
-      });
-      form?.setValue("link", course.link);
-      form?.setValue("level", course.level);
-      form?.setValue("teacherName", course.teacherName);
-      const categoriesData = course?.categories?.map((category) => ({
-        label: category.name,
-        value: category.name!,
-      }));
-      form?.setValue("categories", categoriesData || []);
-      form?.setValue("platform", course.platform.toUpperCase());
-      form?.setValue("name", course.name);
-      form?.setValue("thumbnailUrl", course.thumbnailUrl);
-      form?.trigger();
-    }
-  }, [course]);
+    useEffect(() => {
+        if (course) {
+            setThumbnail({
+                imageUrl: course.thumbnailUrl,
+                croppedImageUrl: null,
+                crop: { x: 0, y: 0 },
+                zoom: 1,
+                aspect: { value: 4 / 3, text: "4:3" },
+            });
+            form?.setValue("link", course.link || "");
+            form?.setValue("level", course.level || "");
+            form?.setValue("teacherName", course.teacherName || "");
+            const categoriesData = course?.categories?.map((category) => ({
+                label: category.name,
+                value: category.name!,
+            }));
+            form?.setValue("categories", categoriesData || []);
+            form?.setValue(
+                "platform",
+                course.platform ? course.platform.toUpperCase() : ""
+            );
+            form?.setValue("name", course.name || "");
+            form?.setValue("thumbnailUrl", course.thumbnailUrl || "");
+            form?.trigger();
+        }
+    }, [course]);
 
-  useEffect(() => {
-    const getCategories = async () => {
-      try {
-        const response = await instance.get("/categories/available");
-        const categories = response.data
-          .map((category: Option) => ({
-            label: category.name,
-            value: category.id + "",
-          }))
-          .sort((a: { label: string }, b: { label: any }) =>
-            a.label.localeCompare(b.label)
-          );
-        setCategories(categories);
-      } catch (error) {
-        toast.error("Oops something went wrong...", {
-          description: "Please refresh the page and try again!",
-          style: {
-            color: "red",
-            fontWeight: "bold",
-            textAlign: "center",
-          },
-        });
-      }
-    };
-    getCategories();
-  }, []);
+    useEffect(() => {
+        const getCategories = async () => {
+            try {
+                const response = await instance.get("/categories/available");
+                const categories = response.data
+                    .map((category: Option) => ({
+                        label: category.name,
+                        value: category.id + "",
+                    }))
+                    .sort((a: { label: string }, b: { label: string }) =>
+                        a.label.localeCompare(b.label)
+                    );
+                setCategories(categories);
+            } catch (error) {
+                toast.error("Oops something went wrong...", {
+                    description: "Please refresh the page and try again!",
+                    style: {
+                        color: "red",
+                        fontWeight: "bold",
+                        textAlign: "center",
+                    },
+                });
+            }
+        };
+        getCategories();
+    }, []);
 
   const onDrop = useCallback(
     (acceptedFiles: File[], rejectedFiles: File[]) => {
@@ -143,15 +146,16 @@ export const CourseForm = ({
     [form, thumbnail]
   );
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    //@ts-ignore
-    onDrop,
-    accept: {
-      "image/jpeg": [".jpg", ".jpeg"],
-      "image/png": [".png"],
-    },
-    maxSize: 10 * 1024 * 1024,
-  });
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        //eslint-disable-next-line
+        //@ts-ignore
+        onDrop,
+        accept: {
+            "image/jpeg": [".jpg", ".jpeg"],
+            "image/png": [".png"],
+        },
+        maxSize: 10 * 1024 * 1024,
+    });
 
   const onDeleteImage = () => {
     setThumbnail({ ...thumbnail, imageUrl: null, croppedImageUrl: null });

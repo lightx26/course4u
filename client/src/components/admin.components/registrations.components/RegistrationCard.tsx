@@ -32,15 +32,20 @@ function RegistrationCardComponent({ registration }: PropsType) {
         return newDate.join("/");
     };
 
-    const handlePeriod = (startDate: Date | undefined, endDate: Date | undefined): string => {
-        if (!startDate){
+    const handlePeriod = (
+        startDate: Date | undefined,
+        endDate: Date | undefined
+    ): string => {
+        if (!startDate) {
             return `Not started yet`;
         }
 
         const handledStartDate = convertJSDatesToCorrectFormat(startDate);
-        const handledEndDate = endDate ? convertJSDatesToCorrectFormat(endDate) : "";
+        const handledEndDate = endDate
+            ? convertJSDatesToCorrectFormat(endDate)
+            : "";
 
-        return `Period: ${ handledStartDate } - ${ handledEndDate }`;
+        return `Period: ${handledStartDate} - ${handledEndDate}`;
     };
 
     const handlePopup = () => {

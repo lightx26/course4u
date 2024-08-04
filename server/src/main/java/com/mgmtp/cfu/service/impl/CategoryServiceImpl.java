@@ -47,6 +47,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<Category> findOrCreateNewCategory(List<CourseRequest.CategoryCourseRequestDTO> categoryRequests) {
         List<Category> categories = new ArrayList<>();
+        if(categoryRequests == null || categoryRequests.isEmpty()){
+            return categories;
+        }
         try {
             boolean isAdmin = AuthUtils.getCurrentUser().getRole().toString().equals("ADMIN");
             categoryRequests.forEach(categoryRequestDTO -> {

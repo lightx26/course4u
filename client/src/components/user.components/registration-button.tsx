@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  finishLearning,
-  discardRegistration,
-  removeRegistration,
-  startLearning,
-  submitDocument,
-  submitWithExistedCourse,
-  resubmitDocument,
+    finishLearning,
+    discardRegistration,
+    removeRegistration,
+    startLearning,
+    submitDocument,
+    submitWithExistedCourse,
+    resubmitDocument,
 } from "../../apiService/Registration.service";
 import { useRegistrationDetail } from "../../hooks/use-registration-detail";
 import { useRegistrationModal } from "../../hooks/use-registration-modal";
@@ -17,64 +17,71 @@ import ModalConfirm from "./ModalConfirm";
 import type { UploadFile } from "antd";
 import { toast } from "sonner";
 import { RootState } from "../../redux/store/store";
-import { fetchListOfMyRegistration } from "../../apiService/MyRegistration.service";
+import {
+    fetchListOfMyRegistration,
+    saveRegistrationAsDraft,
+} from "../../apiService/MyRegistration.service";
 import { saveDataListRegistration } from "../../redux/slice/registration.slice";
 import { useRefreshState } from "../../hooks/use-refresh-state";
 import { isStatusSuccesful } from "../../utils/checkResStatus";
 import SendReviewModal from "../modal/send-review-modal";
 import {
-  checkExistReview,
-  sendReview,
+    checkExistReview,
+    sendReview,
 } from "../../apiService/courseReview.service";
 import { isExistAvailableCourseWithId } from "../../apiService/Course.service";
+import { registrationSchema } from "../../schemas/registration-schema";
+import { UseFormReturn } from "react-hook-form";
+import { z } from "zod";
+import { convertToFormData } from "../../utils/convertToFormData";
 import { durationSchema } from "../../schemas/registration-schema";
 
 type Props = {
-  status?: Status;
-  setIsEdit: (isEdit: boolean) => void;
-  isEdit: boolean;
-  id?: number;
-  isStatrted?: boolean;
-  listFileCertificate?: UploadFile[];
-  listFilePayment?: UploadFile[];
-  duration: number;
-  durationUnit: string;
-  listIdDocumentRemove?: number[];
-  blockEditCourseForm?: boolean;
-  setBlockEditCourseForm: React.Dispatch<React.SetStateAction<boolean>>;
-  setAsDraft: (asDraft: boolean) => void;
+    status?: Status;
+    setIsEdit: (isEdit: boolean) => void;
+    isEdit: boolean;
+    id?: number;
+    isStatrted?: boolean;
+    listFileCertificate?: UploadFile[];
+    listFilePayment?: UploadFile[];
+    duration: number;
+    durationUnit: string;
+    listIdDocumentRemove?: number[];
+    blockEditCourseForm?: boolean;
+    setBlockEditCourseForm: React.Dispatch<React.SetStateAction<boolean>>;
+    form: UseFormReturn<z.infer<typeof registrationSchema>> | undefined;
 };
 
 export const RegistrationButton = ({
-  status = Status.NONE,
-  setIsEdit,
-  isEdit,
-  id,
-  listFileCertificate,
-  listFilePayment,
-  isStatrted,
-  blockEditCourseForm = false,
-  setBlockEditCourseForm,
-  duration,
-  durationUnit,
-  listIdDocumentRemove,
-  setAsDraft,
+    status = Status.NONE,
+    setIsEdit,
+    isEdit,
+    id,
+    listFileCertificate,
+    listFilePayment,
+    isStatrted,
+    blockEditCourseForm = false,
+    setBlockEditCourseForm,
+    duration,
+    durationUnit,
+    listIdDocumentRemove,
+    form,
 }: Props) => {
-  const { registration, closeRegistration } = useRegistrationDetail();
-  const { close } = useRegistrationModal((state) => state);
-  const [isLoading, setIsLoading] = useState(false);
-  const { setRegistrationFlagAdmin } = useRefreshState((state) => state);
-  const [haveReview, setHaveReview] = useState<boolean>(true);
+    const { registration, closeRegistration } = useRegistrationDetail();
+    const { close } = useRegistrationModal((state) => state);
+    const [isLoading, setIsLoading] = useState(false);
+    const { setRegistrationFlagAdmin } = useRefreshState((state) => state);
+    const [haveReview, setHaveReview] = useState<boolean>(true);
 
-  //state to manange review and send rating
-  const [rating, setRating] = useState<number>(0);
-  const [reviewContent, setReviewContent] = useState<string>("");
+    //state to manange review and send rating
+    const [rating, setRating] = useState<number>(0);
+    const [reviewContent, setReviewContent] = useState<string>("");
 
-  const closeModal = () => {
-    close();
-    closeRegistration();
-    setRegistrationFlagAdmin();
-  };
+    const closeModal = () => {
+        close();
+        closeRegistration();
+        setRegistrationFlagAdmin();
+    };
 
   const onEdit = async () => {
     setIsEdit(true);
@@ -83,51 +90,51 @@ export const RegistrationButton = ({
       setBlockEditCourseForm(true)
   };
 
-  //Delete a registration
-  const handleDeleteButtonClick = async () => {
-    setIsLoading(true);
-    const res = await removeRegistration(id!);
-    if (res !== 200) {
-      setIsLoading(false);
-      return;
-    }
-    closeModal();
-    setIsLoading(false);
-  };
+    //Delete a registration
+    const handleDeleteButtonClick = async () => {
+        setIsLoading(true);
+        const res = await removeRegistration(id!);
+        if (res !== 200) {
+            setIsLoading(false);
+            return;
+        }
+        closeModal();
+        setIsLoading(false);
+    };
 
-  const handleStartLearning = async () => {
-    if (registration?.startDate) {
-      window.open(registration?.course?.link);
-      return;
-    }
-    setIsLoading(true);
-    const res = await startLearning(id!);
-    if (res !== 200) {
-      setIsLoading(false);
-      return;
-    }
-    window.open(registration?.course?.link);
-    closeModal();
-    setIsLoading(false);
-  };
+    const handleStartLearning = async () => {
+        if (registration?.startDate) {
+            window.open(registration?.course?.link);
+            return;
+        }
+        setIsLoading(true);
+        const res = await startLearning(id!);
+        if (res !== 200) {
+            setIsLoading(false);
+            return;
+        }
+        window.open(registration?.course?.link);
+        closeModal();
+        setIsLoading(false);
+    };
 
-  const handleFinishLearning = async () => {
-    setIsLoading(true);
-    await finishLearning(id!);
-    closeModal();
-    setIsLoading(false);
-  };
+    const handleFinishLearning = async () => {
+        setIsLoading(true);
+        await finishLearning(id!);
+        closeModal();
+        setIsLoading(false);
+    };
 
-  const handleDiscard = async () => {
-    setIsLoading(true);
-    const res = await discardRegistration(id!);
-    if (res !== 200) {
-      setIsLoading(false);
-      return;
-    }
-    closeModal();
-    setIsLoading(false);
-  };
+    const handleDiscard = async () => {
+        setIsLoading(true);
+        const res = await discardRegistration(id!);
+        if (res !== 200) {
+            setIsLoading(false);
+            return;
+        }
+        closeModal();
+        setIsLoading(false);
+    };
 
   const handleSubmitWithExistedCourse = async () => {
     const registrationData = {
@@ -135,7 +142,7 @@ export const RegistrationButton = ({
       duration,
       durationUnit,
     };
-    console.log('duration --> ' + duration);
+
     // Validate registration data using registrationSchema
     const validationResult = durationSchema.safeParse(duration);
 
@@ -168,64 +175,73 @@ export const RegistrationButton = ({
     }
   };
 
-  const handleSendReview = async () => {
-    const response = await sendReview(
-      rating,
-      reviewContent,
-      registration!.course!.id!
-    );
-    if (isStatusSuccesful(response.status)) {
-      toast.success("Review sent successfully", {
-        style: { color: "green" },
-        description: "Your review has been sent successfully.",
-      });
-      setHaveReview(true);
-    } else {
-      toast.error("Failed to send review", {
-        style: { color: "red" },
-        description: "Failed to send review" + response.statusText,
-      });
-    }
-  };
+    const handleSendReview = async () => {
+        const response = await sendReview(
+            rating,
+            reviewContent,
+            registration!.course!.id!
+        );
+        if (isStatusSuccesful(response.status)) {
+            toast.success("Review sent successfully", {
+                style: { color: "green" },
+                description: "Your review has been sent successfully.",
+            });
+            setHaveReview(true);
+        } else {
+            toast.error("Failed to send review", {
+                style: { color: "red" },
+                description: "Failed to send review" + response.statusText,
+            });
+        }
+    };
 
-  //Submit Document
-  const currentPage = useSelector(
-    (state: RootState) => state.registration.currentPage
-  );
-  const filterBy = useSelector((state: RootState) => state.registration.status);
-  const dispatch = useDispatch();
-  const handleSubmitDocument = async () => {
-    if (listFileCertificate?.length === 0 || listFilePayment?.length === 0) {
-      return toast.error("Document Submission Failed", {
-        style: { color: "red" },
-        description:
-          "Both certificates and payments are required. Please ensure all necessary documents are submitted.",
-      });
-    }
-    const response = await submitDocument(
-      listFileCertificate!,
-      listFilePayment!,
-      id?.toString()
+    //Submit Document
+    const currentPage = useSelector(
+        (state: RootState) => state.registration.currentPage
     );
-    if (response && response.status === 200) {
-      toast.success("Document Submitted Successfully", {
-        style: { color: "green" },
-        description: "Your registration has been completed successfully.",
-      });
-      const result = await fetchListOfMyRegistration(currentPage, filterBy);
-      if (result && result.data) {
-        dispatch(saveDataListRegistration(result.data));
-      }
-      closeModal();
-    } else {
-      toast.error("Document Submission Failed", {
-        style: { color: "red" },
-        description: response?.data.message
-          ? response.data.message
-          : "There was an error submitting your documents. Please try again later.",
-      });
-    }
-  };
+    const filterBy = useSelector(
+        (state: RootState) => state.registration.status
+    );
+    const dispatch = useDispatch();
+    const handleSubmitDocument = async () => {
+        if (
+            listFileCertificate?.length === 0 ||
+            listFilePayment?.length === 0
+        ) {
+            return toast.error("Document Submission Failed", {
+                style: { color: "red" },
+                description:
+                    "Both certificates and payments are required. Please ensure all necessary documents are submitted.",
+            });
+        }
+        const response = await submitDocument(
+            listFileCertificate!,
+            listFilePayment!,
+            id?.toString()
+        );
+        if (response && response.status === 200) {
+            toast.success("Document Submitted Successfully", {
+                style: { color: "green" },
+                description:
+                    "Your registration has been completed successfully.",
+            });
+            const result = await fetchListOfMyRegistration(
+                currentPage,
+                filterBy
+            );
+            if (result && result.data) {
+                dispatch(saveDataListRegistration(result.data));
+            }
+            closeModal();
+        } else {
+            toast.error("Document Submission Failed", {
+                style: { color: "red" },
+                description: response?.data.message
+                    ? response.data.message
+                    : "There was an error submitting your documents. Please try again later.",
+            });
+        }
+    };
 
   //User Re-submit Document
   const handleReSubmitDocument = async () => {
@@ -262,90 +278,101 @@ export const RegistrationButton = ({
     }
   };
 
-  useEffect(() => {
-    if (
-      status === Status.DONE ||
-      status === Status.VERIFIED ||
-      status === Status.VERIFYING ||
-      status === Status.CLOSED ||
-      status === Status.DOCUMENT_DECLINED
-    ) {
-      handleCheckExistReview();
-    }
-  }, [status]);
-  return (
-    <div className='flex justify-end gap-4'>
-      {(status === Status.NONE || status === Status.DRAFT) && (
-        <Button
-          size='default'
-          variant='gray'
-          onClick={() => {
-            setAsDraft(true);
-          }}
-        >
-          SAVE AS DRAFT
-        </Button>
-      )}
-      {(status === Status.DRAFT || status === Status.DISCARDED) && (
-        <ModalConfirm
-          title='Delete this registration?'
-          description='Are you sure you want to delete this form? This action cannot be undone.'
-          cancelButtonTitle='Cancel'
-          acceptButtonTitle='Yes, Delete'
-          handleConfirm={handleDeleteButtonClick}
-        >
-          <Button
-            type='button'
-            size='default'
-            variant='danger'
-            disabled={isLoading}
-          >
-            DELETE
-          </Button>
-        </ModalConfirm>
-      )}
-      {(status === Status.SUBMITTED ||
-        status === Status.DECLINED ||
-        status === Status.APPROVED) &&
-        !isEdit && (
-          <Button
-            size='default'
-            variant='gray'
-            type='button'
-            onClick={handleDiscard}
-            disabled={isLoading}
-          >
-            DISCARD
-          </Button>
-        )}
-      {status === Status.APPROVED && !registration?.startDate && (
-        <ModalConfirm
-          handleConfirm={handleStartLearning}
-          title='Do you want to start learning this course?'
-          description='Start learning cannot undo !!! Are you sure you want to start learning this course?'
-        >
-          <Button
-            size='default'
-            variant='blue'
-            type='button'
-            disabled={isLoading}
-          >
-            START LEARNING
-          </Button>
-        </ModalConfirm>
-      )}
+    const handleSaveAsDraft = async () => {
+        const data = await convertToFormData(form?.getValues());
+        if (!data) return;
+        await saveRegistrationAsDraft(
+            data,
+            id!,
+            close,
+            setRegistrationFlagAdmin
+        );
+    };
 
-      {status === Status.APPROVED && registration?.startDate && (
-        <Button
-          size="default"
-          variant="blue"
-          type="button"
-          onClick={handleStartLearning}
-          disabled={isLoading}
-        >
-          START LEARNING
-        </Button>
-      )}
+    useEffect(() => {
+        if (
+            status === Status.DONE ||
+            status === Status.VERIFIED ||
+            status === Status.VERIFYING ||
+            status === Status.CLOSED ||
+            status === Status.DOCUMENT_DECLINED
+        ) {
+            handleCheckExistReview();
+        }
+    }, [status]);
+    return (
+        <div className='flex justify-end gap-4'>
+            {(status === Status.NONE || status === Status.DRAFT) && (
+                <ModalConfirm
+                    handleConfirm={handleSaveAsDraft}
+                    title='Save registration as draft'
+                    description='Do you want to save this registration as draft ?'
+                >
+                    <Button size='default' variant='gray' type='button'>
+                        SAVE AS DRAFT
+                    </Button>
+                </ModalConfirm>
+            )}
+            {(status === Status.DRAFT || status === Status.DISCARDED) && (
+                <ModalConfirm
+                    title='Delete this registration?'
+                    description='Are you sure you want to delete this form? This action cannot be undone.'
+                    cancelButtonTitle='Cancel'
+                    acceptButtonTitle='Yes, Delete'
+                    handleConfirm={handleDeleteButtonClick}
+                >
+                    <Button
+                        type='button'
+                        size='default'
+                        variant='danger'
+                        disabled={isLoading}
+                    >
+                        DELETE
+                    </Button>
+                </ModalConfirm>
+            )}
+            {(status === Status.SUBMITTED ||
+                status === Status.DECLINED ||
+                status === Status.APPROVED) &&
+                !isEdit && (
+                    <Button
+                        size='default'
+                        variant='gray'
+                        type='button'
+                        onClick={handleDiscard}
+                        disabled={isLoading}
+                    >
+                        DISCARD
+                    </Button>
+                )}
+            {status === Status.APPROVED && !registration?.startDate && (
+                <ModalConfirm
+                    handleConfirm={handleStartLearning}
+                    title='Do you want to start learning this course?'
+                    description='Start learning cannot undo !!! Are you sure you want to start learning this course?'
+                >
+                    <Button
+                        size='default'
+                        variant='blue'
+                        type='button'
+                        disabled={isLoading}
+                    >
+                        START LEARNING
+                    </Button>
+                </ModalConfirm>
+            )}
+
+            {status === Status.APPROVED && registration?.startDate && (
+                <Button
+                    size='default'
+                    variant='blue'
+                    type='button'
+                    onClick={handleStartLearning}
+                    disabled={isLoading}
+                >
+                    START LEARNING
+                </Button>
+            )}
 
       {status === Status.APPROVED && (
         <ModalConfirm
@@ -403,60 +430,60 @@ export const RegistrationButton = ({
           </Button>
         )}
 
-      {!haveReview &&
-        (status === Status.DONE ||
-          status === Status.VERIFIED ||
-          status === Status.VERIFYING ||
-          status === Status.DOCUMENT_DECLINED ||
-          status === Status.CLOSED) && (
-          <SendReviewModal
-            title="Give your review"
-            rating={rating}
-            setRating={setRating}
-            reviewContent={reviewContent}
-            setReviewContent={setReviewContent}
-            handleConfirm={handleSendReview}
-          >
-            <Button
-              type="button"
-              size="default"
-              variant="primary"
-              disabled={isLoading}
-            >
-              REVIEW
-            </Button>
-          </SendReviewModal>
-        )}
-      {status === Status.DONE && (
-        <Button
-          size="default"
-          variant="blue"
-          disabled={isLoading}
-          type="button"
-          onClick={handleSubmitDocument}
-        >
-          ASSIGN TO REVIEW
-        </Button>
-      )}
-      {status === Status.DOCUMENT_DECLINED && (
-        <>
-          <ModalConfirm
-            title="Re-submit document"
-            description="Are you sure you want to re-submit document?"
-            cancelButtonTitle="No"
-            acceptButtonTitle="Yes"
-            handleConfirm={handleReSubmitDocument}
-          >
-            <Button
-              size="lg"
-              variant="success"
-              disabled={isLoading}
-              type="button"
-            >
-              RE-SUBMIT
-            </Button>
-          </ModalConfirm>
-          {/* <Modal
+            {!haveReview &&
+                (status === Status.DONE ||
+                    status === Status.VERIFIED ||
+                    status === Status.VERIFYING ||
+                    status === Status.DOCUMENT_DECLINED ||
+                    status === Status.CLOSED) && (
+                    <SendReviewModal
+                        title='Give your review'
+                        rating={rating}
+                        setRating={setRating}
+                        reviewContent={reviewContent}
+                        setReviewContent={setReviewContent}
+                        handleConfirm={handleSendReview}
+                    >
+                        <Button
+                            type='button'
+                            size='default'
+                            variant='primary'
+                            disabled={isLoading}
+                        >
+                            REVIEW
+                        </Button>
+                    </SendReviewModal>
+                )}
+            {status === Status.DONE && (
+                <Button
+                    size='default'
+                    variant='blue'
+                    disabled={isLoading}
+                    type='button'
+                    onClick={handleSubmitDocument}
+                >
+                    ASSIGN TO REVIEW
+                </Button>
+            )}
+            {status === Status.DOCUMENT_DECLINED && (
+                <>
+                    <ModalConfirm
+                        title='Re-submit document'
+                        description='Are you sure you want to re-submit document?'
+                        cancelButtonTitle='No'
+                        acceptButtonTitle='Yes'
+                        handleConfirm={handleReSubmitDocument}
+                    >
+                        <Button
+                            size='lg'
+                            variant='success'
+                            disabled={isLoading}
+                            type='button'
+                        >
+                            RE-SUBMIT
+                        </Button>
+                    </ModalConfirm>
+                    {/* <Modal
                         title={
                             <p style={{ fontSize: "1.2rem" }}>
                                 Re-submit document
@@ -493,8 +520,8 @@ export const RegistrationButton = ({
                             Are you sure you want to re-submit document?
                         </p>
                     </Modal> */}
-        </>
-      )}
-    </div>
-  );
+                </>
+            )}
+        </div>
+    );
 };

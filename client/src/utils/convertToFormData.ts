@@ -3,11 +3,11 @@ import { registrationSchema } from "../schemas/registration-schema";
 import blobToFile, { base64ToBlob } from "./convertBlobToFile";
 
 export const convertToFormData = async (
-    values: z.infer<typeof registrationSchema>
+    values: z.infer<typeof registrationSchema> | undefined
 ) => {
     let isFile = false;
     let thumbnailFile;
-
+    if (!values) return;
     if (values.thumbnailUrl.startsWith("blob:")) {
         thumbnailFile = await blobToFile(values.thumbnailUrl, values.name);
         isFile = true;

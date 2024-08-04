@@ -94,20 +94,20 @@ export async function saveRegistrationAsDraft(
     close: VoidFunction,
     setFlag: VoidFunction
 ) {
-    try {
-        id
-            ? await instance.put(`/registrations/${id}/draft`, data)
-            : await instance.postForm("/registrations/draft", data);
+    const res = id
+        ? await instance.put(`/registrations/${id}/draft`, data)
+        : await instance.postForm("/registrations/draft", data);
+    if (isStatusSuccesful(res.status)) {
         toast.success("Registration saved as draft", {
             style: { color: "green" },
             description: "Registration saved as draft successfully",
         });
         close();
         setFlag();
-    } catch (err: any) {
-        toast.error("Save registration as draft unsuccessfully", {
-            style: { color: "red" },
-            description: err.response.data.message,
-        });
+        return res.status;
     }
+    toast.error("Save registration as draft unsuccessfully", {
+        style: { color: "red" },
+        description: "You need to provide at least 1 field to save as draft!!",
+    });
 }

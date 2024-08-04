@@ -61,7 +61,7 @@ export default function MyRegistrationComponents({ registration }: PropsType) {
                     />
                     <div className='flex flex-col gap-2 px-2 pt-2 text-left'>
                         <h2 className='text-lg font-normal h-14 line-clamp-2'>
-                            {registration.courseName}
+                            {registration.courseName || "No name"}
                         </h2>
                         <p
                             className={cn(

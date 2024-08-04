@@ -26,7 +26,6 @@ import { RegistrationButton } from "../user.components/registration-button";
 import {
     createNewRegistration,
     editRegistration,
-    saveRegistrationAsDraft,
 } from "../../apiService/MyRegistration.service";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
@@ -89,8 +88,8 @@ export const RegistrationsForm = ({
     const { setRegistrationFlagAdmin } = useRefreshState((state) => state);
     const { close } = useRegistrationModal((state) => state);
     const user = useSelector((state: RootState) => state.user);
-    const [asDraft, setAsDraft] = useState(false);
-    const [blockEditCourseForm, setBlockEditCourseForm] = useState<boolean>(isBlockedModifiedCourse ?? false
+    const [blockEditCourseForm, setBlockEditCourseForm] = useState<boolean>(
+        isBlockedModifiedCourse ?? false
     );
     useEffect(() => {
         if (id) {
@@ -98,17 +97,10 @@ export const RegistrationsForm = ({
             form.setValue("durationUnit", durationUnit || "DAY");
         }
     }, [duration, durationUnit, form, id]);
-    // @ts-nocheck
+
     async function onSubmit(values: z.infer<typeof registrationSchema>) {
         const requestBody = await convertToFormData(values);
-        if (asDraft) {
-            await saveRegistrationAsDraft(
-                requestBody,
-                +id!,
-                close,
-                setRegistrationFlagAdmin
-            );
-        } else if (
+        if (
             isEdit &&
             (status === Status.DRAFT ||
                 status === Status.DECLINED ||
@@ -116,14 +108,14 @@ export const RegistrationsForm = ({
         ) {
             await editRegistration(
                 +id!,
-                requestBody,
+                requestBody!,
                 status,
                 close,
                 setRegistrationFlagAdmin
             );
         } else {
             await createNewRegistration(
-                requestBody,
+                requestBody!,
                 close,
                 setRegistrationFlagAdmin
             );
@@ -197,8 +189,8 @@ export const RegistrationsForm = ({
                                     </FormLabel>
                                     <FormControl>
                                         <Input
-                                            type="text"
-                                            placeholder="Duration"
+                                            type='text'
+                                            placeholder='Duration'
                                             {...field}
                                             onChange={(event) => {
                                                 const value = event.target.value;
@@ -299,7 +291,7 @@ export const RegistrationsForm = ({
                                         durationUnit={form.getValues(
                                             "durationUnit"
                                         )}
-                                        setAsDraft={setAsDraft}
+                                        form={form}
                                     />
                                 </>
                             )}
@@ -341,7 +333,7 @@ export const RegistrationsForm = ({
                                             durationUnit={form.getValues(
                                                 "durationUnit"
                                             )}
-                                            setAsDraft={setAsDraft}
+                                            form={form}
                                         />
                                     </>
                                 )}
@@ -425,7 +417,7 @@ export const RegistrationsForm = ({
                                         durationUnit={form.getValues(
                                             "durationUnit"
                                         )}
-                                        setAsDraft={setAsDraft}
+                                        form={form}
                                     />
                                 </>
                             )}
