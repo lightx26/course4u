@@ -10,7 +10,7 @@ import RegistrationList from "../../components/admin.components/registrations.co
 import { fetchAllRegistrations } from "../../apiService/Registration.service.ts";
 import { handleAvatarUrl } from "../../utils/handleAvatarUrl.ts";
 
-import { useRefreshState } from "../../hooks/use-refresh-state.ts";
+import {useRefreshState} from "../../hooks/use-refresh-state.ts";
 
 import { RootState } from "../../redux/store/store.ts";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,7 +23,6 @@ import {
     handleShowingMessageChange,
     saveRegistrationsData,
 } from "../../redux/slice/adminRegistration.slice.ts";
-import TableRegistration from "../../components/admin.components/registrations.components/table-registration.tsx";
 
 function AdminHomePage() {
     const { registrationFlagAdmin } = useRefreshState((state) => state);
@@ -100,11 +99,11 @@ function AdminHomePage() {
                         <div className='mb-2 showing-status'>
                             {showingMessage}
                         </div>
-                        {/* <RegistrationList
+                        <RegistrationList
                             ListRegistration={registrationList}
                             isLoading={isLoading}
-                        /> */}
-                        <TableRegistration ListRegistration={registrationList} isLoading={isLoading} />
+                        />
+                        {/*<TableRegistration ListRegistration={registrationList} isLoading={isLoading} />*/}
                     </div>
                     <div className='w-full pagination mt-7'>
                         <PaginationSection

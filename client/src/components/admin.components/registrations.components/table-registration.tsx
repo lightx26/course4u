@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { RegistrationType } from "../../../App";
 import TableHeaderRegistration from "./table-header-registration";
 import TableRowRegistration from "./table-row-registration";
@@ -15,7 +16,7 @@ const TableHeader = [
     "Period",
     "Status",
 ];
-
+//@ts-ignore
 export default function TableRegistration({ ListRegistration, isLoading, numRegistration }: PropsType) {
     return (
         <div>

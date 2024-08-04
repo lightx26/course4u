@@ -17,9 +17,9 @@
         </tr>
         <tr>
             <td style="padding: 30px 0 50px 0; text-align: center;">
-                <div id="greeting" style="font-size: 30px; font-weight: 600;">Hi </div>
-                <div id="content" style="width: 50%; margin: 20px auto; text-align: center; font-size: 16px; font-weight: 400; color: #847f7f;">
-                    Welcome to course4U! Thank you for registering. Discover and enroll in a variety of courses tailored to your interests. Happy learning!
+                <div id="greeting" style="font-size: 30px; font-weight: 600; padding: 5px 20px;">Hi </div>
+                <div id="content" style="width: 80%; margin: 20px auto; text-align: justify; font-size: 16px; font-weight: 500; color: #333;">
+                    Welcome to Course4U! Thank you for registering. Discover and enroll in a variety of courses tailored to your interests. Happy learning!
                 </div>
             </td>
         </tr>

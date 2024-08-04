@@ -20,16 +20,14 @@
             </tr>
             <tr>
                 <td style="padding: 30px 0 50px 0; text-align: center;">
-                    <div id="user_greeting" style="font-size: 30px; font-weight: 600;">Hi [Recipient Name]!</div>
+                    <div id="user_greeting" style="font-size: 30px; padding: 5px 20px; font-weight: 600;">Hi [Recipient Name]!</div>
                     <div id="content"
-                         style="width: 50%; margin: 20px auto; text-align: center; font-size: 16px; font-weight: 400; color: #847f7f;">
-                        This is a friendly reminder that the deadline for [Task/Project/Event] is approaching. Please
-                        make sure to complete all necessary tasks and submit your work by the due date.
+                         style="width: 80%; margin: 20px auto; text-align: justify; font-size: 16px; font-weight: 500; color: #333;">
+                        This is a friendly reminder that the deadline for [Task/Project/Event] is approaching. Please make sure to complete all necessary tasks and submit your work by the due date.
                     </div>
                     <div id="deadline" style="font-weight: bold; color: #F7C631; margin-top: 20px; font-size: 18px;">
                         Deadline: [Date and Time]
                     </div>
-
                 </td>
             </tr>
         </table>

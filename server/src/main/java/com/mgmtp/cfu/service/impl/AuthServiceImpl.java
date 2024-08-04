@@ -90,10 +90,10 @@ public class AuthServiceImpl implements IAuthService {
 
         user = userRepository.save(user);
         List<MailContentUnit> mailContentUnits=List.of(
-                MailContentUnit.builder().id("user_greeting").content("Welcome"+ user.getUsername()).tag("div").build(),
+                MailContentUnit.builder().id("user_greeting").content("Welcome " + user.getUsername() + " ").tag("div").build(),
                 MailContentUnit.builder().id("client_url").href(clientUrl).tag("a").build()
         );
-        emailService.sendMessage(user.getEmail(), "Welcome to course4U!","successful_account_registration_mail_template.xml", mailContentUnits);
+        emailService.sendMessage(user.getEmail(), "Welcome to Course4U! ","successful_account_registration_mail_template.xml", mailContentUnits);
 
         return SignUpResponse.builder()
                 .username(user.getUsername())
