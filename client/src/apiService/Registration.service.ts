@@ -3,27 +3,27 @@ import instance from "../utils/customizeAxios";
 import { isStatusSuccesful } from "../utils/checkResStatus";
 
 import type { UploadFile } from "antd";
-import {RegistrationParamsType} from "../redux/slice/adminRegistration.slice.ts";
+import { RegistrationParamsType } from "../redux/slice/adminRegistration.slice.ts";
 import OrderByMapping from "../utils/orderByMapping.ts";
 
 export async function fetchAllRegistrations(params: RegistrationParamsType, page: number = 1, pageSize: number = 8) {
-    const status: string = params.status == "Declined (Document)"
-        ? "DOCUMENT_DECLINED"
-        : params.status.toUpperCase();
+  const status: string = params.status == "Declined (Document)"
+    ? "DOCUMENT_DECLINED"
+    : params.status.toUpperCase();
 
-    const orderBy: string = OrderByMapping(params.orderBy);
+  const orderBy: string = OrderByMapping(params.orderBy);
 
-    const search: string = params.search.toLowerCase();
-    const isAscending: string = params.isAscending ? 'true' : 'false';
+  const search: string = params.search.toLowerCase();
+  const isAscending: string = params.isAscending ? 'true' : 'false';
 
-    const url = `/registrations?status=${status}&search=${search}&orderBy=${orderBy}&isAscending=${isAscending}&page=${page}&pageSize=${pageSize}`;
+  const url = `/registrations?status=${status}&search=${search}&orderBy=${orderBy}&isAscending=${isAscending}&page=${page}&pageSize=${pageSize}`;
 
-    try {
-        const response = await instance.get(url);
-        return response.data;
-    } catch (error) {
-        throw new Error("Error while fetching registrations");
-    }
+  try {
+    const response = await instance.get(url);
+    return response.data;
+  } catch (error) {
+    throw new Error("Error while fetching registrations");
+  }
 }
 
 export const approveRegistration = async (id: number, close: VoidFunction) => {
@@ -127,27 +127,25 @@ export const submitDocument = async (
 ) => {
   try {
     const formData = new FormData();
-    if(listFilePayment.length > 0)
-      {
+    if (listFilePayment.length > 0) {
       // Append payment files
       listFilePayment.forEach((file) => {
         if (file.originFileObj) {
           formData.append("payment", file.originFileObj);
         }
       });
-      }
-      else formData.append("payment", "");
-  
-      if(listFileCertificate.length > 0)
-      {
-  // Append certificate files
-  listFileCertificate.forEach((file) => {
-    if (file.originFileObj) {
-      formData.append("certificate", file.originFileObj);
     }
-  });
-      }
-      else formData.append("certificate", "");
+    else formData.append("payment", "");
+
+    if (listFileCertificate.length > 0) {
+      // Append certificate files
+      listFileCertificate.forEach((file) => {
+        if (file.originFileObj) {
+          formData.append("certificate", file.originFileObj);
+        }
+      });
+    }
+    else formData.append("certificate", "");
 
     const response = await instance.post(
       `/documents/registrations/${id}`,
@@ -168,15 +166,15 @@ export const finishLearning = async (id: string | number) => {
   const response = await instance.put(`/registrations/${id}/finish-learning`);
   response.status == 200
     ? toast.success("Finish learning", {
-        style: { color: "green" },
-        description:
-          "Congratulations! You have successfully completed the course.",
-      })
+      style: { color: "green" },
+      description:
+        "Congratulations! You have successfully completed the course.",
+    })
     : toast.error("Failed to finish learning", {
-        style: { color: "red" },
-        description:
-          "Opps.., some thing went wrong. Please, reload the page and try again",
-      });
+      style: { color: "red" },
+      description:
+        "Opps.., some thing went wrong. Please, reload the page and try again",
+    });
   return response;
 };
 
@@ -252,7 +250,12 @@ export const approve_Decline_Document_Registration = async (
     );
     return response;
   } catch (error) {
-    console.log("Error while approving documents", error);
+    toast.error("Error while approving documents", {
+      style: {
+        color: "green"
+      },
+      description: "Ooppps.... Something went wrong. Please try again"
+    });
   }
 };
 
@@ -279,8 +282,8 @@ export const resubmitDocument = async (
       }
     });
 
-   
-    
+
+
     if (listIdRemove.length > 0) {
       listIdRemove.forEach((id) => {
         formData.append("deleted_documents", id.toString());
@@ -295,6 +298,11 @@ export const resubmitDocument = async (
     );
     return response;
   } catch (error) {
-    console.log("Error while resubmitting documents", error);
+    toast.error("Error while re-submitting documents", {
+      style: {
+        color: "red"
+      },
+      description: "Ooppps.... Something went wrong. Please try again"
+    });
   }
 };

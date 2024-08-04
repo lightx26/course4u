@@ -172,9 +172,9 @@ export const RegistrationsForm = ({
                     className='w-full space-y-8 '
                     onKeyDown={(event) => {
                         if (event.key === 'Enter') {
-                          event.preventDefault();
+                            event.preventDefault();
                         }
-                      }}
+                    }}
                 >
                     <CourseForm
                         //eslint-disable-next-line
@@ -311,7 +311,7 @@ export const RegistrationsForm = ({
                                     <>
                                         {registrationFeedbacks &&
                                             registrationFeedbacks.length >
-                                                0 && (
+                                            0 && (
                                                 <FeedbackList
                                                     feedbacks={
                                                         registrationFeedbacks
@@ -347,26 +347,26 @@ export const RegistrationsForm = ({
                             {(status === "VERIFIED" ||
                                 status === "CLOSED" ||
                                 status === "VERIFYING") && (
-                                <>
-                                    <VerifyDocumentForAccountant
-                                        documentRegistration={
-                                            documentRegistration
-                                        }
-                                        setDocumentRegistration={
-                                            setDocumentRegistration
-                                        }
-                                        status={status}
-                                    />
-                                    {registrationFeedbacks &&
-                                        registrationFeedbacks.length > 0 && (
-                                            <FeedbackList
-                                                feedbacks={
-                                                    registrationFeedbacks
-                                                }
-                                            />
-                                        )}
-                                </>
-                            )}
+                                    <>
+                                        <VerifyDocumentForAccountant
+                                            documentRegistration={
+                                                documentRegistration
+                                            }
+                                            setDocumentRegistration={
+                                                setDocumentRegistration
+                                            }
+                                            status={status}
+                                        />
+                                        {registrationFeedbacks &&
+                                            registrationFeedbacks.length > 0 && (
+                                                <FeedbackList
+                                                    feedbacks={
+                                                        registrationFeedbacks
+                                                    }
+                                                />
+                                            )}
+                                    </>
+                                )}
                         </div>
                     )}
                     {user.user?.role === "USER" && (
@@ -477,26 +477,26 @@ export const RegistrationsForm = ({
                             {(status === "VERIFIED" ||
                                 status === "CLOSED" ||
                                 status === "DOCUMENT_DECLINED") && (
-                                <>
-                                    <VerifyDocumentForAccountant
-                                        documentRegistration={
-                                            documentRegistration
-                                        }
-                                        setDocumentRegistration={
-                                            setDocumentRegistration
-                                        }
-                                        status={status}
-                                    />
-                                    {registrationFeedbacks &&
-                                        registrationFeedbacks.length > 0 && (
-                                            <FeedbackList
-                                                feedbacks={
-                                                    registrationFeedbacks
-                                                }
-                                            />
-                                        )}
-                                </>
-                            )}
+                                    <>
+                                        <VerifyDocumentForAccountant
+                                            documentRegistration={
+                                                documentRegistration
+                                            }
+                                            setDocumentRegistration={
+                                                setDocumentRegistration
+                                            }
+                                            status={status}
+                                        />
+                                        {registrationFeedbacks &&
+                                            registrationFeedbacks.length > 0 && (
+                                                <FeedbackList
+                                                    feedbacks={
+                                                        registrationFeedbacks
+                                                    }
+                                                />
+                                            )}
+                                    </>
+                                )}
                         </div>
                     )}
                 </form>

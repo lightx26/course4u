@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import instance from "../utils/customizeAxios";
 
 const getListDocumentByRegistrationId = async (id: number | undefined) => {
@@ -5,7 +6,12 @@ const getListDocumentByRegistrationId = async (id: number | undefined) => {
     const response = await instance.get(`/documents/registration/${id}`);
     return response;
   } catch (error) {
-    console.log("Error while fetching documents");
+    toast.error("Error while fetching documents", {
+      style: {
+        color: "red"
+      },
+      description: "Error while fetching documents, please try again"
+    });
   }
 };
 

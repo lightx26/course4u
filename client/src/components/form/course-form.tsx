@@ -1,20 +1,20 @@
 import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
 import MultipleSelector, { Option } from "../ui/multi-selected";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "../ui/select";
 import { Button } from "../ui/button";
 import { CropThumbnail } from "../user.components/crop-thumbnail";
@@ -31,8 +31,8 @@ import { cn } from "../../utils";
 import handleThumbnailUrl from "../../utils/handleThumbnailUrl";
 
 const courseSchema = registrationSchema.omit({
-    duration: true,
-    durationUnit: true,
+  duration: true,
+  durationUnit: true,
 });
 
 type Props = {
@@ -44,17 +44,17 @@ type Props = {
 };
 
 type Thumbnail = {
-    imageUrl: string | null;
-    croppedImageUrl: string | null;
-    crop?: { x: number; y: number };
-    zoom?: number;
-    aspect?: { value: number; text: string };
+  imageUrl: string | null;
+  croppedImageUrl: string | null;
+  crop?: { x: number; y: number };
+  zoom?: number;
+  aspect?: { value: number; text: string };
 };
 
 const initData: Thumbnail = {
-    imageUrl: null,
-    croppedImageUrl: null,
-    aspect: { value: 4 / 3, text: "4:3" },
+  imageUrl: null,
+  croppedImageUrl: null,
+  aspect: { value: 4 / 3, text: "4:3" },
 };
 
 export const CourseForm = ({
@@ -63,163 +63,163 @@ export const CourseForm = ({
   isEdit,
   blockEditCourseForm = false,
 }: Props) => {
-    const [thumbnail, setThumbnail] = useState<Thumbnail>(initData);
-    const [isOpen, setIsOpen] = useState(false);
-    const [categories, setCategories] = useState<Option[]>([]);
-    const [loading, setLoading] = useState(false);
+  const [thumbnail, setThumbnail] = useState<Thumbnail>(initData);
+  const [isOpen, setIsOpen] = useState(false);
+  const [categories, setCategories] = useState<Option[]>([]);
+  const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        if (course) {
-            setThumbnail({
-                imageUrl: course.thumbnailUrl,
-                croppedImageUrl: null,
-                crop: { x: 0, y: 0 },
-                zoom: 1,
-                aspect: { value: 4 / 3, text: "4:3" },
-            });
-            form?.setValue("link", course.link);
-            form?.setValue("level", course.level);
-            form?.setValue("teacherName", course.teacherName);
-            const categoriesData = course?.categories?.map((category) => ({
-                label: category.name,
-                value: category.name!,
-            }));
-            form?.setValue("categories", categoriesData || []);
-            form?.setValue("platform", course.platform.toUpperCase());
-            form?.setValue("name", course.name);
-            form?.setValue("thumbnailUrl", course.thumbnailUrl);
-        }
-    }, [course]);
+  useEffect(() => {
+    if (course) {
+      setThumbnail({
+        imageUrl: course.thumbnailUrl,
+        croppedImageUrl: null,
+        crop: { x: 0, y: 0 },
+        zoom: 1,
+        aspect: { value: 4 / 3, text: "4:3" },
+      });
+      form?.setValue("link", course.link);
+      form?.setValue("level", course.level);
+      form?.setValue("teacherName", course.teacherName);
+      const categoriesData = course?.categories?.map((category) => ({
+        label: category.name,
+        value: category.name!,
+      }));
+      form?.setValue("categories", categoriesData || []);
+      form?.setValue("platform", course.platform.toUpperCase());
+      form?.setValue("name", course.name);
+      form?.setValue("thumbnailUrl", course.thumbnailUrl);
+    }
+  }, [course]);
 
-    useEffect(() => {
-        const getCategories = async () => {
-            try {
-                const response = await instance.get("/categories/available");
-                const categories = response.data
-                    .map((category: Option) => ({
-                        label: category.name,
-                        value: category.id + "",
-                    }))
-                    .sort((a: { label: string }, b: { label: any }) =>
-                        a.label.localeCompare(b.label)
-                    );
-                setCategories(categories);
-            } catch (error) {
-                toast.error("Oops something went wrong...", {
-                    description: "Please refresh the page and try again!",
-                    style: {
-                        color: "red",
-                        fontWeight: "bold",
-                        textAlign: "center",
-                    },
-                });
-            }
-        };
-        getCategories();
-    }, []);
-
-    const onDrop = useCallback(
-        (acceptedFiles: File[], rejectedFiles: File[]) => {
-            const file = new FileReader();
-            if (rejectedFiles.length > 0) {
-                toast.error("Unable to process your file request", {
-                    description:
-                        "The thumbnail size is too large or the format is incorrect. Please edit and upload again.",
-                    style: {
-                        color: "red",
-                        fontWeight: "bold",
-                        textAlign: "center",
-                    },
-                });
-            }
-            file.onload = () => {
-                setThumbnail({ ...thumbnail, imageUrl: file.result as string });
-                form!.setValue("thumbnailUrl", file.result as string);
-                setIsOpen(true);
-            };
-
-            file.readAsDataURL(acceptedFiles[0]);
-        },
-        [form, thumbnail]
-    );
-
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({
-        //@ts-ignore
-        onDrop,
-        accept: {
-            "image/jpeg": [".jpg", ".jpeg"],
-            "image/png": [".png"],
-        },
-        maxSize: 10 * 1024 * 1024,
-    });
-
-    const onDeleteImage = () => {
-        setThumbnail({ ...thumbnail, imageUrl: null, croppedImageUrl: null });
-        form!.setValue("thumbnailUrl", "");
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const response = await instance.get("/categories/available");
+        const categories = response.data
+          .map((category: Option) => ({
+            label: category.name,
+            value: category.id + "",
+          }))
+          .sort((a: { label: string }, b: { label: any }) =>
+            a.label.localeCompare(b.label)
+          );
+        setCategories(categories);
+      } catch (error) {
+        toast.error("Oops something went wrong...", {
+          description: "Please refresh the page and try again!",
+          style: {
+            color: "red",
+            fontWeight: "bold",
+            textAlign: "center",
+          },
+        });
+      }
     };
+    getCategories();
+  }, []);
 
-    const setCroppedImageFor = (
-        crop: { x: number; y: number },
-        zoom: number,
-        aspect: { value: number; text: string },
-        croppedImageUrl: string
-    ) => {
-        const newThumbnail = {
+  const onDrop = useCallback(
+    (acceptedFiles: File[], rejectedFiles: File[]) => {
+      const file = new FileReader();
+      if (rejectedFiles.length > 0) {
+        toast.error("Unable to process your file request", {
+          description:
+            "The thumbnail size is too large or the format is incorrect. Please edit and upload again.",
+          style: {
+            color: "red",
+            fontWeight: "bold",
+            textAlign: "center",
+          },
+        });
+      }
+      file.onload = () => {
+        setThumbnail({ ...thumbnail, imageUrl: file.result as string });
+        form!.setValue("thumbnailUrl", file.result as string);
+        setIsOpen(true);
+      };
+
+      file.readAsDataURL(acceptedFiles[0]);
+    },
+    [form, thumbnail]
+  );
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    //@ts-ignore
+    onDrop,
+    accept: {
+      "image/jpeg": [".jpg", ".jpeg"],
+      "image/png": [".png"],
+    },
+    maxSize: 10 * 1024 * 1024,
+  });
+
+  const onDeleteImage = () => {
+    setThumbnail({ ...thumbnail, imageUrl: null, croppedImageUrl: null });
+    form!.setValue("thumbnailUrl", "");
+  };
+
+  const setCroppedImageFor = (
+    crop: { x: number; y: number },
+    zoom: number,
+    aspect: { value: number; text: string },
+    croppedImageUrl: string
+  ) => {
+    const newThumbnail = {
+      ...thumbnail,
+      crop,
+      zoom,
+      aspect,
+      croppedImageUrl,
+      isOval: false,
+    };
+    setThumbnail(newThumbnail);
+    form!.setValue("thumbnailUrl", croppedImageUrl);
+    setIsOpen(false);
+  };
+  const standardizeUrl = (url: string) => {
+    try {
+      const urlObj = new URL(url);
+      return `${urlObj.protocol}//${urlObj.hostname}${urlObj.pathname}`;
+    } catch (error) {
+      return url;
+    }
+  };
+
+  const handleCourseLink = async () => {
+    setLoading(true);
+    const courseLink = form?.watch("link");
+    try {
+      const data = await fetchOpenGraphData(courseLink!);
+      if (data) {
+        if (data.title != null) {
+          form?.setValue("name", data.title);
+          form?.trigger("name");
+        }
+        if (data.url != null && data.url != "")
+          form?.setValue("link", standardizeUrl(data.url));
+        if (data.site_name != null) {
+          form?.setValue("platform", data.site_name.toUpperCase());
+          form?.trigger("platform");
+        }
+        if (data.image) {
+          setThumbnail({
             ...thumbnail,
-            crop,
-            zoom,
-            aspect,
-            croppedImageUrl,
-            isOval: false,
-        };
-        setThumbnail(newThumbnail);
-        form!.setValue("thumbnailUrl", croppedImageUrl);
-        setIsOpen(false);
-    };
-    const standardizeUrl = (url: string) => {
-        try {
-            const urlObj = new URL(url);
-            return `${urlObj.protocol}//${urlObj.hostname}${urlObj.pathname}`;
-        } catch (error) {
-            return url;
+            imageUrl: data.image,
+            croppedImageUrl: data.image,
+          });
+          form?.setValue("thumbnailUrl", data.image);
         }
-    };
-
-    const handleCourseLink = async () => {
-        setLoading(true);
-        const courseLink = form?.watch("link");
-        try {
-            const data = await fetchOpenGraphData(courseLink!);
-            if (data) {
-                if (data.title != null) {
-                    form?.setValue("name", data.title);
-                    form?.trigger("name");
-                }
-                if (data.url != null && data.url != "")
-                    form?.setValue("link", standardizeUrl(data.url));
-                if (data.site_name != null) {
-                    form?.setValue("platform", data.site_name.toUpperCase());
-                    form?.trigger("platform");
-                }
-                if (data.image) {
-                    setThumbnail({
-                        ...thumbnail,
-                        imageUrl: data.image,
-                        croppedImageUrl: data.image,
-                    });
-                    form?.setValue("thumbnailUrl", data.image);
-                }
-            }
-        } catch (error) {
-            toast.error("Error fetching Open Graph data: ", {
-                style: { color: "red" },
-                description:
-                    "Failed to fetch Open Graph data from the Open Graph",
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
+      }
+    } catch (error) {
+      toast.error("Error fetching Open Graph data: ", {
+        style: { color: "red" },
+        description:
+          "Failed to fetch Open Graph data from the Open Graph",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return <CourseSkeleton />;
@@ -228,9 +228,9 @@ export const CourseForm = ({
     <div
       aria-readonly={blockEditCourseForm}
       aria-disabled={blockEditCourseForm}
-      className={blockEditCourseForm || !isEdit
-        ? "select-none cursor-not-allowed"
-        : "" + "flex flex-col gap-6 "}
+      className={"flex flex-col gap-6" + ((blockEditCourseForm || !isEdit)
+        ? " select-none cursor-not-allowed"
+        : "")}
     >
       <div className="space-y-4">
         <FormField
@@ -444,7 +444,7 @@ export const CourseForm = ({
                       className={cn(
                         "flex flex-col justify-center items-center w-[228px] h-[160px] px-[52px] py-[18px] border-dashed border-[#D9D9D9] hover:border-[#c1e2ff] border-2 rounded-xl cursor-pointer group",
                         !isEdit &&
-                          "cursor-not-allowed hover:border-[D9D9D9] select-none"
+                        "cursor-not-allowed hover:border-[D9D9D9] select-none"
                       )}
                       {...(isEdit ? getRootProps() : {})}
                     >
@@ -461,7 +461,7 @@ export const CourseForm = ({
                         className={cn(
                           "flex justify-center items-center p-3 border border-black rounded-full w-fit group-hover:border-[#96ceff] group-hover:text-[#4fadff] select-none",
                           !isEdit &&
-                            "group-hover:border-black group-hover:text-black select-none"
+                          "group-hover:border-black group-hover:text-black select-none"
                         )}
                       >
                         <Upload width={16} height={16} />
@@ -504,38 +504,38 @@ export const CourseForm = ({
 };
 
 const CourseSkeleton = () => {
-    return (
-        <div className='max-w-full h-[464px] overflow-hidden bg-white rounded-3xlg'>
-            <div className='space-y-3'>
-                <div className='h-[20px] bg-gray-200 w-20 rounded'></div>
-                <Skeleton className='w-full h-12 mb-4 skeleton-input'></Skeleton>
-                <div className='h-[20px] bg-gray-200 w-20 rounded'></div>
-                <Skeleton className='w-full h-12 mb-4 skeleton-input'></Skeleton>
-                <div className='h-[20px] bg-gray-200 w-20 rounded'></div>
-                <Skeleton className='w-full h-12 mb-4 skeleton-input'></Skeleton>
+  return (
+    <div className='max-w-full h-[464px] overflow-hidden bg-white rounded-3xlg'>
+      <div className='space-y-3'>
+        <div className='h-[20px] bg-gray-200 w-20 rounded'></div>
+        <Skeleton className='w-full h-12 mb-4 skeleton-input'></Skeleton>
+        <div className='h-[20px] bg-gray-200 w-20 rounded'></div>
+        <Skeleton className='w-full h-12 mb-4 skeleton-input'></Skeleton>
+        <div className='h-[20px] bg-gray-200 w-20 rounded'></div>
+        <Skeleton className='w-full h-12 mb-4 skeleton-input'></Skeleton>
+      </div>
+      <div className='flex items-stretch gap-6 mt-4'>
+        <div className='w-[60%] flex flex-col gap-6'>
+          <div className='flex gap-4'>
+            <div className='flex flex-col w-full gap-4 grow'>
+              <div className='h-[20px] bg-gray-200 w-20 rounded'></div>
+              <Skeleton className='w-full h-12 mb-4 skeleton-select'></Skeleton>
             </div>
-            <div className='flex items-stretch gap-6 mt-4'>
-                <div className='w-[60%] flex flex-col gap-6'>
-                    <div className='flex gap-4'>
-                        <div className='flex flex-col w-full gap-4 grow'>
-                            <div className='h-[20px] bg-gray-200 w-20 rounded'></div>
-                            <Skeleton className='w-full h-12 mb-4 skeleton-select'></Skeleton>
-                        </div>
-                        <div className='flex flex-col w-full gap-4 grow'>
-                            <div className='h-[20px] bg-gray-200 w-20 rounded'></div>
-                            <Skeleton className='w-full h-12 mb-4 skeleton-select'></Skeleton>
-                        </div>
-                    </div>
-                    <Skeleton className='w-full h-12 skeleton-input'></Skeleton>
-                </div>
-                <div className='w-[40%] flex gap-4 items-center'>
-                    <Skeleton className='skeleton-thumbnail w-[228px] h-[192px] rounded-xl'></Skeleton>
-                    <div className='flex flex-col w-full gap-5'>
-                        <Skeleton className='h-16 skeleton-text'></Skeleton>
-                        <Skeleton className='h-10 skeleton-button w-28'></Skeleton>
-                    </div>
-                </div>
+            <div className='flex flex-col w-full gap-4 grow'>
+              <div className='h-[20px] bg-gray-200 w-20 rounded'></div>
+              <Skeleton className='w-full h-12 mb-4 skeleton-select'></Skeleton>
             </div>
+          </div>
+          <Skeleton className='w-full h-12 skeleton-input'></Skeleton>
         </div>
-    );
+        <div className='w-[40%] flex gap-4 items-center'>
+          <Skeleton className='skeleton-thumbnail w-[228px] h-[192px] rounded-xl'></Skeleton>
+          <div className='flex flex-col w-full gap-5'>
+            <Skeleton className='h-16 skeleton-text'></Skeleton>
+            <Skeleton className='h-10 skeleton-button w-28'></Skeleton>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
