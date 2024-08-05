@@ -98,7 +98,7 @@ const RegistrationAdminSection = ({ status }: Props) => {
                             )}
                         />
                     )}
-                <RegistrationButtonAdmin status={status} />
+                <RegistrationButtonAdmin haveFeedback={form.getValues('comment').length > 0} status={status} />
             </form>
         </Form>
     );

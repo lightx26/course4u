@@ -13,9 +13,11 @@ const FeedBackFromAccountant = (props: IProps) => {
   ) => {
     setFeedBackFromAccountant(e.target.value);
   };
+
   const userData = useSelector((state: RootState) => state.user.user);
+
   return (
-    <div className="flex justify-start align-top gap-5">
+    <div className="flex justify-start gap-5 align-top">
       <div
         style={{
           width: "50px",
@@ -26,7 +28,7 @@ const FeedBackFromAccountant = (props: IProps) => {
       >
         <img
           src={
-  handleAvatarUrl(userData.avatarUrl)
+            handleAvatarUrl(userData.avatarUrl)
           }
           alt=""
           style={{

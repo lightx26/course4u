@@ -10,8 +10,9 @@ import { useState } from "react";
 
 type Props = {
     status?: Status;
+    haveFeedback?: boolean;
 };
-export const RegistrationButtonAdmin = ({ status = Status.NONE }: Props) => {
+export const RegistrationButtonAdmin = ({ status = Status.NONE, haveFeedback = false }: Props) => {
     const { close, id } = useRegistrationModal((store) => store);
     const { setRegistrationFlagAdmin } = useRefreshState((state) => state);
     const [isLoading, setIsLoading] = useState(false);
@@ -37,7 +38,7 @@ export const RegistrationButtonAdmin = ({ status = Status.NONE }: Props) => {
     };
 
     return (
-        <div className='flex justify-end gap-4'>
+        <div className='flex justify-end gap-4 select-none'>
             {status === Status.SUBMITTED && (
                 <Button variant='danger'>Decline and send feedback</Button>
             )}
@@ -46,7 +47,9 @@ export const RegistrationButtonAdmin = ({ status = Status.NONE }: Props) => {
                     variant='success'
                     type='button'
                     onClick={handleApprove}
-                    disabled={isLoading}
+                    disabled={isLoading || haveFeedback}
+                    className={haveFeedback ? "cursor-not-allowed select-none" : ""}
+                    title={haveFeedback ? "You can't approve when feedback is not empty" : ""}
                 >
                     Approve
                 </Button>
@@ -63,8 +66,8 @@ export const RegistrationButtonAdmin = ({ status = Status.NONE }: Props) => {
             {(status === Status.DONE ||
                 status === Status.VERIFYING ||
                 status === Status.DOCUMENT_DECLINED) && (
-                <Button variant='danger'>Close and send feedback</Button>
-            )}
+                    <Button variant='danger'>Close and send feedback</Button>
+                )}
         </div>
     );
 };
