@@ -100,7 +100,9 @@ function RegistrationCardComponent({ registration }: PropsType) {
                                 />
                             </div>
                             <div className='username flex flex-col'>
-                                <span className='text-base max-w-[70px] text-left truncate'>
+                                <span className={`text-[14px] text-left truncate pt-[2px]
+                                    ${registration.status === "DOCUMENT_DECLINED" ? "max-w-[40px]" : "max-w-[70px]"}
+                                `}>
                                     {displayedFullname}
                                 </span>
                                 <span className='text-xs'>User</span>
