@@ -28,7 +28,6 @@ import { Skeleton } from "../ui/skeleton";
 import { toast } from "sonner";
 import { platform } from "../../utils/index";
 import { cn } from "../../utils";
-import handleThumbnailUrl from "../../utils/handleThumbnailUrl";
 
 const courseSchema = registrationSchema.omit({
   duration: true,
@@ -88,6 +87,7 @@ export const CourseForm = ({
       form?.setValue("platform", course.platform.toUpperCase());
       form?.setValue("name", course.name);
       form?.setValue("thumbnailUrl", course.thumbnailUrl);
+      form?.trigger();
     }
   }, [course]);
 
@@ -213,8 +213,7 @@ export const CourseForm = ({
     } catch (error) {
       toast.error("Error fetching Open Graph data: ", {
         style: { color: "red" },
-        description:
-          "Failed to fetch Open Graph data from the Open Graph",
+        description: "Failed to fetch Open Graph data from the Open Graph",
       });
     } finally {
       setLoading(false);
@@ -228,9 +227,12 @@ export const CourseForm = ({
     <div
       aria-readonly={blockEditCourseForm}
       aria-disabled={blockEditCourseForm}
-      className={"flex flex-col gap-6" + ((blockEditCourseForm || !isEdit)
-        ? " select-none cursor-not-allowed"
-        : "")}
+      className={
+        "flex flex-col gap-6" +
+        (blockEditCourseForm || !isEdit
+          ? " select-none cursor-not-allowed"
+          : "")
+      }
     >
       <div className="space-y-4">
         <FormField
@@ -392,7 +394,9 @@ export const CourseForm = ({
                     placeholder="Select category..."
                     creatable={true}
                     disabled={blockEditCourseForm || !isEdit}
-                    className={blockEditCourseForm || !isEdit ? "cursor-not-allowed" : ""}
+                    className={
+                      blockEditCourseForm || !isEdit ? "cursor-not-allowed" : ""
+                    }
                     form={form}
                   />
                 </FormControl>
@@ -423,10 +427,7 @@ export const CourseForm = ({
                   Thumbnail
                 </label>
                 <img
-                  src={
-                    thumbnail.croppedImageUrl ||
-                    handleThumbnailUrl(thumbnail.imageUrl)
-                  }
+                  src={thumbnail.croppedImageUrl || thumbnail.imageUrl}
                   alt="thumbnail"
                   className="object-cover max-w-[228px] w-[228px] h-[160px] rounded-xl mt-[8px]"
                 />
@@ -444,7 +445,7 @@ export const CourseForm = ({
                       className={cn(
                         "flex flex-col justify-center items-center w-[228px] h-[160px] px-[52px] py-[18px] border-dashed border-[#D9D9D9] hover:border-[#c1e2ff] border-2 rounded-xl cursor-pointer group",
                         !isEdit &&
-                        "cursor-not-allowed hover:border-[D9D9D9] select-none"
+                          "cursor-not-allowed hover:border-[D9D9D9] select-none"
                       )}
                       {...(isEdit ? getRootProps() : {})}
                     >
@@ -461,7 +462,7 @@ export const CourseForm = ({
                         className={cn(
                           "flex justify-center items-center p-3 border border-black rounded-full w-fit group-hover:border-[#96ceff] group-hover:text-[#4fadff] select-none",
                           !isEdit &&
-                          "group-hover:border-black group-hover:text-black select-none"
+                            "group-hover:border-black group-hover:text-black select-none"
                         )}
                       >
                         <Upload width={16} height={16} />
@@ -505,34 +506,34 @@ export const CourseForm = ({
 
 const CourseSkeleton = () => {
   return (
-    <div className='max-w-full h-[464px] overflow-hidden bg-white rounded-3xlg'>
-      <div className='space-y-3'>
-        <div className='h-[20px] bg-gray-200 w-20 rounded'></div>
-        <Skeleton className='w-full h-12 mb-4 skeleton-input'></Skeleton>
-        <div className='h-[20px] bg-gray-200 w-20 rounded'></div>
-        <Skeleton className='w-full h-12 mb-4 skeleton-input'></Skeleton>
-        <div className='h-[20px] bg-gray-200 w-20 rounded'></div>
-        <Skeleton className='w-full h-12 mb-4 skeleton-input'></Skeleton>
+    <div className="max-w-full h-[464px] overflow-hidden bg-white rounded-3xlg">
+      <div className="space-y-3">
+        <div className="h-[20px] bg-gray-200 w-20 rounded"></div>
+        <Skeleton className="w-full h-12 mb-4 skeleton-input"></Skeleton>
+        <div className="h-[20px] bg-gray-200 w-20 rounded"></div>
+        <Skeleton className="w-full h-12 mb-4 skeleton-input"></Skeleton>
+        <div className="h-[20px] bg-gray-200 w-20 rounded"></div>
+        <Skeleton className="w-full h-12 mb-4 skeleton-input"></Skeleton>
       </div>
-      <div className='flex items-stretch gap-6 mt-4'>
-        <div className='w-[60%] flex flex-col gap-6'>
-          <div className='flex gap-4'>
-            <div className='flex flex-col w-full gap-4 grow'>
-              <div className='h-[20px] bg-gray-200 w-20 rounded'></div>
-              <Skeleton className='w-full h-12 mb-4 skeleton-select'></Skeleton>
+      <div className="flex items-stretch gap-6 mt-4">
+        <div className="w-[60%] flex flex-col gap-6">
+          <div className="flex gap-4">
+            <div className="flex flex-col w-full gap-4 grow">
+              <div className="h-[20px] bg-gray-200 w-20 rounded"></div>
+              <Skeleton className="w-full h-12 mb-4 skeleton-select"></Skeleton>
             </div>
-            <div className='flex flex-col w-full gap-4 grow'>
-              <div className='h-[20px] bg-gray-200 w-20 rounded'></div>
-              <Skeleton className='w-full h-12 mb-4 skeleton-select'></Skeleton>
+            <div className="flex flex-col w-full gap-4 grow">
+              <div className="h-[20px] bg-gray-200 w-20 rounded"></div>
+              <Skeleton className="w-full h-12 mb-4 skeleton-select"></Skeleton>
             </div>
           </div>
-          <Skeleton className='w-full h-12 skeleton-input'></Skeleton>
+          <Skeleton className="w-full h-12 skeleton-input"></Skeleton>
         </div>
-        <div className='w-[40%] flex gap-4 items-center'>
-          <Skeleton className='skeleton-thumbnail w-[228px] h-[192px] rounded-xl'></Skeleton>
-          <div className='flex flex-col w-full gap-5'>
-            <Skeleton className='h-16 skeleton-text'></Skeleton>
-            <Skeleton className='h-10 skeleton-button w-28'></Skeleton>
+        <div className="w-[40%] flex gap-4 items-center">
+          <Skeleton className="skeleton-thumbnail w-[228px] h-[192px] rounded-xl"></Skeleton>
+          <div className="flex flex-col w-full gap-5">
+            <Skeleton className="h-16 skeleton-text"></Skeleton>
+            <Skeleton className="h-10 skeleton-button w-28"></Skeleton>
           </div>
         </div>
       </div>
