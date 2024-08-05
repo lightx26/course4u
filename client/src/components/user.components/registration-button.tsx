@@ -27,7 +27,7 @@ import {
   sendReview,
 } from "../../apiService/courseReview.service";
 import { isExistAvailableCourseWithId } from "../../apiService/Course.service";
-import { registrationSchema } from "../../schemas/registration-schema";
+import { durationSchema } from "../../schemas/registration-schema";
 
 type Props = {
   status?: Status;
@@ -132,12 +132,12 @@ export const RegistrationButton = ({
   const handleSubmitWithExistedCourse = async () => {
     const registrationData = {
       courseId: registration!.course!.id!,
-      duration: duration,
-      durationUnit: durationUnit,
+      duration,
+      durationUnit,
     };
-
+    console.log('duration --> ' + duration);
     // Validate registration data using registrationSchema
-    const validationResult = registrationSchema.safeParse(registrationData.duration);
+    const validationResult = durationSchema.safeParse(duration);
 
     if (!validationResult.success) {
       // Handle validation errors

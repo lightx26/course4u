@@ -202,8 +202,9 @@ export const RegistrationsForm = ({
                                             {...field}
                                             onChange={(event) => {
                                                 const value = event.target.value;
-                                                if (value.length == 0 || /^[0-9]\d*$/.test(value))
-                                                    field.onChange(+value.replace(/0/g, ''));
+                                                if ((value.length == 0 || /^[0-9]\d*$/.test(value)) && value.length < 10) {
+                                                    field.onChange(+value.replace(/^0+/, ''));
+                                                }
                                             }}
                                             defaultValue={1}
                                             disabled={!isEdit}
