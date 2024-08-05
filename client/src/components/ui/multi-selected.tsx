@@ -235,7 +235,7 @@ const MultipleSelector = React.forwardRef<
         const input = inputRef.current;
         if (input) {
           if (e.key === "Delete" || e.key === "Backspace") {
-            if (input.value === "" && selected.length > 0) {
+            if (input.value === "" && selected.length > 0 && !disabled) {
               const lastSelectOption = selected[selected.length - 1];
               // If last item is fixed, we should not remove it.
               if (!lastSelectOption.fixed) {
@@ -249,7 +249,7 @@ const MultipleSelector = React.forwardRef<
           }
         }
       },
-      [handleUnselect, selected]
+      [handleUnselect, selected, disabled]
     );
 
     useEffect(() => {
@@ -301,7 +301,7 @@ const MultipleSelector = React.forwardRef<
       ) {
         return undefined;
       }
-      
+
       const Item = (
         <CommandItem
           value={inputValue}
@@ -425,7 +425,7 @@ const MultipleSelector = React.forwardRef<
                       (disabled || option.fixed) && "hidden"
                     )}
                     onKeyDown={(e) => {
-                      if (e.key === "Enter") {
+                      if (e.key === "Enter" && !disabled) {
                         handleUnselect(option);
                       }
                     }}
@@ -435,7 +435,7 @@ const MultipleSelector = React.forwardRef<
                     }}
                     onClick={() => handleUnselect(option)}
                   >
-                    <X className="h-3 w-3 text-white hover:text-foreground" />
+                    <X className="w-3 h-3 text-white hover:text-foreground" />
                   </button>
                 </Badge>
               );
@@ -487,7 +487,7 @@ const MultipleSelector = React.forwardRef<
                   disabled ||
                   selected.length < 1 ||
                   selected.filter((s) => s.fixed).length === selected.length) &&
-                  "hidden"
+                "hidden"
               )}
             >
               <X />
@@ -497,7 +497,7 @@ const MultipleSelector = React.forwardRef<
         <div className="relative">
           {open && (
             <CommandList
-              className="absolute top-1 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in"
+              className="absolute z-[100000] border bg-white w-full max-h-56 top-1"
               onMouseLeave={() => {
                 mouseOn.current = false;
               }}
@@ -547,7 +547,7 @@ const MultipleSelector = React.forwardRef<
                               className={cn(
                                 "cursor-pointer",
                                 option.disable &&
-                                  "cursor-default text-muted-foreground"
+                                "cursor-default text-muted-foreground"
                               )}
                             >
                               {option.label}
