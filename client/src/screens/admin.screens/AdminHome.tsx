@@ -8,8 +8,8 @@ import UtilsBar from "../../components/admin.components/mainPage.components/Util
 import RegistrationList from "../../components/admin.components/registrations.components/RegistrationList.tsx";
 import registrationStatusList from "../../utils/registrationStatusList.ts";
 
-import { fetchAllRegistrations } from "../../apiService/Registration.service.ts";
-import { handleAvatarUrl } from "../../utils/handleAvatarUrl.ts";
+import {fetchAllRegistrations} from "../../apiService/Registration.service.ts";
+import {handleAvatarUrl} from "../../utils/handleAvatarUrl.ts";
 
 import {useRefreshState} from "../../hooks/use-refresh-state.ts";
 
