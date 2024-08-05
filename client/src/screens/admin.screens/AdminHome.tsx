@@ -6,17 +6,16 @@ import PaginationSection from "../../components/user.components/Homepage/Paginat
 
 import UtilsBar from "../../components/admin.components/mainPage.components/UtilsBar.tsx";
 import RegistrationList from "../../components/admin.components/registrations.components/RegistrationList.tsx";
+import registrationStatusList from "../../utils/registrationStatusList.ts";
 
 import { fetchAllRegistrations } from "../../apiService/Registration.service.ts";
 import { handleAvatarUrl } from "../../utils/handleAvatarUrl.ts";
 
 import {useRefreshState} from "../../hooks/use-refresh-state.ts";
 
-import { RootState } from "../../redux/store/store.ts";
-import { useDispatch, useSelector } from "react-redux";
-import {
-    RegistrationParamsType
-} from "../../redux/slice/adminRegistration.slice.ts";
+import {RootState} from "../../redux/store/store.ts";
+import {useDispatch, useSelector} from "react-redux";
+import {RegistrationParamsType} from "../../redux/slice/adminRegistration.slice.ts";
 import {
     handleCurrentPageChange,
     handleTotalItemChange,
@@ -93,7 +92,7 @@ function AdminHomePage() {
                 </div>
                 <div className='registration-section flex flex-col gap-8 w-[80%]'>
                     <div className='filters'>
-                        <UtilsBar />
+                        <UtilsBar statusList={registrationStatusList} options={options} role={"admin"}/>
                     </div>
                     <div className='registration-list min-h-[200px]'>
                         <div className='mb-2 showing-status'>
@@ -103,7 +102,6 @@ function AdminHomePage() {
                             ListRegistration={registrationList}
                             isLoading={isLoading}
                         />
-                        {/*<TableRegistration ListRegistration={registrationList} isLoading={isLoading} />*/}
                     </div>
                     <div className='w-full pagination mt-7'>
                         <PaginationSection

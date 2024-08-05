@@ -1,4 +1,4 @@
-type statusProps = {
+export type statusProps = {
     value: string,
     content: string
 }
@@ -46,17 +46,17 @@ const registrationStatusList: statusProps[] = [
     },
 ];
 
-export const registrationStatusListForAccountant = [
+export const registrationStatusListForAccountant: statusProps[] = [
     {
-        value: "5",
+        value: "0",
         content: "Verifying",
     },
     {
-        value: "6",
+        value: "1",
         content: "Declined (Document)",
     },
     {
-        value: "7",
+        value: "2",
         content: "Verified",
     },
 ];

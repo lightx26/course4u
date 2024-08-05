@@ -59,7 +59,7 @@ export const adminPageRegistrationsSlice = createSlice({
             state.data = action.payload;
             state.totalItem = action.payload.totalElements;
         },
-        handleOptionsChange: (state, action) => {
+        handleOptionsChangeForAdmin: (state, action) => {
             state.options = action.payload;
         },
         refreshAdmin: (state) => {
@@ -75,7 +75,7 @@ export const {
     handleTotalItemChange,
     handleShowingMessageChange,
     saveRegistrationsData,
-    handleOptionsChange,
+    handleOptionsChangeForAdmin,
     refreshAdmin
 } = adminPageRegistrationsSlice.actions
 

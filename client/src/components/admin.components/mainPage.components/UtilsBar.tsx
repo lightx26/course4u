@@ -2,30 +2,32 @@ import SearchGlass from "../../../assets/images/admin.images/SearchGlass.svg";
 import {useState} from "react";
 import {Select} from "antd";
 
-import registrationStatusList from "../../../utils/registrationStatusList";
+import {statusProps} from "../../../utils/registrationStatusList.ts";
 import registrationOrderByList from "../../../utils/orderByList.ts";
 
-import {handleOptionsChange} from "../../../redux/slice/adminRegistration.slice.ts";
-import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../../../redux/store/store.ts";
-import {RegistrationParamsType} from "../../../redux/slice/adminRegistration.slice.ts";
+import {useDispatch} from "react-redux";
+import {handleOptionsChangeForAdmin, RegistrationParamsType} from "../../../redux/slice/adminRegistration.slice.ts";
+import {handleOptionsChangeForAccountant} from "../../../redux/slice/accountantRegistration.slice.ts";
 
-const UtilsBar = () => {
+type PropType = {
+    statusList: statusProps[],
+    options: RegistrationParamsType,
+    role: string,
+}
+
+const UtilsBar = ({statusList, options, role}: PropType) => {
     const dispatch = useDispatch();
 
-    const options: RegistrationParamsType = useSelector(
-        (state: RootState) => state.adminRegistration.options
-    );
-
+    const [searched, setSearched] = useState(false);
     const [searchContent, setSearchContent] = useState(options.search);
     const status: string = options.status;
     const sortOrder: string = options.orderBy.toLowerCase() == "id"
         ? "Created Date" : options.orderBy;
 
-    const statusList = registrationStatusList.map(status => ({
+    const convertedStatusList = statusList.map(status => ({
         label: status.content,
         value: status.value
-    }));
+    }))
 
     const orderByList = registrationOrderByList.map(orderBy => ({
         label: orderBy.content,
@@ -33,22 +35,48 @@ const UtilsBar = () => {
     }));
 
 
-    const statusValueMapping: string[] = registrationStatusList.map((status) => status.content);
+    const statusValueMapping: string[] = statusList.map((status) => status.content);
     const orderByValueMapping: string[] = registrationOrderByList.map(orderBy => orderBy.content);
 
+    const handleOptionsDispatch = (newOptions: RegistrationParamsType): void => {
+        if(role === "admin"){
+            dispatch(handleOptionsChangeForAdmin(newOptions));
+        }
+        else{
+            dispatch(handleOptionsChangeForAccountant(newOptions));
+        }
+    }
+
     const handleStatusChange = (newStatusId: string): void => {
-        const newOptions: RegistrationParamsType = {...options, status: statusValueMapping[parseInt(newStatusId)]};
-        dispatch(handleOptionsChange(newOptions));
+        const newStatus: string = statusValueMapping[parseInt(newStatusId)]
+        if (newStatus != options.status) {
+            const newOptions: RegistrationParamsType = {...options, status: newStatus};
+            handleOptionsDispatch(newOptions);
+        }
     }
 
     const handleOrderChange = (newOrderById: string): void => {
-        const newOptions: RegistrationParamsType = {...options, orderBy: orderByValueMapping[parseInt(newOrderById)]};
-        dispatch(handleOptionsChange(newOptions));
+        const newOrderBy: string = orderByValueMapping[parseInt(newOrderById)]
+        if (newOrderBy != options.orderBy) {
+            const newOptions: RegistrationParamsType = {...options, orderBy: newOrderBy};
+            handleOptionsDispatch(newOptions);
+        }
     }
 
-    const handleSearchConfirm = (newSearchContent: string = searchContent): void => {
-        const newOptions: RegistrationParamsType = {...options, search: newSearchContent};
-        dispatch(handleOptionsChange(newOptions));
+
+    const handleSearchConfirm = (searchContent: string): void => {
+        const newOptions: RegistrationParamsType = {...options, search: searchContent};
+        if (searchContent.trim().length != 0) {
+            setSearched(true);
+            if (searchContent != options.search) {
+                handleOptionsDispatch(newOptions);
+            }
+        } else {
+            if (searched) {
+                setSearched(false);
+                handleOptionsDispatch(newOptions);
+            }
+        }
     }
 
     const inputElement: HTMLInputElement | null = document.querySelector('.search_input');
@@ -82,7 +110,7 @@ const UtilsBar = () => {
                             setSearchContent(e.target.value);
                         }}
                         onBlur={() => handleSearchConfirm(searchContent)}
-                        onKeyDown={ handleInputKeyUpdate }
+                        onKeyDown={handleInputKeyUpdate}
                     ></input>
                 </div>
             </div>
@@ -91,7 +119,7 @@ const UtilsBar = () => {
                 <Select
                     value={status}
                     onChange={handleStatusChange}
-                    options={statusList}
+                    options={convertedStatusList}
                     className="w-full min-h-[42px]"
                 />
             </div>

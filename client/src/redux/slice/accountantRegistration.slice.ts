@@ -58,7 +58,7 @@ export const accountantPageRegistrationsSlice = createSlice({
             state.data = action.payload;
             state.totalItem = action.payload.totalElements;
         },
-        handleOptionsChange: (state, action) => {
+        handleOptionsChangeForAccountant: (state, action) => {
             state.options = action.payload;
         },
         refreshAccountant: (state) => {
@@ -74,7 +74,7 @@ export const {
     handleTotalItemChange,
     handleShowingMessageChange,
     saveRegistrationsData,
-    handleOptionsChange,
+    handleOptionsChangeForAccountant,
     refreshAccountant
 } = accountantPageRegistrationsSlice.actions
 
