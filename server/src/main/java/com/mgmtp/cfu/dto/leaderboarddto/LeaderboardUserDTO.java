@@ -18,10 +18,9 @@ public class LeaderboardUserDTO {
     private String username;
     private String fullName;
 
-    public LeaderboardUserDTO(Long userId, Long score, Long learningTime, String avatarUrl, String email, String username, String fullName) {
+    public LeaderboardUserDTO(Long userId, Long score, String avatarUrl, String email, String username, String fullName) {
         this.userId = userId;
         this.score = score.intValue();
-        this.learningTime = learningTime.intValue();
         this.avatarUrl = avatarUrl;
         this.email = email;
         this.username = username;
