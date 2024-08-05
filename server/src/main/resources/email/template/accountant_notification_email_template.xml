@@ -1,4 +1,4 @@
-<div style="max-width: 800px; margin: 0 auto; font-family: 'Montserrat', sans-serif; border: 1px solid #ccc; border-radius: 5%; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+<div style="max-width: 800px; margin: 0 auto; font-family: 'Montserrat', Arial, sans-serif; border: 1px solid #ccc; border-radius: 5%; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
     <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto; border-collapse: collapse;">
         <tr>
             <td style="height: 120px; text-align: center; vertical-align: middle; border-bottom: 1px solid #ccc;">
@@ -18,7 +18,8 @@
         <tr>
             <td style="padding: 30px 0 50px 0; text-align: center;">
                 <div id="greeting" style="font-size: 30px; font-weight: 600; padding: 5px 20px;">Hi </div>
-                <div id="content" style="width: 80%; margin: 20px auto; text-align: justify; font-size: 16px; font-weight: 500; color: #333;">
+
+                <div id="content" style="width: 70%; max-width: 640px; margin: 20px auto; text-align: center; font-size: 16px; font-weight: 500; color: #333;">
                     Welcome to Course4U! Thank you for registering. Discover and enroll in a variety of courses tailored to your interests. Happy learning!
                 </div>
             </td>

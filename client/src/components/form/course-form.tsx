@@ -233,6 +233,11 @@ export const CourseForm = ({
           ? " select-none cursor-not-allowed"
           : "")
       }
+      onKeyDown={(event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+        }
+      }}
     >
       <div className="space-y-4">
         <FormField
@@ -346,6 +351,7 @@ export const CourseForm = ({
               )}
             />
             <FormField
+              disabled={blockEditCourseForm || !isEdit}
               control={form!.control}
               name="level"
               render={({ field }) => (
@@ -377,6 +383,7 @@ export const CourseForm = ({
             />
           </div>
           <FormField
+            disabled={blockEditCourseForm || !isEdit}
             control={form!.control}
             name="categories"
             render={({ field }) => (
@@ -395,7 +402,7 @@ export const CourseForm = ({
                     creatable={true}
                     disabled={blockEditCourseForm || !isEdit}
                     className={
-                      blockEditCourseForm || !isEdit ? "cursor-not-allowed" : ""
+                      blockEditCourseForm || !isEdit ? "cursor-not-allowed select-none pointer-events-none" : ""
                     }
                     form={form}
                   />
@@ -435,6 +442,7 @@ export const CourseForm = ({
             </CropThumbnail>
           ) : (
             <FormField
+              disabled={blockEditCourseForm || !isEdit}
               control={form!.control}
               name="thumbnailUrl"
               render={({ field }) => (
@@ -445,7 +453,7 @@ export const CourseForm = ({
                       className={cn(
                         "flex flex-col justify-center items-center w-[228px] h-[160px] px-[52px] py-[18px] border-dashed border-[#D9D9D9] hover:border-[#c1e2ff] border-2 rounded-xl cursor-pointer group",
                         !isEdit &&
-                          "cursor-not-allowed hover:border-[D9D9D9] select-none"
+                        "cursor-not-allowed hover:border-[D9D9D9] select-none"
                       )}
                       {...(isEdit ? getRootProps() : {})}
                     >
@@ -462,7 +470,7 @@ export const CourseForm = ({
                         className={cn(
                           "flex justify-center items-center p-3 border border-black rounded-full w-fit group-hover:border-[#96ceff] group-hover:text-[#4fadff] select-none",
                           !isEdit &&
-                            "group-hover:border-black group-hover:text-black select-none"
+                          "group-hover:border-black group-hover:text-black select-none"
                         )}
                       >
                         <Upload width={16} height={16} />

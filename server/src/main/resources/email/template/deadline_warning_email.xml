@@ -1,4 +1,4 @@
-<body style="margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; background-color: #f4f4f4;">
+<body style="margin: 0; padding: 0; font-family: 'Montserrat', Arial, sans-serif; background-color: #f4f4f4;">
     <div style="max-width: 800px; margin: 20px auto; font-family: 'Montserrat', sans-serif; border: 1px solid #ccc; border-radius: 5%; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); background-color: #ffffff;">
         <table width="100%" cellpadding="0" cellspacing="0" border="0"
                style="margin: 0 auto; border-collapse: collapse;">
@@ -22,7 +22,7 @@
                 <td style="padding: 30px 0 50px 0; text-align: center;">
                     <div id="user_greeting" style="font-size: 30px; padding: 5px 20px; font-weight: 600;">Hi [Recipient Name]!</div>
                     <div id="content"
-                         style="width: 80%; margin: 20px auto; text-align: justify; font-size: 16px; font-weight: 500; color: #333;">
+                         style="width: 70%; max-width: 640px; margin: 20px auto; text-align: center; font-size: 16px; font-weight: 500; color: #333;">
                         This is a friendly reminder that the deadline for [Task/Project/Event] is approaching. Please make sure to complete all necessary tasks and submit your work by the due date.
                     </div>
                     <div id="deadline" style="font-weight: bold; color: #F7C631; margin-top: 20px; font-size: 18px;">

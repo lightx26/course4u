@@ -73,31 +73,31 @@ const RegistrationAdminSection = ({ status }: Props) => {
                     status === Status.DONE ||
                     status === Status.VERIFYING ||
                     status === Status.DOCUMENT_DECLINED) && (
-                    <FormField
-                        control={form.control}
-                        name='comment'
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel className='flex items-center'>
-                                    <img
-                                        src={avatarUrl}
-                                        alt='avatar'
-                                        className='rounded-full mr-2 w-[40px] h-[40px] border-2 border-violet-500 mb-1'
-                                    />
-                                    {adminName}
-                                </FormLabel>
-                                <FormControl>
-                                    <Textarea
-                                        placeholder='Write your feedback here!!!'
-                                        className='resize-none'
-                                        {...field}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                )}
+                        <FormField
+                            control={form.control}
+                            name='comment'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className='flex items-center'>
+                                        <img
+                                            src={avatarUrl}
+                                            alt='avatar'
+                                            className='rounded-full mr-2 w-[40px] h-[40px] border-2 border-violet-500 mb-1'
+                                        />
+                                        {adminName}
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Textarea
+                                            placeholder='Write your feedback here!!!'
+                                            className='resize-none'
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    )}
                 <RegistrationButtonAdmin status={status} />
             </form>
         </Form>
