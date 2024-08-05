@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { RootState } from "../../redux/store/store";
 import {
     fetchListOfMyRegistration,
+    saveDraftWithCourse,
     saveRegistrationAsDraft,
 } from "../../apiService/MyRegistration.service";
 import { saveDataListRegistration } from "../../redux/slice/registration.slice";
@@ -83,12 +84,16 @@ export const RegistrationButton = ({
         setRegistrationFlagAdmin();
     };
 
-  const onEdit = async () => {
-    setIsEdit(true);
-    const response = await isExistAvailableCourseWithId(registration!.id!);
-    if (response.data && (registration?.status === Status.SUBMITTED || registration?.status === Status.DECLINED))
-      setBlockEditCourseForm(true)
-  };
+    const onEdit = async () => {
+        setIsEdit(true);
+        const response = await isExistAvailableCourseWithId(registration!.id!);
+        if (
+            response.data &&
+            (registration?.status === Status.SUBMITTED ||
+                registration?.status === Status.DECLINED)
+        )
+            setBlockEditCourseForm(true);
+    };
 
     //Delete a registration
     const handleDeleteButtonClick = async () => {
@@ -136,44 +141,45 @@ export const RegistrationButton = ({
         setIsLoading(false);
     };
 
-  const handleSubmitWithExistedCourse = async () => {
-    const registrationData = {
-      courseId: registration!.course!.id!,
-      duration,
-      durationUnit,
+    const handleSubmitWithExistedCourse = async () => {
+        const registrationData = {
+            courseId: registration!.course!.id!,
+            duration,
+            durationUnit,
+        };
+
+        // Validate registration data using registrationSchema
+        const validationResult = durationSchema.safeParse(duration);
+
+        if (!validationResult.success) {
+            // Handle validation errors
+            toast.error("Check your duration", {
+                style: { color: "red" },
+                description:
+                    "Please check the duration. It must be a positive integer greater than 0.",
+            });
+            return;
+        }
+
+        try {
+            const res = await submitWithExistedCourse(registrationData);
+            if (isStatusSuccesful(res.status)) {
+                toast.success("Create a registration successfully", {
+                    style: { color: "green" },
+                    description: "The registration was created successfully.",
+                });
+                closeModal();
+            } else {
+                setIsLoading(false);
+            }
+        } catch (error) {
+            setIsLoading(false);
+            toast.error("An error occurred", {
+                style: { color: "red" },
+                description: "Failed to create the registration.",
+            });
+        }
     };
-
-    // Validate registration data using registrationSchema
-    const validationResult = durationSchema.safeParse(duration);
-
-    if (!validationResult.success) {
-      // Handle validation errors
-      toast.error("Check your duration", {
-        style: { color: "red" },
-        description: "Please check the duration. It must be a positive integer greater than 0.",
-      });
-      return;
-    }
-
-    try {
-      const res = await submitWithExistedCourse(registrationData);
-      if (isStatusSuccesful(res.status)) {
-        toast.success("Create a registration successfully", {
-          style: { color: "green" },
-          description: "The registration was created successfully.",
-        });
-        closeModal();
-      } else {
-        setIsLoading(false);
-      }
-    } catch (error) {
-      setIsLoading(false);
-      toast.error("An error occurred", {
-        style: { color: "red" },
-        description: "Failed to create the registration.",
-      });
-    }
-  };
 
     const handleSendReview = async () => {
         const response = await sendReview(
@@ -243,50 +249,54 @@ export const RegistrationButton = ({
         }
     };
 
-  //User Re-submit Document
-  const handleReSubmitDocument = async () => {
-    const response = await resubmitDocument(
-      id!,
-      listFileCertificate!,
-      listFilePayment!,
-      listIdDocumentRemove!
-    );
-    if (response && response.status === 200) {
-      toast.success("Document Re-submitted Successfully", {
-        style: { color: "green" },
-        description:
-          "The document has been re-submitted and will be reviewed shortly.",
-      });
-      const result = await fetchListOfMyRegistration(currentPage, filterBy);
-      if (result && result.data) {
-        dispatch(saveDataListRegistration(result.data));
-      }
-      closeModal();
-    } else {
-      toast.error("Document Re-submitted Failed", {
-        style: { color: "red" },
-        description: response?.data.message
-          ? response.data.message
-          : "There was an error submitting your documents. Please try again later.",
-      });
-    }
-  };
-  const handleCheckExistReview = async () => {
-    const response = await checkExistReview(registration!.course!.id!);
-    if (isStatusSuccesful(response.status)) {
-      setHaveReview(response.data);
-    }
-  };
+    //User Re-submit Document
+    const handleReSubmitDocument = async () => {
+        const response = await resubmitDocument(
+            id!,
+            listFileCertificate!,
+            listFilePayment!,
+            listIdDocumentRemove!
+        );
+        if (response && response.status === 200) {
+            toast.success("Document Re-submitted Successfully", {
+                style: { color: "green" },
+                description:
+                    "The document has been re-submitted and will be reviewed shortly.",
+            });
+            const result = await fetchListOfMyRegistration(
+                currentPage,
+                filterBy
+            );
+            if (result && result.data) {
+                dispatch(saveDataListRegistration(result.data));
+            }
+            closeModal();
+        } else {
+            toast.error("Document Re-submitted Failed", {
+                style: { color: "red" },
+                description: response?.data.message
+                    ? response.data.message
+                    : "There was an error submitting your documents. Please try again later.",
+            });
+        }
+    };
+    const handleCheckExistReview = async () => {
+        const response = await checkExistReview(registration!.course!.id!);
+        if (isStatusSuccesful(response.status)) {
+            setHaveReview(response.data);
+        }
+    };
 
     const handleSaveAsDraft = async () => {
         const data = await convertToFormData(form?.getValues());
         if (!data) return;
-        await saveRegistrationAsDraft(
-            data,
-            id!,
-            close,
-            setRegistrationFlagAdmin
-        );
+        blockEditCourseForm && registration?.course?.id
+            ? await saveDraftWithCourse(
+                  data,
+                  +registration?.course?.id,
+                  closeModal
+              )
+            : await saveRegistrationAsDraft(data, id!, closeModal);
     };
 
     useEffect(() => {
@@ -374,61 +384,62 @@ export const RegistrationButton = ({
                 </Button>
             )}
 
-      {status === Status.APPROVED && (
-        <ModalConfirm
-          handleConfirm={handleFinishLearning}
-          title='Do you want to finish this course?'
-          description='Are you sure you have completed the course and want to confirm completion?'
-        >
-          <Button
-            className={
-              "" +
-              (!isStatrted &&
-                "select-none pointer-events-none opacity-30")
-            }
-            size='default'
-            variant='success'
-            disabled={isLoading}
-          >
-            DONE
-          </Button>
-        </ModalConfirm>
-      )}
+            {status === Status.APPROVED && (
+                <ModalConfirm
+                    handleConfirm={handleFinishLearning}
+                    title='Do you want to finish this course?'
+                    description='Are you sure you have completed the course and want to confirm completion?'
+                >
+                    <Button
+                        className={
+                            "" +
+                            (!isStatrted &&
+                                "select-none pointer-events-none opacity-30")
+                        }
+                        size='default'
+                        variant='success'
+                        disabled={isLoading}
+                    >
+                        DONE
+                    </Button>
+                </ModalConfirm>
+            )}
 
-      {(status === Status.SUBMITTED || status === Status.DECLINED) &&
-        isEdit === false && (
-          <Button
-            size='default'
-            variant='blue'
-            type='button'
-            onClick={onEdit}
-          >
-            EDIT
-          </Button>
-        )}
+            {(status === Status.SUBMITTED || status === Status.DECLINED) &&
+                isEdit === false && (
+                    <Button
+                        size='default'
+                        variant='blue'
+                        type='button'
+                        onClick={onEdit}
+                    >
+                        EDIT
+                    </Button>
+                )}
 
-      {(status === Status.NONE || status === Status.DRAFT) && isEdit &&
-        (blockEditCourseForm ? (
-          <Button
-            type='button'
-            onClick={handleSubmitWithExistedCourse}
-            size='default'
-            variant='success'
-          >
-            SUBMIT
-          </Button>
-        ) : (
-          <Button type='submit' size='default' variant='success'>
-            SUBMIT
-          </Button>
-        ))}
+            {(status === Status.NONE || status === Status.DRAFT) &&
+                isEdit &&
+                (blockEditCourseForm ? (
+                    <Button
+                        type='button'
+                        onClick={handleSubmitWithExistedCourse}
+                        size='default'
+                        variant='success'
+                    >
+                        SUBMIT
+                    </Button>
+                ) : (
+                    <Button type='submit' size='default' variant='success'>
+                        SUBMIT
+                    </Button>
+                ))}
 
-      {(status === Status.SUBMITTED || status === Status.DECLINED) &&
-        isEdit && (
-          <Button type='submit' size='default' variant='success'>
-            RE-SUBMIT
-          </Button>
-        )}
+            {(status === Status.SUBMITTED || status === Status.DECLINED) &&
+                isEdit && (
+                    <Button type='submit' size='default' variant='success'>
+                        RE-SUBMIT
+                    </Button>
+                )}
 
             {!haveReview &&
                 (status === Status.DONE ||

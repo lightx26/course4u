@@ -91,8 +91,7 @@ export async function editRegistration(
 export async function saveRegistrationAsDraft(
     data: FormData,
     id: number,
-    close: VoidFunction,
-    setFlag: VoidFunction
+    closeModal: VoidFunction
 ) {
     const res = id
         ? await instance.put(`/registrations/${id}/draft`, data)
@@ -102,8 +101,37 @@ export async function saveRegistrationAsDraft(
             style: { color: "green" },
             description: "Registration saved as draft successfully",
         });
-        close();
-        setFlag();
+        closeModal();
+        return res.status;
+    }
+    if (res.status === 409) {
+        toast.error("Save registration as draft unsuccessfully", {
+            style: { color: "red" },
+            description: "Course4U already have this course",
+        });
+        return res.status;
+    }
+    toast.error("Save registration as draft unsuccessfully", {
+        style: { color: "red" },
+        description: "You need to provide at least 1 field to save as draft!!",
+    });
+}
+
+export async function saveDraftWithCourse(
+    data: FormData,
+    courseId: number,
+    closeModal: VoidFunction
+) {
+    const res = await instance.post(`/registrations/${courseId}/draft-enroll`, {
+        duration: data.get("duration"),
+        durationUnit: data.get("durationUnit"),
+    });
+    if (isStatusSuccesful(res.status)) {
+        toast.success("Registration saved as draft", {
+            style: { color: "green" },
+            description: "Registration saved as draft successfully",
+        });
+        closeModal();
         return res.status;
     }
     toast.error("Save registration as draft unsuccessfully", {

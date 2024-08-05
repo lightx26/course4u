@@ -37,7 +37,7 @@ public interface RegistrationService {
     // Admin Registration Services
     Page<RegistrationOverviewDTO> getRegistrations(RegistrationOverviewParams params, int page, int pageSize);
 
-    void createRegistrationFromExistingCourses(Long courseId, RegistrationEnrollDTO registrationEnrollDTO);
+    void createRegistrationFromExistingCourses(Long courseId, RegistrationEnrollDTO registrationEnrollDTO,boolean asDraft);
 
     void verifyRegistration(Long id, Map<String, String> longDocumentStatusMap, String status);
 

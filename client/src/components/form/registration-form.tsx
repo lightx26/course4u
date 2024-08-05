@@ -42,6 +42,7 @@ import { getListDocumentByRegistrationId } from "../../apiService/Document.servi
 import { Status } from "../../utils/index";
 import { useRefreshState } from "../../hooks/use-refresh-state";
 import { convertToFormData } from "../../utils/convertToFormData";
+import { isExistAvailableCourseWithId } from "../../apiService/Course.service";
 type DocumentType = {
     id: number;
     registrationId: number;
@@ -86,7 +87,9 @@ export const RegistrationsForm = ({
         },
     });
     const { setRegistrationFlagAdmin } = useRefreshState((state) => state);
-    const { close } = useRegistrationModal((state) => state);
+    const { close, id: registrationId } = useRegistrationModal(
+        (state) => state
+    );
     const user = useSelector((state: RootState) => state.user);
     const [blockEditCourseForm, setBlockEditCourseForm] = useState<boolean>(
         isBlockedModifiedCourse ?? false
@@ -156,6 +159,14 @@ export const RegistrationsForm = ({
         fetchListDocument();
     }, [id]);
 
+    useEffect(() => {
+        const checkExist = async () => {
+            const res = await isExistAvailableCourseWithId(registrationId!);
+            if (res.data && status === Status.DRAFT)
+                setBlockEditCourseForm(true);
+        };
+        status === Status.DRAFT && checkExist();
+    }, [registrationId, status]);
     return (
         <div className='flex flex-col w-full'>
             <Form {...form}>
@@ -163,7 +174,7 @@ export const RegistrationsForm = ({
                     onSubmit={form.handleSubmit(onSubmit)}
                     className='w-full space-y-8 '
                     onKeyDown={(event) => {
-                        if (event.key === 'Enter') {
+                        if (event.key === "Enter") {
                             event.preventDefault();
                         }
                     }}
@@ -193,9 +204,21 @@ export const RegistrationsForm = ({
                                             placeholder='Duration'
                                             {...field}
                                             onChange={(event) => {
-                                                const value = event.target.value;
-                                                if ((value.length == 0 || /^[0-9]\d*$/.test(value)) && value.length < 10) {
-                                                    field.onChange(+value.replace(/^0+/, ''));
+                                                const value =
+                                                    event.target.value;
+                                                if (
+                                                    (value.length == 0 ||
+                                                        /^[0-9]\d*$/.test(
+                                                            value
+                                                        )) &&
+                                                    value.length < 10
+                                                ) {
+                                                    field.onChange(
+                                                        +value.replace(
+                                                            /^0+/,
+                                                            ""
+                                                        )
+                                                    );
                                                 }
                                             }}
                                             defaultValue={1}
@@ -304,7 +327,7 @@ export const RegistrationsForm = ({
                                     <>
                                         {registrationFeedbacks &&
                                             registrationFeedbacks.length >
-                                            0 && (
+                                                0 && (
                                                 <FeedbackList
                                                     feedbacks={
                                                         registrationFeedbacks
@@ -340,26 +363,26 @@ export const RegistrationsForm = ({
                             {(status === "VERIFIED" ||
                                 status === "CLOSED" ||
                                 status === "VERIFYING") && (
-                                    <>
-                                        <VerifyDocumentForAccountant
-                                            documentRegistration={
-                                                documentRegistration
-                                            }
-                                            setDocumentRegistration={
-                                                setDocumentRegistration
-                                            }
-                                            status={status}
-                                        />
-                                        {registrationFeedbacks &&
-                                            registrationFeedbacks.length > 0 && (
-                                                <FeedbackList
-                                                    feedbacks={
-                                                        registrationFeedbacks
-                                                    }
-                                                />
-                                            )}
-                                    </>
-                                )}
+                                <>
+                                    <VerifyDocumentForAccountant
+                                        documentRegistration={
+                                            documentRegistration
+                                        }
+                                        setDocumentRegistration={
+                                            setDocumentRegistration
+                                        }
+                                        status={status}
+                                    />
+                                    {registrationFeedbacks &&
+                                        registrationFeedbacks.length > 0 && (
+                                            <FeedbackList
+                                                feedbacks={
+                                                    registrationFeedbacks
+                                                }
+                                            />
+                                        )}
+                                </>
+                            )}
                         </div>
                     )}
                     {user.user?.role === "USER" && (
@@ -470,26 +493,26 @@ export const RegistrationsForm = ({
                             {(status === "VERIFIED" ||
                                 status === "CLOSED" ||
                                 status === "DOCUMENT_DECLINED") && (
-                                    <>
-                                        <VerifyDocumentForAccountant
-                                            documentRegistration={
-                                                documentRegistration
-                                            }
-                                            setDocumentRegistration={
-                                                setDocumentRegistration
-                                            }
-                                            status={status}
-                                        />
-                                        {registrationFeedbacks &&
-                                            registrationFeedbacks.length > 0 && (
-                                                <FeedbackList
-                                                    feedbacks={
-                                                        registrationFeedbacks
-                                                    }
-                                                />
-                                            )}
-                                    </>
-                                )}
+                                <>
+                                    <VerifyDocumentForAccountant
+                                        documentRegistration={
+                                            documentRegistration
+                                        }
+                                        setDocumentRegistration={
+                                            setDocumentRegistration
+                                        }
+                                        status={status}
+                                    />
+                                    {registrationFeedbacks &&
+                                        registrationFeedbacks.length > 0 && (
+                                            <FeedbackList
+                                                feedbacks={
+                                                    registrationFeedbacks
+                                                }
+                                            />
+                                        )}
+                                </>
+                            )}
                         </div>
                     )}
                 </form>

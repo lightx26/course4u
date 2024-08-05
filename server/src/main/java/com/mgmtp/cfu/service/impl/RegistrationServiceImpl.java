@@ -517,7 +517,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     @Override
-    public void createRegistrationFromExistingCourses(Long courseId, RegistrationEnrollDTO registrationEnrollDTO) {
+    public void createRegistrationFromExistingCourses(Long courseId, RegistrationEnrollDTO registrationEnrollDTO,boolean asDraft) {
         if (registrationEnrollDTO.getDuration() == null || registrationEnrollDTO.getDurationUnit() == null) {
             throw new BadRequestRuntimeException("Duration and Duration Unit must not be null");
         }
@@ -527,7 +527,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         Registration registration = Registration.builder()
                 .course(course)
-                .status(RegistrationStatus.SUBMITTED)
+                .status(asDraft ? RegistrationStatus.DRAFT : RegistrationStatus.SUBMITTED)
                 .registerDate(LocalDate.now())
                 .duration(registrationEnrollDTO.getDuration().intValue())
                 .durationUnit(registrationEnrollDTO.getDurationUnit())
