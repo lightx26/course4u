@@ -9,8 +9,12 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { createNewCourse } from "../../apiService/Course.service";
 import { base64ToBlob, blobToFile } from "../../utils/ThumbnailConverter";
+import { useState } from "react";
 
 const CreateCourse = () => {
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof courseSchema>>({
     resolver: zodResolver(courseSchema),
@@ -29,6 +33,8 @@ const CreateCourse = () => {
 
   const onSubmit = async (values: z.infer<typeof courseSchema>) => {
     const formData = new FormData();
+
+    setIsSubmitting(true);
 
     // Append regular values to FormData
     Object.entries(values).forEach(([key, value]) => {
@@ -61,48 +67,66 @@ const CreateCourse = () => {
       formData.append("thumbnailUrl", values.thumbnailUrl);
     }
 
-    const status = await createNewCourse(formData);
-    if (status === 201) {
-      toast.success("Create a new course successfully", {
-        description: "",
-        style: {
-          color: "green",
-          fontWeight: "bold",
-          textAlign: "center",
-        },
-      });
-      navigate("/admin", {
-        replace: true,
-        state: { refresh: true },
-      });
-    } else if (status === 500) {
-      toast.error("Oops! Something went wrong. Please try again later", {
-        description: "Contact the admin for further assistance!",
-        style: {
-          color: "red",
-          fontWeight: "bold",
-          textAlign: "center",
-        },
-      });
-    } else if (status === 409) {
-      toast.error("Create a new course unsuccessfully", {
-        description:
-          "Your course already exists in the system. Please check again!",
-        style: {
-          color: "red",
-          fontWeight: "bold",
-          textAlign: "center",
-        },
-      });
-    } else {
-      toast.error("Oops! Something went wrong. Please try again later", {
-        description: "Contact the admin for further assistance!",
-        style: {
-          color: "red",
-          fontWeight: "bold",
-          textAlign: "center",
-        },
-      });
+    let status;
+    try {
+      status = await createNewCourse(formData);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+
+      if (status === 201) {
+        toast.success("Create a new course successfully", {
+          description: "",
+          style: {
+            color: "green",
+            fontWeight: "bold",
+            textAlign: "center",
+          },
+        });
+        navigate("/admin", {
+          replace: true,
+          state: { refresh: true },
+        });
+      } else if (status === 500) {
+        toast.error("Oops! Something went wrong. Please try again later", {
+          description: "Contact the admin for further assistance!",
+          style: {
+            color: "red",
+            fontWeight: "bold",
+            textAlign: "center",
+          },
+        });
+      } else if (status === 409) {
+        toast.error("Create a new course unsuccessfully", {
+          description:
+            "Your course already exists in the system. Please check again!",
+          style: {
+            color: "red",
+            fontWeight: "bold",
+            textAlign: "center",
+          },
+        });
+      } else if (status === 503) {
+        toast.error("Create a new course unsuccessfully", {
+          description:
+            "Check your internet connection and try again!",
+          style: {
+            color: "red",
+            fontWeight: "bold",
+            textAlign: "center",
+          },
+        });
+      } else {
+        toast.error("Oops! Something went wrong. Please try again later", {
+          description: "Contact the admin for further assistance!",
+          style: {
+            color: "red",
+            fontWeight: "bold",
+            textAlign: "center",
+          },
+        });
+      }
     }
   };
 
@@ -115,8 +139,8 @@ const CreateCourse = () => {
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
           <CourseForm form={form} isEdit={true} />
           <div className="flex justify-end">
-            <Button variant="success" className="mt-10" type="submit">
-              SUBMIT
+            <Button variant="success" className="mt-10" type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "SUBMITTING..." : "SUBMIT"}
             </Button>
           </div>
         </form>

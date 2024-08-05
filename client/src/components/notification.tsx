@@ -16,10 +16,11 @@ type Notification = {
 type IProps = {
     children: React.ReactNode;
     setCountUnread: (count: number) => void;
+    countUnread: number;
 }
 
 export function Notification(props: IProps) {
-    const { children, setCountUnread } = props;
+    const { children, countUnread, setCountUnread } = props;
     const [isLoading, setIsLoading] = useState(false);
     const [notifications, setNotifications] = useState<Notification[] | []>([]);
     const [buffer, setBuffer] = useState<Notification[] | []>([]);
@@ -36,6 +37,11 @@ export function Notification(props: IProps) {
     const popoverContentRef = useRef<HTMLDivElement>(null); // Ref for PopoverContent
 
     const markAllAsRead = async () => {
+
+        if (countUnread === 0) {
+            return;
+        }
+
         await markAllNotificationsAsRead();
         setNotifications((prev) =>
             prev.map((notification) => ({ ...notification, seen: true })))

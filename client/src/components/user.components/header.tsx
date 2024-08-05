@@ -162,7 +162,7 @@ const HeaderHomepage: React.FC = () => {
                   />
                 </div>
               )}
-              <Notification setCountUnread={setCountUnread}>
+              <Notification setCountUnread={setCountUnread} countUnread={countUnread}>
                 <div
                   style={{
                     position: "relative",
