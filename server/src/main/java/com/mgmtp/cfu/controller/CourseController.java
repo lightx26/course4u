@@ -10,6 +10,7 @@ import com.mgmtp.cfu.util.CoursePageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -50,7 +51,7 @@ public class CourseController {
         }
     }
 
-    @PostMapping()
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<CourseResponse> createCourse(@ModelAttribute CourseRequest courseRequest) {
         try {
             CourseResponse courseResponse = courseService.createCourse(courseRequest);
@@ -63,7 +64,7 @@ public class CourseController {
         }
     }
 
-    @PatchMapping
+    @PatchMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> updateCourse(@ModelAttribute CourseRequest courseRequest) {
         try {
             CourseResponse courseResponse = courseService.updateCourse(courseRequest);

@@ -9,6 +9,7 @@ import com.mgmtp.cfu.exception.DuplicateCourseException;
 import com.mgmtp.cfu.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -56,7 +57,7 @@ public class RegistrationController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PostMapping
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Registration> createRegistration(@ModelAttribute RegistrationRequest registrationRequest) {
         try {
             registrationService.createRegistration(registrationRequest);

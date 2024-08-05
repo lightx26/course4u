@@ -28,6 +28,8 @@ public class CourseRequest {
 
     @Getter
     @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class CategoryCourseRequestDTO {
         private String label;
         private String value;
