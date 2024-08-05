@@ -272,7 +272,7 @@ class RegistrationControllerSpec extends Specification {
         ResponseEntity<?> response = registrationController.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO)
 
         then:
-        1 * registrationService.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO)
+        1 * registrationService.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO,false)
         response.statusCode == HttpStatus.OK
     }
 
@@ -280,7 +280,7 @@ class RegistrationControllerSpec extends Specification {
         given:
         Long courseId = 1L
         RegistrationEnrollDTO registrationEnrollDTO = new RegistrationEnrollDTO(duration: null, durationUnit: null)
-        registrationService.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO) >> { throw new BadRequestRuntimeException("Duration and Duration Unit must not be null") }
+        registrationService.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO,false) >> { throw new BadRequestRuntimeException("Duration and Duration Unit must not be null") }
 
         when:
         ResponseEntity<?> response = registrationController.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO)
@@ -293,7 +293,7 @@ class RegistrationControllerSpec extends Specification {
         given:
         Long courseId = 1L
         RegistrationEnrollDTO registrationEnrollDTO = new RegistrationEnrollDTO(duration: 10, durationUnit: "DAY")
-        registrationService.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO) >> { throw new CourseNotFoundException("Course not found") }
+        registrationService.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO,false) >> { throw new CourseNotFoundException("Course not found") }
 
         when:
         ResponseEntity<?> response = registrationController.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO)

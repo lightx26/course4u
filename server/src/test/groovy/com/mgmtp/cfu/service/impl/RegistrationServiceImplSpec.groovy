@@ -995,7 +995,7 @@ class RegistrationServiceImplSpec extends Specification {
         RegistrationEnrollDTO registrationEnrollDTO = new RegistrationEnrollDTO(duration: null, durationUnit: null)
 
         when:
-        registrationService.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO)
+        registrationService.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO,false)
 
         then:
         def e = thrown(BadRequestRuntimeException)
@@ -1009,7 +1009,7 @@ class RegistrationServiceImplSpec extends Specification {
         courseRepository.findById(courseId) >> Optional.empty()
 
         when:
-        registrationService.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO)
+        registrationService.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO,false)
 
         then:
         def e = thrown(CourseNotFoundException)
@@ -1024,7 +1024,7 @@ class RegistrationServiceImplSpec extends Specification {
         courseRepository.findById(courseId) >> Optional.of(course)
 
         when:
-        registrationService.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO)
+        registrationService.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO,false)
 
         then:
         1 * registrationRepository.save(_ as Registration) >> { Registration registration ->
