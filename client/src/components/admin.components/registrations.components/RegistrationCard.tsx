@@ -45,7 +45,7 @@ function RegistrationCardComponent({ registration }: PropsType) {
             ? convertJSDatesToCorrectFormat(endDate)
             : "";
 
-        return `Period: ${handledStartDate} - ${handledEndDate}`;
+        return `Period: ${ handledStartDate } - ${ handledEndDate || "Not finished yet"}`;
     };
 
     const handlePopup = () => {

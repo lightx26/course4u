@@ -110,7 +110,7 @@ export default function MyRegistrationComponents({ registration }: PropsType) {
                                         {endDate === null
                                             ? startDate === null
                                                 ? ""
-                                                : " - unknown"
+                                                : " - Not finished yet"
                                             : ` - ${String(
                                                   endDate.getDate()
                                               ).padStart(2, "0")}/${String(
