@@ -200,6 +200,9 @@ const LeaderBoard: React.FC = () => {
                     learningTime={item.time}
                   />
                 ))}
+              {dataCardLeaderBoard && dataCardLeaderBoard.length === 2 && (
+                <div className="card w-1/4 rounded-lg p-4 flex flex-col justify-between gap-5 pb-5"></div>
+              )}
             </div>
             <div className="mt-12">
               <Table

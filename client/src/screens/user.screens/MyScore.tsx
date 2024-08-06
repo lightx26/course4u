@@ -163,7 +163,7 @@ const MyScore: React.FC = () => {
 
   return (
     <div className="bg-[#f9fafb] h-screen pt-4 mt-1">
-      <div className="max-w-screen-2xl mx-auto h-[90%] rounded-[15px] border border-gray-300 flex px-8 py-2.5 items-center bg-white">
+      <div className="max-w-screen-2xl mx-auto h-[75%] rounded-[15px] border border-gray-300 flex px-8 py-2.5 items-center bg-white">
         <div className="w-[25%] border border-gray-300 rounded-2xl flex justify-between items-start p-5 h-auto">
           <div className="flex flex-col gap-5 w-[70%]">
             <div>
