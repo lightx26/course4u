@@ -36,7 +36,7 @@ const initialState: IAccountantRegistration = {
         orderBy: "id",
         isAscending: false,
     },
-    view: "grid",
+    view: 'grid',
     showingMessage: "",
     currentPage: 1,
     totalItem: 0,
@@ -66,11 +66,11 @@ export const accountantPageRegistrationsSlice = createSlice({
         refreshAccountant: (state) => {
             state.options = initialState.options;
             state.currentPage = 1;
-            state.view = "grid";
+            state.view = 'grid';
         },
         setAccountantView: (state, action) => {
             state.view = action.payload;
-        },
+        }
     },
     extraReducers: () => {},
 });

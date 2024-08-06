@@ -36,7 +36,7 @@ const initialState: IAdminRegistration = {
         orderBy: "id",
         isAscending: false,
     },
-    view: "grid",
+    view: 'grid',
     showingMessage: "",
     currentPage: 1,
     totalItem: 0,
@@ -67,11 +67,11 @@ export const adminPageRegistrationsSlice = createSlice({
         refreshAdmin: (state) => {
             state.options = initialState.options;
             state.currentPage = 1;
-            state.view = "grid";
+            state.view = 'grid';
         },
         setAdminView: (state, action) => {
             state.view = action.payload;
-        },
+        }
     },
     extraReducers: () => {},
 });

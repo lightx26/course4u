@@ -43,7 +43,7 @@ function CardFunctionList() {
     };
 
     const handleRefresh = (userRole: string) => {
-        if (userRole === "ADMIN") {
+        if (userRole === 'ADMIN'){
             dispatch(refreshAdmin());
         } else {
             dispatch(refreshAccountant());

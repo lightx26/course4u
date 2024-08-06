@@ -22,7 +22,7 @@ import {
     saveRegistrationsData,
 } from "../../redux/slice/admin-registration.slice.ts";
 
-import TableRegistration from "../../components/registration/list-view/table-registration.tsx";
+import TableRegistration from "../../components/admin.components/registrations.components/table-registration.tsx";
 import ViewToggle from "../../components/user/admin/view-toggle.tsx";
 import { fetchAllRegistrations } from "../../service/registration.ts";
 
@@ -102,7 +102,7 @@ function AdminHomePage() {
         <div className='bg-[#F5F7FA] h-[100dvh] min-h-[1024px]'>
             <div className='flex w-screen gap-10 pt-10 mx-auto my-0 body px-14 max-w-screen-2xl'>
                 <div className='w-56 card'>
-                    <AdminCard avatarUrl={avatarUrl} />
+                    <AdminCard avatarUrl={avatarUrl}/>
                 </div>
                 <div className='registration-section flex flex-col gap-8 w-[80%]'>
                     <div className='filters'>
@@ -118,17 +118,17 @@ function AdminHomePage() {
                             <ViewToggle role={"admin"} view={view} />
                         </div>
 
-                        {view === "grid" ? (
+                        {view === 'grid'
+                            ?
                             <RegistrationList
                                 ListRegistration={registrationList}
                                 isLoading={isLoading}
                             />
-                        ) : (
-                            <TableRegistration
-                                ListRegistration={registrationList}
-                                isLoading={isLoading}
-                            />
-                        )}
+                            :
+                            <TableRegistration ListRegistration={registrationList}/>
+                        }
+
+
                     </div>
                     <div className='w-full pagination mt-7'>
                         <PaginationSection
