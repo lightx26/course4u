@@ -48,6 +48,10 @@ const SignUp: React.FC = () => {
         const specialCharsRegex = /[!@#$%^&*(),.?":{}|<>`~\[\]\\\/';=+\-_\s]/;
         return specialCharsRegex.test(str);
     }
+    function emailHasSpecialChar(str: string) {
+        const specialCharsRegex = /[!#$%^&*(),?":{}|<>`~\[\]\\\/';=+_\s]/;
+        return specialCharsRegex.test(str);
+    }
 
     const dispatch = useAppDispatch();
     const statusRegister: string = useSelector(
@@ -103,7 +107,20 @@ const SignUp: React.FC = () => {
                         ...prevErrors,
                         email: "Email is required.",
                     }));
-                } else if (!emailPattern.test(value)) {
+                }
+                else if (containsVietnameseAccent(value)){
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        email: "Email must not have accents.",
+                    }));
+                }
+                else if (emailHasSpecialChar(value)){
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        email: "Email contains forbidden characters",
+                    }));
+                }
+                else if (!emailPattern.test(value)) {
                     setErrors((prevErrors) => ({
                         ...prevErrors,
                         email: "Please enter a valid email address (*@mgm-tp.com).",
