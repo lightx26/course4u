@@ -103,7 +103,7 @@ function AdminHomePage() {
                     </div>
                     <div className='registration-list w-full min-h-[200px]'>
                         <div className='mb-2 flex justify-between'>
-                            <span>{showingMessage}</span>
+                            <span>{isLoading || showingMessage}</span>
                             <ViewToggle role={'admin'} view={view}/>
                         </div>
 
@@ -114,7 +114,7 @@ function AdminHomePage() {
                                 isLoading={isLoading}
                             />
                             :
-                            <TableRegistration ListRegistration={registrationList}/>
+                            <TableRegistration ListRegistration={registrationList} isLoading={isLoading}/>
                         }
 
 
