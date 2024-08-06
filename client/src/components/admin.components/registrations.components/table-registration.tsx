@@ -5,8 +5,6 @@ import TableRowRegistration from "./table-row-registration";
 
 type PropsType = {
     ListRegistration: RegistrationType[];
-    isLoading: boolean;
-    numRegistration?: number;
 };
 
 const TableHeader = [
@@ -16,8 +14,8 @@ const TableHeader = [
     "Period",
     "Status",
 ];
-//@ts-ignore
-export default function TableRegistration({ ListRegistration, isLoading, numRegistration }: PropsType) {
+
+export default function TableRegistration({ ListRegistration }: PropsType) {
     return (
         <div>
             <TableHeaderRegistration tableHeader={TableHeader} />

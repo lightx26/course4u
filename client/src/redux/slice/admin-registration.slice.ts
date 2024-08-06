@@ -1,5 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
-import { Status } from "../../utils/index.ts";
+import {Status} from "../../utils/index.ts";
 
 // Define registrations type
 export type OverviewRegistrationsType = {
@@ -19,8 +19,9 @@ export type RegistrationParamsType = {
     isAscending: boolean
 }
 
-interface IAccountantRegistration {
+interface IAdminRegistration {
     options: RegistrationParamsType;
+    view: string;
     showingMessage: string;
     currentPage: number;
     totalItem: number;
@@ -28,21 +29,23 @@ interface IAccountantRegistration {
 }
 
 // Define an initial State
-const initialState: IAccountantRegistration = {
+const initialState: IAdminRegistration = {
     options: {
-        status: "Verified",
+        status: "All",
         search: "",
         orderBy: "id",
         isAscending: false
     },
+    view: "grid",
     showingMessage: "",
     currentPage: 1,
     totalItem: 0,
     data: [],
 }
 
-export const accountantPageRegistrationsSlice = createSlice({
-    name: "accountantRegistrationPage",
+// Create a slice
+export const adminPageRegistrationsSlice = createSlice({
+    name: "adminRegistrationPage",
     initialState,
     reducers: {
         handleCurrentPageChange: (state, action) => {
@@ -58,12 +61,16 @@ export const accountantPageRegistrationsSlice = createSlice({
             state.data = action.payload;
             state.totalItem = action.payload.totalElements;
         },
-        handleOptionsChangeForAccountant: (state, action) => {
+        handleOptionsChangeForAdmin: (state, action) => {
             state.options = action.payload;
         },
-        refreshAccountant: (state) => {
+        refreshAdmin: (state) => {
             state.options = initialState.options;
             state.currentPage = 1;
+            state.view = 'grid';
+        },
+        setAdminView: (state, action) => {
+            state.view = action.payload;
         }
     },
     extraReducers: () => {},
@@ -74,9 +81,12 @@ export const {
     handleTotalItemChange,
     handleShowingMessageChange,
     saveRegistrationsData,
-    handleOptionsChangeForAccountant,
-    refreshAccountant
-} = accountantPageRegistrationsSlice.actions
+    handleOptionsChangeForAdmin,
+    refreshAdmin,
+    setAdminView
+} = adminPageRegistrationsSlice.actions
+
+export const adminInitialStateOption: RegistrationParamsType = initialState.options;
 
 // Export the reducer
-export default accountantPageRegistrationsSlice.reducer;
+export default adminPageRegistrationsSlice.reducer;

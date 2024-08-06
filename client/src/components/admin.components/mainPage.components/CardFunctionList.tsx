@@ -6,8 +6,8 @@ import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import CourseList from "../../../assets/images/admin.images/CourseList.svg";
 
-import {refreshAdmin} from "../../../redux/slice/adminRegistration.slice.ts";
-import {refreshAccountant} from "../../../redux/slice/accountantRegistration.slice.ts";
+import {refreshAdmin} from "../../../redux/slice/admin-registration.slice.ts";
+import {refreshAccountant} from "../../../redux/slice/accountant-registration.slice.ts";
 
 function CardFunctionList() {
     const convertedFunctionList = functionList.map((item) => {

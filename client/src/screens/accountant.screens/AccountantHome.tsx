@@ -7,7 +7,7 @@ import {
     handleTotalItemChange,
     RegistrationParamsType,
     saveRegistrationsData,
-} from "../../redux/slice/accountantRegistration.slice.ts";
+} from "../../redux/slice/accountant-registration.slice.ts";
 import {useEffect, useState} from "react";
 import {handleAvatarUrl} from "../../utils/handleAvatarUrl.ts";
 import AdminCard from "../../components/admin.components/mainPage.components/AdminCard.tsx";

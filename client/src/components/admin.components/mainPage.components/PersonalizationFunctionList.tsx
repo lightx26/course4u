@@ -6,8 +6,8 @@ import { AppDispatch, RootState } from "../../../redux/store/store.ts";
 import { useNavigate } from "react-router-dom";
 
 import functionMapping from "../../../utils/functionMapping.ts";
-import {refreshAdmin} from "../../../redux/slice/adminRegistration.slice.ts";
-import {refreshAccountant} from "../../../redux/slice/accountantRegistration.slice.ts";
+import {refreshAdmin} from "../../../redux/slice/admin-registration.slice.ts";
+import {refreshAccountant} from "../../../redux/slice/accountant-registration.slice.ts";
 
 const PersonalizationFunctionList = () => {
   const dispatch = useDispatch<AppDispatch>();

@@ -3,7 +3,7 @@ import instance from "../utils/customizeAxios";
 import { isStatusSuccesful } from "../utils/checkResStatus";
 
 import type { UploadFile } from "antd";
-import { RegistrationParamsType } from "../redux/slice/adminRegistration.slice.ts";
+import { RegistrationParamsType } from "../redux/slice/admin-registration.slice.ts";
 import OrderByMapping from "../utils/orderByMapping.ts";
 
 export async function fetchAllRegistrations(params: RegistrationParamsType, page: number = 1, pageSize: number = 8) {

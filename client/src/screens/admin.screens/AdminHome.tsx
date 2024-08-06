@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { RegistrationType } from "../../App";
+import {useEffect, useState} from "react";
+import {RegistrationType} from "../../App";
 
 import AdminCard from "../../components/admin.components/mainPage.components/AdminCard.tsx";
 import PaginationSection from "../../components/user.components/Homepage/PaginationSection.tsx";
@@ -15,18 +15,26 @@ import {useRefreshState} from "../../hooks/use-refresh-state.ts";
 
 import {RootState} from "../../redux/store/store.ts";
 import {useDispatch, useSelector} from "react-redux";
-import {RegistrationParamsType} from "../../redux/slice/adminRegistration.slice.ts";
+import {RegistrationParamsType} from "../../redux/slice/admin-registration.slice.ts";
 import {
     handleCurrentPageChange,
     handleTotalItemChange,
     handleShowingMessageChange,
     saveRegistrationsData,
-} from "../../redux/slice/adminRegistration.slice.ts";
+} from "../../redux/slice/admin-registration.slice.ts";
+
+import TableRegistration from "../../components/admin.components/registrations.components/table-registration.tsx";
+import ViewToggle from "../../components/admin.components/mainPage.components/view-toggle.tsx";
 
 function AdminHomePage() {
-    const { registrationFlagAdmin } = useRefreshState((state) => state);
+    const [isLoading, setIsLoading] = useState(true);
 
+    const {registrationFlagAdmin} = useRefreshState((state) => state);
     const dispatch = useDispatch();
+
+    const view: string = useSelector(
+        (state: RootState) => state.adminRegistration.view
+    )
 
     const currentPage: number = useSelector(
         (state: RootState) => state.adminRegistration.currentPage
@@ -48,7 +56,6 @@ function AdminHomePage() {
         (state: RootState) => state.adminRegistration.options
     );
 
-    const [isLoading, setIsLoading] = useState(true);
     const avatarUrl = handleAvatarUrl(
         useSelector((state: RootState) => state.user.user.avatarUrl)
     );
@@ -88,20 +95,29 @@ function AdminHomePage() {
         <div className='bg-[#F5F7FA] h-[100dvh] min-h-[1024px]'>
             <div className='flex w-screen gap-10 pt-10 mx-auto my-0 body px-14 max-w-screen-2xl'>
                 <div className='w-56 card'>
-                    <AdminCard avatarUrl={avatarUrl} />
+                    <AdminCard avatarUrl={avatarUrl}/>
                 </div>
                 <div className='registration-section flex flex-col gap-8 w-[80%]'>
                     <div className='filters'>
                         <UtilsBar statusList={registrationStatusList} options={options} role={"admin"}/>
                     </div>
-                    <div className='registration-list min-h-[200px]'>
-                        <div className='mb-2 showing-status'>
-                            {showingMessage}
+                    <div className='registration-list w-full min-h-[200px]'>
+                        <div className='mb-2 flex justify-between'>
+                            <span>{showingMessage}</span>
+                            <ViewToggle role={'admin'} view={view}/>
                         </div>
-                        <RegistrationList
-                            ListRegistration={registrationList}
-                            isLoading={isLoading}
-                        />
+
+                        {view === 'grid'
+                            ?
+                            <RegistrationList
+                                ListRegistration={registrationList}
+                                isLoading={isLoading}
+                            />
+                            :
+                            <TableRegistration ListRegistration={registrationList}/>
+                        }
+
+
                     </div>
                     <div className='w-full pagination mt-7'>
                         <PaginationSection

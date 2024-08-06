@@ -6,8 +6,8 @@ import {statusProps} from "../../../utils/registrationStatusList.ts";
 import registrationOrderByList from "../../../utils/orderByList.ts";
 
 import {useDispatch} from "react-redux";
-import {handleOptionsChangeForAdmin, RegistrationParamsType} from "../../../redux/slice/adminRegistration.slice.ts";
-import {handleOptionsChangeForAccountant} from "../../../redux/slice/accountantRegistration.slice.ts";
+import {handleOptionsChangeForAdmin, RegistrationParamsType} from "../../../redux/slice/admin-registration.slice.ts";
+import {handleOptionsChangeForAccountant} from "../../../redux/slice/accountant-registration.slice.ts";
 
 type PropType = {
     statusList: statusProps[],
