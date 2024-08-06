@@ -6,8 +6,8 @@ import { AppDispatch, RootState } from "../../../redux/store/store.ts";
 import { useNavigate } from "react-router-dom";
 
 import functionMapping from "../../../utils/functionMapping.ts";
-import { refreshAdmin } from "../../../redux/slice/admin-registration.slice.ts";
-import { refreshAccountant } from "../../../redux/slice/accountant-registration.slice.ts";
+import {refreshAdmin} from "../../../redux/slice/admin-registration.slice.ts";
+import {refreshAccountant} from "../../../redux/slice/accountant-registration.slice.ts";
 
 const PersonalizationFunctionList = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -23,7 +23,7 @@ const PersonalizationFunctionList = () => {
     };
 
     const handleRefresh = (userRole: string) => {
-        if (userRole === "ADMIN") {
+        if (userRole === 'ADMIN') {
             dispatch(refreshAdmin());
         } else {
             dispatch(refreshAccountant());

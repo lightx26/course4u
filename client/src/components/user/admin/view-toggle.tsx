@@ -1,5 +1,5 @@
 import {AppstoreOutlined, MenuOutlined} from '@ant-design/icons'
-import {RadioGroup, RadioGroupItem} from "../../ui/radio-group.tsx";
+import {ConfigProvider, Flex, Radio} from "antd";
 
 import {setAdminView} from "../../../redux/slice/admin-registration.slice.ts";
 import {setAccountantView} from "../../../redux/slice/accountant-registration.slice.ts";
@@ -22,18 +22,26 @@ const ViewToggle = ({role, view}: PropType) => {
     }
 
     return (
-        <div className="mb-2">
-            <RadioGroup className="flex gap-4" value={view} onValueChange={(value) => handleSetView(value)}>
-                <div className="flex items-center space-x-1">
-                    <RadioGroupItem value="grid"/>
-                    <Label htmlFor="grid">Grid view</Label>
-                </div>
-                <div className="flex items-center space-x-1">
-                    <RadioGroupItem value="list"/>
-                    <Label htmlFor="list">List view</Label>
-                </div>
-            </RadioGroup>
-        </div>
+        <ConfigProvider
+            theme={{
+                components:{
+                    Radio: {
+                        buttonSolidCheckedActiveBg: "#861FA2",
+                        buttonSolidCheckedBg: "#861FA2",
+                        buttonSolidCheckedHoverBg: "#861FA2",
+                        colorPrimary: "#861FA2"
+                    }
+                }
+            }}
+        >
+            <Flex vertical gap="middle" className="mr-4">
+                <Radio.Group value={view} buttonStyle="solid" size={"large"}
+                             onChange={(e) => handleSetView(e.target.value)}>
+                    <Radio.Button value="grid"><AppstoreOutlined/></Radio.Button>
+                    <Radio.Button value="list"><MenuOutlined/></Radio.Button>
+                </Radio.Group>
+            </Flex>
+        </ConfigProvider>
     )
 }
 

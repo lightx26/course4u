@@ -22,7 +22,7 @@ import {
     saveRegistrationsData,
 } from "../../redux/slice/admin-registration.slice.ts";
 
-import TableRegistration from "../../components/admin.components/registrations.components/table-registration.tsx";
+import TableRegistration from "../../components/registration/list-view/table-registration.tsx";
 import ViewToggle from "../../components/user/admin/view-toggle.tsx";
 import { fetchAllRegistrations } from "../../service/registration.ts";
 
@@ -125,7 +125,10 @@ function AdminHomePage() {
                                 isLoading={isLoading}
                             />
                             :
-                            <TableRegistration ListRegistration={registrationList}/>
+                            <TableRegistration
+                                ListRegistration={registrationList}
+                                isLoading={isLoading}
+                            />
                         }
 
 
