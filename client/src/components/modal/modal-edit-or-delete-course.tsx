@@ -125,7 +125,6 @@ const ModalEditOrDeleteCourse = ({ children, courseData }: Props) => {
         if (formData.get("thumbnailUrl")?.toString().match("/api/thumbnail/")) {
             formData.delete("thumbnailUrl");
         }
-        console.log(formData.forEach((value, key) => console.log(key, value)));
         const status = await editCourse(formData);
         if (status === 200) {
             setCourseDetailFlag();

@@ -16,6 +16,7 @@ type Props = {
     description?: string;
     acceptButtonTitle?: string;
     cancelButtonTitle?: string;
+    isLoading?: boolean;
 };
 
 const ModalConfirm = ({
@@ -26,6 +27,7 @@ const ModalConfirm = ({
     description,
     acceptButtonTitle = "Yes",
     cancelButtonTitle = "No",
+    isLoading = false,
 }: Props) => {
     return (
         <AlertDialog>
@@ -54,6 +56,7 @@ const ModalConfirm = ({
                         className='text-sm text-white bg-purple h-9'
                         size='sm'
                         onClick={handleConfirm}
+                        disabled={isLoading}
                     >
                         {acceptButtonTitle}
                     </Button>

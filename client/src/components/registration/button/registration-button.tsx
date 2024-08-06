@@ -285,6 +285,7 @@ export const RegistrationButton = ({
     };
 
     const handleSaveAsDraft = async () => {
+        setIsLoading(true);
         const data = await convertToFormData(form?.getValues());
         if (!data) return;
         blockEditCourseForm &&
@@ -296,6 +297,7 @@ export const RegistrationButton = ({
                   closeModal
               )
             : await saveRegistrationAsDraft(data, id!, closeModal);
+        setIsLoading(false);
     };
 
     useEffect(() => {
@@ -316,6 +318,7 @@ export const RegistrationButton = ({
                     handleConfirm={handleSaveAsDraft}
                     title='Save registration as draft'
                     description='Do you want to save this registration as draft ?'
+                    isLoading={isLoading}
                 >
                     <Button size='default' variant='gray' type='button'>
                         SAVE AS DRAFT
@@ -329,6 +332,7 @@ export const RegistrationButton = ({
                     cancelButtonTitle='Cancel'
                     acceptButtonTitle='Yes, Delete'
                     handleConfirm={handleDeleteButtonClick}
+                    isLoading={isLoading}
                 >
                     <Button
                         type='button'
@@ -359,6 +363,7 @@ export const RegistrationButton = ({
                     handleConfirm={handleStartLearning}
                     title='Do you want to start learning this course?'
                     description='Start learning cannot undo !!! Are you sure you want to start learning this course?'
+                    isLoading={isLoading}
                 >
                     <Button
                         size='default'
@@ -388,6 +393,7 @@ export const RegistrationButton = ({
                     handleConfirm={handleFinishLearning}
                     title='Do you want to finish this course?'
                     description='Are you sure you have completed the course and want to confirm completion?'
+                    isLoading={isLoading}
                 >
                     <Button
                         className={
@@ -482,6 +488,7 @@ export const RegistrationButton = ({
                         cancelButtonTitle='No'
                         acceptButtonTitle='Yes'
                         handleConfirm={handleReSubmitDocument}
+                        isLoading={isLoading}
                     >
                         <Button
                             size='lg'

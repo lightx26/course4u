@@ -101,6 +101,9 @@ export const RegistrationButtonForAccountant = (props: IProps) => {
                         title='Decline this registration'
                         description='Are you sure you want to decline this registration?'
                         handleConfirm={handleDeclineDocument}
+                        isLoading={
+                            feedBackFromAccountant.trim() === "" ? true : false
+                        }
                     >
                         <Button
                             size='default'
@@ -181,6 +184,9 @@ export const RegistrationButtonForAccountant = (props: IProps) => {
                         title='Approve this registration'
                         description='Are you sure you want to approve this registration?'
                         handleConfirm={handleApproveDocument}
+                        isLoading={
+                            feedBackFromAccountant.trim() === "" ? false : true
+                        }
                     >
                         <Button
                             size='default'
