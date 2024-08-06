@@ -1,5 +1,5 @@
-import { Label } from "../../ui/label.tsx"
-import {RadioGroup, RadioGroupItem} from "../../ui/radio-group.tsx";
+import {AppstoreOutlined, MenuOutlined} from '@ant-design/icons'
+import {Space, Switch} from 'antd';
 
 import {setAdminView} from "../../../redux/slice/admin-registration.slice.ts";
 import {setAccountantView} from "../../../redux/slice/accountant-registration.slice.ts";
@@ -14,27 +14,33 @@ const ViewToggle = ({role, view}: PropType) => {
     const dispatch = useDispatch();
 
     const handleSetView = (view: string): void => {
-        if (role === 'admin'){
+        if (role === 'admin') {
             dispatch(setAdminView(view))
-        }
-        else{
+        } else {
             dispatch(setAccountantView(view))
         }
     }
 
+    const handleSwitched = () => {
+        if (view === 'grid'){
+            handleSetView('list')
+        }
+        else{
+            handleSetView('grid')
+        }
+    }
+
+    const checked = view === 'grid'
+
     return (
-        <div className="mb-2">
-            <RadioGroup className="flex gap-4" value={view} onValueChange={(value) => handleSetView(value)}>
-                <div className="flex items-center space-x-1">
-                    <RadioGroupItem value="grid"/>
-                    <Label htmlFor="grid">Grid view</Label>
-                </div>
-                <div className="flex items-center space-x-1">
-                    <RadioGroupItem value="list"/>
-                    <Label htmlFor="list">List view</Label>
-                </div>
-            </RadioGroup>
-        </div>
+        <Space direction='vertical'>
+            <Switch
+                value={checked}
+                checkedChildren={<AppstoreOutlined/>}
+                unCheckedChildren={<MenuOutlined />}
+                onChange={handleSwitched}
+            />
+        </Space>
     )
 }
 
