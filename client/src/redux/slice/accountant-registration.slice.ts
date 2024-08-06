@@ -1,5 +1,5 @@
-import {createSlice} from "@reduxjs/toolkit";
-import { Status } from "../../utils/index.ts";
+import { createSlice } from "@reduxjs/toolkit";
+import { Status } from "../../constant/index.ts";
 
 // Define registrations type
 export type OverviewRegistrationsType = {
@@ -13,11 +13,11 @@ export type OverviewRegistrationsType = {
 };
 
 export type RegistrationParamsType = {
-    status: string
-    search: string
-    orderBy: string
-    isAscending: boolean
-}
+    status: string;
+    search: string;
+    orderBy: string;
+    isAscending: boolean;
+};
 
 interface IAccountantRegistration {
     options: RegistrationParamsType;
@@ -34,14 +34,14 @@ const initialState: IAccountantRegistration = {
         status: "Verified",
         search: "",
         orderBy: "id",
-        isAscending: false
+        isAscending: false,
     },
-    view: 'grid',
+    view: "grid",
     showingMessage: "",
     currentPage: 1,
     totalItem: 0,
     data: [],
-}
+};
 
 export const accountantPageRegistrationsSlice = createSlice({
     name: "accountantRegistrationPage",
@@ -66,11 +66,11 @@ export const accountantPageRegistrationsSlice = createSlice({
         refreshAccountant: (state) => {
             state.options = initialState.options;
             state.currentPage = 1;
-            state.view = 'grid';
+            state.view = "grid";
         },
         setAccountantView: (state, action) => {
             state.view = action.payload;
-        }
+        },
     },
     extraReducers: () => {},
 });
@@ -82,8 +82,8 @@ export const {
     saveRegistrationsData,
     handleOptionsChangeForAccountant,
     refreshAccountant,
-    setAccountantView
-} = accountantPageRegistrationsSlice.actions
+    setAccountantView,
+} = accountantPageRegistrationsSlice.actions;
 
 // Export the reducer
 export default accountantPageRegistrationsSlice.reducer;

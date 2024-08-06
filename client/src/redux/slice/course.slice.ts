@@ -1,45 +1,45 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { CourseType } from "../../App";
-import { fetchListAvailableCourse } from "../../apiService/Course.service";
 import { RootState } from "../store/store";
+import { fetchListAvailableCourse } from "../../service/course";
 
 export type CourseStateType = {
-    searchTerm?: string,
-    sortBy?: string,
-    limit?: number,
-    content: CourseType[],
-    empty: boolean,
-    first: boolean,
-    last: boolean,
-    number: number,
+    searchTerm?: string;
+    sortBy?: string;
+    limit?: number;
+    content: CourseType[];
+    empty: boolean;
+    first: boolean;
+    last: boolean;
+    number: number;
     //Number element in current page
-    numberOfElements: number,
+    numberOfElements: number;
     //No use data of pageable (May be wrong or bug sometimes)
     pageable: {
         //Current page
-        pageNumber: number,
+        pageNumber: number;
         //Page size
-        pageSize: number,
+        pageSize: number;
         sort: {
-            empty: boolean,
-            sorted: boolean,
-            unsorted: boolean,
-        },
-        offset: number,
-        unpaged: boolean,
-    },
+            empty: boolean;
+            sorted: boolean;
+            unsorted: boolean;
+        };
+        offset: number;
+        unpaged: boolean;
+    };
     //Page size
-    size: number,
+    size: number;
     sort: {
-        empty: boolean,
-        sorted: boolean,
-        unsorted: boolean,
-    },
+        empty: boolean;
+        sorted: boolean;
+        unsorted: boolean;
+    };
     //Total element in all page
-    totalElements: number,
+    totalElements: number;
     //Total page
-    totalPages: number,
-}
+    totalPages: number;
+};
 
 // Define the initial state
 const initialState: CourseStateType = {
@@ -75,7 +75,7 @@ const initialState: CourseStateType = {
 
 // Define the async thunk
 export const searchCoursesByFilterNameAndSortBy = createAsyncThunk(
-    'courses/searchCoursesByFilterNameAndSortBy',
+    "courses/searchCoursesByFilterNameAndSortBy",
     async (_, { getState }) => {
         // get all state
 
@@ -84,28 +84,36 @@ export const searchCoursesByFilterNameAndSortBy = createAsyncThunk(
         const filterState = state.filter;
         const courseState = state.courses;
         // Get Category, level, platform
-        const extractFilterIds = (filterComponentId: string) => filterState
-            .filter(item => item.FilterComponentId === filterComponentId)
-            .flatMap(item => item.listChoice.map(choice => choice.id.toUpperCase()));
+        const extractFilterIds = (filterComponentId: string) =>
+            filterState
+                .filter((item) => item.FilterComponentId === filterComponentId)
+                .flatMap((item) =>
+                    item.listChoice.map((choice) => choice.id.toUpperCase())
+                );
         // Get all filter
         const params = {
             searchTerm: courseState.searchTerm,
-            categoryFilter: extractFilterIds('Category'),
-            levelFilter: extractFilterIds('Level'),
-            platformFilter: extractFilterIds('Platform'),
-            rating: extractFilterIds('Rating'),
+            categoryFilter: extractFilterIds("Category"),
+            levelFilter: extractFilterIds("Level"),
+            platformFilter: extractFilterIds("Platform"),
+            rating: extractFilterIds("Rating"),
             page: courseState.number ?? 1,
             limit: courseState.limit ?? 8,
             sortBy: courseState.sortBy,
-        }
+        };
         const response = await fetchListAvailableCourse(params);
-        return { ...response?.data, searchTerm: courseState.searchTerm, sortBy: courseState.sortBy, number: response?.data.number + 1 };
+        return {
+            ...response?.data,
+            searchTerm: courseState.searchTerm,
+            sortBy: courseState.sortBy,
+            number: response?.data.number + 1,
+        };
     }
 );
 
 // Create the slice
 export const courseSlice = createSlice({
-    name: 'course',
+    name: "course",
     initialState,
     reducers: {
         updateSearch: (state, action) => {
@@ -115,13 +123,16 @@ export const courseSlice = createSlice({
             state.sortBy = action.payload;
         },
         updatePage: (state, action) => {
-            state.number = action.payload
-        }
+            state.number = action.payload;
+        },
     },
     extraReducers: (builder) => {
-        builder.addCase(searchCoursesByFilterNameAndSortBy.fulfilled, (_, action) => {
-            return action.payload;
-        });
+        builder.addCase(
+            searchCoursesByFilterNameAndSortBy.fulfilled,
+            (_, action) => {
+                return action.payload;
+            }
+        );
     },
 });
 

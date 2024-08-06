@@ -1,29 +1,29 @@
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
-import HeaderHomepage from "./components/user.components/header";
-import HomepageScreen from "./screens/user.screens/HomepageScreen";
-import Login from "./screens/user.screens/Login.tsx";
-import Detail_Of_Course from "./screens/user.screens/DetailOfCourse.tsx";
+import HeaderHomepage from "./components/header.tsx";
+import HomepageScreen from "./screens/user/homepage.tsx";
+import Login from "./screens/auth/login.tsx";
+import Detail_Of_Course from "./screens/user/detail-of-course.tsx";
 import { ReactElement, useEffect } from "react";
-import { ProtectedRoute } from "./components/user.components/ProtectedRouteAuth.tsx";
-import AccountSettingScreen from "./screens/user.screens/personal/AccountSettingScreen.tsx";
-import Navigation from "./components/user.components/personal/NavigationComponent.tsx";
-import MyRegistrationsScreen from "./screens/user.screens/MyRegistrationScreen.tsx";
+import { ProtectedRoute } from "./components/auth/protected-route-auth.tsx";
+import AccountSettingScreen from "./screens/user/personal/account-setting.tsx";
+import Navigation from "./components/user/navigation.tsx";
+import MyRegistrationsScreen from "./screens/user/personal/my-registration.tsx";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "./redux/store/store.ts";
 import { fetchUserDetails } from "./redux/slice/user.slice.ts";
-import NotPermitted from "./screens/user.screens/NotPermitted.tsx";
-import NotFound from "./screens/user.screens/NotFound.tsx";
-import AdminHomePage from "./screens/admin.screens/AdminHome.tsx";
+import NotPermitted from "./screens/error/not-permitted.tsx";
+import NotFound from "./screens/error/not-found.tsx";
+import AdminHomePage from "./screens/admin/admin-home.tsx";
 
-import SignUp from "./screens/user.screens/SignUp.tsx";
-import AdminCoursePageScreen from "./screens/admin.screens/AdminCoursePageScreen.tsx";
-import CreateCoursesScreen from "./screens/admin.screens/CreateCoursesScreen.tsx";
-import { ProtectedRouteLogin } from "./components/user.components/ProtectedRouteLogin.tsx";
+import SignUp from "./screens/auth/sign-up.tsx";
+import AdminCoursePageScreen from "./screens/admin/admin-course-page.tsx";
+import CreateCoursesScreen from "./screens/admin/create-courses.tsx";
+import { ProtectedRouteLogin } from "./components/auth/protected-route-login.tsx";
 import { isTokenExpired } from "./utils/validateToken.ts";
 import { RegistrationModal } from "./components/modal/registration-modal.tsx";
-import LeaderBoard from "./screens/user.screens/LeaderBoard.tsx";
-import MyScore from "./screens/user.screens/MyScore.tsx";
-import AccountantHomePage from "./screens/accountant.screens/AccountantHome.tsx";
+import LeaderBoard from "./screens/user/leader-board.tsx";
+import MyScore from "./screens/user/personal/my-score.tsx";
+import AccountantHomePage from "./screens/accountant/accountant-home.tsx";
 
 import "./App.css";
 export type CourseType = {

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { fetchListAvailableCategory } from "../../apiService/Category.service";
 import { AppDispatch } from "../store/store";
+import { fetchListAvailableCategory } from "../../service/category";
 
 export type CategoryType = {
     id: number;
@@ -25,12 +25,19 @@ export const categorySlice = createSlice({
         },
         searchCategoryItems: (state, action: PayloadAction<string>) => {
             const categoryName = action.payload;
-            return state.filter((category) => category.name.includes(categoryName));
-        }
+            return state.filter((category) =>
+                category.name.includes(categoryName)
+            );
+        },
     },
 });
 
-export const { setInitialState, getAllCategoryItems, getCategoryItems, searchCategoryItems } = categorySlice.actions;
+export const {
+    setInitialState,
+    getAllCategoryItems,
+    getCategoryItems,
+    searchCategoryItems,
+} = categorySlice.actions;
 export default categorySlice.reducer;
 
 export const initializeCategoryState = () => async (dispatch: AppDispatch) => {

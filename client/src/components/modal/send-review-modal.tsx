@@ -1,4 +1,4 @@
-import Rating from "../dynamicComponent/rating";
+import Rating from "../shared/rating";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -30,17 +30,16 @@ export default function SendReviewModal({
     setReviewContent,
 }: Props) {
     const handleClickCancel = () => {
-        if (handleCancel)
-            handleCancel();
-        setReviewContent('');
+        if (handleCancel) handleCancel();
+        setReviewContent("");
         setRating(0);
-    }
+    };
 
     const handleClickAction = () => {
         handleConfirm();
-        setReviewContent('');
+        setReviewContent("");
         setRating(0);
-    }
+    };
 
     return (
         <AlertDialog>

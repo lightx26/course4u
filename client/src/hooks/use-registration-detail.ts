@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { RegistrationsProps } from "../components/user.components/registrations";
+import { RegistrationsProps } from "../components/registration/registrations";
 
 type RegistrationDetailState = {
     registration: RegistrationsProps | null;

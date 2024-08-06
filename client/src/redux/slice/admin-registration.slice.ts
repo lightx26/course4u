@@ -1,5 +1,5 @@
-import {createSlice} from "@reduxjs/toolkit";
-import {Status} from "../../utils/index.ts";
+import { createSlice } from "@reduxjs/toolkit";
+import { Status } from "../../constant/index.ts";
 
 // Define registrations type
 export type OverviewRegistrationsType = {
@@ -13,11 +13,11 @@ export type OverviewRegistrationsType = {
 };
 
 export type RegistrationParamsType = {
-    status: string
-    search: string
-    orderBy: string
-    isAscending: boolean
-}
+    status: string;
+    search: string;
+    orderBy: string;
+    isAscending: boolean;
+};
 
 interface IAdminRegistration {
     options: RegistrationParamsType;
@@ -34,14 +34,14 @@ const initialState: IAdminRegistration = {
         status: "All",
         search: "",
         orderBy: "id",
-        isAscending: false
+        isAscending: false,
     },
     view: "grid",
     showingMessage: "",
     currentPage: 1,
     totalItem: 0,
     data: [],
-}
+};
 
 // Create a slice
 export const adminPageRegistrationsSlice = createSlice({
@@ -67,11 +67,11 @@ export const adminPageRegistrationsSlice = createSlice({
         refreshAdmin: (state) => {
             state.options = initialState.options;
             state.currentPage = 1;
-            state.view = 'grid';
+            state.view = "grid";
         },
         setAdminView: (state, action) => {
             state.view = action.payload;
-        }
+        },
     },
     extraReducers: () => {},
 });
@@ -83,10 +83,11 @@ export const {
     saveRegistrationsData,
     handleOptionsChangeForAdmin,
     refreshAdmin,
-    setAdminView
-} = adminPageRegistrationsSlice.actions
+    setAdminView,
+} = adminPageRegistrationsSlice.actions;
 
-export const adminInitialStateOption: RegistrationParamsType = initialState.options;
+export const adminInitialStateOption: RegistrationParamsType =
+    initialState.options;
 
 // Export the reducer
 export default adminPageRegistrationsSlice.reducer;

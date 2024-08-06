@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
-import Registrations from "../user.components/registrations";
+import Registrations from "../registration/registrations";
 import { useRegistrationModal } from "../../hooks/use-registration-modal";
 
 export const RegistrationModal = () => {
