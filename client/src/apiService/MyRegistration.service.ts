@@ -113,7 +113,7 @@ export async function saveRegistrationAsDraft(
     }
     toast.error("Save registration as draft unsuccessfully", {
         style: { color: "red" },
-        description: "You need to provide at least 1 field to save as draft!!",
+        description: "You need to provide link of course to save as draft!!",
     });
 }
 
@@ -136,6 +136,6 @@ export async function saveDraftWithCourse(
     }
     toast.error("Save registration as draft unsuccessfully", {
         style: { color: "red" },
-        description: "You need to provide at least 1 field to save as draft!!",
+        description: "Oops! Something went wrong, please try again",
     });
 }

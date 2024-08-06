@@ -418,21 +418,22 @@ export const RegistrationButton = ({
                     </Button>
                 )}
 
-            {status === Status.NONE && isEdit && blockEditCourseForm ? (
+            {status === Status.NONE && blockEditCourseForm && (
                 <Button
                     type='button'
                     onClick={handleSubmitWithExistedCourse}
                     size='default'
                     variant='success'
                 >
-                    SUBMIT
+                    SUBMIT EXISTED
                 </Button>
-            ) : (
-                <Button type='submit' size='default' variant='success'>
+            )}
+            {((status === Status.NONE && !blockEditCourseForm) ||
+                status === Status.DRAFT) && (
+                <Button variant='success' size='default'>
                     SUBMIT
                 </Button>
             )}
-
             {(status === Status.SUBMITTED || status === Status.DECLINED) &&
                 isEdit && (
                     <Button type='submit' size='default' variant='success'>
