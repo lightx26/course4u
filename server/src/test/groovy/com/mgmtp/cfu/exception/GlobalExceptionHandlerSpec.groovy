@@ -139,5 +139,16 @@ class GlobalExceptionHandlerSpec extends Specification {
         then:
             response.statusCode.value() == 400
     }
+
+    def "should handle DuplicateCourseException with 409 status"(){
+        given:
+        def exception = new DuplicateCourseException("Bad")
+
+        when:
+        def response = globalExceptionHandler.handleDuplicateCourseException(exception)
+
+        then:
+        response.statusCode.value() == 409
+    }
 }
 

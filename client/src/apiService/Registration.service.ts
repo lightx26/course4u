@@ -39,7 +39,7 @@ export const approveRegistration = async (id: number, close: VoidFunction) => {
 
   toast.error("Failed to approve registration", {
     style: { color: "red" },
-    description: "Failed to approve registration",
+    description: res.data.message,
   });
 };
 

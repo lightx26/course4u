@@ -92,4 +92,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(400).body(ErrorResponse.builder().message(e.getMessage()).status("400").build());
     }
 
+    @ExceptionHandler(DuplicateCourseException.class)
+    public ResponseEntity<?> handleDuplicateCourseException(final DuplicateCourseException e){
+        return ResponseEntity.status(409).body(ErrorResponse.builder().message(e.getMessage()).status("409").build());
+
+    }
+
 }
