@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import blobToFile from "../../utils/convertBlobToFile";
 import { base64ToBlob } from "../../utils/ThumbnailConverter";
 import ModalConfirm from "./ModalConfirm";
+import { useRefreshState } from "../../hooks/use-refresh-state";
 
 interface CourseType {
   id: string | undefined;
@@ -43,6 +44,7 @@ type Props = {
 
 const ModalEditOrDeleteCourse = ({ children, courseData }: Props) => {
   const navigate = useNavigate();
+  const { setCourseDetailFlag } = useRefreshState((state) => state);
   const form = useForm<z.infer<typeof courseSchema>>({
     resolver: zodResolver(courseSchema),
     mode: "onBlur",
@@ -120,8 +122,11 @@ const ModalEditOrDeleteCourse = ({ children, courseData }: Props) => {
     if (formData.get("thumbnailUrl")?.toString().match("/api/thumbnail/")) {
       formData.delete("thumbnailUrl");
     }
+    console.log(formData.forEach((value, key) => console.log(key, value)));
     const status = await editCourse(formData);
     if (status === 200) {
+      setCourseDetailFlag();
+      navigate("/admin/courses");
       toast.success("Edit course succesfully", {
         description:
           "Course information already updated! the page will reload in 3 seconds",
@@ -129,9 +134,6 @@ const ModalEditOrDeleteCourse = ({ children, courseData }: Props) => {
           color: "green",
           fontWeight: "bold",
           textAlign: "center",
-        },
-        onAutoClose: () => {
-          window.location.reload();
         },
       });
     } else if (status === 500) {

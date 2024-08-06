@@ -23,6 +23,7 @@ import { Button } from "../../components/ui/button.tsx";
 import handleThumbnailUrl from "../../utils/handleThumbnailUrl.ts";
 import defaultThumbnail from "../../../public/course/Default Course thumnail 1.svg";
 import { v4 as uuidv4 } from "uuid";
+import { useRefreshState } from "../../hooks/use-refresh-state.ts";
 interface IRatings {
   averageRating: number;
   detailRatings: {
@@ -68,7 +69,7 @@ interface IReview {
 
 const Detail_Of_Course: React.FC = () => {
   const [courseData, setCourseData] = useState<CourseType>();
-
+  const { courseDetailFlag } = useRefreshState((state) => state);
   //Ratings
   const [dataRatings, setDataRatings] = useState<IRatings>();
   const [totalRating, setTotalRating] = useState(0);
@@ -176,7 +177,7 @@ const Detail_Of_Course: React.FC = () => {
       value: "0",
       label: "All",
     });
-  }, [id]);
+  }, [id, courseDetailFlag]);
 
   useEffect(() => {
     getDataReviews(id, currentPage, currentOption);
