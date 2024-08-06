@@ -96,10 +96,9 @@ export default function MyRegistrationComponents({ registration }: PropsType) {
                                 <i className='fas fa-calendar-alt'></i>
                                 <p className='text-gray-600' style={{}}>
                                     <p className='text-gray-600'>
-                                        Period:
                                         {startDate === null
-                                            ? " Not started yet"
-                                            : ` ${String(
+                                            ? "Not started yet"
+                                            : `Period: ${String(
                                                   startDate.getDate()
                                               ).padStart(2, "0")}/${String(
                                                   startDate.getMonth() + 1
