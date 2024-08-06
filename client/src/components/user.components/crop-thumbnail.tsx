@@ -80,7 +80,7 @@ export const CropThumbnail = ({
           {children}
         </DialogTrigger>
       ) : (
-        <div className="pointer-events-none opacity-60">{children}</div>
+        <div className="pointer-events-none">{children}</div>
       )}
 
       <DialogContent className="md:max-w-[1000px] h-[500px]">
