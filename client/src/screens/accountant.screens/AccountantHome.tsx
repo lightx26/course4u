@@ -17,6 +17,8 @@ import {useRefreshState} from "../../hooks/use-refresh-state.ts";
 import {fetchAllRegistrations} from "../../apiService/Registration.service.ts";
 import UtilsBar from "../../components/admin.components/mainPage.components/UtilsBar.tsx";
 import {registrationStatusListForAccountant} from "../../utils/registrationStatusList.ts";
+import TableRegistration from "../../components/admin.components/registrations.components/table-registration.tsx";
+import ViewToggle from "../../components/admin.components/mainPage.components/view-toggle.tsx";
 
 const AccountantHomePage = () => {
     const dispatch = useDispatch();
@@ -24,6 +26,10 @@ const AccountantHomePage = () => {
     const currentPage: number = useSelector(
         (state: RootState) => state.accountantRegistration.currentPage
     );
+
+    const view: string = useSelector(
+        (state: RootState) => state.accountantRegistration.view
+    )
 
     const totalItem: number = useSelector(
         (state: RootState) => state.accountantRegistration.totalItem
@@ -94,12 +100,25 @@ const AccountantHomePage = () => {
                     <div className="filters">
                         <UtilsBar statusList={registrationStatusListForAccountant} options={options} role={"accountant"}/>
                     </div>
-                    <div className="registration-list min-h-[200px]">
-                        <div className="mb-2 showing-status">{showingMessage}</div>
-                        <RegistrationList
-                            ListRegistration={registrationList}
-                            isLoading={isLoading}
-                        />
+                    <div className="registration-list w-full min-h-[200px]">
+                        <div className="mb-2 flex justify-between">
+                            <span>{isLoading || showingMessage}</span>
+                            <ViewToggle role={'accountant'} view={view}/>
+                        </div>
+                        {
+                            view === 'grid'
+                            ?
+                                <RegistrationList
+                                    ListRegistration={registrationList}
+                                    isLoading={isLoading}
+                                />
+                            :
+                                <TableRegistration
+                                    ListRegistration={registrationList}
+                                    isLoading={isLoading}
+                                />
+                        }
+
                     </div>
                     <div className="w-full pagination mt-7">
                         <PaginationSection

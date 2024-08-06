@@ -66,6 +66,7 @@ export const accountantPageRegistrationsSlice = createSlice({
         refreshAccountant: (state) => {
             state.options = initialState.options;
             state.currentPage = 1;
+            state.view = 'grid';
         },
         setAccountantView: (state, action) => {
             state.view = action.payload;
