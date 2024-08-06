@@ -37,7 +37,7 @@ const FeedbackList = ({ feedbacks }: Props) => {
                             <p className='font-semibold'>
                                 {feedback.user?.fullName || "Anonymous"}
                             </p>
-                            <p className='mt-2 min-w-[1000px] whitespace-normal max-h-[160px] overflow-y-auto border-2 border-collapse p-2 rounded-lg '>
+                            <p className='mt-2 w-[1024px] max-h-[160px] overflow-y-scroll border-2 border-collapse p-2 rounded-lg'>
                                 {formatText(feedback.comment)}
                             </p>
                         </div>

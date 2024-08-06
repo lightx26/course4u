@@ -31,7 +31,7 @@ interface IAccountantRegistration {
 // Define an initial State
 const initialState: IAccountantRegistration = {
     options: {
-        status: "Verified",
+        status: "Verifying",
         search: "",
         orderBy: "id",
         isAscending: false,
