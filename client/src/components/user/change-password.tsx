@@ -54,6 +54,10 @@ export default function ChangePassword() {
                             color: "red",
                         },
                     });
+                    form.setError("oldPassword", {
+                        type: "manual",
+                        message: "Old password is incorrect!",
+                    });
                 } else {
                     toast.error("An unexpected error occurred.", {
                         style: {
