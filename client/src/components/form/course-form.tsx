@@ -229,250 +229,290 @@ export const CourseForm = ({
     }
   };
 
-  if (loading) {
-    return <CourseSkeleton />;
-  }
-  return (
-    <div
-      aria-readonly={blockEditCourseForm}
-      aria-disabled={blockEditCourseForm}
-      className={
-        "flex flex-col gap-6" +
-        (blockEditCourseForm || !isEdit
-          ? " select-none cursor-not-allowed"
-          : "")
-      }
-      onKeyDown={(event) => {
-        if (event.key === "Enter") {
-          event.preventDefault();
-        }
-      }}
-    >
-      <div className="space-y-4">
-        <FormField
-          control={form!.control}
-          name="link"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Link <span className="text-red-500">*</span>
-              </FormLabel>
-              <FormControl>
-                <div className="relative w-full">
-                  <Input
-                    placeholder="Course Link"
-                    {...field}
-                    className="flex-1 w-full"
-                    disabled={blockEditCourseForm || !isEdit}
-                  />
-                  <Button
-                    type="button"
-                    onClick={handleCourseLink}
-                    size="sm"
-                    variant="default"
-                    className="absolute right-0 transform -translate-y-1/2 cursor-pointer top-1/2 text-violet-600 bg-violet-200 hover:bg-violet-600 hover:text-white"
-                    disabled={blockEditCourseForm || !isEdit}
-                  >
-                    <ArrowRightToLine width={20} height={20} />
-                  </Button>
+    if (loading) {
+        return <CourseSkeleton />;
+    }
+    return (
+        <div
+            aria-readonly={blockEditCourseForm}
+            aria-disabled={blockEditCourseForm}
+            className={
+                "flex flex-col gap-6" +
+                (blockEditCourseForm || !isEdit
+                    ? " select-none cursor-not-allowed"
+                    : "")
+            }
+            onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                }
+            }}
+        >
+            <div className='space-y-4'>
+                <FormField
+                    control={form!.control}
+                    name='link'
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>
+                                Link <span className='text-red-500'>*</span>
+                            </FormLabel>
+                            <FormControl>
+                                <div className='relative w-full'>
+                                    <Input
+                                        placeholder='Course Link'
+                                        {...field}
+                                        className='flex-1 w-full'
+                                        disabled={
+                                            blockEditCourseForm || !isEdit
+                                        }
+                                    />
+                                    <Button
+                                        type='button'
+                                        onClick={handleCourseLink}
+                                        size='sm'
+                                        variant='default'
+                                        className='absolute right-0 transform -translate-y-1/2 cursor-pointer top-1/2 text-violet-600 bg-violet-200 hover:bg-violet-600 hover:text-white'
+                                        disabled={
+                                            blockEditCourseForm || !isEdit
+                                        }
+                                    >
+                                        <ArrowRightToLine
+                                            width={20}
+                                            height={20}
+                                        />
+                                    </Button>
+                                </div>
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form!.control}
+                    name='name'
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>
+                                Name <span className='text-red-500'>*</span>
+                            </FormLabel>
+                            <FormControl>
+                                <Input
+                                    placeholder='Course Name'
+                                    {...field}
+                                    className='w-full'
+                                    disabled={blockEditCourseForm || !isEdit}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form!.control}
+                    name='teacherName'
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>
+                                Teacher Name{""}
+                                <span className='text-red-500'>*</span>
+                            </FormLabel>
+                            <FormControl>
+                                <Input
+                                    placeholder='Teacher Name'
+                                    {...field}
+                                    className='w-full'
+                                    disabled={blockEditCourseForm || !isEdit}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+            </div>
+            <div className='flex items-stretch gap-6'>
+                <div className='w-[60%] gap-6 flex justify-between flex-col'>
+                    <div className='flex gap-4'>
+                        <FormField
+                            control={form!.control}
+                            name='platform'
+                            render={({ field }) => (
+                                <FormItem className='w-[50%]'>
+                                    <FormLabel>
+                                        Platform{""}
+                                        <span className='text-red-500'>*</span>
+                                    </FormLabel>
+                                    <Select
+                                        onValueChange={(e) => {
+                                            field.onChange(e);
+                                            form?.trigger("platform");
+                                        }}
+                                        value={field.value.toUpperCase()}
+                                        disabled={
+                                            blockEditCourseForm || !isEdit
+                                        }
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder='Select a platform for this course' />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {platform.map(
+                                                (item: {
+                                                    value: string;
+                                                    content: string;
+                                                }) => (
+                                                    <SelectItem
+                                                        value={item.value}
+                                                    >
+                                                        {item.content}
+                                                    </SelectItem>
+                                                )
+                                            )}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form!.control}
+                            name='level'
+                            render={({ field }) => (
+                                <FormItem className='w-[50%]'>
+                                    <FormLabel>
+                                        Level{""}
+                                        <span className='text-red-500'>*</span>
+                                    </FormLabel>
+                                    <Select
+                                        onValueChange={(e) => {
+                                            field.onChange(e);
+                                            form?.trigger("level");
+                                        }}
+                                        defaultValue={""}
+                                        value={field.value.toUpperCase()}
+                                        disabled={
+                                            blockEditCourseForm || !isEdit
+                                        }
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger className='border-gray-300'>
+                                                <SelectValue placeholder='Select a level for this course' />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value='BEGINNER'>
+                                                Beginner
+                                            </SelectItem>
+                                            <SelectItem value='INTERMEDIATE'>
+                                                Intermediate
+                                            </SelectItem>
+                                            <SelectItem value='ADVANCED'>
+                                                Advanced
+                                            </SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                    <FormField
+                        control={form!.control}
+                        name='categories'
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>
+                                    Category{""}
+                                    <span className='text-red-500'>*</span>
+                                </FormLabel>
+                                <FormControl>
+                                    <MultipleSelector
+                                        {...field}
+                                        defaultOptions={categories}
+                                        options={categories}
+                                        value={field.value || []}
+                                        placeholder='Select category...'
+                                        creatable={true}
+                                        disabled={
+                                            blockEditCourseForm || !isEdit
+                                        }
+                                        className={
+                                            blockEditCourseForm || !isEdit
+                                                ? "cursor-not-allowed select-none pointer-events-none"
+                                                : ""
+                                        }
+                                        form={form}
+                                        onChange={(e) => {
+                                            field.onChange(e);
+                                            form?.trigger("categories");
+                                        }}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
                 </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form!.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Name <span className="text-red-500">*</span>
-              </FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Course Name"
-                  {...field}
-                  className="w-full"
-                  disabled={blockEditCourseForm || !isEdit}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form!.control}
-          name="teacherName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Teacher Name{""}
-                <span className="text-red-500">*</span>
-              </FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Teacher Name"
-                  {...field}
-                  className="w-full"
-                  disabled={blockEditCourseForm || !isEdit}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
-      <div className="flex items-stretch gap-6">
-        <div className="w-[60%] gap-6 flex justify-between flex-col">
-          <div className="flex gap-4">
-            <FormField
-              control={form!.control}
-              name="platform"
-              render={({ field }) => (
-                <FormItem className="w-[50%]">
-                  <FormLabel>
-                    Platform{""}
-                    <span className="text-red-500">*</span>
-                  </FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value.toUpperCase()}
-                    disabled={blockEditCourseForm || !isEdit}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a platform for this course" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {platform.map(
-                        (item: { value: string; content: string }) => (
-                          <SelectItem value={item.value}>
-                            {item.content}
-                          </SelectItem>
-                        )
-                      )}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form!.control}
-              name="level"
-              render={({ field }) => (
-                <FormItem className="w-[50%]">
-                  <FormLabel>
-                    Level{""}
-                    <span className="text-red-500">*</span>
-                  </FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={""}
-                    value={field.value.toUpperCase()}
-                    disabled={blockEditCourseForm || !isEdit}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="border-gray-300">
-                        <SelectValue placeholder="Select a level for this course" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="BEGINNER">Beginner</SelectItem>
-                      <SelectItem value="INTERMEDIATE">Intermediate</SelectItem>
-                      <SelectItem value="ADVANCED">Advanced</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <FormField
-            control={form!.control}
-            name="categories"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  Category{""}
-                  <span className="text-red-500">*</span>
-                </FormLabel>
-                <FormControl>
-                  <MultipleSelector
-                    {...field}
-                    defaultOptions={categories}
-                    options={categories}
-                    value={field.value || []}
-                    placeholder="Select category..."
-                    creatable={true}
-                    disabled={blockEditCourseForm || !isEdit}
-                    className={
-                      blockEditCourseForm || !isEdit
-                        ? "cursor-not-allowed select-none pointer-events-none"
-                        : ""
-                    }
-                    form={form}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="w-[40%] flex gap-4 items-center">
-          {thumbnail.imageUrl ? (
-            <CropThumbnail
-              imageUrl={thumbnail.imageUrl}
-              cropInit={thumbnail.crop!}
-              zoomInit={thumbnail.zoom!}
-              aspectInit={thumbnail.aspect!}
-              isOpen={isOpen}
-              setIsOpen={setIsOpen}
-              setCroppedImageFor={setCroppedImageFor}
-              isEdit={
-                !blockEditCourseForm &&
-                isEdit &&
-                !thumbnail.imageUrl.startsWith("http")
-              }
-              isOval={false}
-            >
-              <div className="w-[228px] h-[192px] cursor-pointer">
-                <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 h-[19px]">
-                  Thumbnail
-                </label>
-                <img
-                  src={thumbnail.croppedImageUrl || thumbnail.imageUrl}
-                  alt="thumbnail"
-                  className="object-cover max-w-[228px] w-[228px] h-[160px] rounded-xl mt-[8px]"
-                />
-              </div>
-            </CropThumbnail>
-          ) : (
-            <FormField
-              control={form!.control}
-              name="thumbnailUrl"
-              render={({ field }) => (
-                <FormItem className="w-full h-full">
-                  <FormLabel>Thumbnail</FormLabel>
-                  <FormControl>
-                    <div
-                      className={cn(
-                        "flex flex-col justify-center items-center w-[228px] h-[160px] px-[52px] py-[18px] border-dashed border-[#D9D9D9] hover:border-[#c1e2ff] border-2 rounded-xl cursor-pointer group",
-                        !isEdit &&
-                          "cursor-not-allowed hover:border-[D9D9D9] select-none"
-                      )}
-                      {...(isEdit ? getRootProps() : {})}
-                    >
-                      <Input
-                        {...field}
-                        className="bg-transparent"
-                        type="file"
-                        value={undefined}
-                        disabled={blockEditCourseForm || !isEdit}
-                        {...getInputProps()}
-                      />
+                <div className='w-[40%] flex gap-4 items-center'>
+                    {thumbnail.imageUrl ? (
+                        <CropThumbnail
+                            imageUrl={thumbnail.imageUrl}
+                            cropInit={thumbnail.crop!}
+                            zoomInit={thumbnail.zoom!}
+                            aspectInit={thumbnail.aspect!}
+                            isOpen={isOpen}
+                            setIsOpen={setIsOpen}
+                            setCroppedImageFor={setCroppedImageFor}
+                            isEdit={
+                                !blockEditCourseForm &&
+                                isEdit &&
+                                !thumbnail.imageUrl.startsWith("http")
+                            }
+                            isOval={false}
+                        >
+                            <div className='w-[228px] h-[192px] cursor-pointer'>
+                                <label className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 h-[19px]'>
+                                    Thumbnail
+                                </label>
+                                <img
+                                    src={
+                                        thumbnail.croppedImageUrl ||
+                                        thumbnail.imageUrl
+                                    }
+                                    alt='thumbnail'
+                                    className='object-cover max-w-[228px] w-[228px] h-[160px] rounded-xl mt-[8px]'
+                                />
+                            </div>
+                        </CropThumbnail>
+                    ) : (
+                        <FormField
+                            control={form!.control}
+                            name='thumbnailUrl'
+                            render={({ field }) => (
+                                <FormItem className='w-full h-full'>
+                                    <FormLabel>Thumbnail</FormLabel>
+                                    <FormControl>
+                                        <div
+                                            className={cn(
+                                                "flex flex-col justify-center items-center w-[228px] h-[160px] px-[52px] py-[18px] border-dashed border-[#D9D9D9] hover:border-[#c1e2ff] border-2 rounded-xl cursor-pointer group",
+                                                !isEdit &&
+                                                    "cursor-not-allowed hover:border-[D9D9D9] select-none"
+                                            )}
+                                            {...(isEdit ? getRootProps() : {})}
+                                        >
+                                            <Input
+                                                {...field}
+                                                className='bg-transparent'
+                                                type='file'
+                                                value={undefined}
+                                                disabled={
+                                                    blockEditCourseForm ||
+                                                    !isEdit
+                                                }
+                                                {...getInputProps()}
+                                            />
 
                       <div
                         className={cn(
