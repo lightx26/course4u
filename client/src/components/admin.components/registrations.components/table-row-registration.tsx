@@ -1,29 +1,72 @@
-import { RegistrationType } from "../../../App";
+import {RegistrationType} from "../../../App";
+import {useRegistrationModal} from "../../../hooks/use-registration-modal.ts";
+import {convertStatus, convertJSDatesToCorrectFormat} from "../../../utils/registration-utils/registration-overview-converters.ts";
+import {handleAvatarUrl} from "../../../utils/handleAvatarUrl.ts";
 
 type TableRowRegistrationProps = {
     registration: RegistrationType;
 };
 
-export default function TableRowRegistration({ registration }: TableRowRegistrationProps) {
+export default function TableRowRegistration({registration}: TableRowRegistrationProps) {
+    const {open} = useRegistrationModal();
+    const handlePopup = () => {
+        open(true, +registration.id!);
+    };
+
+    const handlePeriod = (startDate: undefined | Date, endDate: undefined | Date): string => {
+        if (!startDate){
+            return `Not started yet`
+        }
+
+        const handledStartDate: string = convertJSDatesToCorrectFormat(startDate);
+        const handledEndDate: string = endDate ? convertJSDatesToCorrectFormat(endDate) : "Not finished yet";
+        return `${handledStartDate} - ${handledEndDate}`
+    }
+
+    const period = handlePeriod(registration.startDate, registration.endDate);
+
+    const displayedStatus = convertStatus(
+        registration.status ? registration.status : ""
+    );
+
+    const userAvatar = handleAvatarUrl(registration.userAvatarUrl)
+
     return (
-        <div className="text-[13px] flex items-center justify-between bg-white border-b-2 text-[#3A4A49]">
-            <div className="flex items-center gap-2 course-info w-[35%] grow">
-                <img src={registration.courseThumbnailUrl} alt="" className="w-32 h-full" />
-                <p className="overflow-hidden font-medium w-96 line-clamp-2 text-ellipsis">
-                    {registration.courseName}
-                </p>
-            </div>
-            <div className="grow w-[20%] flex justify-center items-center gap-2">
-                <img src={registration.userAvatarUrl} alt="" className="w-10 h-10 rounded-full" />
-                <p className="text-black">{(registration.userFullname && registration.userFullname.length > 0) ? registration.userFullname : 'anonymous'}</p>
-            </div>
-            <p className="grow w-[10%] text-center">{registration.coursePlatform}</p>
-            {registration.startDate ?
-                <p className="grow w-[20%] text-center">{`${registration.startDate} ${registration.endDate ?? '-------'}`}</p>
-                : <p className="grow w-[20%] text-center">Not started yet</p>
-            }
-            <div className="w-[15%] grow flex justify-center">
-                <div>{registration.status}</div>
+        <div>
+            <div
+                className={`text-[13px] flex items-center bg-white border-2 text-[#3A4A49] hover:cursor-pointer rounded-md`}
+                onClick={handlePopup}
+            >
+                <div className="w-[35%]">
+                    <div className="flex items-center gap-2 course-info w-full">
+                        <img src={registration.courseThumbnailUrl} alt={registration.courseName} className="object-cover w-32 max-h-[80px] border-r-[1px]"/>
+                        <p className="font-medium ml-[1px] line-clamp-2">
+                            {registration.courseName}
+                        </p>
+                    </div>
+                </div>
+                <div className="grow w-[20%] flex justify-center items-center gap-2">
+                    <img src={userAvatar} alt="user-avatar" className="w-10 h-10 rounded-full object-cover border-2 border-purple"/>
+                    <span
+                        className="text-black w-[70px] text-center truncate">{registration.userFullname || 'anonymous'}</span>
+                </div>
+                <p className="grow max-w-[5%] text-center truncate">{registration.coursePlatform}</p>
+                <p className="min-w-[25%] text-center">{period}</p>
+                <div className="min-w-[15%] grow flex justify-center">
+                    <div
+                        className={`status my-auto text-[11px] rounded-lg min-h-[30px] min-w-[90px] font-semibold text-center 
+                                    ${registration.status?.toLowerCase()}
+                                    ${
+                                        registration.status ===
+                                        "DOCUMENT_DECLINED"
+                                            ? "py-0.5 px-1.5 leading-6"
+                                            : "py-1.5 px-4"
+                                    }
+                        `}
+                    >
+                        {displayedStatus.toUpperCase()}
+                    </div>
+                </div>
             </div>
         </div>
     )

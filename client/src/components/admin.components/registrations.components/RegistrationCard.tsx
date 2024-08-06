@@ -4,6 +4,7 @@ import { Skeleton } from "../../ui/skeleton";
 import { useRegistrationModal } from "../../../hooks/use-registration-modal";
 import { handleAvatarUrl } from "../../../utils/handleAvatarUrl";
 import handleThumbnailUrl from "../../../utils/handleThumbnailUrl.ts";
+import {convertStatus, convertPeriod} from "../../../utils/registration-utils/registration-overview-converters.ts";
 
 type PropsType = {
     registration: RegistrationType;
@@ -11,43 +12,6 @@ type PropsType = {
 
 function RegistrationCardComponent({ registration }: PropsType) {
     const { open } = useRegistrationModal();
-
-    const convertStatus = (status: string): string => {
-        return status == "DOCUMENT_DECLINED"
-            ? "Declined (Document)"
-            : status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
-    };
-
-    //
-    // Since JS Date format is in yyyy-mm-dd,
-    // We need to convert it to mm-dd-yyyy to fit the project
-    //
-    const convertJSDatesToCorrectFormat = (date: Date): string => {
-        const newDate = date.toString().split("-");
-        [newDate[0], newDate[1], newDate[2]] = [
-            newDate[1],
-            newDate[2],
-            newDate[0],
-        ];
-        return newDate.join("/");
-    };
-
-    const handlePeriod = (
-        startDate: Date | undefined,
-        endDate: Date | undefined
-    ): string => {
-        if (!startDate) {
-            return `Not started yet`;
-        }
-
-        const handledStartDate = convertJSDatesToCorrectFormat(startDate);
-        const handledEndDate = endDate
-            ? convertJSDatesToCorrectFormat(endDate)
-            : "";
-
-        return `Period: ${ handledStartDate } - ${ handledEndDate || "Not finished yet"}`;
-    };
-
     const handlePopup = () => {
         open(true, +registration.id!);
     };
@@ -64,7 +28,7 @@ function RegistrationCardComponent({ registration }: PropsType) {
         registration.status ? registration.status : ""
     );
 
-    const period: string = handlePeriod(
+    const period: string = convertPeriod(
         registration.startDate,
         registration.endDate
     );
@@ -116,7 +80,8 @@ function RegistrationCardComponent({ registration }: PropsType) {
                                                 ? "py-0.5 px-1.5 leading-6"
                                                 : "py-1.5 px-4"
                                         }
-                                        rounded-lg min-h-[30px] min-w-[90px] font-semibold text-center ${registration.status?.toLowerCase()}`}
+                                        rounded-lg min-h-[30px] min-w-[90px] font-semibold text-center ${registration.status?.toLowerCase()}
+                            `}
                         >
                             {status.toUpperCase()}
                         </div>

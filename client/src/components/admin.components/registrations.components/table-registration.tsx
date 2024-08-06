@@ -26,7 +26,7 @@ export default function TableRegistration({ListRegistration, isLoading}: PropsTy
     return (
         <div>
             <TableHeaderRegistration tableHeader={TableHeader}/>
-            <div className="flex flex-col items-stretch gap-3 mt-3">
+            <div className="flex flex-col items-stretch gap-2 mt-3">
                 {ListRegistration && ListRegistration.length > 0 ? (
                     ListRegistration.map((registration) => (
                         <TableRowRegistration key={registration.id} registration={registration}/>
