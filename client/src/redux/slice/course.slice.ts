@@ -43,34 +43,34 @@ export type CourseStateType = {
 
 // Define the initial state
 const initialState: CourseStateType = {
-    searchTerm: "",
-    sortBy: "NEWEST",
-    limit: 8,
-    content: [],
-    empty: false,
-    first: false,
-    last: false,
-    number: 1,
-    numberOfElements: 0,
-    pageable: {
-        pageNumber: 0,
-        pageSize: 0,
-        sort: {
-            empty: false,
-            sorted: false,
-            unsorted: false,
-        },
-        offset: 0,
-        unpaged: false,
-    },
-    size: 0,
+  searchTerm: "",
+  sortBy: "NEWEST",
+  limit: 6,
+  content: [],
+  empty: false,
+  first: false,
+  last: false,
+  number: 1,
+  numberOfElements: 0,
+  pageable: {
+    pageNumber: 0,
+    pageSize: 0,
     sort: {
-        empty: false,
-        sorted: false,
-        unsorted: false,
+      empty: false,
+      sorted: false,
+      unsorted: false,
     },
-    totalElements: 0,
-    totalPages: 0,
+    offset: 0,
+    unpaged: false,
+  },
+  size: 0,
+  sort: {
+    empty: false,
+    sorted: false,
+    unsorted: false,
+  },
+  totalElements: 0,
+  totalPages: 0,
 };
 
 // Define the async thunk
