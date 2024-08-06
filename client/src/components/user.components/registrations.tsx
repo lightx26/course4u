@@ -45,7 +45,9 @@ const Registrations = ({ className, id }: Props) => {
     useEffect(() => {
         const getDetailRegistration = async () => {
             if (course) {
-                course.thumbnailUrl = handleThumbnailUrl(course.thumbnailUrl) || course.thumbnailUrl;
+                course.thumbnailUrl =
+                    handleThumbnailUrl(course.thumbnailUrl) ||
+                    course.thumbnailUrl;
                 setRegistration({
                     course: course,
                     status: Status.DRAFT,
@@ -89,10 +91,10 @@ const Registrations = ({ className, id }: Props) => {
                 className
             )}
         >
-            <h2 className="text-[#1E293B] text-[40px] tracking-tighter leading-8 font-semibold font-inter">
+            <h2 className='text-[#1E293B] text-[40px] tracking-tighter leading-8 font-semibold font-inter'>
                 {id ? "Detail of registration" : "Create a registration"}
             </h2>
-            <div className="flex items-center justify-between w-full">
+            <div className='flex items-center justify-between w-full'>
                 {id ? (
                     <RegistrationUser
                         fullName={
@@ -112,7 +114,9 @@ const Registrations = ({ className, id }: Props) => {
                         telephone={user.telephone}
                     />
                 )}
-                <RegistrationStatus status={id ? registration?.status : Status.DRAFT} />
+                <RegistrationStatus
+                    status={id ? registration?.status : Status.DRAFT}
+                />
             </div>
             {id && (
                 <RegistrationsForm
@@ -124,7 +128,9 @@ const Registrations = ({ className, id }: Props) => {
                     startDate={registration?.startDate}
                     endDate={registration?.endDate}
                     isEdit={isEdit}
-                    registrationFeedbacks={registration?.registrationFeedbacks || []}
+                    registrationFeedbacks={
+                        registration?.registrationFeedbacks || []
+                    }
                     setIsEdit={setIsEdit}
                     isBlockedModifiedCourse={isBlockedModifiedCourse}
                 />
@@ -146,45 +152,45 @@ const Registrations = ({ className, id }: Props) => {
 
 export const RegistrationSkeleton = () => {
     return (
-        <div className="w-[1352px] pt-5 px-5 pb-10 flex flex-col items-center gap-5 rounded-[30px] mx-auto my-8">
-            <Skeleton className="w-3/5 h-10 mb-4 skeleton-title"></Skeleton>
-            <div className="flex items-center justify-between w-full mb-5">
-                <div className="flex gap-3">
-                    <Skeleton className="skeleton-avatar w-[74px] h-[74px] rounded-full"></Skeleton>
-                    <div className="flex flex-col">
-                        <Skeleton className="w-32 h-5 mb-2 skeleton-text"></Skeleton>
-                        <Skeleton className="w-40 h-4 mb-2 skeleton-text"></Skeleton>
-                        <Skeleton className="w-20 h-4 skeleton-text"></Skeleton>
+        <div className='w-[1352px] pt-5 px-5 pb-10 flex flex-col items-center gap-5 rounded-[30px] mx-auto my-8'>
+            <Skeleton className='w-3/5 h-10 mb-4 skeleton-title'></Skeleton>
+            <div className='flex items-center justify-between w-full mb-5'>
+                <div className='flex gap-3'>
+                    <Skeleton className='skeleton-avatar w-[74px] h-[74px] rounded-full'></Skeleton>
+                    <div className='flex flex-col'>
+                        <Skeleton className='w-32 h-5 mb-2 skeleton-text'></Skeleton>
+                        <Skeleton className='w-40 h-4 mb-2 skeleton-text'></Skeleton>
+                        <Skeleton className='w-20 h-4 skeleton-text'></Skeleton>
                     </div>
                 </div>
-                <Skeleton className="w-24 h-10 skeleton-status"></Skeleton>
+                <Skeleton className='w-24 h-10 skeleton-status'></Skeleton>
             </div>
-            <div className="w-full space-y-4">
-                <Skeleton className="w-full h-12 mb-4 skeleton-input"></Skeleton>
-                <Skeleton className="w-full h-12 mb-4 skeleton-input"></Skeleton>
-                <Skeleton className="w-full h-12 mb-4 skeleton-input"></Skeleton>
+            <div className='w-full space-y-4'>
+                <Skeleton className='w-full h-12 mb-4 skeleton-input'></Skeleton>
+                <Skeleton className='w-full h-12 mb-4 skeleton-input'></Skeleton>
+                <Skeleton className='w-full h-12 mb-4 skeleton-input'></Skeleton>
             </div>
-            <div className="flex w-full gap-6">
-                <div className="w-[60%] flex justify-between flex-col">
-                    <div className="flex gap-4">
-                        <Skeleton className="skeleton-select w-[50%] h-12 mb-4"></Skeleton>
-                        <Skeleton className="skeleton-select w-[50%] h-12 mb-4"></Skeleton>
+            <div className='flex w-full gap-6'>
+                <div className='w-[60%] flex justify-between flex-col'>
+                    <div className='flex gap-4'>
+                        <Skeleton className='skeleton-select w-[50%] h-12 mb-4'></Skeleton>
+                        <Skeleton className='skeleton-select w-[50%] h-12 mb-4'></Skeleton>
                     </div>
-                    <Skeleton className="w-full h-12 skeleton-input"></Skeleton>
+                    <Skeleton className='w-full h-12 skeleton-input'></Skeleton>
                 </div>
-                <div className="w-[40%] flex gap-4">
-                    <Skeleton className="skeleton-thumbnail w-full h-[192px] rounded-xl"></Skeleton>
-                    <div className="flex flex-col w-full gap-5">
-                        <Skeleton className="h-16 skeleton-text"></Skeleton>
-                        <Skeleton className="h-10 skeleton-button w-28"></Skeleton>
+                <div className='w-[40%] flex gap-4'>
+                    <Skeleton className='skeleton-thumbnail w-full h-[192px] rounded-xl'></Skeleton>
+                    <div className='flex flex-col w-full gap-5'>
+                        <Skeleton className='h-16 skeleton-text'></Skeleton>
+                        <Skeleton className='h-10 skeleton-button w-28'></Skeleton>
                     </div>
                 </div>
             </div>
-            <Skeleton className="w-full h-12 my-4 skeleton-select"></Skeleton>
-            <div className="flex justify-end w-full gap-2 pr-4 mt-6">
-                <Skeleton className="skeleton-select w-[100px] h-12"></Skeleton>
-                <Skeleton className="skeleton-select w-[100px] h-12"></Skeleton>
-                <Skeleton className="skeleton-select w-[100px] h-12"></Skeleton>
+            <Skeleton className='w-full h-12 my-4 skeleton-select'></Skeleton>
+            <div className='flex justify-end w-full gap-2 pr-4 mt-6'>
+                <Skeleton className='skeleton-select w-[100px] h-12'></Skeleton>
+                <Skeleton className='skeleton-select w-[100px] h-12'></Skeleton>
+                <Skeleton className='skeleton-select w-[100px] h-12'></Skeleton>
             </div>
         </div>
     );

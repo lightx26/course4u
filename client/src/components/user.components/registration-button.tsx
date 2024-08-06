@@ -147,7 +147,6 @@ export const RegistrationButton = ({
             duration,
             durationUnit,
         };
-
         // Validate registration data using registrationSchema
         const validationResult = durationSchema.safeParse(duration);
 
