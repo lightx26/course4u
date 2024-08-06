@@ -7,3 +7,39 @@
   white-space: nowrap;
   word-wrap: break-word;
 }
+.btnSeemore:hover {
+  background-color: #861fa2;
+  color: white;
+}
+@keyframes example {
+  from {
+    translate: 50px 0px;
+    opacity: 0;
+  }
+  to {
+    translate: 0px 0px;
+    opacity: 1;
+  }
+}
+.animation {
+  translate: 0px 0px;
+  animation-name: example;
+  animation-duration: 0.6s;
+  transition-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
+}
+.delay-1 {
+  animation-delay: 0s;
+}
+
+.delay-2 {
+  animation-delay: 0s;
+}
+
+.delay-3 {
+  animation-delay: 0s;
+}
+
+.delay-4 {
+  animation-delay: 0s;
+}

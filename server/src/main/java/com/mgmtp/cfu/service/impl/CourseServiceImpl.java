@@ -258,7 +258,6 @@ public class CourseServiceImpl implements CourseService {
         oldCourse.setTeacherName(courseRequest.getTeacherName());
         oldCourse.setLevel(courseRequest.getLevel());
         oldCourse.setStatus(CourseStatus.AVAILABLE);
-        oldCourse.setCreatedDate(LocalDate.now());
     }
 
     private DTOMapper<CourseOverviewDTO, Course> getOverviewCourseMapper() {
