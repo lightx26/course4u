@@ -22,10 +22,10 @@ class LeaderboardServiceImplSpec extends Specification {
         }
         SecurityContextHolder.context.authentication = authentication
         leaderboardQueryManager.getLeaderboardUsers(_, _) >> List.of(
-                LeaderboardUserDTO.builder().userId(1).build(),
-                LeaderboardUserDTO.builder().userId(2).build(),
-                LeaderboardUserDTO.builder().userId(3).build(),
-                LeaderboardUserDTO.builder().userId(userId).build()
+                LeaderboardUserDTO.builder().userId(1).fullName("").score(1).learningTime(1).build(),
+                LeaderboardUserDTO.builder().userId(2).fullName("").score(1).learningTime(1).build(),
+                LeaderboardUserDTO.builder().userId(3).fullName("").score(1).learningTime(1).build(),
+                LeaderboardUserDTO.builder().userId(userId).fullName("").score(1).learningTime(1).build()
         )
         when:
         def result = leaderboardService.getLeaderboard(year)

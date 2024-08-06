@@ -29,14 +29,17 @@ public class ScoreQueryManager {
         String jpql = "SELECT new com.mgmtp.cfu.dto.leaderboarddto.LeaderboardUserDTO(u.id, " +
                 "COALESCE(SUM(r.re_score), 0), " +
                 "u.avatarUrl, u.email, u.username, u.fullName) " +
-                "FROM User u LEFT JOIN (SELECT re.id as re_id, re.score as re_score, " +
+                "FROM User u LEFT JOIN " +
+                "(SELECT re.id as re_id, re.score as re_score, " +
                 "re.startDate as re_startDate, re.endDate as re_endDate, re.user.id as re_user_id " +
                 "FROM Registration re WHERE EXTRACT(YEAR FROM re.endDate) = :year AND re.status IN :acceptStatus) r " +
                 "ON u.id = r.re_user_id " +
                 "WHERE u.role = 'USER' " +
                 "GROUP BY u.id, u.avatarUrl, u.email, u.username, u.fullName " +
                 "HAVING COALESCE(SUM(r.re_score), 0) > 0 " +
-                "ORDER BY COALESCE(SUM(r.re_score), 0) DESC, u.username ASC";
+                "ORDER BY COALESCE(SUM(r.re_score), 0) DESC "
+                ;
+
 
         TypedQuery<LeaderboardUserDTO> query = entityManager.createQuery(jpql, LeaderboardUserDTO.class);
         query.setParameter("year", year);
@@ -58,6 +61,7 @@ public class ScoreQueryManager {
                         learningTime.stream().map(integers -> integers.get(1)).mapToInt(Integer::intValue).sum()
                 );
             }).toList();
+
         } catch (Exception e) {
             log.error("Error fetching leaderboard users: ", e);
             return new ArrayList<>();
@@ -90,13 +94,19 @@ public class ScoreQueryManager {
             query.setParameter("userId", id);
             List<Integer> years = query.getResultList();
             List<ScorePerYearDTO> myScorePerYear = new ArrayList<>();
+            var currentYear = ZonedDateTime.now().getYear();
+            var currentMonth = ZonedDateTime.now().getMonthValue();
             for (int year : years) {
                 List<Object> scoresAndLearningTime = getScoreAndLearningTimePerMonth(String.valueOf(year), id);
                 myScorePerYear.add(new ScorePerYearDTO(year,
-                        ((List<?>) scoresAndLearningTime.get(1)).stream().map(day -> Long.parseLong(day.toString()))
+                        ((List<?>) scoresAndLearningTime.get(1)).stream().map(day -> Long.parseLong(day != null ? day.toString() : "0"))
                                 .mapToLong(Long::longValue).sum(),
-                        Long.parseLong(String.valueOf(((List<Integer>) scoresAndLearningTime.get(0)).get(11)))
-                ));
+                        Long.parseLong(String.valueOf(
+                                        (
+                                                (currentYear != year ? ((List<Integer>) scoresAndLearningTime.get(0)).get(11) : ((List<Integer>) scoresAndLearningTime.get(0)).get(currentMonth - 1))
+                                        )
+                                )
+                        )));
             }
             return myScorePerYear;
         } catch (Exception e) {
@@ -155,14 +165,22 @@ public class ScoreQueryManager {
             }
         });
 
+        var currentYear = ZonedDateTime.now().getYear();
+        var currentMonth = ZonedDateTime.now().getMonthValue();
+
         for (int i = 1; i <= 12; i++) {
-            if (i > 1) {
-                scores.set(i - 1, scores.get(i - 1) + scores.get(i - 2));
+            if (currentYear == intYear && i > currentMonth) {
+                learningTimeResult.add(null);
+                scores.set(i - 1, null);
+            } else {
+                if (i > 1) {
+                    scores.set(i - 1, scores.get(i - 1) + scores.get(i - 2));
+                }
+                int startDay = learningTime.get(i - 1).get(0);
+                int endDay = learningTime.get(i - 1).get(1);
+                int learningDays = endDay - startDay + 1;
+                learningTimeResult.add(Math.max(learningDays, 0));
             }
-            int startDay = learningTime.get(i - 1).get(0);
-            int endDay = learningTime.get(i - 1).get(1);
-            int learningDays = endDay - startDay + 1;
-            learningTimeResult.add(Math.max(learningDays, 0));
         }
 
         return List.of(scores, learningTimeResult, months);
@@ -199,7 +217,11 @@ public class ScoreQueryManager {
     private void updateLearningTime(List<List<Integer>> learningTime, int startMonth, int endMonth, int year, int startDay, int endDay) {
         for (int i = startMonth; i <= endMonth; i++) {
             if (i == startMonth) {
-                updateLearningTime(i, YearMonth.of(year, i).lengthOfMonth(), startDay, learningTime);
+                if (i == endMonth)
+                    updateLearningTime(i, endDay, startDay, learningTime);
+                else
+                    updateLearningTime(i, YearMonth.of(year, i).lengthOfMonth(), startDay, learningTime);
+
             }
             if (i == endMonth) {
                 updateLearningTime(i, endDay, 1, learningTime);

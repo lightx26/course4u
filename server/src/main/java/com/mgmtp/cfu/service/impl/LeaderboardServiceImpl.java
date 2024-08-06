@@ -1,6 +1,7 @@
 package com.mgmtp.cfu.service.impl;
 
 import com.mgmtp.cfu.dto.leaderboarddto.LeaderboardDTO;
+import com.mgmtp.cfu.dto.leaderboarddto.LeaderboardUserDTO;
 import com.mgmtp.cfu.repository.queries.ScoreQueryManager;
 import com.mgmtp.cfu.service.LeaderboardService;
 import com.mgmtp.cfu.util.AuthUtils;
@@ -10,8 +11,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.time.LocalDate;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.mgmtp.cfu.util.Constant.LEADERBOARD_RANK_LIMIT;
@@ -25,16 +25,37 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 
     @Override
     public LeaderboardDTO getLeaderboard(int year) {
-        var listOfLeaderboardUser = leaderboardQueryManager.getLeaderboardUsers(year, LEADERBOARD_RANK_LIMIT);
+        var originalList = leaderboardQueryManager.getLeaderboardUsers(year, 20);
+        // Create a modifiable copy of the list
+        var listOfLeaderboardUser = new ArrayList<>(originalList);
+
+        // Get the current user's ID
         var currentUserId = AuthUtils.getCurrentUser().getId();
+
         listOfLeaderboardUser.stream()
                 .filter(leaderboardUserDTO -> leaderboardUserDTO.getUserId().equals(currentUserId))
                 .findFirst()
                 .ifPresent(leaderboardUserDTO -> leaderboardUserDTO.setMine(true));
+
         return LeaderboardDTO.builder()
-                .leaderboardUserDTOs(listOfLeaderboardUser)
+                .leaderboardUserDTOs(listOfLeaderboardUser.stream()
+                        .sorted(Comparator.comparingInt(LeaderboardUserDTO::getScore).reversed() // Score in descending order
+                                .thenComparingInt(LeaderboardUserDTO::getLearningTime)
+                                .thenComparing((o1, o2) -> {
+                                    if (o1.getFullName().isEmpty()) {
+                                        return 1;
+                                    } else if (o2.getFullName().isEmpty()) {
+                                        return -1;
+                                    } else {
+                                        return o1.getFullName().compareToIgnoreCase(o2.getFullName());
+                                    }
+                                })
+                        )
+
+                        .toList().subList(0,Math.min(LEADERBOARD_RANK_LIMIT, listOfLeaderboardUser.size())))
                 .year(year)
                 .build();
+
     }
 
     @Override
