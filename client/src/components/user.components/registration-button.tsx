@@ -289,7 +289,9 @@ export const RegistrationButton = ({
     const handleSaveAsDraft = async () => {
         const data = await convertToFormData(form?.getValues());
         if (!data) return;
-        blockEditCourseForm && registration?.course?.id
+        blockEditCourseForm &&
+        registration?.course?.id &&
+        status === Status.NONE
             ? await saveDraftWithCourse(
                   data,
                   +registration?.course?.id,
@@ -416,22 +418,20 @@ export const RegistrationButton = ({
                     </Button>
                 )}
 
-            {(status === Status.NONE || status === Status.DRAFT) &&
-                isEdit &&
-                (blockEditCourseForm ? (
-                    <Button
-                        type='button'
-                        onClick={handleSubmitWithExistedCourse}
-                        size='default'
-                        variant='success'
-                    >
-                        SUBMIT
-                    </Button>
-                ) : (
-                    <Button type='submit' size='default' variant='success'>
-                        SUBMIT
-                    </Button>
-                ))}
+            {status === Status.NONE && isEdit && blockEditCourseForm ? (
+                <Button
+                    type='button'
+                    onClick={handleSubmitWithExistedCourse}
+                    size='default'
+                    variant='success'
+                >
+                    SUBMIT
+                </Button>
+            ) : (
+                <Button type='submit' size='default' variant='success'>
+                    SUBMIT
+                </Button>
+            )}
 
             {(status === Status.SUBMITTED || status === Status.DECLINED) &&
                 isEdit && (
