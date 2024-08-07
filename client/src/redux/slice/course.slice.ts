@@ -43,34 +43,34 @@ export type CourseStateType = {
 
 // Define the initial state
 const initialState: CourseStateType = {
-  searchTerm: "",
-  sortBy: "NEWEST",
-  limit: 6,
-  content: [],
-  empty: false,
-  first: false,
-  last: false,
-  number: 1,
-  numberOfElements: 0,
-  pageable: {
-    pageNumber: 0,
-    pageSize: 0,
-    sort: {
-      empty: false,
-      sorted: false,
-      unsorted: false,
-    },
-    offset: 0,
-    unpaged: false,
-  },
-  size: 0,
-  sort: {
+    searchTerm: "",
+    sortBy: "NEWEST",
+    limit: 6,
+    content: [],
     empty: false,
-    sorted: false,
-    unsorted: false,
-  },
-  totalElements: 0,
-  totalPages: 0,
+    first: false,
+    last: false,
+    number: 1,
+    numberOfElements: 0,
+    pageable: {
+        pageNumber: 0,
+        pageSize: 0,
+        sort: {
+            empty: false,
+            sorted: false,
+            unsorted: false,
+        },
+        offset: 0,
+        unpaged: false,
+    },
+    size: 0,
+    sort: {
+        empty: false,
+        sorted: false,
+        unsorted: false,
+    },
+    totalElements: 0,
+    totalPages: 0,
 };
 
 // Define the async thunk
@@ -98,7 +98,7 @@ export const searchCoursesByFilterNameAndSortBy = createAsyncThunk(
             platformFilter: extractFilterIds("Platform"),
             rating: extractFilterIds("Rating"),
             page: courseState.number ?? 1,
-            limit: courseState.limit ?? 8,
+            limit: courseState.limit ?? 6,
             sortBy: courseState.sortBy,
         };
         const response = await fetchListAvailableCourse(params);

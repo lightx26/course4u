@@ -136,9 +136,9 @@ export default function MainContent() {
                 <>
                     <div className='flex items-center justify-between'>
                         <div>
-                            Showing {(currentPage - 1) * 8 + 1} -{" "}
+                            Showing {(currentPage - 1) * 6 + 1} -{" "}
                             {Math.min(
-                                currentPage * 8,
+                                currentPage * 6,
                                 courseState.totalElements
                             )}{" "}
                             of {courseState.totalElements} results
@@ -170,12 +170,12 @@ export default function MainContent() {
                         isLoading={isLoading}
                         length={courseState.content.length}
                     />
-                    {courseState.totalElements > 8 && (
+                    {courseState.totalElements > 6 && (
                         <PaginationSection
                             isLoading={isLoading}
                             totalItems={courseState.totalElements}
                             currentPage={currentPage}
-                            itemPerPage={8}
+                            itemPerPage={6}
                             setCurrentPage={onPageNumberClick}
                         />
                     )}
