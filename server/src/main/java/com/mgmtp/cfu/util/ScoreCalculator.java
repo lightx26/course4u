@@ -23,7 +23,7 @@ public class ScoreCalculator {
         String unit = durationUnit.name() + "S";
         int estimatedHours = (int) (estimatedTime * (ChronoUnit.valueOf(unit).getDuration().toHours()));
 
-        return calculateStandardPoint(level) + calculateBonusPoint(actualHours, estimatedHours);
+        return Math.max(0, calculateStandardPoint(level) + calculateBonusPoint(actualHours, estimatedHours));
     }
 
     private static int calculateStandardPoint(CourseLevel level) {
