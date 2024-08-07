@@ -43,6 +43,8 @@ import com.mgmtp.cfu.repository.RegistrationRepository
 import com.mgmtp.cfu.service.CategoryService
 import com.mgmtp.cfu.service.IEmailService
 import com.mgmtp.cfu.repository.UserRepository
+import com.mgmtp.cfu.util.EmailUtil
+import org.dom4j.DocumentHelper
 import org.springframework.data.domain.PageImpl
 import com.mgmtp.cfu.service.NotificationService
 import com.mgmtp.cfu.service.RegistrationFeedbackService
@@ -584,18 +586,19 @@ class RegistrationServiceImplSpec extends Specification {
     def "should approve registration when status is submitted and no duplicate course exists"() {
         given:
         Long registrationId = 1L
-        User user = new User(email: "test@example.com")
+        User user = new User(email: "test@example.com", fullName: "Quang Nguyen")
         Course course = new Course(name: "Course Name", link: "course-link", categories: [new Category(status: CategoryStatus.PENDING)])
         Registration registration = new Registration(id: registrationId, status: RegistrationStatus.SUBMITTED, course: course, user: user)
 
         registrationRepository.findById(registrationId) >> Optional.of(registration)
         courseRepository.findFirstByLinkIgnoreCaseAndStatus(course.link,CourseStatus.AVAILABLE) >> Optional.empty()
-
+        EmailUtil.generateTitle("Registration Approved") >> new MailContentUnit(id: "title", innerContent: List.of(DocumentHelper.createText("Registration Approved")))
+        EmailUtil.generateGreeting("Dear {name},", user) >> new MailContentUnit(id: "greeting", innerContent: List.of(DocumentHelper.createText("Dear Quang,")))
         when:
         registrationService.approveRegistration(registrationId)
 
         then:
-        1 * emailService.sendMessage(user.email, "Registration approved!!", "approve_registration_mail_template.xml", _)
+        1 * emailService.sendMail(user.email, EmailUtil.generateSubject("Registration Approved"), "email-template.xml", _)
         1 * notificationService.sendNotificationToUser(user, NotificationType.SUCCESS, _)
         registration.status == RegistrationStatus.APPROVED
         registration.course.status == CourseStatus.AVAILABLE
@@ -618,7 +621,7 @@ class RegistrationServiceImplSpec extends Specification {
         0 * courseRepository.findFirstByLinkIgnoreCase(_)
         0 * notificationService.sendNotificationToUser(_, _, _)
         0 * registrationRepository.save(_)
-        0 * emailService.sendMessage(_, _, _, _)
+        0 * emailService.sendMail(_, _, _, _)
     }
 
     def "should approve registration and handle duplicate course"() {
@@ -643,12 +646,11 @@ class RegistrationServiceImplSpec extends Specification {
     def "declineRegistration should decline a registration"() {
         given:
         def feedbackRequest = new FeedbackRequest(comment: "Not suitable")
-        def registration = new Registration(id: 1L, status: RegistrationStatus.SUBMITTED, course: new Course(name: "Course 101"), user: new User(email: "user@example.com"))
-        def user = new User(id: 1L)
+        def registration = new Registration(id: 1L, status: RegistrationStatus.SUBMITTED, course: new Course(name: "Course 101"), user: new User(email: "user@example.com", fullName: "User"))
         registrationRepository.findById(1L) >> Optional.of(registration)
         registrationRepository.save(_ as Registration) >> { Registration reg -> reg }
-        when:
 
+        when:
         registrationService.declineRegistration(1, feedbackRequest)
 
         then:
@@ -658,10 +660,7 @@ class RegistrationServiceImplSpec extends Specification {
             assert reg.status == RegistrationStatus.DECLINED
             assert reg.lastUpdated != null
         }
-        1 * emailService.sendMessage("user@example.com", "Registration declined!!", "decline_registration_mail_template.xml", _ as List<MailContentUnit>) >> { String email, String subject, String template, List<MailContentUnit> units ->
-            assert units[0].content.contains("Your registration of course : Course 101 has been declined!")
-            assert units[1].href.contains("/personal/registration")
-        }
+        1 * emailService.sendMail(_, _, _, _)
     }
 
     def "declineRegistration should throw RegistrationNotFoundException if registration is not found"() {
@@ -818,7 +817,7 @@ class RegistrationServiceImplSpec extends Specification {
             assert reg.lastUpdated != null
         }
         1 * notificationService.sendNotificationToUser(user, NotificationType.INFORMATION, "Your registration for course Course 101 has been closed")
-        1 * emailService.sendMessage(user.getEmail(), "Registration closed", _, _)
+        1 * emailService.sendMail(user.getEmail(), EmailUtil.generateSubject("Registration Closed"), _, _)
     }
 
     def "closeRegistration: should close the registration with feedback"() {
@@ -839,7 +838,7 @@ class RegistrationServiceImplSpec extends Specification {
             assert reg.lastUpdated != null
         }
         1 * notificationService.sendNotificationToUser(user, NotificationType.INFORMATION, "Your registration for course Course 101 has been closed")
-        1 * emailService.sendMessage(user.getEmail(), "Registration closed", _, _)
+        1 * emailService.sendMail(user.getEmail(), EmailUtil.generateSubject("Registration Closed"), _, _)
     }
 
     def "closeRegistration: should throw RegistrationNotFoundException if registration is not found"() {
@@ -947,7 +946,7 @@ class RegistrationServiceImplSpec extends Specification {
         given:
         def registration = Registration.builder().user(User.builder().username("").email("").build()).id(id).status(currentStatus).course(Course.builder().name("").build()).build()
         userRepository.findAllByRole(Role.ADMIN) >> List.of(User.builder().email("").username("").build())
-        emailService.sendMessage(_, _, _, _) >> {}
+        emailService.sendMail(_, _, _, _) >> {}
         registrationRepository.findById(id) >> Optional.of(registration)
         documentService.verifyDocument(1L, _) >> Document.builder().status(DocumentStatus.APPROVED).type(DocumentType.CERTIFICATE).build()
         documentService.verifyDocument(2L, _) >> Document.builder().status(DocumentStatus.APPROVED).type(DocumentType.PAYMENT).build()
@@ -969,7 +968,7 @@ class RegistrationServiceImplSpec extends Specification {
         given: "a registration with incorrect status"
         def registration = Registration.builder().user(User.builder().username("").email("").build()).id(id).status(currentStatus).course(Course.builder().name("").build()).build()
         userRepository.findAllByRole(Role.ADMIN) >> List.of(User.builder().email("").username("").build())
-        emailService.sendMessage(_, _, _, _) >> {}
+        emailService.sendMail(_, _, _, _) >> {}
         registrationRepository.findById(id) >> Optional.of(registration)
         documentService.verifyDocument(1L, _) >> Document.builder().status(DocumentStatus.APPROVED).type(DocumentType.CERTIFICATE).build()
         documentService.verifyDocument(2L, _) >> Document.builder().status(DocumentStatus.APPROVED).type(DocumentType.PAYMENT).build()

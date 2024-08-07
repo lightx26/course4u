@@ -13,9 +13,9 @@ import com.mgmtp.cfu.repository.UserRepository;
 import com.mgmtp.cfu.service.IAuthService;
 import com.mgmtp.cfu.service.IEmailService;
 import com.mgmtp.cfu.service.IJwtService;
+import com.mgmtp.cfu.util.EmailUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,8 +37,6 @@ public class AuthServiceImpl implements IAuthService {
     private final UserRepository userRepository;
     private final IEmailService emailService;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    @Value("${course4u.vite.frontend.url}")
-    private String clientUrl;
 
     @Override
     public LoginResponse authenticate(LoginRequest loginRequest) {
@@ -50,7 +48,7 @@ public class AuthServiceImpl implements IAuthService {
             throw new BadCredentialsException("Invalid username or password");
         }
         if (authentication.isAuthenticated()) {
-            var user = userRepository.findByUsername(loginRequest.getUsername()).get();
+            User user = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow(() -> new BadCredentialsException("Authentication failed: Invalid credentials"));
             var accessToken = jwtService.generatedClaim(user.getUsername(), List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name())));
             return LoginResponse.builder()
                     .accessToken(accessToken)
@@ -89,17 +87,17 @@ public class AuthServiceImpl implements IAuthService {
                 .build();
 
         user = userRepository.save(user);
-        List<MailContentUnit> mailContentUnits=List.of(
-                MailContentUnit.builder().id("user_greeting").content("Welcome " + user.getUsername() + " ").tag("div").build(),
-                MailContentUnit.builder().id("client_url").href(clientUrl).tag("a").build()
+        List<MailContentUnit> mailContentUnits = List.of(
+                EmailUtil.generateTitle("Welcome to Course4U!"),
+                EmailUtil.updateTitleStyle("Welcome to Course4U!"),
+                EmailUtil.generateGreeting("Hello {name},", user),
+                EmailUtil.generateWelcomeContent()
         );
-        emailService.sendMessage(user.getEmail(), "Welcome to Course4U! ","successful_account_registration_mail_template.xml", mailContentUnits);
+        emailService.sendMail(user.getEmail(), EmailUtil.generateSubject("Welcome to Course4U!"), "email-template.xml", mailContentUnits);
 
         return SignUpResponse.builder()
                 .username(user.getUsername())
                 .message("User registered successfully")
                 .build();
     }
-
-
 }

@@ -10,7 +10,6 @@ import com.mgmtp.cfu.repository.RegistrationRepository
 import com.mgmtp.cfu.service.IEmailService
 import spock.lang.Specification
 
-import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 class ScheduledDeadlineNotificationRunnableTaskSpec extends Specification {
@@ -43,7 +42,7 @@ class ScheduledDeadlineNotificationRunnableTaskSpec extends Specification {
         .duration(12)
         .durationUnit(DurationUnit.DAY)
         .build()
-        emailService.sendMessage(_,_,_,_)>> {}
+        emailService.sendMail(_,_,_,_)>> {}
         registrationRepository.findAllByStatus(RegistrationStatus.APPROVED) >> List.of(registration)
         when:
         service.run()

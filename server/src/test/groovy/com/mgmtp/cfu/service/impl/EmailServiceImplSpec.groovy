@@ -19,20 +19,19 @@ class EmailServiceImplSpec extends Specification {
         given:
         def to = "test@example.com"
         def subject = "Test Subject"
-        def templateName = "successful_account_registration_mail_template.xml"
+        def templateName = "email-template.xml"
         emailService.isEnableEmailSender = true
         emailService.emailAddress = ""
         List<MailContentUnit> mailContentUnits = List.of(
-                MailContentUnit.builder().id("user_greeting").content("Welcome to ").tag("div").build(),
-                MailContentUnit.builder().id("client_url").href("").tag("a").build()
+                MailContentUnit.builder().id("title").build(),
         );
-        Resource mockResource = new ClassPathResource("email/template/successful_account_registration_mail_template.xml")
+        Resource mockResource = new ClassPathResource("email/template/email-template.xml")
         resourceService.loadResourceByName(_ as String) >> (mockResource)
         MimeMessage message = Mock(MimeMessage)
-        emailSender.createMimeMessage()>>message
+        emailSender.createMimeMessage() >> message
         when:
         long startTime = System.currentTimeMillis()
-        emailService.sendMessage(to, subject, templateName, mailContentUnits)
+        emailService.sendMail(to, subject, templateName, mailContentUnits)
         long endTime = System.currentTimeMillis()
         then:
         endTime - startTime < 11000
@@ -43,22 +42,20 @@ class EmailServiceImplSpec extends Specification {
         given:
         def to = "test@example.com"
         def subject = "Test Subject"
-        def templateName = "successful_account_registration_mail_template.xml"
+        def templateName = "email-template.xml"
         emailService.isEnableEmailSender = true
         emailService.emailAddress = ""
         List<MailContentUnit> mailContentUnits = List.of(
-                MailContentUnit.builder().id("user_greeting").content("Welcome to ").tag("div").build(),
-                MailContentUnit.builder().id("client_url").href("").tag("a").build()
+                MailContentUnit.builder().id("greeting").build(),
         );
         resourceService.loadResourceByName(_ as String) >> (null)
         MimeMessage message = Mock(MimeMessage)
         emailSender.createMimeMessage()>>message
         when:
         long startTime = System.currentTimeMillis()
-        emailService.sendMessage(to, subject, templateName, mailContentUnits)
+        emailService.sendMail(to, subject, templateName, mailContentUnits)
         long endTime = System.currentTimeMillis()
         then:
         endTime - startTime < 11000
-
     }
 }

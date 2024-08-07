@@ -37,18 +37,18 @@ public class EmailServiceImpl implements IEmailService {
     private String emailAddress;
 
 
-    public void sendMessage(String to, String subject, String templateName, List<MailContentUnit> mailContentUnits) {
+    public void sendMail(String to, String subject, String templateName, List<MailContentUnit> mailContentUnits) {
         if (!isEnableEmailSender)
             return;
         var resource = resourceService.loadResourceByName("email/template/" + templateName);
-        var content = generateContentForWelcomeMail(mailContentUnits, resource);
+        var content = generateContentForEmail(mailContentUnits, resource);
         if (Objects.isNull(content))
             return;
         MimeMessage message = emailSender.createMimeMessage();
-        sendMail(message, content, to, subject);
+        sendMessage(message, content, to, subject);
     }
 
-    private void sendMail(MimeMessage message, String content, String to, String subject) {
+    private void sendMessage(MimeMessage message, String content, String to, String subject) {
         try {
             ExecutorService executorService = Executors.newSingleThreadExecutor();
             executorService.execute(() -> {
@@ -69,12 +69,12 @@ public class EmailServiceImpl implements IEmailService {
         }
     }
 
-    private String generateContentForWelcomeMail(List<MailContentUnit> mailContentUnits, Resource resource) {
+    private String generateContentForEmail(List<MailContentUnit> mailContentUnits, Resource resource) {
         try {
             SAXReader reader = new SAXReader();
             Document document = reader.read(resource.getInputStream());
             for (MailContentUnit mailContentUnit : mailContentUnits)
-                modifyContent(document, mailContentUnit.getId(), mailContentUnit.getContent(), mailContentUnit.getHref(), mailContentUnit.getTag());
+                modifyContent(document, mailContentUnit);
             return document.asXML();
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
@@ -82,21 +82,28 @@ public class EmailServiceImpl implements IEmailService {
         return null;
     }
 
-    private void modifyContent(Document document, String id, String newText, String newHref, String tag) {
+    private void modifyContent(Document document, MailContentUnit mailContentUnit) {
         try {
-            Element element = findLinkById(document.getRootElement(), id, tag);
-            if (Objects.nonNull(newText) && !newText.trim().isEmpty())
-                element.setText(newText);
-            if (Objects.nonNull(newHref) && !newHref.trim().isEmpty())
-                element.attribute("href").setValue(newHref);
+            Element element = findElementById(document.getRootElement(), mailContentUnit.getId());
+
+            if (mailContentUnit.getId().equals("title-wrapper") && Objects.nonNull(mailContentUnit.getStyle())) {
+                String oldStyle = element.attributeValue("style");
+                if (oldStyle == null) {
+                    oldStyle = "";
+                }
+                element.addAttribute("style", mailContentUnit.getStyle() + oldStyle);
+            }
+
+            if (Objects.nonNull(mailContentUnit.getInnerContent())) {
+                element.setContent(mailContentUnit.getInnerContent());
+            }
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
         }
-
     }
 
-    private Element findLinkById(Element root, String id, String tag) {
-        return (Element) root.selectSingleNode("//" + tag + "[@id='" + id + "']");
+    private Element findElementById(Element root, String id) {
+        return (Element) root.selectSingleNode("//*[@id='" + id + "']");
     }
 
 }

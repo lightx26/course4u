@@ -24,10 +24,7 @@ import com.mgmtp.cfu.repository.RegistrationRepository;
 import com.mgmtp.cfu.service.*;
 import com.mgmtp.cfu.repository.*;
 import com.mgmtp.cfu.specification.RegistrationSpecifications;
-import com.mgmtp.cfu.util.NotificationUtil;
-import com.mgmtp.cfu.util.RegistrationStatusUtil;
-import com.mgmtp.cfu.util.RegistrationValidator;
-import com.mgmtp.cfu.util.ScoreCalculator;
+import com.mgmtp.cfu.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -48,8 +45,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static com.mgmtp.cfu.util.AuthUtils.getCurrentUser;
-import static com.mgmtp.cfu.util.Constant.APPROVE_REGISTRATION_EMAIL_TEMPLATE;
-import static com.mgmtp.cfu.util.Constant.DECLINE_REGISTRATION_EMAIL_TEMPLATE;
 import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getRegistrationOverviewDTOS;
 
 @Service
@@ -118,9 +113,6 @@ public class RegistrationServiceImpl implements RegistrationService {
         this.uploadService = uploadService;
     }
 
-    @Value("${course4u.vite.frontend.url}")
-    private String clientUrl;
-
     @Override
     public RegistrationDetailDTO getDetailRegistration(Long id) {
         Optional<DTOMapper<RegistrationDetailDTO, Registration>> registrationDtoMapperOpt = registrationMapperFactory.getDTOMapper(RegistrationDetailDTO.class);
@@ -186,10 +178,12 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         // send email
         List<MailContentUnit> mailContentUnits = List.of(
-                MailContentUnit.builder().id("user_greeting").content("Your registration of course : " + registration.getCourse().getName() + " has been approved!").tag("div").build(),
-                MailContentUnit.builder().id("client_url").href(clientUrl + "/personal/registration").tag("a").build()
+                EmailUtil.generateTitle("Registration Approved"),
+                EmailUtil.updateTitleStyle("Registration Approved"),
+                EmailUtil.generateGreeting("Dear {name},", registration.getUser()),
+                EmailUtil.generateApproveContent(registration.getCourse().getName())
         );
-        emailService.sendMessage(registration.getUser().getEmail(), "Registration approved!!", "approve_registration_mail_template.xml", mailContentUnits);
+        emailService.sendMail(registration.getUser().getEmail(), EmailUtil.generateSubject("Registration Approved"), "email-template.xml", mailContentUnits);
     }
 
     @Override
@@ -214,10 +208,12 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         // send email
         List<MailContentUnit> mailContentUnits = List.of(
-                MailContentUnit.builder().id("user_greeting").content("Your registration of course : " + registration.getCourse().getName() + " has been declined!").tag("div").build(),
-                MailContentUnit.builder().id("client_url").href(clientUrl + "/personal/registration").tag("a").build()
+                EmailUtil.generateTitle("Registration Declined"),
+                EmailUtil.updateTitleStyle("Registration Declined"),
+                EmailUtil.generateGreeting("Dear {name},", registration.getUser()),
+                EmailUtil.generateDeclineContent(registration.getCourse().getName())
         );
-        emailService.sendMessage(registration.getUser().getEmail(), "Registration declined!!", "decline_registration_mail_template.xml", mailContentUnits);
+        emailService.sendMail(registration.getUser().getEmail(), EmailUtil.generateSubject("Registration Declined"), "email-template.xml", mailContentUnits);
     }
 
 
@@ -328,10 +324,12 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         // send email
         List<MailContentUnit> mailContentUnits = List.of(
-                MailContentUnit.builder().id("user_greeting").content("Your registration of course : " + registration.getCourse().getName() + " has been closed!").tag("div").build(),
-                MailContentUnit.builder().id("client_url").href(clientUrl + "/personal/registration").tag("a").build()
+                EmailUtil.generateTitle("Registration Closed"),
+                EmailUtil.updateTitleStyle("Registration Closed"),
+                EmailUtil.generateGreeting("Dear {name},", registration.getUser()),
+                EmailUtil.generateCloseContent(registration.getCourse().getName())
         );
-        emailService.sendMessage(registration.getUser().getEmail(), "Registration closed", "close_registration_mail_template.xml", mailContentUnits);
+        emailService.sendMail(registration.getUser().getEmail(), EmailUtil.generateSubject("Registration Closed"), "email-template.xml", mailContentUnits);
     }
 
     @Override
@@ -466,8 +464,6 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     private void notifyVerifiedDocument(Registration registration) {
-        var accountant = getCurrentUser();
-
         if (registration.getStatus().equals(RegistrationStatus.VERIFIED)) {
             var admins = userRepository.findAllByRole(Role.ADMIN);
             var user = registration.getUser();
@@ -500,18 +496,18 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     private void sendEmail(Registration registration, User user, String message) {
         var status = registration.getStatus();
-
+        String title = status == RegistrationStatus.DOCUMENT_DECLINED ? "Document Declined" : "Document Approved";
         List<MailContentUnit> mailContentUnits = List.of(
-                MailContentUnit.builder().id("user_greeting").content("Dear " + user.getUsername()).tag("div").build(),
-                MailContentUnit.builder().id("content").content(message).tag("div").build(),
-                MailContentUnit.builder().id("title").content(status == RegistrationStatus.DOCUMENT_DECLINED ? "Document Decline" : "Document Approval").tag("div").build(),
-                MailContentUnit.builder().id("client_url").href(clientUrl).content("LOGIN NOW").tag("a").build()
+                EmailUtil.generateTitle(title),
+                EmailUtil.updateTitleStyle(title),
+                EmailUtil.generateGreeting("Dear {name},", user),
+                EmailUtil.generateDocumentDeclinedContent(message)
         );
 
-        emailService.sendMessage(
+        emailService.sendMail(
                 user.getEmail(),
-                status == RegistrationStatus.DOCUMENT_DECLINED ? "Document Decline" : "Document Approval",
-                status == RegistrationStatus.VERIFIED ? APPROVE_REGISTRATION_EMAIL_TEMPLATE : DECLINE_REGISTRATION_EMAIL_TEMPLATE,
+                EmailUtil.generateSubject(title),
+                "email-template.xml",
                 mailContentUnits
         );
     }

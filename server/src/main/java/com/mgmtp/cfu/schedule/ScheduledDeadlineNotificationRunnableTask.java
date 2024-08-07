@@ -1,12 +1,15 @@
 package com.mgmtp.cfu.schedule;
 
 import com.mgmtp.cfu.dto.MailContentUnit;
+import com.mgmtp.cfu.entity.Notification;
 import com.mgmtp.cfu.entity.Registration;
+import com.mgmtp.cfu.entity.User;
 import com.mgmtp.cfu.enums.NotificationType;
 import com.mgmtp.cfu.enums.RegistrationStatus;
 import com.mgmtp.cfu.repository.NotificationRepository;
 import com.mgmtp.cfu.repository.RegistrationRepository;
 import com.mgmtp.cfu.service.IEmailService;
+import com.mgmtp.cfu.util.EmailUtil;
 import com.mgmtp.cfu.util.NotificationUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +20,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.TimeZone;
 
-import static com.mgmtp.cfu.util.Constant.DEADLINE_WARNING_EMAIL;
 import static com.mgmtp.cfu.util.TimeConverter.convertDayTimeToString;
 import static com.mgmtp.cfu.util.TimeConverter.plus;
 
@@ -32,7 +33,6 @@ public class ScheduledDeadlineNotificationRunnableTask implements Runnable {
     private final RegistrationRepository registrationRepository;
     private final NotificationRepository notificationRepository;
     private final IEmailService emailService;
-    private String clientUrl;
     private String reminderTime;
 
     /**
@@ -68,22 +68,18 @@ public class ScheduledDeadlineNotificationRunnableTask implements Runnable {
      * @param deadline     The deadline for the registration
      */
     private void notifyNotification(Registration registration, LocalDateTime deadline) {
-        String remindMessage = "That the deadline for the %s course is approaching. Please" +
-                " make sure to complete all necessary tasks and submit your work by the due date.";
-        var stringDeadline = convertDayTimeToString(deadline);
-        var notificationMessage = "Attention! The deadline for the %s course is near. Please ensure all tasks are completed and your work is submitted by " + stringDeadline + ".";
-
-        var destination = registration.getUser();
-        remindMessage = String.format(remindMessage, registration.getCourse().getName());
-        var notification = NotificationUtil.createNotification(NotificationType.WARNING, registration.getUser(), String.format(notificationMessage, registration.getCourse().getName()));
+        String stringDeadline = convertDayTimeToString(deadline);
+        String notificationMessage = "Attention! The deadline for the %s course is near. Please ensure all tasks are completed and your work is submitted by " + stringDeadline + ".";
+        User destination = registration.getUser();
+        Notification notification = NotificationUtil.createNotification(NotificationType.WARNING, registration.getUser(), String.format(notificationMessage, registration.getCourse().getName()));
         notificationRepository.save(notification);
         List<MailContentUnit> mailContentUnits = List.of(
-                MailContentUnit.builder().content(remindMessage).id("content").tag("div").build(),
-                MailContentUnit.builder().id("user_greeting").tag("div").content("Dear " + destination.getUsername()).build(),
-                MailContentUnit.builder().id("deadline").tag("div").content("Deadline: " + stringDeadline + " GMT+7.").build(),
-                MailContentUnit.builder().id("client_url").tag("a").href(clientUrl).build()
+                EmailUtil.generateTitle("Important Deadline"),
+                EmailUtil.updateTitleStyle("Important Deadline"),
+                EmailUtil.generateGreeting("Dear {name},", destination),
+                EmailUtil.generateDeadlineEmailContent(registration.getCourse().getName(), stringDeadline)
         );
-        emailService.sendMessage(destination.getEmail(), "Important Deadline", DEADLINE_WARNING_EMAIL, mailContentUnits);
+        emailService.sendMail(destination.getEmail(), EmailUtil.generateSubject("Important Deadline"), "email-template.xml", mailContentUnits);
 
     }
 

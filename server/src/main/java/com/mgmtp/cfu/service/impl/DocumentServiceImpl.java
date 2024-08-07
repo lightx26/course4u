@@ -22,6 +22,7 @@ import com.mgmtp.cfu.repository.RegistrationRepository;
 import com.mgmtp.cfu.repository.UserRepository;
 import com.mgmtp.cfu.service.DocumentService;
 import com.mgmtp.cfu.service.IEmailService;
+import com.mgmtp.cfu.util.EmailUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,6 @@ import java.util.List;
 
 import static com.mgmtp.cfu.enums.DocumentStatus.PENDING;
 import static com.mgmtp.cfu.util.AuthUtils.getCurrentUser;
-import static com.mgmtp.cfu.util.Constant.ACCOUNTANT_NOTIFICATION_EMAIL_TEMPLATE_NAME;
 import static com.mgmtp.cfu.util.DocumentUtils.storageDocument;
 import static com.mgmtp.cfu.util.NotificationUtil.createNotification;
 
@@ -52,8 +52,6 @@ public class DocumentServiceImpl implements DocumentService {
     private final UserRepository userRepository;
     private final NotificationRepository notificationRepository;
     private String documentStorageDir;
-    @Value("${course4u.vite.frontend.url}")
-    private String clientUrl;
 
     @Value("${course4u.storage.document-directory}")
     public void setDocumentStorageDir(String documentStorageDir) {
@@ -133,14 +131,13 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     private void sendNoticedMail(User accountant, String content) {
-        var title = "Verification of Course Documents";
         List<MailContentUnit> mailContentUnits = List.of(
-                MailContentUnit.builder().id("notification_title").content(title).tag("div").build(),
-                MailContentUnit.builder().id("client_url").href(clientUrl).tag("a").build(),
-                MailContentUnit.builder().id("greeting").content("Dear " + (accountant.getFullName() != null ? accountant.getFullName() : accountant.getUsername())).tag("div").build(),
-                MailContentUnit.builder().id("content").content(content).tag("div").build()
+                EmailUtil.generateTitle("Verification of Course Documents"),
+                EmailUtil.updateTitleStyle("Verification of Course Documents"),
+                EmailUtil.generateGreeting("Dear {name},", accountant),
+                EmailUtil.generateNotifyAccountantContent(content)
         );
-        emailService.sendMessage(accountant.getEmail(), title, ACCOUNTANT_NOTIFICATION_EMAIL_TEMPLATE_NAME, mailContentUnits);
+        emailService.sendMail(accountant.getEmail(), EmailUtil.generateSubject("Verification of Course Documents"), "email-template.xml", mailContentUnits);
     }
 
     private DTOMapper<DocumentDTO, Document> getMapper() {

@@ -77,7 +77,7 @@ class DocumentServiceImplSpec extends Specification {
 
         then:
         1 * notificationRepository.saveAll(_)
-        1 * emailService.sendMessage(_, _, _, _)
+        1 * emailService.sendMail(_, _, _, _)
 
     }
 
