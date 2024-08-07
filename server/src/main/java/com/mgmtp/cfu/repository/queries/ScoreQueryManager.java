@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.Month;
 import java.time.YearMonth;
 import java.time.ZonedDateTime;
@@ -32,7 +33,7 @@ public class ScoreQueryManager {
                 "FROM User u LEFT JOIN " +
                 "(SELECT re.id as re_id, re.score as re_score, " +
                 "re.startDate as re_startDate, re.endDate as re_endDate, re.user.id as re_user_id " +
-                "FROM Registration re WHERE EXTRACT(YEAR FROM re.endDate) = :year AND re.status IN :acceptStatus) r " +
+                "FROM Registration re WHERE EXTRACT(YEAR FROM re.endDate) = :year AND EXTRACT(MONTH FROM re.endDate) <= :month AND re.status IN :acceptStatus) r " +
                 "ON u.id = r.re_user_id " +
                 "WHERE u.role = 'USER' " +
                 "GROUP BY u.id, u.avatarUrl, u.email, u.username, u.fullName " +
@@ -43,6 +44,12 @@ public class ScoreQueryManager {
 
         TypedQuery<LeaderboardUserDTO> query = entityManager.createQuery(jpql, LeaderboardUserDTO.class);
         query.setParameter("year", year);
+        int month;
+        if(year==LocalDate.now().getYear())
+             month=LocalDate.now().getMonthValue();
+        else  month=12;
+        query.setParameter("month", month);
+
         query.setParameter("acceptStatus", RegistrationStatusUtil.ACCEPTED_STATUSES);
         query.setMaxResults(top);
 
@@ -244,12 +251,17 @@ public class ScoreQueryManager {
     private List<Object[]> getListOfUserScore(String year, Long id) {
         String jpql = "SELECT u.id, COALESCE(SUM(r.score), 0) AS scores " +
                 "FROM User u JOIN Registration r ON r.user.id = u.id " +
-                "WHERE r.status IN :acceptStatus AND EXTRACT(YEAR FROM r.endDate) = :year " +
+                "WHERE r.status IN :acceptStatus AND EXTRACT(YEAR FROM r.endDate) = :year AND EXTRACT(MONTH FROM r.endDate) <= :month " +
                 "GROUP BY u.id " +
                 "ORDER BY scores DESC";
         TypedQuery<Object[]> query = entityManager.createQuery(jpql, Object[].class);
         query.setParameter("acceptStatus", RegistrationStatusUtil.ACCEPTED_STATUSES);
         query.setParameter("year", year);
+        int month;
+        if(Integer.parseInt(year)==LocalDate.now().getYear())
+            month=LocalDate.now().getMonthValue();
+        else  month=12;
+        query.setParameter("month", month);
         return query.getResultList();
     }
 }
