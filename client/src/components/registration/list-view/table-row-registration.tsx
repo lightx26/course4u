@@ -5,6 +5,7 @@ import {
     convertJSDatesToCorrectFormat,
 } from "../../../utils/registration-utils/registration-overview-converters.ts";
 import { handleAvatarUrl } from "../../../utils/handleAvatarUrl.ts";
+import handleThumbnailUrl from "../../../utils/handleThumbnailUrl.ts";
 
 type TableRowRegistrationProps = {
     registration: RegistrationType;
@@ -41,19 +42,20 @@ export default function TableRowRegistration({
     );
 
     const userAvatar = handleAvatarUrl(registration.userAvatarUrl);
+    const courseThumbnail = handleThumbnailUrl(registration.courseThumbnailUrl);
 
     return (
         <div>
             <div
-                className={`text-[13px] flex items-center bg-white border-2 text-[#3A4A49] hover:cursor-pointer rounded-md`}
+                className={`text-[13px] h-[80px] flex items-center bg-white border-2 text-[#3A4A49] hover:cursor-pointer rounded-md`}
                 onClick={handlePopup}
             >
                 <div className='w-[35%]'>
                     <div className='flex items-center gap-2 course-info w-full'>
                         <img
-                            src={registration.courseThumbnailUrl}
+                            src={courseThumbnail}
                             alt={registration.courseName}
-                            className='object-cover w-32 max-h-[80px] border-r-[1px]'
+                            className='object-cover min-w-32 w-32 h-[80px] border-[2px] rounded-md'
                         />
                         <p className='font-medium ml-[1px] line-clamp-2'>
                             {registration.courseName}
@@ -67,7 +69,7 @@ export default function TableRowRegistration({
                         className='w-10 h-10 rounded-full object-cover border-2 border-purple'
                     />
                     <span className='text-black w-[70px] text-center truncate'>
-                        {registration.userFullname || "anonymous"}
+                        {registration.userFullname || 'Anonymous'}
                     </span>
                 </div>
                 <p className='grow max-w-[5%] text-center truncate'>
