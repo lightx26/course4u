@@ -11,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.YearMonth;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -45,9 +42,14 @@ public class ScoreQueryManager {
         TypedQuery<LeaderboardUserDTO> query = entityManager.createQuery(jpql, LeaderboardUserDTO.class);
         query.setParameter("year", year);
         int month;
-        if(year==LocalDate.now().getYear())
-             month=LocalDate.now().getMonthValue();
+        if(year==LocalDate.now().getYear()) {
+            month = LocalDate.now().getMonthValue();
+        }
         else  month=12;
+        query.setParameter("month", month);
+
+        if(year==LocalDate.now().getYear())
+            month=LocalDate.now().getMonthValue();
         query.setParameter("month", month);
 
         query.setParameter("acceptStatus", RegistrationStatusUtil.ACCEPTED_STATUSES);
@@ -55,17 +57,22 @@ public class ScoreQueryManager {
 
         try {
             return query.getResultList().stream().peek(leaderboardUserDTO -> {
-                log.info("Leaderboard entry: " + leaderboardUserDTO.toString());
                 List<List<Integer>> learningTime = initializeLearningTime();
                 getRegistrationByUserIdAndYear(leaderboardUserDTO.getUserId(), String.valueOf(year)).forEach(registration -> {
                     try {
-                        updateLearningTime(learningTime, registration.getStartDate(), registration.getEndDate(), year);
+                        var endDate=registration.getEndDate();
+                        var currentDate=LocalDate.now();
+                        if(year==currentDate.getYear())
+                            if(endDate.getMonthValue()>LocalDate.now().getMonthValue() || endDate.getYear()>currentDate.getYear())
+                                return;
+                         updateLearningTime(learningTime, registration.getStartDate(),registration.getEndDate(), year);
                     } catch (Exception e) {
                         log.error(e.getMessage());
                     }
                 });
+
                 leaderboardUserDTO.setLearningTime(
-                        learningTime.stream().map(integers -> integers.get(1)).mapToInt(Integer::intValue).sum()
+                        learningTime.stream().map(integers -> Math.max((integers.get(1)-integers.get(0)+1),0)).mapToInt(Integer::intValue).sum()
                 );
             }).toList();
 
@@ -186,6 +193,7 @@ public class ScoreQueryManager {
                 int startDay = learningTime.get(i - 1).get(0);
                 int endDay = learningTime.get(i - 1).get(1);
                 int learningDays = endDay - startDay + 1;
+
                 learningTimeResult.add(Math.max(learningDays, 0));
             }
         }
@@ -209,13 +217,22 @@ public class ScoreQueryManager {
 
     // Method to update learning time based on start and end dates
     private void updateLearningTime(List<List<Integer>> learningTime, ZonedDateTime startDay, ZonedDateTime endDay, int year) {
+        log.info(startDay+ String.valueOf(endDay) );
         if (startDay.getYear() < year && endDay.getYear() > year) {
+            log.info(String.valueOf(1));
+
             updateLearningTime(learningTime, 1, 12, year, 1, 31);
         } else if (startDay.getYear() < year) {
+            log.info(String.valueOf(2));
+
             updateLearningTime(learningTime, 1, endDay.getMonthValue(), year, 1, endDay.getDayOfMonth());
         } else if (endDay.getYear() > year) {
+            log.info(String.valueOf(3));
+
             updateLearningTime(learningTime, startDay.getMonthValue(), 12, year, startDay.getDayOfMonth(), 31);
         } else {
+            log.info(String.valueOf(4));
+
             updateLearningTime(learningTime, startDay.getMonthValue(), endDay.getMonthValue(), year, startDay.getDayOfMonth(), endDay.getDayOfMonth());
         }
     }
@@ -228,13 +245,13 @@ public class ScoreQueryManager {
                     updateLearningTime(i, endDay, startDay, learningTime);
                 else
                     updateLearningTime(i, YearMonth.of(year, i).lengthOfMonth(), startDay, learningTime);
-
             }
-            if (i == endMonth) {
+            else if (i == endMonth) {
                 updateLearningTime(i, endDay, 1, learningTime);
             } else {
                 updateLearningTime(i, YearMonth.of(year, i).lengthOfMonth(), 1, learningTime);
             }
+
         }
     }
 
@@ -245,6 +262,7 @@ public class ScoreQueryManager {
         oldStartDay = Math.min(oldStartDay, startDay);
         oldEndDay = Math.max(oldEndDay, endDay);
         learningTime.set(month - 1, Arrays.asList(oldStartDay, oldEndDay));
+
     }
 
     // Method to get a list of user scores
