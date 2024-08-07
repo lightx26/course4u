@@ -413,7 +413,7 @@ export async function saveRegistrationAsDraft(
     if (res.status === 409) {
         toast.error("Save registration as draft unsuccessfully", {
             style: { color: "red" },
-            description: "Course4U already have this course",
+            description: "Course4U already has this course!!",
         });
         return res.status;
     }
