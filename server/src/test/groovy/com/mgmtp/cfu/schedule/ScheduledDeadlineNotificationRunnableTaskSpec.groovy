@@ -16,15 +16,12 @@ class ScheduledDeadlineNotificationRunnableTaskSpec extends Specification {
     def registrationRepository = Mock(RegistrationRepository)
     def notificationRepository = Mock(NotificationRepository)
     def emailService = Mock(IEmailService)
-
-    def clientUrl = "http://example.com"
     def reminderTime = "7d"
 
     def service = new ScheduledDeadlineNotificationRunnableTask(
             registrationRepository,
             notificationRepository,
             emailService,
-            clientUrl,
             reminderTime
     )
 

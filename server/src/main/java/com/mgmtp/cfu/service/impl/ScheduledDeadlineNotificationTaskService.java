@@ -34,8 +34,6 @@ public class ScheduledDeadlineNotificationTaskService {
      * Uses the cron expression to define the scheduling frequency.
      * The expression is expected to configure minutes and hours.
      */
-    @Value("${course4u.vite.frontend.url}")
-    private String clientUrl;
     @Value("${course4u.deadline.schedule.reminder-time}")
     private String reminderTime;
 
@@ -52,7 +50,6 @@ public class ScheduledDeadlineNotificationTaskService {
                 registrationRepository,
                 notificationRepository,
                 emailService,
-                clientUrl,
                 reminderTime
         );
 
