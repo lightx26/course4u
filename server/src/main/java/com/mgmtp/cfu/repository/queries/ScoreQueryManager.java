@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.*;
+import java.time.chrono.ChronoLocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -218,6 +219,8 @@ public class ScoreQueryManager {
     // Method to update learning time based on start and end dates
     private void updateLearningTime(List<List<Integer>> learningTime, ZonedDateTime startDay, ZonedDateTime endDay, int year) {
         log.info(startDay+ String.valueOf(endDay) );
+        if(LocalDate.now().isBefore(ChronoLocalDate.from(endDay)))
+            return;
         if (startDay.getYear() < year && endDay.getYear() > year) {
             log.info(String.valueOf(1));
 
