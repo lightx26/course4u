@@ -48,7 +48,7 @@ const FeedBackFromAccountant = (props: IProps) => {
                 <TextArea
                     onChange={onChange}
                     placeholder='Write your feedback here!!!'
-                    style={{ height: 120, resize: "none" }}
+                    style={{ height: 120 }}
                     allowClear
                 />
             </div>

@@ -175,7 +175,10 @@ export const RegistrationsForm = ({
                     onSubmit={form.handleSubmit(onSubmit)}
                     className='w-full space-y-8 '
                     onKeyDown={(event) => {
-                        if (event.key === "Enter") {
+                        if (
+                            event.key === "Enter" &&
+                            !(event.target instanceof HTMLTextAreaElement)
+                        ) {
                             event.preventDefault();
                         }
                     }}
