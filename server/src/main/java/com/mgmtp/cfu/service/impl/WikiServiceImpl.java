@@ -63,7 +63,7 @@ public class WikiServiceImpl implements WikiService {
         var leaderboard = leaderboardService.getLeaderboardWiki(now.getYear());
         Map<String, Object> wikiBody = new HashMap<>();
         wikiBody.put("value", generateListUserTable(
-                new String[]{"TOP", "Username", "Full Name", "Email", "Learning Time (days)", "Score"},
+                new String[]{"TOP", "Full Name", "Email", "Learning Time (days)", "Score"},
                 leaderboard.getLeaderboardUserDTOs())
         );
         wikiBody.put("representation", "wiki");
@@ -89,8 +89,6 @@ public class WikiServiceImpl implements WikiService {
         for(int i = 0;i < leaderboardUserDTOs.size();i++) {
             sb.append("|")
                     .append(i + 1)
-                    .append("|")
-                    .append(leaderboardUserDTOs.get(i).getUsername())
                     .append("|")
                     .append(leaderboardUserDTOs.get(i).getFullName().isEmpty() ? "Anonymous" : leaderboardUserDTOs.get(i).getFullName())
                     .append("|")

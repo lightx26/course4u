@@ -547,7 +547,9 @@ public class RegistrationServiceImpl implements RegistrationService {
                 .user(getCurrentUser())
                 .build();
         registrationRepository.save(registration);
-        notifyWhenSummitRegistration();
+        if(!asDraft) {
+            notifyWhenSummitRegistration();
+        }
     }
 
     private String handleThumbnail(RegistrationRequest registrationRequest) throws IOException {
