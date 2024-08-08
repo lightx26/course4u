@@ -218,24 +218,19 @@ public class ScoreQueryManager {
 
     // Method to update learning time based on start and end dates
     private void updateLearningTime(List<List<Integer>> learningTime, ZonedDateTime startDay, ZonedDateTime endDay, int year) {
-        log.info(startDay+ String.valueOf(endDay) );
+
         if(LocalDate.now().isBefore(ChronoLocalDate.from(endDay)))
             return;
         if (startDay.getYear() < year && endDay.getYear() > year) {
-            log.info(String.valueOf(1));
 
             updateLearningTime(learningTime, 1, 12, year, 1, 31);
         } else if (startDay.getYear() < year) {
-            log.info(String.valueOf(2));
 
             updateLearningTime(learningTime, 1, endDay.getMonthValue(), year, 1, endDay.getDayOfMonth());
         } else if (endDay.getYear() > year) {
-            log.info(String.valueOf(3));
 
             updateLearningTime(learningTime, startDay.getMonthValue(), 12, year, startDay.getDayOfMonth(), 31);
         } else {
-            log.info(String.valueOf(4));
-
             updateLearningTime(learningTime, startDay.getMonthValue(), endDay.getMonthValue(), year, startDay.getDayOfMonth(), endDay.getDayOfMonth());
         }
     }

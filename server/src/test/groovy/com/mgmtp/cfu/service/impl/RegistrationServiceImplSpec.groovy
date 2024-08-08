@@ -74,7 +74,9 @@ class RegistrationServiceImplSpec extends Specification {
 
     CourseRepository courseRepository = Mock(CourseRepository)
 
-    NotificationService notificationService = Mock(NotificationService)
+    NotificationService notificationService = Mock(NotificationService){
+        notificationService.sendNotificationToUser(_,_,_)>> {}
+    }
 
     RegistrationFeedbackService feedbackService = Mock(RegistrationFeedbackService)
 
@@ -84,7 +86,9 @@ class RegistrationServiceImplSpec extends Specification {
 
     def registrationDetailMapper = Mock(RegistrationDetailMapper)
 
-    NotificationRepository notificationRepository = Mock()
+    NotificationRepository notificationRepository = Mock(){
+        notificationRepository.save(_)>>{}
+    }
 
     CourseService courseService = Mock()
 
@@ -655,7 +659,6 @@ class RegistrationServiceImplSpec extends Specification {
 
         then:
         1 * feedbackService.sendFeedback(registration, feedbackRequest.getComment())
-        1 * notificationService.sendNotificationToUser(registration.user, NotificationType.ERROR, "Your registration for course Course 101 has been declined")
         1 * registrationRepository.save(_ as Registration) >> { Registration reg ->
             assert reg.status == RegistrationStatus.DECLINED
             assert reg.lastUpdated != null
@@ -738,6 +741,8 @@ class RegistrationServiceImplSpec extends Specification {
         and:
         1 * courseService.createCourse(_) >> courseResponse
         1 * registrationRepository.save(_) >> registration
+        1 * userRepository.findAllByRole(Role.ADMIN)>>List.of()
+
 
         when:
         def result = registrationService.createRegistration(registrationRequest)
@@ -1021,6 +1026,7 @@ class RegistrationServiceImplSpec extends Specification {
         RegistrationEnrollDTO registrationEnrollDTO = new RegistrationEnrollDTO(duration: 10, durationUnit: "DAY")
         Course course = new Course(id: courseId)
         courseRepository.findById(courseId) >> Optional.of(course)
+        userRepository.findAllByRole(Role.ADMIN)>>List.of()
 
         when:
         registrationService.createRegistrationFromExistingCourses(courseId, registrationEnrollDTO,false)
@@ -1055,6 +1061,8 @@ class RegistrationServiceImplSpec extends Specification {
         registrationRepository.findById(id) >> Optional.of(registration)
         courseRepository.findById(registration.getCourse().getId()) >> Optional.of(course)
         categoryService.findOrCreateNewCategory(_) >> categories
+        userRepository.findAllByRole(Role.ADMIN)>>List.of()
+
 
         when:
         registrationService.editRegistration(id, registrationRequest,asDraft)

@@ -45,6 +45,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static com.mgmtp.cfu.util.AuthUtils.getCurrentUser;
+import static com.mgmtp.cfu.util.AuthUtils.getUserName;
 import static com.mgmtp.cfu.util.RegistrationOverviewUtils.getRegistrationOverviewDTOS;
 
 @Service
@@ -174,7 +175,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         registrationRepository.save(registration);
 
         // send notification
-        notificationService.sendNotificationToUser(registration.getUser(), NotificationType.SUCCESS, "Your registration for course " + registration.getCourse().getName() + " has been approved");
+        notificationService.sendNotificationToUser(registration.getUser(), NotificationType.SUCCESS, "Registration for \"" + registration.getCourse().getName() + "\" has been approved. ");
 
         // send email
         List<MailContentUnit> mailContentUnits = List.of(
@@ -204,7 +205,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         registrationRepository.save(registration);
 
         // send notification
-        notificationService.sendNotificationToUser(registration.getUser(), NotificationType.ERROR, "Your registration for course " + registration.getCourse().getName() + " has been declined");
+        notificationService.sendNotificationToUser(registration.getUser(), NotificationType.ERROR, "Registration for \"" + registration.getCourse().getName() + "\" has been declined. Please review the feedbacks!");
 
         // send email
         List<MailContentUnit> mailContentUnits = List.of(
@@ -221,7 +222,6 @@ public class RegistrationServiceImpl implements RegistrationService {
     public Boolean createRegistration(RegistrationRequest registrationRequest) {
         // Create course if needed
         var modelMapper = new ModelMapper();
-
         CourseRequest courseRequest = CourseRequest.builder()
                                                    .name(registrationRequest.getName())
                                                    .link(registrationRequest.getLink())
@@ -246,7 +246,18 @@ public class RegistrationServiceImpl implements RegistrationService {
                                                 .build();
 
         registrationRepository.save(registration);
+        notifyWhenSummitRegistration();
         return true;
+    }
+
+    private void notifyWhenSummitRegistration() {
+        String notificationMessageForUser="Registration has been successfully submitted! Please wait for Admin to approve your registration.";
+        String notificationMessageForAdmin=getUserName(getCurrentUser())+" submitted a registration.";
+        notificationService.sendNotificationToUser(getCurrentUser(), NotificationType.SUCCESS, notificationMessageForUser);
+        var admins=getAllAdmin();
+        admins.forEach(admin -> {
+            notificationService.sendNotificationToUser(admin, NotificationType.INFORMATION,notificationMessageForAdmin);
+        });
     }
 
     // Admin Registration Services
@@ -464,34 +475,39 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     private void notifyVerifiedDocument(Registration registration) {
+        var courseName=registration.getCourse().getName();
         if (registration.getStatus().equals(RegistrationStatus.VERIFIED)) {
-            var admins = userRepository.findAllByRole(Role.ADMIN);
             var user = registration.getUser();
-
+            var admins = getAllAdmin();
             // Notify admins about the verification
             admins.forEach(admin -> {
-                String courseName = registration.getCourse().getName();
                 String message = String.format(
-                        "The course titled '%s' that user %s registered has been successfully verified by our accountant .",
-                        courseName, user.getUsername()
+                        "The course titled \"%s\" that user %s registered has been successfully verified by our accountant .",
+                        courseName,  (user)
                 );
-                notificationRepository.save(NotificationUtil.createNotification(NotificationType.INFORMATION, admin, message));
+                String notificationMessage="Registration for \"" + courseName + "\" has been verified.";
+                notificationRepository.save(NotificationUtil.createNotification(NotificationType.INFORMATION, admin, notificationMessage));
                 sendEmail(registration, admin, message);
             });
 
             // Notify the user about the verification
-            String userMessage = "Congratulations! Your course titled " + registration.getCourse().getName() + " has been verified successfully.";
+            String notificationMessage="Congratulations! Registration for \"" + courseName + "\" has been verified.";
+            String userMessage = "Congratulations! Your course titled \"" + courseName + "\" has been verified successfully.";
             sendEmail(registration, user, userMessage);
-            notificationRepository.save(NotificationUtil.createNotification(NotificationType.SUCCESS, user, userMessage));
+            notificationRepository.save(NotificationUtil.createNotification(NotificationType.SUCCESS, user, notificationMessage));
 
         } else if (registration.getStatus().equals(RegistrationStatus.DOCUMENT_DECLINED)) {
             log.info("DOCUMENT_DECLINED");
+            var notificationMessage="Documents of registration for \""+courseName+"\" has been declined. Please review the feedbacks!";
             String message = "We regret to inform you that your submitted documents for the course " +
                     registration.getCourse().getName() + " have been rejected. ";
-            notificationRepository.save(NotificationUtil.createNotification(NotificationType.ERROR, registration.getUser(), message));
+            notificationRepository.save(NotificationUtil.createNotification(NotificationType.ERROR, registration.getUser(), notificationMessage));
             sendEmail(registration, registration.getUser(), message);
-            log.info(message);
         }
+    }
+
+    private List<User> getAllAdmin() {
+        return userRepository.findAllByRole(Role.ADMIN);
     }
 
     private void sendEmail(Registration registration, User user, String message) {
@@ -531,6 +547,7 @@ public class RegistrationServiceImpl implements RegistrationService {
                 .user(getCurrentUser())
                 .build();
         registrationRepository.save(registration);
+        notifyWhenSummitRegistration();
     }
 
     private String handleThumbnail(RegistrationRequest registrationRequest) throws IOException {
@@ -593,8 +610,10 @@ public class RegistrationServiceImpl implements RegistrationService {
                 registration.setLastUpdated(LocalDateTime.now());
 
 
-                if ((registration.getStatus() == RegistrationStatus.DRAFT || registration.getStatus() == RegistrationStatus.DECLINED) && !asDraft)
+                if ((registration.getStatus() == RegistrationStatus.DRAFT || registration.getStatus() == RegistrationStatus.DECLINED) && !asDraft) {
                     registration.setStatus(RegistrationStatus.SUBMITTED);
+                    notifyWhenSummitRegistration();
+                }
 
                 registrationRepository.save(registration);
             } else

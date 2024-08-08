@@ -38,6 +38,7 @@ import java.util.List;
 
 import static com.mgmtp.cfu.enums.DocumentStatus.PENDING;
 import static com.mgmtp.cfu.util.AuthUtils.getCurrentUser;
+import static com.mgmtp.cfu.util.AuthUtils.getUserName;
 import static com.mgmtp.cfu.util.DocumentUtils.storageDocument;
 import static com.mgmtp.cfu.util.NotificationUtil.createNotification;
 
@@ -107,13 +108,16 @@ public class DocumentServiceImpl implements DocumentService {
     private void notifyAccountant(User user, Registration registration) {
         // TODO: Implement notification logic
         var accountants = userRepository.findAllByRole(Role.ACCOUNTANT);
+        var userName=getUserName(user);
         var content = "Verification of Course Documents: " + user.getUsername() +
                 " has just submitted some document for registration with ID " + registration.getId() +
                 ". Please proceed with the verification.";
+       var notificationMessage=userName +
+                " has sent documents for their registration.";
         List<Notification> notifications = new ArrayList<>();
         accountants.forEach(accountant -> {
             try {
-                notifications.add(createNotification(NotificationType.INFORMATION, accountant, content));
+                notifications.add(createNotification(NotificationType.INFORMATION, accountant, notificationMessage));
                 sendNoticedMail(accountant, content);
             } catch (Exception e) {
                 log.error(e.getMessage(), e.getCause());

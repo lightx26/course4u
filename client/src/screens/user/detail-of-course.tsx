@@ -26,6 +26,7 @@ import {
     fetchDataRelatedCourseById,
     fetchDataReviewsCourseById,
 } from "../../service/course.ts";
+import {updateSearch} from "../../redux/slice/course.slice.ts";
 interface IRatings {
     averageRating: number;
     detailRatings: {
@@ -237,6 +238,7 @@ const Detail_Of_Course: React.FC = () => {
                 id: item.id.toString(),
                 name: item.name?.toString() ?? "",
             })) || [];
+        dispatch(updateSearch(""));
         dispatch(
             handleViewAllByDetailCousePage({
                 FilterComponentId: "Category",
