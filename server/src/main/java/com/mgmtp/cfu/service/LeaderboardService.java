@@ -7,5 +7,7 @@ import java.util.Set;
 public interface LeaderboardService {
     LeaderboardDTO getLeaderboard(int year);
 
+    LeaderboardDTO getLeaderboardWiki(int year);
+
     Set<String> getExistedYears();
 }

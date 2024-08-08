@@ -35,6 +35,22 @@ class LeaderboardServiceImplSpec extends Specification {
         userId | year
         4      | 2024
     }
+    def 'getLeaderboardWiki'() {
+        given:
+        leaderboardQueryManager.getLeaderboardUsers(_, _) >> List.of(
+                LeaderboardUserDTO.builder().userId(1).fullName("").score(1).learningTime(1).build(),
+                LeaderboardUserDTO.builder().userId(2).fullName("").score(1).learningTime(1).build(),
+                LeaderboardUserDTO.builder().userId(3).fullName("").score(1).learningTime(1).build(),
+                LeaderboardUserDTO.builder().userId(userId).fullName("").score(1).learningTime(1).build()
+        )
+        when:
+        def result = leaderboardService.getLeaderboardWiki(year)
+        then:
+        noExceptionThrown()
+        where:
+        userId | year
+        4      | 2024
+    }
     def 'getExistedYears'() {
         given:
         leaderboardQueryManager.getExistedYears() >> Set.of(2021)
