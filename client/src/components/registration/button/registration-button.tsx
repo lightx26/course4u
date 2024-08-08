@@ -43,8 +43,8 @@ type Props = {
     isStatrted?: boolean;
     listFileCertificate?: UploadFile[];
     listFilePayment?: UploadFile[];
-    duration: number;
-    durationUnit: string;
+    duration?: number;
+    durationUnit?: string;
     listIdDocumentRemove?: number[];
     blockEditCourseForm?: boolean;
     setBlockEditCourseForm: React.Dispatch<React.SetStateAction<boolean>>;
@@ -142,8 +142,8 @@ export const RegistrationButton = ({
     const handleSubmitWithExistedCourse = async () => {
         const registrationData = {
             courseId: registration!.course!.id!,
-            duration,
-            durationUnit,
+            duration: duration!,
+            durationUnit: durationUnit!,
         };
         // Validate registration data using registrationSchema
         const validationResult = durationSchema.safeParse(duration);
@@ -278,9 +278,17 @@ export const RegistrationButton = ({
         }
     };
     const handleCheckExistReview = async () => {
-        const response = await checkExistReview(registration!.course!.id!);
-        if (isStatusSuccesful(response.status)) {
-            setHaveReview(response.data);
+        if (
+            status === Status.DONE ||
+            status === Status.VERIFIED ||
+            status === Status.VERIFYING ||
+            status === Status.CLOSED ||
+            status === Status.DOCUMENT_DECLINED
+        ) {
+            const response = await checkExistReview(registration!.course!.id!);
+            if (isStatusSuccesful(response.status)) {
+                setHaveReview(response.data);
+            }
         }
     };
 
@@ -301,15 +309,7 @@ export const RegistrationButton = ({
     };
 
     useEffect(() => {
-        if (
-            status === Status.DONE ||
-            status === Status.VERIFIED ||
-            status === Status.VERIFYING ||
-            status === Status.CLOSED ||
-            status === Status.DOCUMENT_DECLINED
-        ) {
-            handleCheckExistReview();
-        }
+        handleCheckExistReview();
     }, [status]);
     return (
         <div className='flex justify-end gap-4'>

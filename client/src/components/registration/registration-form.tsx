@@ -448,6 +448,18 @@ export const RegistrationsForm = ({
                         </div>
                     )}
 
+                    {user.user?.role === "USER" && status === "VERIFIED" && (
+                        <div className='space-y-5'>
+                            <RegistrationButton
+                                status={status!}
+                                setIsEdit={setIsEdit}
+                                isEdit={isEdit}
+                                setBlockEditCourseForm={setBlockEditCourseForm}
+                                form={form}
+                            />
+                        </div>
+                    )}
+
                     {/* View Document and Feedback for Accounant */}
                     {user.user?.role === "ACCOUNTANT" && (
                         <div className='space-y-5'>
