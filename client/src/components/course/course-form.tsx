@@ -20,7 +20,6 @@ import { Button } from "../ui/button";
 import { CropThumbnail } from "../shared/crop-thumbnail";
 import { z } from "zod";
 import { UseFormReturn } from "react-hook-form";
-import { registrationSchema } from "../../schemas/registration-schema";
 import { fetchOpenGraphData } from "../../service/course";
 import instance from "../../utils/customizeAxios";
 import { ArrowRightToLine, Upload } from "lucide-react";
@@ -28,26 +27,16 @@ import { Skeleton } from "../ui/skeleton";
 import { toast } from "sonner";
 import { platform } from "../../constant/index";
 import { cn } from "../../utils";
-
-const courseSchema = registrationSchema.omit({
-    duration: true,
-    durationUnit: true,
-});
+import { courseSchema } from "../../schemas/course-schema";
+import { CourseFormValues } from "../../types/course";
+import { Thumbnail } from "../../types/image";
 
 type Props = {
-    form: UseFormReturn<z.infer<typeof courseSchema>> | undefined;
+    form: UseFormReturn<CourseFormValues>;
     course?: z.infer<typeof courseSchema>;
     isEdit: boolean;
     registrationStatus?: string;
     blockEditCourseForm?: boolean;
-};
-
-type Thumbnail = {
-    imageUrl: string | null;
-    croppedImageUrl: string | null;
-    crop?: { x: number; y: number };
-    zoom?: number;
-    aspect?: { value: number; text: string };
 };
 
 const initData: Thumbnail = {

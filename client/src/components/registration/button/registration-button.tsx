@@ -43,8 +43,6 @@ type Props = {
     isStatrted?: boolean;
     listFileCertificate?: UploadFile[];
     listFilePayment?: UploadFile[];
-    duration?: number;
-    durationUnit?: string;
     listIdDocumentRemove?: number[];
     blockEditCourseForm?: boolean;
     setBlockEditCourseForm: React.Dispatch<React.SetStateAction<boolean>>;
@@ -61,8 +59,6 @@ export const RegistrationButton = ({
     isStatrted,
     blockEditCourseForm = false,
     setBlockEditCourseForm,
-    duration,
-    durationUnit,
     listIdDocumentRemove,
     form,
 }: Props) => {
@@ -142,11 +138,11 @@ export const RegistrationButton = ({
     const handleSubmitWithExistedCourse = async () => {
         const registrationData = {
             courseId: registration!.course!.id!,
-            duration: duration!,
-            durationUnit: durationUnit!,
+            duration: form!.getValues('duration'),
+            durationUnit: form!.getValues('durationUnit'),
         };
         // Validate registration data using registrationSchema
-        const validationResult = durationSchema.safeParse(duration);
+        const validationResult = durationSchema.safeParse(registrationData.duration);
 
         if (!validationResult.success) {
             // Handle validation errors

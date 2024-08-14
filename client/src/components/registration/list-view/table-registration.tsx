@@ -18,7 +18,7 @@ const TableHeader = [
 
 export default function TableRegistration({ListRegistration, isLoading}: PropsType) {
     if (isLoading) return (
-        <div className="w-full h-full flex items-center">
+        <div className="flex items-center w-full h-full">
             <Spin className="mx-auto" size={"large"}/>
         </div>
     )

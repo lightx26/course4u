@@ -1,71 +1,30 @@
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
-import HeaderHomepage from "./components/header.tsx";
-import HomepageScreen from "./screens/user/homepage.tsx";
-import Login from "./screens/auth/login.tsx";
-import Detail_Of_Course from "./screens/user/detail-of-course.tsx";
-import { ReactElement, useEffect } from "react";
-import { ProtectedRoute } from "./components/auth/protected-route-auth.tsx";
-import AccountSettingScreen from "./screens/user/personal/account-setting.tsx";
-import Navigation from "./components/user/navigation.tsx";
-import MyRegistrationsScreen from "./screens/user/personal/my-registration.tsx";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "./redux/store/store.ts";
-import { fetchUserDetails } from "./redux/slice/user.slice.ts";
-import NotPermitted from "./screens/error/not-permitted.tsx";
-import NotFound from "./screens/error/not-found.tsx";
-import AdminHomePage from "./screens/admin/admin-home.tsx";
-
-import SignUp from "./screens/auth/sign-up.tsx";
-import AdminCoursePageScreen from "./screens/admin/admin-course-page.tsx";
-import CreateCoursesScreen from "./screens/admin/create-courses.tsx";
-import { ProtectedRouteLogin } from "./components/auth/protected-route-login.tsx";
-import { isTokenExpired } from "./utils/validateToken.ts";
-import { RegistrationModal } from "./components/modal/registration-modal.tsx";
-import LeaderBoard from "./screens/user/leader-board.tsx";
-import MyScore from "./screens/user/personal/my-score.tsx";
-import AccountantHomePage from "./screens/accountant/accountant-home.tsx";
 
 import "./App.css";
-export type CourseType = {
-    id: string | undefined;
-    name: string;
-    thumbnailUrl?: string;
-    assignee?: {
-        id?: string;
-        name?: string;
-        avatarUrl?: string;
-        role?: string;
-        status?: string;
-    };
-    platform?: string;
-    createdDate?: string;
-    period?: {
-        startDay?: Date;
-        endDay?: Date;
-    };
-    rating?: number;
-    enrollmentCount?: number;
-    level?: string;
-};
-
-export type RegistrationType = {
-    id?: string;
-    startDate?: Date;
-    endDate?: Date;
-    registerDate?: Date;
-    lastUpdated?: Date;
-    courseId?: string;
-    courseName?: string;
-    courseThumbnailUrl?: string;
-    coursePlatform?: string;
-    userId?: string;
-    userName?: string;
-    userFullname?: string;
-    userAvatarUrl?: string;
-    duration?: number;
-    durationUnit?: string;
-    status?: string;
-};
+import { ReactElement, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@store/store";
+import HeaderHomepage from "@components/header";
+import { RegistrationModal } from "@components/modal/registration-modal";
+import NotPermitted from "@screen/error/not-permitted";
+import { ProtectedRoute } from "@components/auth/protected-route-auth";
+import NotFound from "@screen/error/not-found";
+import HomepageScreen from "@screen/user/homepage";
+import Detail_Of_Course from "@screen/user/detail-of-course";
+import LeaderBoard from "@screen/user/leader-board";
+import Navigation from "@components/user/navigation";
+import AccountSettingScreen from "@screen/user/personal/account-setting";
+import MyRegistrationsScreen from "@screen/user/personal/my-registration";
+import MyScore from "@screen/user/personal/my-score";
+import AdminHomePage from "@screen/admin/admin-home";
+import AdminCoursePageScreen from "@screen/admin/admin-course-page";
+import CreateCoursesScreen from "@screen/admin/create-courses";
+import AccountantHomePage from "@screen/accountant/accountant-home";
+import { ProtectedRouteLogin } from "@components/auth/protected-route-login";
+import Login from "@screen/auth/login";
+import SignUp from "@screen/auth/sign-up";
+import { isTokenExpired } from "@utils/validateToken";
+import { fetchUserDetails } from "redux/slice/user.slice";
 
 const LayoutUser = ({ children }: { children?: ReactElement }) => {
     const isUserRoute = window.location.pathname.startsWith(

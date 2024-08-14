@@ -1,19 +1,14 @@
-type DocumentType = {
-    id: number;
-    registrationId: number;
-    url: string;
-    status: string;
-    type: string;
-};
+import type { CollapseProps } from "antd";
+import { Collapse, Tag } from "antd";
+import { useSelector } from "react-redux";
+import { RootState } from "@store/store";
+import { DocumentType } from "@project-types/document";
+
 interface IProps {
     documentRegistration: DocumentType[];
     setDocumentRegistration: (value: DocumentType[]) => void;
     status?: string;
 }
-import type { CollapseProps } from "antd";
-import { Collapse, Tag } from "antd";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store/store";
 
 const VerifyDocumentForAccountant = (props: IProps) => {
     const { documentRegistration, setDocumentRegistration, status } = props;

@@ -1,34 +1,19 @@
 import { useEffect, useState } from "react";
-import instance from "../../utils/customizeAxios";
 import { RegistrationsForm } from "./registration-form";
-import { z } from "zod";
 import { cn } from "../../utils/utils";
-import { courseSchema } from "../../schemas/course-schema";
 import { Status } from "../../constant/index";
 import { RegistrationUser } from "./registration-user";
 import { RegistrationStatus } from "./registration-status";
 import { Skeleton } from "../ui/skeleton";
-import { userRegistrationSchema } from "../../schemas/user-schema";
-import { Feedback } from "./feedback/feedback-list";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import { useRegistrationDetail } from "../../hooks/use-registration-detail";
 import { handleAvatarUrl } from "../../utils/handleAvatarUrl";
 import { useRegistrationModal } from "../../hooks/use-registration-modal";
 import handleThumbnailUrl from "../../utils/handleThumbnailUrl";
+import instance from "../../utils/customizeAxios";
 
-export type RegistrationsProps = {
-    id?: number;
-    duration?: number;
-    durationUnit?: "DAY" | "WEEK" | "MONTH";
-    status?: Status;
-    course?: z.infer<typeof courseSchema>;
-    isBlockedModifiedCourse?: boolean;
-    user?: z.infer<typeof userRegistrationSchema>;
-    registrationFeedbacks?: Feedback[];
-    startDate?: string;
-    endDate?: string;
-};
+
 type Props = {
     id?: number;
     className?: string;

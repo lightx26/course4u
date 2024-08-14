@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 
-import { registrationSchema } from "../../schemas/registration-schema";
 import {
     Form,
     FormControl,
@@ -15,7 +14,6 @@ import {
     FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import { CourseForm } from "../course/course-form";
 import {
     Select,
     SelectContent,
@@ -24,33 +22,27 @@ import {
     SelectValue,
 } from "../ui/select";
 
-import { RegistrationsProps } from "./registrations";
 import { RegistrationButton } from "./button/registration-button";
-import { RootState } from "../../redux/store/store";
+import { RootState } from "@store/store";
 import RegistrationAdminSection from "./registration-admin-section";
 import FeedbackList from "./feedback/feedback-list";
 import LearningProgress from "./learning-progress";
-import { useRegistrationModal } from "../../hooks/use-registration-modal";
+import { useRegistrationModal } from "@hooks/use-registration-modal";
 import FormDocument from "./document/document";
 import VerifyDocumentForAccountant from "./document/verify-document-for-accoutant";
 import { RegistrationButtonForAccountant } from "./button/registration-button-accountant";
 import FeedBackFromAccountant from "./feedback/feed-back-from-accountant";
-import { Status } from "../../constant/index";
-import { useRefreshState } from "../../hooks/use-refresh-state";
-import { convertToFormData } from "../../utils/convertToFormData";
-import {
-    createNewRegistration,
-    editRegistration,
-} from "../../service/registration";
-import { getListDocumentByRegistrationId } from "../../service/document";
-import { isExistAvailableCourseWithId } from "../../service/course";
-type DocumentType = {
-    id: number;
-    registrationId: number;
-    url: string;
-    status: string;
-    type: string;
-};
+import { getListDocumentByRegistrationId } from "@service/document";
+import { isExistAvailableCourseWithId } from "@service/course";
+import { DocumentType } from "../../types/document";
+import { RegistrationsProps } from "../../types/registration";
+import { useRefreshState } from "@hooks/use-refresh-state";
+import { convertToFormData } from "@utils/convertToFormData";
+import { Status } from "@constant/index";
+import { createNewRegistration, editRegistration } from "@service/registration";
+import { registrationSchema } from "@schemas/registration-schema";
+import { CourseForm } from "@components/course/course-form";
+
 type RegistrationsFormProps = RegistrationsProps & {
     isEdit: boolean;
     setIsEdit: (isEdit: boolean) => void;
@@ -184,8 +176,6 @@ export const RegistrationsForm = ({
                     }}
                 >
                     <CourseForm
-                        //eslint-disable-next-line
-                        // @ts-ignore
                         form={form}
                         course={course}
                         isEdit={isEdit}
@@ -314,10 +304,6 @@ export const RegistrationsForm = ({
                                         setBlockEditCourseForm={
                                             setBlockEditCourseForm
                                         }
-                                        duration={form.getValues("duration")}
-                                        durationUnit={form.getValues(
-                                            "durationUnit"
-                                        )}
                                         form={form}
                                     />
                                 </>
@@ -354,12 +340,6 @@ export const RegistrationsForm = ({
                                             setBlockEditCourseForm={
                                                 setBlockEditCourseForm
                                             }
-                                            duration={form.getValues(
-                                                "duration"
-                                            )}
-                                            durationUnit={form.getValues(
-                                                "durationUnit"
-                                            )}
                                             form={form}
                                         />
                                     </>
@@ -440,10 +420,6 @@ export const RegistrationsForm = ({
                                         setBlockEditCourseForm={
                                             setBlockEditCourseForm
                                         }
-                                        duration={form.getValues("duration")}
-                                        durationUnit={form.getValues(
-                                            "durationUnit"
-                                        )}
                                         form={form}
                                     />
                                 </>

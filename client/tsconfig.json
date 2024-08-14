@@ -18,7 +18,32 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        
+        /* Base URL */
+        "baseUrl": "./src",
+        /*Path*/
+        "paths": {
+            "@css-file/*": ["assets/css/*"], 
+            // Service for call API by axios
+            "@service/*": ["service/*"],
+            //utils for common function
+            "@utils/*": ["utils/*"],
+            //constant for constant value
+            "@constant/*": ["constant/*"],
+            //redux toolkit store
+            "@store/*": ["redux/store/*"],
+            //custom hooks
+            "@hooks/*": ["hooks/*"],
+
+            //Types for type of attributes
+            "@project-types/*": ["types/*"],
+            //Schema for form validation
+            "@schemas/*": ["schemas/*"],
+            //components and Layout
+            "@components/*": ["components/*"],
+            "@screen/*": ["screens/*"],
+        },
     },
     "include": ["src", "src/service/notification/notification.ts"],
     "references": [

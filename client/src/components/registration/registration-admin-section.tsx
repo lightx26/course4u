@@ -3,7 +3,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSelector } from "react-redux";
 
-import { feedbackSchema } from "../../schemas/feedback-schema";
+import { feedbackSchema } from "@schemas/feedback-schema";
 import {
     Form,
     FormControl,

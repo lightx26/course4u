@@ -1,17 +1,12 @@
 import { Tag, message, Divider, Upload } from "antd";
 import type { UploadProps, UploadFile } from "antd";
 import React from "react";
-import "../../../assets/css/document.css";
+import "@css-file/document.css";
 import ReactDOM from "react-dom";
 import { Collapse } from "antd";
 import type { CollapseProps } from "antd";
-type DocumentType = {
-    id: number;
-    registrationId: number;
-    url: string;
-    status: string;
-    type: string;
-};
+import { DocumentType } from "@project-types/document";
+
 interface IProps {
     listFileCertificate: UploadFile[];
     setListFileCertificate: React.Dispatch<React.SetStateAction<UploadFile[]>>;
